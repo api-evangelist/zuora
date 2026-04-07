@@ -11,9 +11,9 @@ access: 3rd-Party
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
   - Billing
-  - Subscriptions
-  - Payments
   - Finance
+  - Payments
+  - Subscriptions
 created: '2025-02-17'
 modified: '2026-03-16'
 url: >-
@@ -30,8 +30,8 @@ apis:
     humanURL: https://developer.zuora.com/v1-api-reference/introduction
     tags:
       - Billing
-      - Subscriptions
       - Payments
+      - Subscriptions
     properties:
       - type: Documentation
         url: https://developer.zuora.com/v1-api-reference/introduction
