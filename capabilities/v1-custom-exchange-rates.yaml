@@ -1,0 +1,92 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Custom Exchange Rates
+  description: 'API Reference — Custom Exchange Rates. 1 operations. Lead operation: List custom exchange rates by currency.
+    Self-contained Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Custom Exchange Rates
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-custom-exchange-rates
+    baseUri: https://rest.zuora.com
+    description: API Reference — Custom Exchange Rates business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-custom-exchange-rates-currency
+      path: /v1/custom-exchange-rates/{currency}
+      operations:
+      - name: getcustomexchangerates
+        method: GET
+        description: List custom exchange rates by currency
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: currency
+          in: path
+          type: string
+          description: The target base currency of the tenant. The exchange rates in the response are calculated in relation
+            to the target currency.
+          required: true
+        - name: startDate
+          in: query
+          type: string
+          description: Start date of the date range for which you want to get exchange rates.
+          required: true
+        - name: endDate
+          in: query
+          type: string
+          description: End date of the date range for which you want to get exchange rates.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-custom-exchange-rates-rest
+    port: 8080
+    description: REST adapter for API Reference — Custom Exchange Rates. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/custom-exchange-rates/{currency}
+      name: v1-custom-exchange-rates-currency
+      description: REST surface for v1-custom-exchange-rates-currency.
+      operations:
+      - method: GET
+        name: getcustomexchangerates
+        description: List custom exchange rates by currency
+        call: v1-custom-exchange-rates.getcustomexchangerates
+        with:
+          currency: rest.currency
+          startDate: rest.startDate
+          endDate: rest.endDate
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-custom-exchange-rates-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Custom Exchange Rates. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-custom-exchange-rates-currency
+      description: List custom exchange rates by currency
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-custom-exchange-rates.getcustomexchangerates
+      with:
+        currency: tools.currency
+        startDate: tools.startDate
+        endDate: tools.endDate
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,864 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Workflows
+  description: 'API Reference — Workflows. 16 operations. Lead operation: Delete a workflow version. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Workflows
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-workflows
+    baseUri: https://rest.zuora.com
+    description: API Reference — Workflows business capability. Self-contained, no shared references.
+    resources:
+    - name: versions-version_id
+      path: /versions/{version_id}
+      operations:
+      - name: deleteworkflowversion
+        method: DELETE
+        description: Delete a workflow version
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: version_id
+          in: path
+          type: integer
+          description: The unique id of the workflow version.
+          required: true
+    - name: workflows
+      path: /workflows
+      operations:
+      - name: getworkflows
+        method: GET
+        description: List workflows
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: callout_trigger
+          in: query
+          type: boolean
+          description: If set to true, the operation retrieves workflows that have the callout trigger enabled. If set to
+            false, the operation retrieves workflows that have the callou
+        - name: interval
+          in: query
+          type: string
+          description: A CRON expession that specifies a schedule (for example, `0 0 * * *`). If specified, the operation
+            retrieves the workflow that is run based on the specified sch
+        - name: name
+          in: query
+          type: string
+          description: If specified, the operation retrieves the workflow that is in the specified name.
+        - name: ondemand_trigger
+          in: query
+          type: boolean
+          description: If set to true, the operation retrieves workflows that have the ondemand trigger enabled. If set to
+            false, the operation retrieves workflows that have the ondem
+        - name: scheduled_trigger
+          in: query
+          type: boolean
+          description: If set to true, the operation retrieves workflows that have the scheduled trigger enabled. If set to
+            false, the operation retrieves workflows that have the sche
+        - name: page
+          in: query
+          type: integer
+          description: If you want to retrieve only the workflows on a specific page, you can specify the `page` number in
+            the query.
+        - name: page_length
+          in: query
+          type: integer
+          description: The number of workflows shown in a single call. If the `page` parameter is not specified, the operation
+            will return only the first page of results. If there are
+    - name: workflows-import
+      path: /workflows/import
+      operations:
+      - name: postworkflowimport
+        method: POST
+        description: Import a workflow
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_definition_id
+          in: query
+          type: integer
+          description: The unique id of the workflow definition to import a workflow version under.
+        - name: version
+          in: query
+          type: string
+          description: The version number of the new workflow version to import. Must be greater than any existing version
+            numbers.
+        - name: activate
+          in: query
+          type: boolean
+          description: Indicates whether the imported version is an active version. Default to be false.
+        - name: request
+          in: body
+          type: string
+    - name: workflows-metrics.json
+      path: /workflows/metrics.json
+      operations:
+      - name: getworkflowsusages
+        method: GET
+        description: Retrieve workflow task usage
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: startDate
+          in: query
+          type: string
+          description: The start date of the usage data that you want to get. For example, 2019-01-01.
+          required: true
+        - name: endDate
+          in: query
+          type: string
+          description: The end date of the usage data that you want to get. For example, 2019-12-31.
+          required: true
+        - name: metrics
+          in: query
+          type: string
+          description: The type of metric that you want to get. Currently, only `taskCount` is supported. `taskCount` is the
+            amount of task runs.
+          required: true
+    - name: workflows-tasks
+      path: /workflows/tasks
+      operations:
+      - name: getworkflowstasks
+        method: GET
+        description: List workflow tasks
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: query
+          type: string
+          description: If specified, the operation retrieves the task that is with specified id.
+        - name: name
+          in: query
+          type: string
+          description: If specified, the operation retrieves tasks that is in the specified name.
+        - name: instance
+          in: query
+          type: boolean
+          description: If set to true, the operation retrieves workflows that have the scheduled trigger enabled. If set to
+            false, the operation retrieves workflows that have the sche
+        - name: action_type
+          in: query
+          type: string
+          description: If specified, the operation retrieves tasks that is the specified type.
+        - name: object
+          in: query
+          type: string
+          description: If specified, the operation retrieves tasks with the specified object.
+        - name: object_id
+          in: query
+          type: string
+          description: If specified, the operation retrieves tasks with the specified object id.
+        - name: call_type
+          in: query
+          type: string
+          description: If specified, the operation retrieves tasks with the specified api call type used.
+        - name: workflow_id
+          in: query
+          type: string
+          description: If specified, the operation retrieves tasks that for the specified workflow id.
+        - name: tags
+          in: query
+          type: array
+          description: 'If specified, the operation retrieves tasks that with the specified filter tags. Use the following
+            syntax to specify multiple tags: `tags[]=tag_value_1&tags[]=t'
+        - name: page
+          in: query
+          type: integer
+          description: If you want to retrieve only the workflows on a specific page, you can specify the `page` number in
+            the query.
+        - name: page_length
+          in: query
+          type: integer
+          description: The number of workflow tasks shown in a single call. If the `page` parameter is not specified, the
+            operation will return only the first page of results. If ther
+    - name: workflows-tasks-batch_update
+      path: /workflows/tasks/batch_update
+      operations:
+      - name: putworkflowstasksupdate
+        method: PUT
+        description: Update workflow tasks
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: UpdateRequest
+          in: body
+          type: string
+    - name: workflows-tasks-task_id
+      path: /workflows/tasks/{task_id}
+      operations:
+      - name: getworkflowstask
+        method: GET
+        description: Retrieve a workflow task
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: task_id
+          in: path
+          type: string
+          description: The unique ID of the task.
+          required: true
+    - name: workflows-tasks-task_id-rerun
+      path: /workflows/tasks/{task_id}/rerun
+      operations:
+      - name: postworkflowstaskrerun
+        method: POST
+        description: Rerun a workflow task
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: task_id
+          in: path
+          type: string
+          description: The unique ID of the task.
+          required: true
+    - name: workflows-workflow_runs-workflow_run_id
+      path: /workflows/workflow_runs/{workflow_run_id}
+      operations:
+      - name: getworkflowrun
+        method: GET
+        description: Retrieve a workflow run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_run_id
+          in: path
+          type: string
+          description: The unique ID of a workflow run. For example, 19080.
+          required: true
+    - name: workflows-workflow_id
+      path: /workflows/{workflow_id}
+      operations:
+      - name: getworkflow
+        method: GET
+        description: Retrieve a workflow
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_id
+          in: path
+          type: string
+          description: The unique ID of a workflow definition. For example, 19080.
+          required: true
+      - name: deleteworkflow
+        method: DELETE
+        description: Delete a workflow
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_id
+          in: path
+          type: string
+          description: The unique ID of a workflow definition. For example, 19080.
+          required: true
+      - name: patchupdateworkflow
+        method: PATCH
+        description: Update a workflow
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_id
+          in: path
+          type: string
+          description: The unique ID of a workflow definition. For example, 19080.
+          required: true
+        - name: request
+          in: body
+          type: object
+    - name: workflows-workflow_id-export
+      path: /workflows/{workflow_id}/export
+      operations:
+      - name: getworkflowexport
+        method: GET
+        description: Export a workflow version
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_id
+          in: path
+          type: integer
+          description: The ID of the workflow definition to export.
+          required: true
+        - name: version
+          in: query
+          type: string
+          description: Default result is the active version of the workflow definition. Version number and 'latest' can be
+            used to export a specific version of the workflow definition
+    - name: workflows-workflow_id-run
+      path: /workflows/{workflow_id}/run
+      operations:
+      - name: postrunworkflow
+        method: POST
+        description: Run a workflow
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_id
+          in: path
+          type: integer
+          description: The ID of the workflow definition you want to run.
+          required: true
+        - name: inputparameters
+          in: body
+          type: object
+          description: Include parameters you want to pass to the workflow.
+    - name: workflows-workflow_id-versions
+      path: /workflows/{workflow_id}/versions
+      operations:
+      - name: getworkflowversions
+        method: GET
+        description: List all versions of a workflow definition
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_id
+          in: path
+          type: integer
+          description: The unique id of the workflow definition to import a workflow version under.
+          required: true
+    - name: workflows-workflow_id-versions-import
+      path: /workflows/{workflow_id}/versions/import
+      operations:
+      - name: postworkflowversionsimport
+        method: POST
+        description: Import a workflow version
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: workflow_id
+          in: path
+          type: integer
+          description: The unique id of the workflow definition to import a workflow version under.
+          required: true
+        - name: version
+          in: query
+          type: string
+          description: The version number of the new workflow version to import. Must be greater than any existing version
+            numbers.
+          required: true
+        - name: activate
+          in: query
+          type: boolean
+          description: Indicates whether the imported version is an active version. Default to be false.
+        - name: request
+          in: body
+          type: object
+  exposes:
+  - type: rest
+    namespace: v1-workflows-rest
+    port: 8080
+    description: REST adapter for API Reference — Workflows. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/versions/{version-id}
+      name: versions-version-id
+      description: REST surface for versions-version_id.
+      operations:
+      - method: DELETE
+        name: deleteworkflowversion
+        description: Delete a workflow version
+        call: v1-workflows.deleteworkflowversion
+        with:
+          version_id: rest.version_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows
+      name: workflows
+      description: REST surface for workflows.
+      operations:
+      - method: GET
+        name: getworkflows
+        description: List workflows
+        call: v1-workflows.getworkflows
+        with:
+          callout_trigger: rest.callout_trigger
+          interval: rest.interval
+          name: rest.name
+          ondemand_trigger: rest.ondemand_trigger
+          scheduled_trigger: rest.scheduled_trigger
+          page: rest.page
+          page_length: rest.page_length
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/import
+      name: workflows-import
+      description: REST surface for workflows-import.
+      operations:
+      - method: POST
+        name: postworkflowimport
+        description: Import a workflow
+        call: v1-workflows.postworkflowimport
+        with:
+          workflow_definition_id: rest.workflow_definition_id
+          version: rest.version
+          activate: rest.activate
+          request: rest.request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/metrics-json
+      name: workflows-metrics-json
+      description: REST surface for workflows-metrics.json.
+      operations:
+      - method: GET
+        name: getworkflowsusages
+        description: Retrieve workflow task usage
+        call: v1-workflows.getworkflowsusages
+        with:
+          startDate: rest.startDate
+          endDate: rest.endDate
+          metrics: rest.metrics
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/tasks
+      name: workflows-tasks
+      description: REST surface for workflows-tasks.
+      operations:
+      - method: GET
+        name: getworkflowstasks
+        description: List workflow tasks
+        call: v1-workflows.getworkflowstasks
+        with:
+          id: rest.id
+          name: rest.name
+          instance: rest.instance
+          action_type: rest.action_type
+          object: rest.object
+          object_id: rest.object_id
+          call_type: rest.call_type
+          workflow_id: rest.workflow_id
+          tags: rest.tags
+          page: rest.page
+          page_length: rest.page_length
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/tasks/batch-update
+      name: workflows-tasks-batch-update
+      description: REST surface for workflows-tasks-batch_update.
+      operations:
+      - method: PUT
+        name: putworkflowstasksupdate
+        description: Update workflow tasks
+        call: v1-workflows.putworkflowstasksupdate
+        with:
+          UpdateRequest: rest.UpdateRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/tasks/{task-id}
+      name: workflows-tasks-task-id
+      description: REST surface for workflows-tasks-task_id.
+      operations:
+      - method: GET
+        name: getworkflowstask
+        description: Retrieve a workflow task
+        call: v1-workflows.getworkflowstask
+        with:
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/tasks/{task-id}/rerun
+      name: workflows-tasks-task-id-rerun
+      description: REST surface for workflows-tasks-task_id-rerun.
+      operations:
+      - method: POST
+        name: postworkflowstaskrerun
+        description: Rerun a workflow task
+        call: v1-workflows.postworkflowstaskrerun
+        with:
+          task_id: rest.task_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/workflow-runs/{workflow-run-id}
+      name: workflows-workflow-runs-workflow-run-id
+      description: REST surface for workflows-workflow_runs-workflow_run_id.
+      operations:
+      - method: GET
+        name: getworkflowrun
+        description: Retrieve a workflow run
+        call: v1-workflows.getworkflowrun
+        with:
+          workflow_run_id: rest.workflow_run_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/{workflow-id}
+      name: workflows-workflow-id
+      description: REST surface for workflows-workflow_id.
+      operations:
+      - method: GET
+        name: getworkflow
+        description: Retrieve a workflow
+        call: v1-workflows.getworkflow
+        with:
+          workflow_id: rest.workflow_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteworkflow
+        description: Delete a workflow
+        call: v1-workflows.deleteworkflow
+        with:
+          workflow_id: rest.workflow_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchupdateworkflow
+        description: Update a workflow
+        call: v1-workflows.patchupdateworkflow
+        with:
+          workflow_id: rest.workflow_id
+          request: rest.request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/{workflow-id}/export
+      name: workflows-workflow-id-export
+      description: REST surface for workflows-workflow_id-export.
+      operations:
+      - method: GET
+        name: getworkflowexport
+        description: Export a workflow version
+        call: v1-workflows.getworkflowexport
+        with:
+          workflow_id: rest.workflow_id
+          version: rest.version
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/{workflow-id}/run
+      name: workflows-workflow-id-run
+      description: REST surface for workflows-workflow_id-run.
+      operations:
+      - method: POST
+        name: postrunworkflow
+        description: Run a workflow
+        call: v1-workflows.postrunworkflow
+        with:
+          workflow_id: rest.workflow_id
+          inputparameters: rest.inputparameters
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/{workflow-id}/versions
+      name: workflows-workflow-id-versions
+      description: REST surface for workflows-workflow_id-versions.
+      operations:
+      - method: GET
+        name: getworkflowversions
+        description: List all versions of a workflow definition
+        call: v1-workflows.getworkflowversions
+        with:
+          workflow_id: rest.workflow_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/workflows/{workflow-id}/versions/import
+      name: workflows-workflow-id-versions-import
+      description: REST surface for workflows-workflow_id-versions-import.
+      operations:
+      - method: POST
+        name: postworkflowversionsimport
+        description: Import a workflow version
+        call: v1-workflows.postworkflowversionsimport
+        with:
+          workflow_id: rest.workflow_id
+          version: rest.version
+          activate: rest.activate
+          request: rest.request
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-workflows-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Workflows. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: delete-workflow-version
+      description: Delete a workflow version
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-workflows.deleteworkflowversion
+      with:
+        version_id: tools.version_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-workflows
+      description: List workflows
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-workflows.getworkflows
+      with:
+        callout_trigger: tools.callout_trigger
+        interval: tools.interval
+        name: tools.name
+        ondemand_trigger: tools.ondemand_trigger
+        scheduled_trigger: tools.scheduled_trigger
+        page: tools.page
+        page_length: tools.page_length
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: import-workflow
+      description: Import a workflow
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-workflows.postworkflowimport
+      with:
+        workflow_definition_id: tools.workflow_definition_id
+        version: tools.version
+        activate: tools.activate
+        request: tools.request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-workflow-task-usage
+      description: Retrieve workflow task usage
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-workflows.getworkflowsusages
+      with:
+        startDate: tools.startDate
+        endDate: tools.endDate
+        metrics: tools.metrics
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-workflow-tasks
+      description: List workflow tasks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-workflows.getworkflowstasks
+      with:
+        id: tools.id
+        name: tools.name
+        instance: tools.instance
+        action_type: tools.action_type
+        object: tools.object
+        object_id: tools.object_id
+        call_type: tools.call_type
+        workflow_id: tools.workflow_id
+        tags: tools.tags
+        page: tools.page
+        page_length: tools.page_length
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-workflow-tasks
+      description: Update workflow tasks
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-workflows.putworkflowstasksupdate
+      with:
+        UpdateRequest: tools.UpdateRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-workflow-task
+      description: Retrieve a workflow task
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-workflows.getworkflowstask
+      with:
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: rerun-workflow-task
+      description: Rerun a workflow task
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-workflows.postworkflowstaskrerun
+      with:
+        task_id: tools.task_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-workflow-run
+      description: Retrieve a workflow run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-workflows.getworkflowrun
+      with:
+        workflow_run_id: tools.workflow_run_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-workflow
+      description: Retrieve a workflow
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-workflows.getworkflow
+      with:
+        workflow_id: tools.workflow_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-workflow
+      description: Delete a workflow
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-workflows.deleteworkflow
+      with:
+        workflow_id: tools.workflow_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-workflow
+      description: Update a workflow
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-workflows.patchupdateworkflow
+      with:
+        workflow_id: tools.workflow_id
+        request: tools.request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: export-workflow-version
+      description: Export a workflow version
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-workflows.getworkflowexport
+      with:
+        workflow_id: tools.workflow_id
+        version: tools.version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: run-workflow
+      description: Run a workflow
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-workflows.postrunworkflow
+      with:
+        workflow_id: tools.workflow_id
+        inputparameters: tools.inputparameters
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-versions-workflow-definition
+      description: List all versions of a workflow definition
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-workflows.getworkflowversions
+      with:
+        workflow_id: tools.workflow_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: import-workflow-version
+      description: Import a workflow version
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-workflows.postworkflowversionsimport
+      with:
+        workflow_id: tools.workflow_id
+        version: tools.version
+        activate: tools.activate
+        request: tools.request
+      outputParameters:
+      - type: object
+        mapping: $.

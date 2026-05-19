@@ -1,0 +1,217 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Regenerate
+  description: 'API Reference — Regenerate. 4 operations. Lead operation: Regenerate revenue recognition events transactions
+    for Delivery Schedule. Self-contained Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Regenerate
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-regenerate
+    baseUri: https://rest.zuora.com
+    description: API Reference — Regenerate business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-rev-rec-events
+      path: /v1/rev-rec-events
+      operations:
+      - name: postcreaterevrecevents
+        method: POST
+        description: Regenerate revenue recognition events transactions for Delivery Schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscriptionNumber
+          in: query
+          type: string
+          description: The subcription number.
+        - name: mode
+          in: query
+          type: string
+          description: The generation mode.
+    - name: v1-rev-rec-events-daily-consumption
+      path: /v1/rev-rec-events/daily-consumption
+      operations:
+      - name: postgeneraterevreceventsfordailyconsumption
+        method: POST
+        description: Regenerate revenue recognition events transactions for Daily Consumption
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-uno-regenerate-billing-transaction
+      path: /v1/uno-regenerate/billing-transaction
+      operations:
+      - name: postregeneratebillingtransaction
+        method: POST
+        description: Regenerate billing transactions
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: reMigrate
+          in: query
+          type: boolean
+          description: Indicates if existing data in the database will be overridden.
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-uno-regenerate-booking-transaction
+      path: /v1/uno-regenerate/booking-transaction
+      operations:
+      - name: postregeneratebookingtransaction
+        method: POST
+        description: Regenerate booking transactions
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: reMigrate
+          in: query
+          type: boolean
+          description: Indicates if existing data in the database will be overridden.
+        - name: body
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-regenerate-rest
+    port: 8080
+    description: REST adapter for API Reference — Regenerate. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/rev-rec-events
+      name: v1-rev-rec-events
+      description: REST surface for v1-rev-rec-events.
+      operations:
+      - method: POST
+        name: postcreaterevrecevents
+        description: Regenerate revenue recognition events transactions for Delivery Schedule
+        call: v1-regenerate.postcreaterevrecevents
+        with:
+          subscriptionNumber: rest.subscriptionNumber
+          mode: rest.mode
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/rev-rec-events/daily-consumption
+      name: v1-rev-rec-events-daily-consumption
+      description: REST surface for v1-rev-rec-events-daily-consumption.
+      operations:
+      - method: POST
+        name: postgeneraterevreceventsfordailyconsumption
+        description: Regenerate revenue recognition events transactions for Daily Consumption
+        call: v1-regenerate.postgeneraterevreceventsfordailyconsumption
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/uno-regenerate/billing-transaction
+      name: v1-uno-regenerate-billing-transaction
+      description: REST surface for v1-uno-regenerate-billing-transaction.
+      operations:
+      - method: POST
+        name: postregeneratebillingtransaction
+        description: Regenerate billing transactions
+        call: v1-regenerate.postregeneratebillingtransaction
+        with:
+          reMigrate: rest.reMigrate
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/uno-regenerate/booking-transaction
+      name: v1-uno-regenerate-booking-transaction
+      description: REST surface for v1-uno-regenerate-booking-transaction.
+      operations:
+      - method: POST
+        name: postregeneratebookingtransaction
+        description: Regenerate booking transactions
+        call: v1-regenerate.postregeneratebookingtransaction
+        with:
+          reMigrate: rest.reMigrate
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-regenerate-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Regenerate. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: regenerate-revenue-recognition-events-transactions
+      description: Regenerate revenue recognition events transactions for Delivery Schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-regenerate.postcreaterevrecevents
+      with:
+        subscriptionNumber: tools.subscriptionNumber
+        mode: tools.mode
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: regenerate-revenue-recognition-events-transactions-2
+      description: Regenerate revenue recognition events transactions for Daily Consumption
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-regenerate.postgeneraterevreceventsfordailyconsumption
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: regenerate-billing-transactions
+      description: Regenerate billing transactions
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-regenerate.postregeneratebillingtransaction
+      with:
+        reMigrate: tools.reMigrate
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: regenerate-booking-transactions
+      description: Regenerate booking transactions
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-regenerate.postregeneratebookingtransaction
+      with:
+        reMigrate: tools.reMigrate
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

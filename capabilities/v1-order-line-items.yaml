@@ -1,0 +1,165 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Order Line Items
+  description: 'API Reference — Order Line Items. 3 operations. Lead operation: Update order line items. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Order Line Items
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-order-line-items
+    baseUri: https://rest.zuora.com
+    description: API Reference — Order Line Items business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-order-line-items-bulk
+      path: /v1/order-line-items/bulk
+      operations:
+      - name: postorderlineitems
+        method: POST
+        description: Update order line items
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-order-line-items-itemId
+      path: /v1/order-line-items/{itemId}
+      operations:
+      - name: getorderlineitem
+        method: GET
+        description: Retrieve an order line item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: itemId
+          in: path
+          type: string
+          description: The id of the Order Line Item to retrieve.
+          required: true
+        - name: fulfillment
+          in: query
+          type: boolean
+          description: Return the related fulfillments or not.
+      - name: putorderlineitem
+        method: PUT
+        description: Update an order line item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: itemId
+          in: path
+          type: string
+          description: The id of the Order Line Item to update.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-order-line-items-rest
+    port: 8080
+    description: REST adapter for API Reference — Order Line Items. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/order-line-items/bulk
+      name: v1-order-line-items-bulk
+      description: REST surface for v1-order-line-items-bulk.
+      operations:
+      - method: POST
+        name: postorderlineitems
+        description: Update order line items
+        call: v1-order-line-items.postorderlineitems
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/order-line-items/{itemid}
+      name: v1-order-line-items-itemid
+      description: REST surface for v1-order-line-items-itemId.
+      operations:
+      - method: GET
+        name: getorderlineitem
+        description: Retrieve an order line item
+        call: v1-order-line-items.getorderlineitem
+        with:
+          itemId: rest.itemId
+          fulfillment: rest.fulfillment
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putorderlineitem
+        description: Update an order line item
+        call: v1-order-line-items.putorderlineitem
+        with:
+          itemId: rest.itemId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-order-line-items-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Order Line Items. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: update-order-line-items
+      description: Update order line items
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-order-line-items.postorderlineitems
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-order-line-item
+      description: Retrieve an order line item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-order-line-items.getorderlineitem
+      with:
+        itemId: tools.itemId
+        fulfillment: tools.fulfillment
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-order-line-item
+      description: Update an order line item
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-order-line-items.putorderlineitem
+      with:
+        itemId: tools.itemId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

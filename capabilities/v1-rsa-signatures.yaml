@@ -1,0 +1,117 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — RSA Signatures
+  description: 'API Reference — RSA Signatures. 2 operations. Lead operation: Generate an RSA signature. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - RSA Signatures
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-rsa-signatures
+    baseUri: https://rest.zuora.com
+    description: API Reference — RSA Signatures business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-rsa-signatures
+      path: /v1/rsa-signatures
+      operations:
+      - name: postrsasignatures
+        method: POST
+        description: Generate an RSA signature
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-rsa-signatures-decrypt
+      path: /v1/rsa-signatures/decrypt
+      operations:
+      - name: postdecryptrsasignatures
+        method: POST
+        description: Decrypt an RSA signature
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-rsa-signatures-rest
+    port: 8080
+    description: REST adapter for API Reference — RSA Signatures. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/rsa-signatures
+      name: v1-rsa-signatures
+      description: REST surface for v1-rsa-signatures.
+      operations:
+      - method: POST
+        name: postrsasignatures
+        description: Generate an RSA signature
+        call: v1-rsa-signatures.postrsasignatures
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/rsa-signatures/decrypt
+      name: v1-rsa-signatures-decrypt
+      description: REST surface for v1-rsa-signatures-decrypt.
+      operations:
+      - method: POST
+        name: postdecryptrsasignatures
+        description: Decrypt an RSA signature
+        call: v1-rsa-signatures.postdecryptrsasignatures
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-rsa-signatures-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — RSA Signatures. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: generate-rsa-signature
+      description: Generate an RSA signature
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-rsa-signatures.postrsasignatures
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: decrypt-rsa-signature
+      description: Decrypt an RSA signature
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-rsa-signatures.postdecryptrsasignatures
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.

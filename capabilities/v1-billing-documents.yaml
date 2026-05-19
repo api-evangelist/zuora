@@ -1,0 +1,234 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Billing Documents
+  description: 'API Reference — Billing Documents. 4 operations. Lead operation: Create a job to hard delete billing document
+    files. Self-contained Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Billing Documents
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-billing-documents
+    baseUri: https://rest.zuora.com
+    description: API Reference — Billing Documents business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-accounts-billing-documents-files-deletion-jobs
+      path: /v1/accounts/billing-documents/files/deletion-jobs
+      operations:
+      - name: postbillingdocumentfilesdeletionjob
+        method: POST
+        description: Create a job to hard delete billing document files
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-accounts-billing-documents-files-deletion-jobs-jobId
+      path: /v1/accounts/billing-documents/files/deletion-jobs/{jobId}
+      operations:
+      - name: getbillingdocumentfilesdeletionjob
+        method: GET
+        description: Retrieve a job of hard deleting billing document files
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: jobId
+          in: path
+          type: string
+          description: The unique ID of a billing document file deletion job. For example, 2c92c8f83dc4f752013dc72c24ee016c.
+          required: true
+    - name: v1-accounts-key-billing-documents-generate
+      path: /v1/accounts/{key}/billing-documents/generate
+      operations:
+      - name: postgeneratebillingdocuments
+        method: POST
+        description: Generate billing documents by account ID
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: key
+          in: path
+          type: string
+          description: The ID or number of the customer account that billing documents are generated for. For example, 8a8082e65b27f6c3015ba3e326b26419
+            or AC0000001.
+          required: true
+    - name: v1-billing-documents
+      path: /v1/billing-documents
+      operations:
+      - name: getbillingdocuments
+        method: GET
+        description: List billing documents for an account
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: accountId
+          in: query
+          type: string
+          description: The ID of the customer account that the billing documents are associated with.
+        - name: accountNumber
+          in: query
+          type: string
+          description: The number of the customer account that the billing documents are associated with.
+        - name: documentDate
+          in: query
+          type: string
+          description: The date of the billing document. It represents the invoice date for invoices, credit memo date for
+            credit memos, and debit memo date for debit memos.
+        - name: status
+          in: query
+          type: string
+          description: The status of the billing document.
+        - name: sort
+          in: query
+          type: string
+          description: This parameter restricts the order of the data returned in the response. You can use this parameter
+            to supply a dimension you want to sort on.
+  exposes:
+  - type: rest
+    namespace: v1-billing-documents-rest
+    port: 8080
+    description: REST adapter for API Reference — Billing Documents. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/accounts/billing-documents/files/deletion-jobs
+      name: v1-accounts-billing-documents-files-deletion-jobs
+      description: REST surface for v1-accounts-billing-documents-files-deletion-jobs.
+      operations:
+      - method: POST
+        name: postbillingdocumentfilesdeletionjob
+        description: Create a job to hard delete billing document files
+        call: v1-billing-documents.postbillingdocumentfilesdeletionjob
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounts/billing-documents/files/deletion-jobs/{jobid}
+      name: v1-accounts-billing-documents-files-deletion-jobs-jobid
+      description: REST surface for v1-accounts-billing-documents-files-deletion-jobs-jobId.
+      operations:
+      - method: GET
+        name: getbillingdocumentfilesdeletionjob
+        description: Retrieve a job of hard deleting billing document files
+        call: v1-billing-documents.getbillingdocumentfilesdeletionjob
+        with:
+          jobId: rest.jobId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounts/{key}/billing-documents/generate
+      name: v1-accounts-key-billing-documents-generate
+      description: REST surface for v1-accounts-key-billing-documents-generate.
+      operations:
+      - method: POST
+        name: postgeneratebillingdocuments
+        description: Generate billing documents by account ID
+        call: v1-billing-documents.postgeneratebillingdocuments
+        with:
+          body: rest.body
+          key: rest.key
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/billing-documents
+      name: v1-billing-documents
+      description: REST surface for v1-billing-documents.
+      operations:
+      - method: GET
+        name: getbillingdocuments
+        description: List billing documents for an account
+        call: v1-billing-documents.getbillingdocuments
+        with:
+          accountId: rest.accountId
+          accountNumber: rest.accountNumber
+          documentDate: rest.documentDate
+          status: rest.status
+          sort: rest.sort
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-billing-documents-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Billing Documents. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: create-job-hard-delete-billing
+      description: Create a job to hard delete billing document files
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-billing-documents.postbillingdocumentfilesdeletionjob
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-job-hard-deleting-billing
+      description: Retrieve a job of hard deleting billing document files
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-billing-documents.getbillingdocumentfilesdeletionjob
+      with:
+        jobId: tools.jobId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-billing-documents-account-id
+      description: Generate billing documents by account ID
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-billing-documents.postgeneratebillingdocuments
+      with:
+        body: tools.body
+        key: tools.key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-billing-documents-account
+      description: List billing documents for an account
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-billing-documents.getbillingdocuments
+      with:
+        accountId: tools.accountId
+        accountNumber: tools.accountNumber
+        documentDate: tools.documentDate
+        status: tools.status
+        sort: tools.sort
+      outputParameters:
+      - type: object
+        mapping: $.

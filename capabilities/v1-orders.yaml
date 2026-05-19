@@ -1,0 +1,911 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Orders
+  description: 'API Reference — Orders. 18 operations. Lead operation: Retrieve the status and response of a job. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Orders
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-orders
+    baseUri: https://rest.zuora.com
+    description: API Reference — Orders business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-async-jobs-jobId
+      path: /v1/async-jobs/{jobId}
+      operations:
+      - name: getjobstatusandresponse
+        method: GET
+        description: Retrieve the status and response of a job
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: jobId
+          in: path
+          type: string
+          description: UUID of the asynchronous job created by an asynchronous API operation.
+          required: true
+    - name: v1-async-orders
+      path: /v1/async/orders
+      operations:
+      - name: postcreateorderasynchronously
+        method: POST
+        description: Create an order asynchronously
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: returnIds
+          in: query
+          type: boolean
+          description: Specify whether to return IDs for the [Get job status and response](/v1-api-reference/api/orders/get_jobstatusandresponse)
+            operation. If you set this query para
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-async-orders-preview
+      path: /v1/async/orders/preview
+      operations:
+      - name: postprevieworderasynchronously
+        method: POST
+        description: Preview an order asynchronously
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-orders
+      path: /v1/orders
+      operations:
+      - name: postorder
+        method: POST
+        description: Create an order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: returnIds
+          in: query
+          type: boolean
+          description: Specify whether to return IDs associated with the numbers returned in the "Create an order" operation.
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: body
+          in: body
+          type: string
+          required: true
+      - name: getallorders
+        method: GET
+        description: List orders
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dateFilterOption
+          in: query
+          type: string
+          description: The date type to filter on. This field value can be orderDate or updatedDate. Default is orderDate.
+        - name: startDate
+          in: query
+          type: string
+          description: The result will only contain the orders with the date of dateFilterOption later than or equal to this
+            date.
+        - name: endDate
+          in: query
+          type: string
+          description: The result will only contains orders with the date of dateFilterOption earlier than or equal to this
+            date.
+        - name: status
+          in: query
+          type: string
+          description: The status of orders.
+    - name: v1-orders-invoiceOwner-accountNumber
+      path: /v1/orders/invoiceOwner/{accountNumber}
+      operations:
+      - name: getordersbyinvoiceowner
+        method: GET
+        description: List orders of an invoice owner
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: accountNumber
+          in: path
+          type: string
+          description: The invoice owner account number.
+          required: true
+        - name: dateFilterOption
+          in: query
+          type: string
+          description: The date type to filter on. This field value can be orderDate or updatedDate. Default is orderDate.
+        - name: startDate
+          in: query
+          type: string
+          description: The result will only contain the orders with the date of dateFilterOption later than or equal to this
+            date.
+        - name: endDate
+          in: query
+          type: string
+          description: The result will only contain the orders with the date of dateFilterOption earlier than or equal to
+            this date.
+        - name: status
+          in: query
+          type: string
+          description: The status of orders.
+    - name: v1-orders-preview
+      path: /v1/orders/preview
+      operations:
+      - name: postprevieworder
+        method: POST
+        description: Preview an order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-orders-subscription-subscription-key-pending
+      path: /v1/orders/subscription/{subscription-key}/pending
+      operations:
+      - name: getpendingordersbysubscriptionnumber
+        method: GET
+        description: List pending orders by subscription number
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscription-key
+          in: path
+          type: string
+          description: Subscription number. For example, A-S00000135.
+          required: true
+    - name: v1-orders-subscription-subscriptionNumber
+      path: /v1/orders/subscription/{subscriptionNumber}
+      operations:
+      - name: getordersbysubscriptionnumber
+        method: GET
+        description: List orders by subscription number
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscriptionNumber
+          in: path
+          type: string
+          description: The subscription number.
+          required: true
+        - name: dateFilterOption
+          in: query
+          type: string
+          description: The date type to filter on. This field value can be 'orderDate' or 'updatedDate'. Default is orderDate.
+        - name: startDate
+          in: query
+          type: string
+          description: The result will only contain the orders with the date of 'dateFilterOption' later than or equal to
+            this date.
+        - name: endDate
+          in: query
+          type: string
+          description: The result will only contain the orders with the date of 'dateFilterOption' earlier than or equal to
+            this date.
+        - name: status
+          in: query
+          type: string
+          description: The status of orders.
+    - name: v1-orders-subscriptionOwner-accountNumber
+      path: /v1/orders/subscriptionOwner/{accountNumber}
+      operations:
+      - name: getordersbysubscriptionowner
+        method: GET
+        description: List orders of a subscription owner
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: accountNumber
+          in: path
+          type: string
+          description: The subscription owner account number.
+          required: true
+        - name: dateFilterOption
+          in: query
+          type: string
+          description: The date type to filter on.
+        - name: startDate
+          in: query
+          type: string
+          description: The result will only contain the orders with the date of 'dateFilterOption' later than or equal to
+            this date.
+        - name: endDate
+          in: query
+          type: string
+          description: The result will only contain the orders with the date of 'dateFilterOption' earlier than or equal to
+            this date.
+    - name: v1-orders-orderNumber
+      path: /v1/orders/{orderNumber}
+      operations:
+      - name: getorder
+        method: GET
+        description: Retrieve an order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderNumber
+          in: path
+          type: string
+          description: The order number to be retrieved.
+          required: true
+      - name: deleteorder
+        method: DELETE
+        description: Delete an order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderNumber
+          in: path
+          type: string
+          description: The number of the order to be deleted.
+          required: true
+      - name: putorder
+        method: PUT
+        description: Update an order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderNumber
+          in: path
+          type: string
+          description: Order number of a order in which you are to update.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-orders-orderNumber-activate
+      path: /v1/orders/{orderNumber}/activate
+      operations:
+      - name: putorderactivate
+        method: PUT
+        description: Activate an order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderNumber
+          in: path
+          type: string
+          description: Order number of a order in which you are to activate.
+          required: true
+    - name: v1-orders-orderNumber-cancel
+      path: /v1/orders/{orderNumber}/cancel
+      operations:
+      - name: putordercancel
+        method: PUT
+        description: Cancel an order
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderNumber
+          in: path
+          type: string
+          description: The order number of the draft order you wish to cancel.
+          required: true
+        - name: body
+          in: body
+          type: object
+    - name: v1-orders-orderNumber-customFields
+      path: /v1/orders/{orderNumber}/customFields
+      operations:
+      - name: putupdateordercustomfields
+        method: PUT
+        description: Update order custom fields
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderNumber
+          in: path
+          type: string
+          description: The order number.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-orders-orderNumber-triggerDates
+      path: /v1/orders/{orderNumber}/triggerDates
+      operations:
+      - name: putordertriggerdates
+        method: PUT
+        description: Update order action trigger dates
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderNumber
+          in: path
+          type: string
+          description: Order number of a pending order in which you are to update an order action's triggering dates.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-subscriptions-subscriptionNumber-customFields
+      path: /v1/subscriptions/{subscriptionNumber}/customFields
+      operations:
+      - name: putupdatesubscriptioncustomfields
+        method: PUT
+        description: Update subscription custom fields
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscriptionNumber
+          in: path
+          type: string
+          description: The subscription number to be updated.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-orders-rest
+    port: 8080
+    description: REST adapter for API Reference — Orders. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/async-jobs/{jobid}
+      name: v1-async-jobs-jobid
+      description: REST surface for v1-async-jobs-jobId.
+      operations:
+      - method: GET
+        name: getjobstatusandresponse
+        description: Retrieve the status and response of a job
+        call: v1-orders.getjobstatusandresponse
+        with:
+          jobId: rest.jobId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/async/orders
+      name: v1-async-orders
+      description: REST surface for v1-async-orders.
+      operations:
+      - method: POST
+        name: postcreateorderasynchronously
+        description: Create an order asynchronously
+        call: v1-orders.postcreateorderasynchronously
+        with:
+          returnIds: rest.returnIds
+          zuora-version: rest.zuora-version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/async/orders/preview
+      name: v1-async-orders-preview
+      description: REST surface for v1-async-orders-preview.
+      operations:
+      - method: POST
+        name: postprevieworderasynchronously
+        description: Preview an order asynchronously
+        call: v1-orders.postprevieworderasynchronously
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders
+      name: v1-orders
+      description: REST surface for v1-orders.
+      operations:
+      - method: POST
+        name: postorder
+        description: Create an order
+        call: v1-orders.postorder
+        with:
+          returnIds: rest.returnIds
+          zuora-version: rest.zuora-version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getallorders
+        description: List orders
+        call: v1-orders.getallorders
+        with:
+          dateFilterOption: rest.dateFilterOption
+          startDate: rest.startDate
+          endDate: rest.endDate
+          status: rest.status
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/invoiceowner/{accountnumber}
+      name: v1-orders-invoiceowner-accountnumber
+      description: REST surface for v1-orders-invoiceOwner-accountNumber.
+      operations:
+      - method: GET
+        name: getordersbyinvoiceowner
+        description: List orders of an invoice owner
+        call: v1-orders.getordersbyinvoiceowner
+        with:
+          accountNumber: rest.accountNumber
+          dateFilterOption: rest.dateFilterOption
+          startDate: rest.startDate
+          endDate: rest.endDate
+          status: rest.status
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/preview
+      name: v1-orders-preview
+      description: REST surface for v1-orders-preview.
+      operations:
+      - method: POST
+        name: postprevieworder
+        description: Preview an order
+        call: v1-orders.postprevieworder
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/subscription/{subscription-key}/pending
+      name: v1-orders-subscription-subscription-key-pending
+      description: REST surface for v1-orders-subscription-subscription-key-pending.
+      operations:
+      - method: GET
+        name: getpendingordersbysubscriptionnumber
+        description: List pending orders by subscription number
+        call: v1-orders.getpendingordersbysubscriptionnumber
+        with:
+          subscription-key: rest.subscription-key
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/subscription/{subscriptionnumber}
+      name: v1-orders-subscription-subscriptionnumber
+      description: REST surface for v1-orders-subscription-subscriptionNumber.
+      operations:
+      - method: GET
+        name: getordersbysubscriptionnumber
+        description: List orders by subscription number
+        call: v1-orders.getordersbysubscriptionnumber
+        with:
+          subscriptionNumber: rest.subscriptionNumber
+          dateFilterOption: rest.dateFilterOption
+          startDate: rest.startDate
+          endDate: rest.endDate
+          status: rest.status
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/subscriptionowner/{accountnumber}
+      name: v1-orders-subscriptionowner-accountnumber
+      description: REST surface for v1-orders-subscriptionOwner-accountNumber.
+      operations:
+      - method: GET
+        name: getordersbysubscriptionowner
+        description: List orders of a subscription owner
+        call: v1-orders.getordersbysubscriptionowner
+        with:
+          accountNumber: rest.accountNumber
+          dateFilterOption: rest.dateFilterOption
+          startDate: rest.startDate
+          endDate: rest.endDate
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/{ordernumber}
+      name: v1-orders-ordernumber
+      description: REST surface for v1-orders-orderNumber.
+      operations:
+      - method: GET
+        name: getorder
+        description: Retrieve an order
+        call: v1-orders.getorder
+        with:
+          orderNumber: rest.orderNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteorder
+        description: Delete an order
+        call: v1-orders.deleteorder
+        with:
+          orderNumber: rest.orderNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putorder
+        description: Update an order
+        call: v1-orders.putorder
+        with:
+          orderNumber: rest.orderNumber
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/{ordernumber}/activate
+      name: v1-orders-ordernumber-activate
+      description: REST surface for v1-orders-orderNumber-activate.
+      operations:
+      - method: PUT
+        name: putorderactivate
+        description: Activate an order
+        call: v1-orders.putorderactivate
+        with:
+          orderNumber: rest.orderNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/{ordernumber}/cancel
+      name: v1-orders-ordernumber-cancel
+      description: REST surface for v1-orders-orderNumber-cancel.
+      operations:
+      - method: PUT
+        name: putordercancel
+        description: Cancel an order
+        call: v1-orders.putordercancel
+        with:
+          orderNumber: rest.orderNumber
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/{ordernumber}/customfields
+      name: v1-orders-ordernumber-customfields
+      description: REST surface for v1-orders-orderNumber-customFields.
+      operations:
+      - method: PUT
+        name: putupdateordercustomfields
+        description: Update order custom fields
+        call: v1-orders.putupdateordercustomfields
+        with:
+          orderNumber: rest.orderNumber
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/orders/{ordernumber}/triggerdates
+      name: v1-orders-ordernumber-triggerdates
+      description: REST surface for v1-orders-orderNumber-triggerDates.
+      operations:
+      - method: PUT
+        name: putordertriggerdates
+        description: Update order action trigger dates
+        call: v1-orders.putordertriggerdates
+        with:
+          orderNumber: rest.orderNumber
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscriptionnumber}/customfields
+      name: v1-subscriptions-subscriptionnumber-customfields
+      description: REST surface for v1-subscriptions-subscriptionNumber-customFields.
+      operations:
+      - method: PUT
+        name: putupdatesubscriptioncustomfields
+        description: Update subscription custom fields
+        call: v1-orders.putupdatesubscriptioncustomfields
+        with:
+          subscriptionNumber: rest.subscriptionNumber
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-orders-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Orders. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: retrieve-status-and-response-job
+      description: Retrieve the status and response of a job
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-orders.getjobstatusandresponse
+      with:
+        jobId: tools.jobId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-order-asynchronously
+      description: Create an order asynchronously
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-orders.postcreateorderasynchronously
+      with:
+        returnIds: tools.returnIds
+        zuora-version: tools.zuora-version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: preview-order-asynchronously
+      description: Preview an order asynchronously
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-orders.postprevieworderasynchronously
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-order
+      description: Create an order
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-orders.postorder
+      with:
+        returnIds: tools.returnIds
+        zuora-version: tools.zuora-version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-orders
+      description: List orders
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-orders.getallorders
+      with:
+        dateFilterOption: tools.dateFilterOption
+        startDate: tools.startDate
+        endDate: tools.endDate
+        status: tools.status
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-orders-invoice-owner
+      description: List orders of an invoice owner
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-orders.getordersbyinvoiceowner
+      with:
+        accountNumber: tools.accountNumber
+        dateFilterOption: tools.dateFilterOption
+        startDate: tools.startDate
+        endDate: tools.endDate
+        status: tools.status
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: preview-order
+      description: Preview an order
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-orders.postprevieworder
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-pending-orders-subscription-number
+      description: List pending orders by subscription number
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-orders.getpendingordersbysubscriptionnumber
+      with:
+        subscription-key: tools.subscription-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-orders-subscription-number
+      description: List orders by subscription number
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-orders.getordersbysubscriptionnumber
+      with:
+        subscriptionNumber: tools.subscriptionNumber
+        dateFilterOption: tools.dateFilterOption
+        startDate: tools.startDate
+        endDate: tools.endDate
+        status: tools.status
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-orders-subscription-owner
+      description: List orders of a subscription owner
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-orders.getordersbysubscriptionowner
+      with:
+        accountNumber: tools.accountNumber
+        dateFilterOption: tools.dateFilterOption
+        startDate: tools.startDate
+        endDate: tools.endDate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-order
+      description: Retrieve an order
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-orders.getorder
+      with:
+        orderNumber: tools.orderNumber
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-order
+      description: Delete an order
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-orders.deleteorder
+      with:
+        orderNumber: tools.orderNumber
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-order
+      description: Update an order
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-orders.putorder
+      with:
+        orderNumber: tools.orderNumber
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: activate-order
+      description: Activate an order
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-orders.putorderactivate
+      with:
+        orderNumber: tools.orderNumber
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-order
+      description: Cancel an order
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-orders.putordercancel
+      with:
+        orderNumber: tools.orderNumber
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-order-custom-fields
+      description: Update order custom fields
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-orders.putupdateordercustomfields
+      with:
+        orderNumber: tools.orderNumber
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-order-action-trigger-dates
+      description: Update order action trigger dates
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-orders.putordertriggerdates
+      with:
+        orderNumber: tools.orderNumber
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-subscription-custom-fields
+      description: Update subscription custom fields
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-orders.putupdatesubscriptioncustomfields
+      with:
+        subscriptionNumber: tools.subscriptionNumber
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

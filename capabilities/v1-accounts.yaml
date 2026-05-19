@@ -1,0 +1,346 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Accounts
+  description: 'API Reference — Accounts. 7 operations. Lead operation: Create an account. Self-contained Naftiko capability
+    covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Accounts
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-accounts
+    baseUri: https://rest.zuora.com
+    description: API Reference — Accounts business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-accounts
+      path: /v1/accounts
+      operations:
+      - name: postaccount
+        method: POST
+        description: Create an account
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-accounts-account-key
+      path: /v1/accounts/{account-key}
+      operations:
+      - name: getaccount
+        method: GET
+        description: Retrieve an account
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: account-key
+          in: path
+          type: string
+          description: Account number or account ID.
+          required: true
+      - name: putaccount
+        method: PUT
+        description: Update an account
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: account-key
+          in: path
+          type: string
+          description: Account number or account ID.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: deleteaccount
+        method: DELETE
+        description: Delete an account
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: account-key
+          in: path
+          type: string
+          description: Account number or account ID.
+          required: true
+    - name: v1-accounts-account-key-payment-methods
+      path: /v1/accounts/{account-key}/payment-methods
+      operations:
+      - name: getacountpaymentmethods
+        method: GET
+        description: List payment methods of an account
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: account-key
+          in: path
+          type: string
+          description: Account number or account ID.
+          required: true
+        - name: isDefaultOnly
+          in: query
+          type: boolean
+          description: Indicates whether to only retrieve the default payment method of the account. The default value is
+            `false`. If this parameter is set to `true`, only the default
+        - name: isActiveOnly
+          in: query
+          type: boolean
+          description: 'Indicates whether to only retrieve the active payment methods of the account. The default value is
+            `false`. If this parameter is set to `true`, only the active '
+    - name: v1-accounts-account-key-payment-methods-default
+      path: /v1/accounts/{account-key}/payment-methods/default
+      operations:
+      - name: getacountdefaultpaymentmethod
+        method: GET
+        description: Retrieve the default payment method of an account
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: account-key
+          in: path
+          type: string
+          description: Account number or account ID.
+          required: true
+    - name: v1-accounts-account-key-summary
+      path: /v1/accounts/{account-key}/summary
+      operations:
+      - name: getaccountsummary
+        method: GET
+        description: Retrieve an account summary
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: account-key
+          in: path
+          type: string
+          description: Account number or account ID.
+          required: true
+        - name: excludeUsage
+          in: query
+          type: boolean
+          description: Indicate whether to exclude usage information in the response. The default value is `false`.
+  exposes:
+  - type: rest
+    namespace: v1-accounts-rest
+    port: 8080
+    description: REST adapter for API Reference — Accounts. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/accounts
+      name: v1-accounts
+      description: REST surface for v1-accounts.
+      operations:
+      - method: POST
+        name: postaccount
+        description: Create an account
+        call: v1-accounts.postaccount
+        with:
+          zuora-version: rest.zuora-version
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounts/{account-key}
+      name: v1-accounts-account-key
+      description: REST surface for v1-accounts-account-key.
+      operations:
+      - method: GET
+        name: getaccount
+        description: Retrieve an account
+        call: v1-accounts.getaccount
+        with:
+          account-key: rest.account-key
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putaccount
+        description: Update an account
+        call: v1-accounts.putaccount
+        with:
+          account-key: rest.account-key
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteaccount
+        description: Delete an account
+        call: v1-accounts.deleteaccount
+        with:
+          account-key: rest.account-key
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounts/{account-key}/payment-methods
+      name: v1-accounts-account-key-payment-methods
+      description: REST surface for v1-accounts-account-key-payment-methods.
+      operations:
+      - method: GET
+        name: getacountpaymentmethods
+        description: List payment methods of an account
+        call: v1-accounts.getacountpaymentmethods
+        with:
+          account-key: rest.account-key
+          isDefaultOnly: rest.isDefaultOnly
+          isActiveOnly: rest.isActiveOnly
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounts/{account-key}/payment-methods/default
+      name: v1-accounts-account-key-payment-methods-default
+      description: REST surface for v1-accounts-account-key-payment-methods-default.
+      operations:
+      - method: GET
+        name: getacountdefaultpaymentmethod
+        description: Retrieve the default payment method of an account
+        call: v1-accounts.getacountdefaultpaymentmethod
+        with:
+          account-key: rest.account-key
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounts/{account-key}/summary
+      name: v1-accounts-account-key-summary
+      description: REST surface for v1-accounts-account-key-summary.
+      operations:
+      - method: GET
+        name: getaccountsummary
+        description: Retrieve an account summary
+        call: v1-accounts.getaccountsummary
+        with:
+          account-key: rest.account-key
+          excludeUsage: rest.excludeUsage
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-accounts-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Accounts. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create-account
+      description: Create an account
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-accounts.postaccount
+      with:
+        zuora-version: tools.zuora-version
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-account
+      description: Retrieve an account
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-accounts.getaccount
+      with:
+        account-key: tools.account-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-account
+      description: Update an account
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-accounts.putaccount
+      with:
+        account-key: tools.account-key
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-account
+      description: Delete an account
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-accounts.deleteaccount
+      with:
+        account-key: tools.account-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-payment-methods-account
+      description: List payment methods of an account
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-accounts.getacountpaymentmethods
+      with:
+        account-key: tools.account-key
+        isDefaultOnly: tools.isDefaultOnly
+        isActiveOnly: tools.isActiveOnly
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-default-payment-method-account
+      description: Retrieve the default payment method of an account
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-accounts.getacountdefaultpaymentmethod
+      with:
+        account-key: tools.account-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-account-summary
+      description: Retrieve an account summary
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-accounts.getaccountsummary
+      with:
+        account-key: tools.account-key
+        excludeUsage: tools.excludeUsage
+      outputParameters:
+      - type: object
+        mapping: $.

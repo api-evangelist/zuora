@@ -1,0 +1,1210 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Debit Memos
+  description: 'API Reference — Debit Memos. 22 operations. Lead operation: Create a debit memo from a charge. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Debit Memos
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-debit-memos
+    baseUri: https://rest.zuora.com
+    description: API Reference — Debit Memos business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-debitmemos
+      path: /v1/debitmemos
+      operations:
+      - name: postdebitmemofromprpc
+        method: POST
+        description: Create a debit memo from a charge
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: body
+          in: body
+          type: string
+          required: true
+      - name: putupdatedebitmemosduedates
+        method: PUT
+        description: Update due dates for debit memos
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+      - name: getdebitmemos
+        method: GET
+        description: List debit memos
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: accountId
+          in: query
+          type: string
+          description: This parameter filters the response based on the `accountId` field.
+        - name: accountNumber
+          in: query
+          type: string
+          description: This parameter filters the response based on the `accountNumber` field.
+        - name: amount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `amount` field.
+        - name: balance
+          in: query
+          type: number
+          description: This parameter filters the response based on the `balance` field.
+        - name: beAppliedAmount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `beAppliedAmount` field.
+        - name: createdById
+          in: query
+          type: string
+          description: This parameter filters the response based on the `createdById` field.
+        - name: createdDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `createdDate` field.
+        - name: currency
+          in: query
+          type: string
+          description: This parameter filters the response based on the `currency` field.
+        - name: debitMemoDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `debitMemoDate` field.
+        - name: dueDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `dueDate` field.
+        - name: number
+          in: query
+          type: string
+          description: This parameter filters the response based on the `number` field.
+        - name: referredInvoiceId
+          in: query
+          type: string
+          description: This parameter filters the response based on the `referredInvoiceId` field.
+        - name: status
+          in: query
+          type: string
+          description: This parameter filters the response based on the `status` field.
+        - name: targetDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `targetDate` field.
+        - name: taxAmount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `taxAmount` field.
+        - name: totalTaxExemptAmount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `totalTaxExemptAmount` field.
+        - name: updatedById
+          in: query
+          type: string
+          description: This parameter filters the response based on the `updatedById` field.
+        - name: updatedDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `updatedDate` field.
+        - name: sort
+          in: query
+          type: string
+          description: This parameter restricts the order of the data returned in the response. You can use this parameter
+            to supply a dimension you want to sort on.
+    - name: v1-debitmemos-bulk
+      path: /v1/debitmemos/bulk
+      operations:
+      - name: postcreatedebitmemos
+        method: POST
+        description: Create debit memos
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: body
+          in: body
+          type: string
+          required: true
+      - name: putupdatedebitmemos
+        method: PUT
+        description: Update debit memos
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-debitmemos-debitMemoId-application-parts
+      path: /v1/debitmemos/{debitMemoId}/application-parts
+      operations:
+      - name: getdebitmemoapplicationparts
+        method: GET
+        description: List all application parts of a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoId
+          in: path
+          type: string
+          description: The unique ID of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e.
+          required: true
+    - name: v1-debitmemos-debitMemoId-items-dmitemid-taxation-items
+      path: /v1/debitmemos/{debitMemoId}/items/{dmitemid}/taxation-items
+      operations:
+      - name: gettaxationitemsofdebitmemoitem
+        method: GET
+        description: List all taxation items of a debit memo item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dmitemid
+          in: path
+          type: string
+          description: The unique ID of a debit memo item. You can get the debit memo item ID from the response of [List debit
+            memo items](/api-references/api/operation/GET_DebitMemoI
+          required: true
+        - name: debitMemoId
+          in: path
+          type: string
+          description: The unique ID of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e.
+          required: true
+    - name: v1-debitmemos-debitMemoKey
+      path: /v1/debitmemos/{debitMemoKey}
+      operations:
+      - name: getdebitmemo
+        method: GET
+        description: Retrieve a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000001.
+          required: true
+      - name: putdebitmemo
+        method: PUT
+        description: Update a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000001.
+          required: true
+      - name: deletedebitmemo
+        method: DELETE
+        description: Delete a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000003.
+          required: true
+    - name: v1-debitmemos-debitMemoKey-cancel
+      path: /v1/debitmemos/{debitMemoKey}/cancel
+      operations:
+      - name: putcanceldebitmemo
+        method: PUT
+        description: Cancel a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000003.
+          required: true
+    - name: v1-debitmemos-debitMemoKey-collect
+      path: /v1/debitmemos/{debitMemoKey}/collect
+      operations:
+      - name: postdebitmemocollect
+        method: POST
+        description: Collect a posted debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The ID or number of a posted debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e.
+          required: true
+    - name: v1-debitmemos-debitMemoKey-einvoice-generate
+      path: /v1/debitmemos/{debitMemoKey}/einvoice/generate
+      operations:
+      - name: putgenerateeinvoicefilefordebitmemo
+        method: PUT
+        description: Generate an e-invoice file for a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The ID or number of the debit memo. For example, 2c92c8955bd63cc1015bd7c151af02ab or DM-0000001.
+          required: true
+    - name: v1-debitmemos-debitMemoKey-emails
+      path: /v1/debitmemos/{debitMemoKey}/emails
+      operations:
+      - name: postemaildebitmemo
+        method: POST
+        description: Email a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The ID or number of a posted debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000001.
+          required: true
+    - name: v1-debitmemos-debitMemoKey-files
+      path: /v1/debitmemos/{debitMemoKey}/files
+      operations:
+      - name: postuploadfilefordebitmemo
+        method: POST
+        description: Upload a file for a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The ID or number of the debit memo that you want to upload a PDF file for. For example, 402890555a87d7f5015a8919e4fe002e
+            or DM00000001.
+          required: true
+        - name: file
+          in: formData
+          type: file
+          description: The PDF file to upload for the debit memo.
+    - name: v1-debitmemos-debitMemoKey-items
+      path: /v1/debitmemos/{debitMemoKey}/items
+      operations:
+      - name: getdebitmemoitems
+        method: GET
+        description: List debit memo items
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000001.
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: amount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `amount` field.
+        - name: beAppliedAmount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `beAppliedAmount` field.
+        - name: createdById
+          in: query
+          type: string
+          description: This parameter filters the response based on the `createdById` field.
+        - name: createdDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `createdDate` field.
+        - name: id
+          in: query
+          type: string
+          description: This parameter filters the response based on the `id` field.
+        - name: serviceEndDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `serviceEndDate` field.
+        - name: serviceStartDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `serviceStartDate` field.
+        - name: sku
+          in: query
+          type: string
+          description: This parameter filters the response based on the `sku` field.
+        - name: skuName
+          in: query
+          type: string
+          description: This parameter filters the response based on the `skuName` field.
+        - name: sourceItemId
+          in: query
+          type: string
+          description: This parameter filters the response based on the `sourceItemId` field.
+        - name: subscriptionId
+          in: query
+          type: string
+          description: This parameter filters the response based on the `subscriptionId` field.
+        - name: updatedById
+          in: query
+          type: string
+          description: This parameter filters the response based on the `updatedById` field.
+        - name: updatedDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `updatedDate` field.
+        - name: sort
+          in: query
+          type: string
+          description: This parameter restricts the order of the data returned in the response. You can use this parameter
+            to supply a dimension you want to sort on.
+    - name: v1-debitmemos-debitMemoKey-items-dmitemid
+      path: /v1/debitmemos/{debitMemoKey}/items/{dmitemid}
+      operations:
+      - name: getdebitmemoitem
+        method: GET
+        description: Retrieve a debit memo item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dmitemid
+          in: path
+          type: string
+          description: The unique ID of a debit memo item. You can get the debit memo item ID from the response of [List debit
+            memo items](/api-references/api/operation/GET_DebitMemoI
+          required: true
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000001.
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+    - name: v1-debitmemos-debitMemoKey-pdfs
+      path: /v1/debitmemos/{debitMemoKey}/pdfs
+      operations:
+      - name: postdebitmemopdf
+        method: POST
+        description: Generate a debit memo PDF file
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of the debit memo that you want to create a PDF file for. For example, 8a8082e65b27f6c3015ba419f3c2644e
+            or DM00000001.
+          required: true
+    - name: v1-debitmemos-debitMemoKey-post
+      path: /v1/debitmemos/{debitMemoKey}/post
+      operations:
+      - name: putpostdebitmemo
+        method: PUT
+        description: Post a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000001.
+          required: true
+    - name: v1-debitmemos-debitMemoKey-taxationitems
+      path: /v1/debitmemos/{debitMemoKey}/taxationitems
+      operations:
+      - name: postdmtaxationitems
+        method: POST
+        description: Create taxation items for a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000001.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-debitmemos-debitMemoKey-unpost
+      path: /v1/debitmemos/{debitMemoKey}/unpost
+      operations:
+      - name: putunpostdebitmemo
+        method: PUT
+        description: Unpost a debit memo
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: debitMemoKey
+          in: path
+          type: string
+          description: The unique ID or number of a debit memo. For example, 8a8082e65b27f6c3015ba419f3c2644e or DM00000001.
+          required: true
+    - name: v1-invoices-invoiceKey-debitmemos
+      path: /v1/invoices/{invoiceKey}/debitmemos
+      operations:
+      - name: postdebitmemofrominvoice
+        method: POST
+        description: Create a debit memo from an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of an invoice that you want to create a debit memo from. For example, 2c93808457d787030157e030d10f3f64
+            or INV00000001.
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: body
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-debit-memos-rest
+    port: 8080
+    description: REST adapter for API Reference — Debit Memos. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/debitmemos
+      name: v1-debitmemos
+      description: REST surface for v1-debitmemos.
+      operations:
+      - method: POST
+        name: postdebitmemofromprpc
+        description: Create a debit memo from a charge
+        call: v1-debit-memos.postdebitmemofromprpc
+        with:
+          zuora-version: rest.zuora-version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putupdatedebitmemosduedates
+        description: Update due dates for debit memos
+        call: v1-debit-memos.putupdatedebitmemosduedates
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getdebitmemos
+        description: List debit memos
+        call: v1-debit-memos.getdebitmemos
+        with:
+          accountId: rest.accountId
+          accountNumber: rest.accountNumber
+          amount: rest.amount
+          balance: rest.balance
+          beAppliedAmount: rest.beAppliedAmount
+          createdById: rest.createdById
+          createdDate: rest.createdDate
+          currency: rest.currency
+          debitMemoDate: rest.debitMemoDate
+          dueDate: rest.dueDate
+          number: rest.number
+          referredInvoiceId: rest.referredInvoiceId
+          status: rest.status
+          targetDate: rest.targetDate
+          taxAmount: rest.taxAmount
+          totalTaxExemptAmount: rest.totalTaxExemptAmount
+          updatedById: rest.updatedById
+          updatedDate: rest.updatedDate
+          sort: rest.sort
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/bulk
+      name: v1-debitmemos-bulk
+      description: REST surface for v1-debitmemos-bulk.
+      operations:
+      - method: POST
+        name: postcreatedebitmemos
+        description: Create debit memos
+        call: v1-debit-memos.postcreatedebitmemos
+        with:
+          zuora-version: rest.zuora-version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putupdatedebitmemos
+        description: Update debit memos
+        call: v1-debit-memos.putupdatedebitmemos
+        with:
+          zuora-version: rest.zuora-version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemoid}/application-parts
+      name: v1-debitmemos-debitmemoid-application-parts
+      description: REST surface for v1-debitmemos-debitMemoId-application-parts.
+      operations:
+      - method: GET
+        name: getdebitmemoapplicationparts
+        description: List all application parts of a debit memo
+        call: v1-debit-memos.getdebitmemoapplicationparts
+        with:
+          debitMemoId: rest.debitMemoId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemoid}/items/{dmitemid}/taxation-items
+      name: v1-debitmemos-debitmemoid-items-dmitemid-taxation-items
+      description: REST surface for v1-debitmemos-debitMemoId-items-dmitemid-taxation-items.
+      operations:
+      - method: GET
+        name: gettaxationitemsofdebitmemoitem
+        description: List all taxation items of a debit memo item
+        call: v1-debit-memos.gettaxationitemsofdebitmemoitem
+        with:
+          dmitemid: rest.dmitemid
+          debitMemoId: rest.debitMemoId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}
+      name: v1-debitmemos-debitmemokey
+      description: REST surface for v1-debitmemos-debitMemoKey.
+      operations:
+      - method: GET
+        name: getdebitmemo
+        description: Retrieve a debit memo
+        call: v1-debit-memos.getdebitmemo
+        with:
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putdebitmemo
+        description: Update a debit memo
+        call: v1-debit-memos.putdebitmemo
+        with:
+          body: rest.body
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletedebitmemo
+        description: Delete a debit memo
+        call: v1-debit-memos.deletedebitmemo
+        with:
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/cancel
+      name: v1-debitmemos-debitmemokey-cancel
+      description: REST surface for v1-debitmemos-debitMemoKey-cancel.
+      operations:
+      - method: PUT
+        name: putcanceldebitmemo
+        description: Cancel a debit memo
+        call: v1-debit-memos.putcanceldebitmemo
+        with:
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/collect
+      name: v1-debitmemos-debitmemokey-collect
+      description: REST surface for v1-debitmemos-debitMemoKey-collect.
+      operations:
+      - method: POST
+        name: postdebitmemocollect
+        description: Collect a posted debit memo
+        call: v1-debit-memos.postdebitmemocollect
+        with:
+          body: rest.body
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/einvoice/generate
+      name: v1-debitmemos-debitmemokey-einvoice-generate
+      description: REST surface for v1-debitmemos-debitMemoKey-einvoice-generate.
+      operations:
+      - method: PUT
+        name: putgenerateeinvoicefilefordebitmemo
+        description: Generate an e-invoice file for a debit memo
+        call: v1-debit-memos.putgenerateeinvoicefilefordebitmemo
+        with:
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/emails
+      name: v1-debitmemos-debitmemokey-emails
+      description: REST surface for v1-debitmemos-debitMemoKey-emails.
+      operations:
+      - method: POST
+        name: postemaildebitmemo
+        description: Email a debit memo
+        call: v1-debit-memos.postemaildebitmemo
+        with:
+          Request: rest.Request
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/files
+      name: v1-debitmemos-debitmemokey-files
+      description: REST surface for v1-debitmemos-debitMemoKey-files.
+      operations:
+      - method: POST
+        name: postuploadfilefordebitmemo
+        description: Upload a file for a debit memo
+        call: v1-debit-memos.postuploadfilefordebitmemo
+        with:
+          debitMemoKey: rest.debitMemoKey
+          file: rest.file
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/items
+      name: v1-debitmemos-debitmemokey-items
+      description: REST surface for v1-debitmemos-debitMemoKey-items.
+      operations:
+      - method: GET
+        name: getdebitmemoitems
+        description: List debit memo items
+        call: v1-debit-memos.getdebitmemoitems
+        with:
+          debitMemoKey: rest.debitMemoKey
+          zuora-version: rest.zuora-version
+          amount: rest.amount
+          beAppliedAmount: rest.beAppliedAmount
+          createdById: rest.createdById
+          createdDate: rest.createdDate
+          id: rest.id
+          serviceEndDate: rest.serviceEndDate
+          serviceStartDate: rest.serviceStartDate
+          sku: rest.sku
+          skuName: rest.skuName
+          sourceItemId: rest.sourceItemId
+          subscriptionId: rest.subscriptionId
+          updatedById: rest.updatedById
+          updatedDate: rest.updatedDate
+          sort: rest.sort
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/items/{dmitemid}
+      name: v1-debitmemos-debitmemokey-items-dmitemid
+      description: REST surface for v1-debitmemos-debitMemoKey-items-dmitemid.
+      operations:
+      - method: GET
+        name: getdebitmemoitem
+        description: Retrieve a debit memo item
+        call: v1-debit-memos.getdebitmemoitem
+        with:
+          dmitemid: rest.dmitemid
+          debitMemoKey: rest.debitMemoKey
+          zuora-version: rest.zuora-version
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/pdfs
+      name: v1-debitmemos-debitmemokey-pdfs
+      description: REST surface for v1-debitmemos-debitMemoKey-pdfs.
+      operations:
+      - method: POST
+        name: postdebitmemopdf
+        description: Generate a debit memo PDF file
+        call: v1-debit-memos.postdebitmemopdf
+        with:
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/post
+      name: v1-debitmemos-debitmemokey-post
+      description: REST surface for v1-debitmemos-debitMemoKey-post.
+      operations:
+      - method: PUT
+        name: putpostdebitmemo
+        description: Post a debit memo
+        call: v1-debit-memos.putpostdebitmemo
+        with:
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/taxationitems
+      name: v1-debitmemos-debitmemokey-taxationitems
+      description: REST surface for v1-debitmemos-debitMemoKey-taxationitems.
+      operations:
+      - method: POST
+        name: postdmtaxationitems
+        description: Create taxation items for a debit memo
+        call: v1-debit-memos.postdmtaxationitems
+        with:
+          debitMemoKey: rest.debitMemoKey
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/debitmemos/{debitmemokey}/unpost
+      name: v1-debitmemos-debitmemokey-unpost
+      description: REST surface for v1-debitmemos-debitMemoKey-unpost.
+      operations:
+      - method: PUT
+        name: putunpostdebitmemo
+        description: Unpost a debit memo
+        call: v1-debit-memos.putunpostdebitmemo
+        with:
+          debitMemoKey: rest.debitMemoKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/debitmemos
+      name: v1-invoices-invoicekey-debitmemos
+      description: REST surface for v1-invoices-invoiceKey-debitmemos.
+      operations:
+      - method: POST
+        name: postdebitmemofrominvoice
+        description: Create a debit memo from an invoice
+        call: v1-debit-memos.postdebitmemofrominvoice
+        with:
+          invoiceKey: rest.invoiceKey
+          zuora-version: rest.zuora-version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-debit-memos-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Debit Memos. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: create-debit-memo-charge
+      description: Create a debit memo from a charge
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-debit-memos.postdebitmemofromprpc
+      with:
+        zuora-version: tools.zuora-version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-due-dates-debit-memos
+      description: Update due dates for debit memos
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.putupdatedebitmemosduedates
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-debit-memos
+      description: List debit memos
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.getdebitmemos
+      with:
+        accountId: tools.accountId
+        accountNumber: tools.accountNumber
+        amount: tools.amount
+        balance: tools.balance
+        beAppliedAmount: tools.beAppliedAmount
+        createdById: tools.createdById
+        createdDate: tools.createdDate
+        currency: tools.currency
+        debitMemoDate: tools.debitMemoDate
+        dueDate: tools.dueDate
+        number: tools.number
+        referredInvoiceId: tools.referredInvoiceId
+        status: tools.status
+        targetDate: tools.targetDate
+        taxAmount: tools.taxAmount
+        totalTaxExemptAmount: tools.totalTaxExemptAmount
+        updatedById: tools.updatedById
+        updatedDate: tools.updatedDate
+        sort: tools.sort
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-debit-memos
+      description: Create debit memos
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-debit-memos.postcreatedebitmemos
+      with:
+        zuora-version: tools.zuora-version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-debit-memos
+      description: Update debit memos
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.putupdatedebitmemos
+      with:
+        zuora-version: tools.zuora-version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-application-parts-debit
+      description: List all application parts of a debit memo
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.getdebitmemoapplicationparts
+      with:
+        debitMemoId: tools.debitMemoId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-taxation-items-debit
+      description: List all taxation items of a debit memo item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.gettaxationitemsofdebitmemoitem
+      with:
+        dmitemid: tools.dmitemid
+        debitMemoId: tools.debitMemoId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-debit-memo
+      description: Retrieve a debit memo
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.getdebitmemo
+      with:
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-debit-memo
+      description: Update a debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.putdebitmemo
+      with:
+        body: tools.body
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-debit-memo
+      description: Delete a debit memo
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-debit-memos.deletedebitmemo
+      with:
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-debit-memo
+      description: Cancel a debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.putcanceldebitmemo
+      with:
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: collect-posted-debit-memo
+      description: Collect a posted debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-debit-memos.postdebitmemocollect
+      with:
+        body: tools.body
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-e-invoice-file-debit
+      description: Generate an e-invoice file for a debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.putgenerateeinvoicefilefordebitmemo
+      with:
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: email-debit-memo
+      description: Email a debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-debit-memos.postemaildebitmemo
+      with:
+        Request: tools.Request
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: upload-file-debit-memo
+      description: Upload a file for a debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-debit-memos.postuploadfilefordebitmemo
+      with:
+        debitMemoKey: tools.debitMemoKey
+        file: tools.file
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-debit-memo-items
+      description: List debit memo items
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.getdebitmemoitems
+      with:
+        debitMemoKey: tools.debitMemoKey
+        zuora-version: tools.zuora-version
+        amount: tools.amount
+        beAppliedAmount: tools.beAppliedAmount
+        createdById: tools.createdById
+        createdDate: tools.createdDate
+        id: tools.id
+        serviceEndDate: tools.serviceEndDate
+        serviceStartDate: tools.serviceStartDate
+        sku: tools.sku
+        skuName: tools.skuName
+        sourceItemId: tools.sourceItemId
+        subscriptionId: tools.subscriptionId
+        updatedById: tools.updatedById
+        updatedDate: tools.updatedDate
+        sort: tools.sort
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-debit-memo-item
+      description: Retrieve a debit memo item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.getdebitmemoitem
+      with:
+        dmitemid: tools.dmitemid
+        debitMemoKey: tools.debitMemoKey
+        zuora-version: tools.zuora-version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-debit-memo-pdf-file
+      description: Generate a debit memo PDF file
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-debit-memos.postdebitmemopdf
+      with:
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: post-debit-memo
+      description: Post a debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.putpostdebitmemo
+      with:
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-taxation-items-debit-memo
+      description: Create taxation items for a debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-debit-memos.postdmtaxationitems
+      with:
+        debitMemoKey: tools.debitMemoKey
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: unpost-debit-memo
+      description: Unpost a debit memo
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-debit-memos.putunpostdebitmemo
+      with:
+        debitMemoKey: tools.debitMemoKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-debit-memo-invoice
+      description: Create a debit memo from an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-debit-memos.postdebitmemofrominvoice
+      with:
+        invoiceKey: tools.invoiceKey
+        zuora-version: tools.zuora-version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

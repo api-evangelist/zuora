@@ -1,0 +1,663 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Subscriptions
+  description: 'API Reference — Subscriptions. 12 operations. Lead operation: Create a subscription. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Subscriptions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-subscriptions
+    baseUri: https://rest.zuora.com
+    description: API Reference — Subscriptions business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-subscriptions
+      path: /v1/subscriptions
+      operations:
+      - name: postsubscription
+        method: POST
+        description: Create a subscription
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-subscriptions-accounts-account-key
+      path: /v1/subscriptions/accounts/{account-key}
+      operations:
+      - name: getsubscriptionsbyaccount
+        method: GET
+        description: List subscriptions by account key
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: account-key
+          in: path
+          type: string
+          description: 'Possible values are:'
+          required: true
+        - name: charge-detail
+          in: query
+          type: string
+          description: The segmented rate plan charges.
+        - name: exclude-rate-plans-with-no-charges
+          in: query
+          type: boolean
+          description: If the `exclude-rate-plans-with-no-charges` is `true`, only the active charges and rate plans will
+            be in the response. The default value is `false`.
+    - name: v1-subscriptions-preview
+      path: /v1/subscriptions/preview
+      operations:
+      - name: postpreviewsubscription
+        method: POST
+        description: Preview a subscription
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-subscriptions-subscription-key
+      path: /v1/subscriptions/{subscription-key}
+      operations:
+      - name: putsubscription
+        method: PUT
+        description: Update a subscription
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: subscription-key
+          in: path
+          type: string
+          description: 'Subscription number or ID. '
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: getsubscriptionsbykey
+        method: GET
+        description: Retrieve a subscription by key
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscription-key
+          in: path
+          type: string
+          description: 'Possible values are:'
+          required: true
+        - name: charge-detail
+          in: query
+          type: string
+          description: 'The segmented rate plan charges. When an amendment results in a change to a charge, Zuora creates
+            a segmented rate plan charge. Use this field to track segment '
+        - name: exclude-rate-plans-with-no-charges
+          in: query
+          type: boolean
+          description: If the `exclude-rate-plans-with-no-charges` is `true`, only the active charges and rate plans will
+            be in the response. The default value is `false`.
+    - name: v1-subscriptions-subscription-key-cancel
+      path: /v1/subscriptions/{subscription-key}/cancel
+      operations:
+      - name: putcancelsubscription
+        method: PUT
+        description: Cancel a subscription
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: subscription-key
+          in: path
+          type: string
+          description: Subscription number or ID. Subscription status must be `Active`.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-subscriptions-subscription-key-delete
+      path: /v1/subscriptions/{subscription-key}/delete
+      operations:
+      - name: putdeletesubscription
+        method: PUT
+        description: Delete a subscription by number
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscription-key
+          in: path
+          type: string
+          description: Subscription number
+          required: true
+    - name: v1-subscriptions-subscription-key-renew
+      path: /v1/subscriptions/{subscription-key}/renew
+      operations:
+      - name: putrenewsubscription
+        method: PUT
+        description: Renew a subscription
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: subscription-key
+          in: path
+          type: string
+          description: Subscription number or ID
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-subscriptions-subscription-key-resume
+      path: /v1/subscriptions/{subscription-key}/resume
+      operations:
+      - name: putresumesubscription
+        method: PUT
+        description: Resume a subscription
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: subscription-key
+          in: path
+          type: string
+          description: Subscription number or ID. Subscription status must be Suspended.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-subscriptions-subscription-key-suspend
+      path: /v1/subscriptions/{subscription-key}/suspend
+      operations:
+      - name: putsuspendsubscription
+        method: PUT
+        description: Suspend a subscription
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: 'The minor version of the Zuora REST API. '
+        - name: subscription-key
+          in: path
+          type: string
+          description: Subscription number or ID. Subscription status must be Active.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-subscriptions-subscription-key-versions-version
+      path: /v1/subscriptions/{subscription-key}/versions/{version}
+      operations:
+      - name: getsubscriptionsbykeyandversion
+        method: GET
+        description: Retrieve a subscription by key and version
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscription-key
+          in: path
+          type: string
+          description: Subscription number. For example, A-S00000135.
+          required: true
+        - name: version
+          in: path
+          type: string
+          description: Subscription version. For example, 1.
+          required: true
+        - name: charge-detail
+          in: query
+          type: string
+          description: 'The segmented rate plan charges. When an amendment results in a change to a charge, Zuora creates
+            a segmented rate plan charge. Use this field to track segment '
+        - name: exclude-rate-plans-with-no-charges
+          in: query
+          type: boolean
+          description: If the `exclude-rate-plans-with-no-charges` is `true`, only the active charges and rate plans will
+            be in the response. The default value is `false`.
+    - name: v1-subscriptions-subscriptionNumber-versions-version-customFields
+      path: /v1/subscriptions/{subscriptionNumber}/versions/{version}/customFields
+      operations:
+      - name: putupdatesubscriptioncustomfieldsofaspecifiedversion
+        method: PUT
+        description: Update subscription custom fields of a subscription version
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscriptionNumber
+          in: path
+          type: string
+          description: The subscription number to be updated.
+          required: true
+        - name: version
+          in: path
+          type: string
+          description: The subscription version to be updated.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-subscriptions-rest
+    port: 8080
+    description: REST adapter for API Reference — Subscriptions. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/subscriptions
+      name: v1-subscriptions
+      description: REST surface for v1-subscriptions.
+      operations:
+      - method: POST
+        name: postsubscription
+        description: Create a subscription
+        call: v1-subscriptions.postsubscription
+        with:
+          zuora-version: rest.zuora-version
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/accounts/{account-key}
+      name: v1-subscriptions-accounts-account-key
+      description: REST surface for v1-subscriptions-accounts-account-key.
+      operations:
+      - method: GET
+        name: getsubscriptionsbyaccount
+        description: List subscriptions by account key
+        call: v1-subscriptions.getsubscriptionsbyaccount
+        with:
+          account-key: rest.account-key
+          charge-detail: rest.charge-detail
+          exclude-rate-plans-with-no-charges: rest.exclude-rate-plans-with-no-charges
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/preview
+      name: v1-subscriptions-preview
+      description: REST surface for v1-subscriptions-preview.
+      operations:
+      - method: POST
+        name: postpreviewsubscription
+        description: Preview a subscription
+        call: v1-subscriptions.postpreviewsubscription
+        with:
+          zuora-version: rest.zuora-version
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscription-key}
+      name: v1-subscriptions-subscription-key
+      description: REST surface for v1-subscriptions-subscription-key.
+      operations:
+      - method: PUT
+        name: putsubscription
+        description: Update a subscription
+        call: v1-subscriptions.putsubscription
+        with:
+          zuora-version: rest.zuora-version
+          subscription-key: rest.subscription-key
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getsubscriptionsbykey
+        description: Retrieve a subscription by key
+        call: v1-subscriptions.getsubscriptionsbykey
+        with:
+          subscription-key: rest.subscription-key
+          charge-detail: rest.charge-detail
+          exclude-rate-plans-with-no-charges: rest.exclude-rate-plans-with-no-charges
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscription-key}/cancel
+      name: v1-subscriptions-subscription-key-cancel
+      description: REST surface for v1-subscriptions-subscription-key-cancel.
+      operations:
+      - method: PUT
+        name: putcancelsubscription
+        description: Cancel a subscription
+        call: v1-subscriptions.putcancelsubscription
+        with:
+          zuora-version: rest.zuora-version
+          subscription-key: rest.subscription-key
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscription-key}/delete
+      name: v1-subscriptions-subscription-key-delete
+      description: REST surface for v1-subscriptions-subscription-key-delete.
+      operations:
+      - method: PUT
+        name: putdeletesubscription
+        description: Delete a subscription by number
+        call: v1-subscriptions.putdeletesubscription
+        with:
+          subscription-key: rest.subscription-key
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscription-key}/renew
+      name: v1-subscriptions-subscription-key-renew
+      description: REST surface for v1-subscriptions-subscription-key-renew.
+      operations:
+      - method: PUT
+        name: putrenewsubscription
+        description: Renew a subscription
+        call: v1-subscriptions.putrenewsubscription
+        with:
+          zuora-version: rest.zuora-version
+          subscription-key: rest.subscription-key
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscription-key}/resume
+      name: v1-subscriptions-subscription-key-resume
+      description: REST surface for v1-subscriptions-subscription-key-resume.
+      operations:
+      - method: PUT
+        name: putresumesubscription
+        description: Resume a subscription
+        call: v1-subscriptions.putresumesubscription
+        with:
+          zuora-version: rest.zuora-version
+          subscription-key: rest.subscription-key
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscription-key}/suspend
+      name: v1-subscriptions-subscription-key-suspend
+      description: REST surface for v1-subscriptions-subscription-key-suspend.
+      operations:
+      - method: PUT
+        name: putsuspendsubscription
+        description: Suspend a subscription
+        call: v1-subscriptions.putsuspendsubscription
+        with:
+          zuora-version: rest.zuora-version
+          subscription-key: rest.subscription-key
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscription-key}/versions/{version}
+      name: v1-subscriptions-subscription-key-versions-version
+      description: REST surface for v1-subscriptions-subscription-key-versions-version.
+      operations:
+      - method: GET
+        name: getsubscriptionsbykeyandversion
+        description: Retrieve a subscription by key and version
+        call: v1-subscriptions.getsubscriptionsbykeyandversion
+        with:
+          subscription-key: rest.subscription-key
+          version: rest.version
+          charge-detail: rest.charge-detail
+          exclude-rate-plans-with-no-charges: rest.exclude-rate-plans-with-no-charges
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscriptionnumber}/versions/{version}/customfields
+      name: v1-subscriptions-subscriptionnumber-versions-version-customfields
+      description: REST surface for v1-subscriptions-subscriptionNumber-versions-version-customFields.
+      operations:
+      - method: PUT
+        name: putupdatesubscriptioncustomfieldsofaspecifiedversion
+        description: Update subscription custom fields of a subscription version
+        call: v1-subscriptions.putupdatesubscriptioncustomfieldsofaspecifiedversion
+        with:
+          subscriptionNumber: rest.subscriptionNumber
+          version: rest.version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-subscriptions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Subscriptions. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: create-subscription
+      description: Create a subscription
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-subscriptions.postsubscription
+      with:
+        zuora-version: tools.zuora-version
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-subscriptions-account-key
+      description: List subscriptions by account key
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.getsubscriptionsbyaccount
+      with:
+        account-key: tools.account-key
+        charge-detail: tools.charge-detail
+        exclude-rate-plans-with-no-charges: tools.exclude-rate-plans-with-no-charges
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: preview-subscription
+      description: Preview a subscription
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-subscriptions.postpreviewsubscription
+      with:
+        zuora-version: tools.zuora-version
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-subscription
+      description: Update a subscription
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.putsubscription
+      with:
+        zuora-version: tools.zuora-version
+        subscription-key: tools.subscription-key
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-subscription-key
+      description: Retrieve a subscription by key
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.getsubscriptionsbykey
+      with:
+        subscription-key: tools.subscription-key
+        charge-detail: tools.charge-detail
+        exclude-rate-plans-with-no-charges: tools.exclude-rate-plans-with-no-charges
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-subscription
+      description: Cancel a subscription
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.putcancelsubscription
+      with:
+        zuora-version: tools.zuora-version
+        subscription-key: tools.subscription-key
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-subscription-number
+      description: Delete a subscription by number
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.putdeletesubscription
+      with:
+        subscription-key: tools.subscription-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: renew-subscription
+      description: Renew a subscription
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.putrenewsubscription
+      with:
+        zuora-version: tools.zuora-version
+        subscription-key: tools.subscription-key
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: resume-subscription
+      description: Resume a subscription
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.putresumesubscription
+      with:
+        zuora-version: tools.zuora-version
+        subscription-key: tools.subscription-key
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: suspend-subscription
+      description: Suspend a subscription
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.putsuspendsubscription
+      with:
+        zuora-version: tools.zuora-version
+        subscription-key: tools.subscription-key
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-subscription-key-and-version
+      description: Retrieve a subscription by key and version
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.getsubscriptionsbykeyandversion
+      with:
+        subscription-key: tools.subscription-key
+        version: tools.version
+        charge-detail: tools.charge-detail
+        exclude-rate-plans-with-no-charges: tools.exclude-rate-plans-with-no-charges
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-subscription-custom-fields-subscription
+      description: Update subscription custom fields of a subscription version
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-subscriptions.putupdatesubscriptioncustomfieldsofaspecifiedversion
+      with:
+        subscriptionNumber: tools.subscriptionNumber
+        version: tools.version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

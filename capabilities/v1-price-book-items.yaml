@@ -1,0 +1,234 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Price Book Items
+  description: 'API Reference — Price Book Items. 5 operations. Lead operation: Create a price book item. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Price Book Items
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-price-book-items
+    baseUri: https://rest.zuora.com
+    description: API Reference — Price Book Items business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-price-book-items
+      path: /v1/price-book-items
+      operations:
+      - name: postcreatepricebookitem
+        method: POST
+        description: Create a price book item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: getlistpricebookitems
+        method: GET
+        description: List price book items
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: offer
+          in: query
+          type: string
+          description: Used if you want to filter the PBIs associated with one offer. Can be offer id or number
+        - name: charge
+          in: query
+          type: string
+          description: Used if you want to filter the PBIs of a charge. Charge id for now.
+    - name: v1-price-book-items-price-book-item-key
+      path: /v1/price-book-items/{price-book-item-key}
+      operations:
+      - name: getretrievepricebookitem
+        method: GET
+        description: Retrieve a price book item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: price-book-item-key
+          in: path
+          type: string
+          description: The unique number or ID of the price book item to be retrieved.
+          required: true
+      - name: putupdatepricebookitem
+        method: PUT
+        description: Update a price book item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: price-book-item-key
+          in: path
+          type: string
+          description: The unique number or ID of the price book item to be updated.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: deletepricebookitem
+        method: DELETE
+        description: Delete a price book item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: price-book-item-key
+          in: path
+          type: string
+          description: The unique number or ID of the price book item to be deleted.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-price-book-items-rest
+    port: 8080
+    description: REST adapter for API Reference — Price Book Items. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/price-book-items
+      name: v1-price-book-items
+      description: REST surface for v1-price-book-items.
+      operations:
+      - method: POST
+        name: postcreatepricebookitem
+        description: Create a price book item
+        call: v1-price-book-items.postcreatepricebookitem
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getlistpricebookitems
+        description: List price book items
+        call: v1-price-book-items.getlistpricebookitems
+        with:
+          offer: rest.offer
+          charge: rest.charge
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/price-book-items/{price-book-item-key}
+      name: v1-price-book-items-price-book-item-key
+      description: REST surface for v1-price-book-items-price-book-item-key.
+      operations:
+      - method: GET
+        name: getretrievepricebookitem
+        description: Retrieve a price book item
+        call: v1-price-book-items.getretrievepricebookitem
+        with:
+          price-book-item-key: rest.price-book-item-key
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putupdatepricebookitem
+        description: Update a price book item
+        call: v1-price-book-items.putupdatepricebookitem
+        with:
+          price-book-item-key: rest.price-book-item-key
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletepricebookitem
+        description: Delete a price book item
+        call: v1-price-book-items.deletepricebookitem
+        with:
+          price-book-item-key: rest.price-book-item-key
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-price-book-items-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Price Book Items. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: create-price-book-item
+      description: Create a price book item
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-price-book-items.postcreatepricebookitem
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-price-book-items
+      description: List price book items
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-price-book-items.getlistpricebookitems
+      with:
+        offer: tools.offer
+        charge: tools.charge
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-price-book-item
+      description: Retrieve a price book item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-price-book-items.getretrievepricebookitem
+      with:
+        price-book-item-key: tools.price-book-item-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-price-book-item
+      description: Update a price book item
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-price-book-items.putupdatepricebookitem
+      with:
+        price-book-item-key: tools.price-book-item-key
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-price-book-item
+      description: Delete a price book item
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-price-book-items.deletepricebookitem
+      with:
+        price-book-item-key: tools.price-book-item-key
+      outputParameters:
+      - type: object
+        mapping: $.

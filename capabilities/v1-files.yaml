@@ -1,0 +1,77 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Files
+  description: 'API Reference — Files. 1 operations. Lead operation: Retrieve a file. Self-contained Naftiko capability covering
+    one Zuora business surface.'
+  tags:
+  - Zuora
+  - Files
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-files
+    baseUri: https://rest.zuora.com
+    description: API Reference — Files business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-files-file-id
+      path: /v1/files/{file-id}
+      operations:
+      - name: getfiles
+        method: GET
+        description: Retrieve a file
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: file-id
+          in: path
+          type: string
+          description: The Zuora ID of the file to retrieve.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-files-rest
+    port: 8080
+    description: REST adapter for API Reference — Files. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/files/{file-id}
+      name: v1-files-file-id
+      description: REST surface for v1-files-file-id.
+      operations:
+      - method: GET
+        name: getfiles
+        description: Retrieve a file
+        call: v1-files.getfiles
+        with:
+          file-id: rest.file-id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-files-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Files. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: retrieve-file
+      description: Retrieve a file
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-files.getfiles
+      with:
+        file-id: tools.file-id
+      outputParameters:
+      - type: object
+        mapping: $.

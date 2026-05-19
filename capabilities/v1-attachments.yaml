@@ -1,0 +1,265 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Attachments
+  description: 'API Reference — Attachments. 5 operations. Lead operation: Create an attachment. Self-contained Naftiko capability
+    covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Attachments
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-attachments
+    baseUri: https://rest.zuora.com
+    description: API Reference — Attachments business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-attachments
+      path: /v1/attachments
+      operations:
+      - name: postattachments
+        method: POST
+        description: Create an attachment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: description
+          in: query
+          type: string
+          description: Description of the attachment document.
+        - name: associatedObjectType
+          in: query
+          type: string
+          description: The type of the object to add attachements for.
+          required: true
+        - name: associatedObjectKey
+          in: query
+          type: string
+          description: For the Subscription type, specify the Subscription Number. An attachment is tied to the Subscription
+            Number and thus viewable with every subscription version.
+          required: true
+        - name: file
+          in: formData
+          type: file
+          description: 'The file to be attached. Files with the following extensions are supported: .pdf, .csv, .png, .xlsx,
+            .xls, .doc, .docx, .msg, .jpg, .txt, .htm, .html, .eml, .pp'
+          required: true
+    - name: v1-attachments-attachment-id
+      path: /v1/attachments/{attachment-id}
+      operations:
+      - name: getattachments
+        method: GET
+        description: Retrieve an attachment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: attachment-id
+          in: path
+          type: string
+          description: Id of the attachment you want to view.
+          required: true
+      - name: putattachments
+        method: PUT
+        description: Update an attachment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: attachment-id
+          in: path
+          type: string
+          description: Id of the attachment to be updated.
+          required: true
+        - name: Request
+          in: body
+          type: string
+      - name: deleteattachments
+        method: DELETE
+        description: Delete an attachment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: attachment-id
+          in: path
+          type: string
+          description: Id of the attachment to be deleted.
+          required: true
+    - name: v1-attachments-object-type-object-key
+      path: /v1/attachments/{object-type}/{object-key}
+      operations:
+      - name: getattachmentslist
+        method: GET
+        description: List attachments by object type and key
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: object-type
+          in: path
+          type: string
+          description: The type of the object to list attachements for.
+          required: true
+        - name: object-key
+          in: path
+          type: string
+          description: ID of the object to list attachements for.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-attachments-rest
+    port: 8080
+    description: REST adapter for API Reference — Attachments. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/attachments
+      name: v1-attachments
+      description: REST surface for v1-attachments.
+      operations:
+      - method: POST
+        name: postattachments
+        description: Create an attachment
+        call: v1-attachments.postattachments
+        with:
+          description: rest.description
+          associatedObjectType: rest.associatedObjectType
+          associatedObjectKey: rest.associatedObjectKey
+          file: rest.file
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/attachments/{attachment-id}
+      name: v1-attachments-attachment-id
+      description: REST surface for v1-attachments-attachment-id.
+      operations:
+      - method: GET
+        name: getattachments
+        description: Retrieve an attachment
+        call: v1-attachments.getattachments
+        with:
+          attachment-id: rest.attachment-id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putattachments
+        description: Update an attachment
+        call: v1-attachments.putattachments
+        with:
+          attachment-id: rest.attachment-id
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteattachments
+        description: Delete an attachment
+        call: v1-attachments.deleteattachments
+        with:
+          attachment-id: rest.attachment-id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/attachments/{object-type}/{object-key}
+      name: v1-attachments-object-type-object-key
+      description: REST surface for v1-attachments-object-type-object-key.
+      operations:
+      - method: GET
+        name: getattachmentslist
+        description: List attachments by object type and key
+        call: v1-attachments.getattachmentslist
+        with:
+          object-type: rest.object-type
+          object-key: rest.object-key
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-attachments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Attachments. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: create-attachment
+      description: Create an attachment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-attachments.postattachments
+      with:
+        description: tools.description
+        associatedObjectType: tools.associatedObjectType
+        associatedObjectKey: tools.associatedObjectKey
+        file: tools.file
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-attachment
+      description: Retrieve an attachment
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-attachments.getattachments
+      with:
+        attachment-id: tools.attachment-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-attachment
+      description: Update an attachment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-attachments.putattachments
+      with:
+        attachment-id: tools.attachment-id
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-attachment
+      description: Delete an attachment
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-attachments.deleteattachments
+      with:
+        attachment-id: tools.attachment-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-attachments-object-type-and
+      description: List attachments by object type and key
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-attachments.getattachmentslist
+      with:
+        object-type: tools.object-type
+        object-key: tools.object-key
+      outputParameters:
+      - type: object
+        mapping: $.

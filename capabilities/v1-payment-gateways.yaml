@@ -1,0 +1,67 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Payment Gateways
+  description: 'API Reference — Payment Gateways. 1 operations. Lead operation: List all payment gateways. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Payment Gateways
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-payment-gateways
+    baseUri: https://rest.zuora.com
+    description: API Reference — Payment Gateways business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-paymentgateways
+      path: /v1/paymentgateways
+      operations:
+      - name: getpaymentgateways
+        method: GET
+        description: List all payment gateways
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    namespace: v1-payment-gateways-rest
+    port: 8080
+    description: REST adapter for API Reference — Payment Gateways. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/paymentgateways
+      name: v1-paymentgateways
+      description: REST surface for v1-paymentgateways.
+      operations:
+      - method: GET
+        name: getpaymentgateways
+        description: List all payment gateways
+        call: v1-payment-gateways.getpaymentgateways
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-payment-gateways-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Payment Gateways. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-all-payment-gateways
+      description: List all payment gateways
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payment-gateways.getpaymentgateways
+      outputParameters:
+      - type: object
+        mapping: $.

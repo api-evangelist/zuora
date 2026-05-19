@@ -1,0 +1,245 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Ramps
+  description: 'API Reference — Ramps. 5 operations. Lead operation: List ramp metrics by order number. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Ramps
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-ramps
+    baseUri: https://rest.zuora.com
+    description: API Reference — Ramps business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-orders-orderNumber-ramp-metrics
+      path: /v1/orders/{orderNumber}/ramp-metrics
+      operations:
+      - name: getrampmetricsbyordernumber
+        method: GET
+        description: List ramp metrics by order number
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderNumber
+          in: path
+          type: string
+          description: The number of the existing order.
+          required: true
+    - name: v1-ramps-rampNumber
+      path: /v1/ramps/{rampNumber}
+      operations:
+      - name: getrampbyrampnumber
+        method: GET
+        description: Retrieve a ramp
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: rampNumber
+          in: path
+          type: string
+          description: The automatically generated number of a ramp. For example, R-00000268.
+          required: true
+    - name: v1-ramps-rampNumber-ramp-metrics
+      path: /v1/ramps/{rampNumber}/ramp-metrics
+      operations:
+      - name: getrampmetricsbyrampnumber
+        method: GET
+        description: List all ramp metrics of a ramp
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: rampNumber
+          in: path
+          type: string
+          description: The automatically generated number of a ramp. For example, R-00000268.
+          required: true
+    - name: v1-subscriptions-subscriptionKey-ramp-metrics
+      path: /v1/subscriptions/{subscriptionKey}/ramp-metrics
+      operations:
+      - name: getrampmetricsbysubscriptionkey
+        method: GET
+        description: List ramp metrics by subscription key
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscriptionKey
+          in: path
+          type: string
+          description: The ID or number of an existing subscription.
+          required: true
+    - name: v1-subscriptions-subscriptionKey-ramps
+      path: /v1/subscriptions/{subscriptionKey}/ramps
+      operations:
+      - name: getrampsbysubscriptionkey
+        method: GET
+        description: Retrieve a ramp by subscription key
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: subscriptionKey
+          in: path
+          type: string
+          description: The ID or number of an existing subscription.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-ramps-rest
+    port: 8080
+    description: REST adapter for API Reference — Ramps. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/orders/{ordernumber}/ramp-metrics
+      name: v1-orders-ordernumber-ramp-metrics
+      description: REST surface for v1-orders-orderNumber-ramp-metrics.
+      operations:
+      - method: GET
+        name: getrampmetricsbyordernumber
+        description: List ramp metrics by order number
+        call: v1-ramps.getrampmetricsbyordernumber
+        with:
+          orderNumber: rest.orderNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/ramps/{rampnumber}
+      name: v1-ramps-rampnumber
+      description: REST surface for v1-ramps-rampNumber.
+      operations:
+      - method: GET
+        name: getrampbyrampnumber
+        description: Retrieve a ramp
+        call: v1-ramps.getrampbyrampnumber
+        with:
+          rampNumber: rest.rampNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/ramps/{rampnumber}/ramp-metrics
+      name: v1-ramps-rampnumber-ramp-metrics
+      description: REST surface for v1-ramps-rampNumber-ramp-metrics.
+      operations:
+      - method: GET
+        name: getrampmetricsbyrampnumber
+        description: List all ramp metrics of a ramp
+        call: v1-ramps.getrampmetricsbyrampnumber
+        with:
+          rampNumber: rest.rampNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscriptionkey}/ramp-metrics
+      name: v1-subscriptions-subscriptionkey-ramp-metrics
+      description: REST surface for v1-subscriptions-subscriptionKey-ramp-metrics.
+      operations:
+      - method: GET
+        name: getrampmetricsbysubscriptionkey
+        description: List ramp metrics by subscription key
+        call: v1-ramps.getrampmetricsbysubscriptionkey
+        with:
+          subscriptionKey: rest.subscriptionKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/subscriptions/{subscriptionkey}/ramps
+      name: v1-subscriptions-subscriptionkey-ramps
+      description: REST surface for v1-subscriptions-subscriptionKey-ramps.
+      operations:
+      - method: GET
+        name: getrampsbysubscriptionkey
+        description: Retrieve a ramp by subscription key
+        call: v1-ramps.getrampsbysubscriptionkey
+        with:
+          subscriptionKey: rest.subscriptionKey
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-ramps-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Ramps. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-ramp-metrics-order-number
+      description: List ramp metrics by order number
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-ramps.getrampmetricsbyordernumber
+      with:
+        orderNumber: tools.orderNumber
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-ramp
+      description: Retrieve a ramp
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-ramps.getrampbyrampnumber
+      with:
+        rampNumber: tools.rampNumber
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-ramp-metrics-ramp
+      description: List all ramp metrics of a ramp
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-ramps.getrampmetricsbyrampnumber
+      with:
+        rampNumber: tools.rampNumber
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-ramp-metrics-subscription-key
+      description: List ramp metrics by subscription key
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-ramps.getrampmetricsbysubscriptionkey
+      with:
+        subscriptionKey: tools.subscriptionKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-ramp-subscription-key
+      description: Retrieve a ramp by subscription key
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-ramps.getrampsbysubscriptionkey
+      with:
+        subscriptionKey: tools.subscriptionKey
+      outputParameters:
+      - type: object
+        mapping: $.

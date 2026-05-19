@@ -1,0 +1,219 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Catalog Groups
+  description: 'API Reference — Catalog Groups. 5 operations. Lead operation: Create a catalog group. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Catalog Groups
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-catalog-groups
+    baseUri: https://rest.zuora.com
+    description: API Reference — Catalog Groups business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-catalog-groups
+      path: /v1/catalog-groups
+      operations:
+      - name: postcreatecataloggroup
+        method: POST
+        description: Create a catalog group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: getlistallcataloggroups
+        method: GET
+        description: List all catalog groups
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-catalog-groups-catalog-group-key
+      path: /v1/catalog-groups/{catalog-group-key}
+      operations:
+      - name: getretrievecataloggroup
+        method: GET
+        description: Retrieve a catalog group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: catalog-group-key
+          in: path
+          type: string
+          description: The unique number or ID of the catalog group to be retrieved.
+          required: true
+      - name: putupdatecataloggroup
+        method: PUT
+        description: Update a catalog group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: catalog-group-key
+          in: path
+          type: string
+          description: The unique number or ID of the catalog group to be updated.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: deletecataloggroup
+        method: DELETE
+        description: Delete a catalog group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: catalog-group-key
+          in: path
+          type: string
+          description: The unique number or ID of the catalog group to be deleted.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-catalog-groups-rest
+    port: 8080
+    description: REST adapter for API Reference — Catalog Groups. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/catalog-groups
+      name: v1-catalog-groups
+      description: REST surface for v1-catalog-groups.
+      operations:
+      - method: POST
+        name: postcreatecataloggroup
+        description: Create a catalog group
+        call: v1-catalog-groups.postcreatecataloggroup
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getlistallcataloggroups
+        description: List all catalog groups
+        call: v1-catalog-groups.getlistallcataloggroups
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/catalog-groups/{catalog-group-key}
+      name: v1-catalog-groups-catalog-group-key
+      description: REST surface for v1-catalog-groups-catalog-group-key.
+      operations:
+      - method: GET
+        name: getretrievecataloggroup
+        description: Retrieve a catalog group
+        call: v1-catalog-groups.getretrievecataloggroup
+        with:
+          catalog-group-key: rest.catalog-group-key
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putupdatecataloggroup
+        description: Update a catalog group
+        call: v1-catalog-groups.putupdatecataloggroup
+        with:
+          catalog-group-key: rest.catalog-group-key
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletecataloggroup
+        description: Delete a catalog group
+        call: v1-catalog-groups.deletecataloggroup
+        with:
+          catalog-group-key: rest.catalog-group-key
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-catalog-groups-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Catalog Groups. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: create-catalog-group
+      description: Create a catalog group
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-catalog-groups.postcreatecataloggroup
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-catalog-groups
+      description: List all catalog groups
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-catalog-groups.getlistallcataloggroups
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-catalog-group
+      description: Retrieve a catalog group
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-catalog-groups.getretrievecataloggroup
+      with:
+        catalog-group-key: tools.catalog-group-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-catalog-group
+      description: Update a catalog group
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-catalog-groups.putupdatecataloggroup
+      with:
+        catalog-group-key: tools.catalog-group-key
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-catalog-group
+      description: Delete a catalog group
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-catalog-groups.deletecataloggroup
+      with:
+        catalog-group-key: tools.catalog-group-key
+      outputParameters:
+      - type: object
+        mapping: $.

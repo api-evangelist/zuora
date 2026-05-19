@@ -1,0 +1,820 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Payments
+  description: 'API Reference — Payments. 15 operations. Lead operation: Create a payment. Self-contained Naftiko capability
+    covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Payments
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-payments
+    baseUri: https://rest.zuora.com
+    description: API Reference — Payments business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-payments
+      path: /v1/payments
+      operations:
+      - name: postcreatepayment
+        method: POST
+        description: Create a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+      - name: getretrieveallpayments
+        method: GET
+        description: List payments
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: accountId
+          in: query
+          type: string
+          description: This parameter filters the response based on the `accountId` field.
+        - name: amount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `amount` field.
+        - name: appliedAmount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `appliedAmount` field.
+        - name: createdById
+          in: query
+          type: string
+          description: This parameter filters the response based on the `createdById` field.
+        - name: createdDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `createdDate` field.
+        - name: creditBalanceAmount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `creditBalanceAmount` field.
+        - name: currency
+          in: query
+          type: string
+          description: This parameter filters the response based on the `currency` field.
+        - name: effectiveDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `effectiveDate` field.
+        - name: number
+          in: query
+          type: string
+          description: This parameter filters the response based on the `number` field.
+        - name: refundAmount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `refundAmount` field.
+        - name: status
+          in: query
+          type: string
+          description: This parameter filters the response based on the `status` field.
+        - name: type
+          in: query
+          type: string
+          description: This parameter filters the response based on the `type` field.
+        - name: unappliedAmount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `unappliedAmount` field.
+        - name: updatedById
+          in: query
+          type: string
+          description: This parameter filters the response based on the `updatedById` field.
+        - name: updatedDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `updatedDate` field.
+        - name: sort
+          in: query
+          type: string
+          description: This parameter restricts the order of the data returned in the response. You can use this parameter
+            to supply a dimension you want to sort on.
+    - name: v1-payments-paymentId
+      path: /v1/payments/{paymentId}
+      operations:
+      - name: putupdatepayment
+        method: PUT
+        description: Update a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: paymentId
+          in: path
+          type: string
+          description: The unique ID of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`.
+          required: true
+    - name: v1-payments-paymentKey
+      path: /v1/payments/{paymentKey}
+      operations:
+      - name: getpayment
+        method: GET
+        description: Retrieve a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+      - name: deletepayment
+        method: DELETE
+        description: Delete a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-apply
+      path: /v1/payments/{paymentKey}/apply
+      operations:
+      - name: putapplypayment
+        method: PUT
+        description: Apply a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-cancel
+      path: /v1/payments/{paymentKey}/cancel
+      operations:
+      - name: putcancelpayment
+        method: PUT
+        description: Cancel a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-parts
+      path: /v1/payments/{paymentKey}/parts
+      operations:
+      - name: getpaymentparts
+        method: GET
+        description: List all parts of a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-parts-partid
+      path: /v1/payments/{paymentKey}/parts/{partid}
+      operations:
+      - name: getpaymentpart
+        method: GET
+        description: Retrieve a payment part
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: partid
+          in: path
+          type: string
+          description: The unique ID of a specific payment part. You can get the payment part ID from the response of [List
+            all parts of a payment](/api-references/api/operation/GET_P
+          required: true
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-parts-partid-itemparts
+      path: /v1/payments/{paymentKey}/parts/{partid}/itemparts
+      operations:
+      - name: getpaymentitemparts
+        method: GET
+        description: List all payment part items
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: partid
+          in: path
+          type: string
+          description: The unique ID of a specific payment part. You can get the payment part ID from the response of [List
+            all parts of a payment](/api-references/api/operation/GET_P
+          required: true
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-parts-partid-itemparts-itempartid
+      path: /v1/payments/{paymentKey}/parts/{partid}/itemparts/{itempartid}
+      operations:
+      - name: getpaymentitempart
+        method: GET
+        description: Retrieve a payment part item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: partid
+          in: path
+          type: string
+          description: The unique ID of a specific payment part. You can get the payment part ID from the response of [List
+            all parts of a payment](/api-references/api/operation/GET_P
+          required: true
+        - name: itempartid
+          in: path
+          type: string
+          description: The unique ID of a specific payment part item. You can get the payment part item ID from the response
+            of [List all payment part items](/api-references/api/opera
+          required: true
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-refunds
+      path: /v1/payments/{paymentKey}/refunds
+      operations:
+      - name: postrefundpayment
+        method: POST
+        description: Refund a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-refunds-unapply
+      path: /v1/payments/{paymentKey}/refunds/unapply
+      operations:
+      - name: postrefundpaymentwithautounapply
+        method: POST
+        description: Refund a payment with auto-unapplying
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-transfer
+      path: /v1/payments/{paymentKey}/transfer
+      operations:
+      - name: puttransferpayment
+        method: PUT
+        description: Transfer a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+    - name: v1-payments-paymentKey-unapply
+      path: /v1/payments/{paymentKey}/unapply
+      operations:
+      - name: putunapplypayment
+        method: PUT
+        description: Unapply a payment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: paymentKey
+          in: path
+          type: string
+          description: The unique ID or number of an unapplied payment. For example, `8a8082e65b27f6c3015b89e4344c16b1`, or
+            `P-00000001`.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-payments-rest
+    port: 8080
+    description: REST adapter for API Reference — Payments. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/payments
+      name: v1-payments
+      description: REST surface for v1-payments.
+      operations:
+      - method: POST
+        name: postcreatepayment
+        description: Create a payment
+        call: v1-payments.postcreatepayment
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getretrieveallpayments
+        description: List payments
+        call: v1-payments.getretrieveallpayments
+        with:
+          accountId: rest.accountId
+          amount: rest.amount
+          appliedAmount: rest.appliedAmount
+          createdById: rest.createdById
+          createdDate: rest.createdDate
+          creditBalanceAmount: rest.creditBalanceAmount
+          currency: rest.currency
+          effectiveDate: rest.effectiveDate
+          number: rest.number
+          refundAmount: rest.refundAmount
+          status: rest.status
+          type: rest.type
+          unappliedAmount: rest.unappliedAmount
+          updatedById: rest.updatedById
+          updatedDate: rest.updatedDate
+          sort: rest.sort
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentid}
+      name: v1-payments-paymentid
+      description: REST surface for v1-payments-paymentId.
+      operations:
+      - method: PUT
+        name: putupdatepayment
+        description: Update a payment
+        call: v1-payments.putupdatepayment
+        with:
+          body: rest.body
+          paymentId: rest.paymentId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}
+      name: v1-payments-paymentkey
+      description: REST surface for v1-payments-paymentKey.
+      operations:
+      - method: GET
+        name: getpayment
+        description: Retrieve a payment
+        call: v1-payments.getpayment
+        with:
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletepayment
+        description: Delete a payment
+        call: v1-payments.deletepayment
+        with:
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/apply
+      name: v1-payments-paymentkey-apply
+      description: REST surface for v1-payments-paymentKey-apply.
+      operations:
+      - method: PUT
+        name: putapplypayment
+        description: Apply a payment
+        call: v1-payments.putapplypayment
+        with:
+          body: rest.body
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/cancel
+      name: v1-payments-paymentkey-cancel
+      description: REST surface for v1-payments-paymentKey-cancel.
+      operations:
+      - method: PUT
+        name: putcancelpayment
+        description: Cancel a payment
+        call: v1-payments.putcancelpayment
+        with:
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/parts
+      name: v1-payments-paymentkey-parts
+      description: REST surface for v1-payments-paymentKey-parts.
+      operations:
+      - method: GET
+        name: getpaymentparts
+        description: List all parts of a payment
+        call: v1-payments.getpaymentparts
+        with:
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/parts/{partid}
+      name: v1-payments-paymentkey-parts-partid
+      description: REST surface for v1-payments-paymentKey-parts-partid.
+      operations:
+      - method: GET
+        name: getpaymentpart
+        description: Retrieve a payment part
+        call: v1-payments.getpaymentpart
+        with:
+          partid: rest.partid
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/parts/{partid}/itemparts
+      name: v1-payments-paymentkey-parts-partid-itemparts
+      description: REST surface for v1-payments-paymentKey-parts-partid-itemparts.
+      operations:
+      - method: GET
+        name: getpaymentitemparts
+        description: List all payment part items
+        call: v1-payments.getpaymentitemparts
+        with:
+          partid: rest.partid
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/parts/{partid}/itemparts/{itempartid}
+      name: v1-payments-paymentkey-parts-partid-itemparts-itempartid
+      description: REST surface for v1-payments-paymentKey-parts-partid-itemparts-itempartid.
+      operations:
+      - method: GET
+        name: getpaymentitempart
+        description: Retrieve a payment part item
+        call: v1-payments.getpaymentitempart
+        with:
+          partid: rest.partid
+          itempartid: rest.itempartid
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/refunds
+      name: v1-payments-paymentkey-refunds
+      description: REST surface for v1-payments-paymentKey-refunds.
+      operations:
+      - method: POST
+        name: postrefundpayment
+        description: Refund a payment
+        call: v1-payments.postrefundpayment
+        with:
+          body: rest.body
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/refunds/unapply
+      name: v1-payments-paymentkey-refunds-unapply
+      description: REST surface for v1-payments-paymentKey-refunds-unapply.
+      operations:
+      - method: POST
+        name: postrefundpaymentwithautounapply
+        description: Refund a payment with auto-unapplying
+        call: v1-payments.postrefundpaymentwithautounapply
+        with:
+          body: rest.body
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/transfer
+      name: v1-payments-paymentkey-transfer
+      description: REST surface for v1-payments-paymentKey-transfer.
+      operations:
+      - method: PUT
+        name: puttransferpayment
+        description: Transfer a payment
+        call: v1-payments.puttransferpayment
+        with:
+          body: rest.body
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payments/{paymentkey}/unapply
+      name: v1-payments-paymentkey-unapply
+      description: REST surface for v1-payments-paymentKey-unapply.
+      operations:
+      - method: PUT
+        name: putunapplypayment
+        description: Unapply a payment
+        call: v1-payments.putunapplypayment
+        with:
+          body: rest.body
+          paymentKey: rest.paymentKey
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-payments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Payments. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create-payment
+      description: Create a payment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-payments.postcreatepayment
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-payments
+      description: List payments
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payments.getretrieveallpayments
+      with:
+        accountId: tools.accountId
+        amount: tools.amount
+        appliedAmount: tools.appliedAmount
+        createdById: tools.createdById
+        createdDate: tools.createdDate
+        creditBalanceAmount: tools.creditBalanceAmount
+        currency: tools.currency
+        effectiveDate: tools.effectiveDate
+        number: tools.number
+        refundAmount: tools.refundAmount
+        status: tools.status
+        type: tools.type
+        unappliedAmount: tools.unappliedAmount
+        updatedById: tools.updatedById
+        updatedDate: tools.updatedDate
+        sort: tools.sort
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-payment
+      description: Update a payment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payments.putupdatepayment
+      with:
+        body: tools.body
+        paymentId: tools.paymentId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-payment
+      description: Retrieve a payment
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payments.getpayment
+      with:
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-payment
+      description: Delete a payment
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-payments.deletepayment
+      with:
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apply-payment
+      description: Apply a payment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payments.putapplypayment
+      with:
+        body: tools.body
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-payment
+      description: Cancel a payment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payments.putcancelpayment
+      with:
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-parts-payment
+      description: List all parts of a payment
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payments.getpaymentparts
+      with:
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-payment-part
+      description: Retrieve a payment part
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payments.getpaymentpart
+      with:
+        partid: tools.partid
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-payment-part-items
+      description: List all payment part items
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payments.getpaymentitemparts
+      with:
+        partid: tools.partid
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-payment-part-item
+      description: Retrieve a payment part item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payments.getpaymentitempart
+      with:
+        partid: tools.partid
+        itempartid: tools.itempartid
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: refund-payment
+      description: Refund a payment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-payments.postrefundpayment
+      with:
+        body: tools.body
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: refund-payment-auto-unapplying
+      description: Refund a payment with auto-unapplying
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-payments.postrefundpaymentwithautounapply
+      with:
+        body: tools.body
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: transfer-payment
+      description: Transfer a payment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payments.puttransferpayment
+      with:
+        body: tools.body
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: unapply-payment
+      description: Unapply a payment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payments.putunapplypayment
+      with:
+        body: tools.body
+        paymentKey: tools.paymentKey
+      outputParameters:
+      - type: object
+        mapping: $.

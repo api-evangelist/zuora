@@ -1,0 +1,250 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Custom Event Triggers
+  description: 'API Reference — Custom Event Triggers. 5 operations. Lead operation: Create an event trigger. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Custom Event Triggers
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-custom-event-triggers
+    baseUri: https://rest.zuora.com
+    description: API Reference — Custom Event Triggers business capability. Self-contained, no shared references.
+    resources:
+    - name: events-event-triggers
+      path: /events/event-triggers
+      operations:
+      - name: posteventtrigger
+        method: POST
+        description: Create an event trigger
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: postEventTriggerRequest
+          in: body
+          type: string
+          required: true
+      - name: geteventtriggers
+        method: GET
+        description: List event triggers
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: baseObject
+          in: query
+          type: string
+          description: 'The Zuora object that trigger condition is defined upon. The format of the value in this field depends
+            on the base object type:'
+        - name: eventTypeName
+          in: query
+          type: string
+          description: 'The event type name. Should be specified in the pattern: ^[A-Za-z]{1,}[\w\-]*$'
+        - name: active
+          in: query
+          type: string
+          description: The status of the event trigger.
+        - name: start
+          in: query
+          type: integer
+          description: The first index of the query result. Default to 0 if absent, and the minimum is 0.
+        - name: limit
+          in: query
+          type: integer
+          description: The maximum number of data records to be returned. Default to 10 if absent.
+    - name: events-event-triggers-id
+      path: /events/event-triggers/{id}
+      operations:
+      - name: geteventtrigger
+        method: GET
+        description: Retrieve an event trigger
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      - name: puteventtrigger
+        method: PUT
+        description: Update an event trigger
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: putEventTriggerRequest
+          in: body
+          type: string
+          required: true
+      - name: deleteeventtrigger
+        method: DELETE
+        description: Delete an event trigger
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-custom-event-triggers-rest
+    port: 8080
+    description: REST adapter for API Reference — Custom Event Triggers. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/events/event-triggers
+      name: events-event-triggers
+      description: REST surface for events-event-triggers.
+      operations:
+      - method: POST
+        name: posteventtrigger
+        description: Create an event trigger
+        call: v1-custom-event-triggers.posteventtrigger
+        with:
+          postEventTriggerRequest: rest.postEventTriggerRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: geteventtriggers
+        description: List event triggers
+        call: v1-custom-event-triggers.geteventtriggers
+        with:
+          baseObject: rest.baseObject
+          eventTypeName: rest.eventTypeName
+          active: rest.active
+          start: rest.start
+          limit: rest.limit
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/events/event-triggers/{id}
+      name: events-event-triggers-id
+      description: REST surface for events-event-triggers-id.
+      operations:
+      - method: GET
+        name: geteventtrigger
+        description: Retrieve an event trigger
+        call: v1-custom-event-triggers.geteventtrigger
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: puteventtrigger
+        description: Update an event trigger
+        call: v1-custom-event-triggers.puteventtrigger
+        with:
+          id: rest.id
+          putEventTriggerRequest: rest.putEventTriggerRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteeventtrigger
+        description: Delete an event trigger
+        call: v1-custom-event-triggers.deleteeventtrigger
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-custom-event-triggers-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Custom Event Triggers. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: create-event-trigger
+      description: Create an event trigger
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-custom-event-triggers.posteventtrigger
+      with:
+        postEventTriggerRequest: tools.postEventTriggerRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-event-triggers
+      description: List event triggers
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-custom-event-triggers.geteventtriggers
+      with:
+        baseObject: tools.baseObject
+        eventTypeName: tools.eventTypeName
+        active: tools.active
+        start: tools.start
+        limit: tools.limit
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-event-trigger
+      description: Retrieve an event trigger
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-custom-event-triggers.geteventtrigger
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-event-trigger
+      description: Update an event trigger
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-custom-event-triggers.puteventtrigger
+      with:
+        id: tools.id
+        putEventTriggerRequest: tools.putEventTriggerRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-event-trigger
+      description: Delete an event trigger
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-custom-event-triggers.deleteeventtrigger
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

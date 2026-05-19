@@ -1,0 +1,756 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Payment Schedules
+  description: 'API Reference — Payment Schedules. 14 operations. Lead operation: Retry failed payment schedule items. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Payment Schedules
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-payment-schedules
+    baseUri: https://rest.zuora.com
+    description: API Reference — Payment Schedules business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-payment-schedule-items-retry-payment
+      path: /v1/payment-schedule-items/retry-payment
+      operations:
+      - name: postretrypaymentscheduleitem
+        method: POST
+        description: Retry failed payment schedule items
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-payment-schedule-items-item-id
+      path: /v1/payment-schedule-items/{item-id}
+      operations:
+      - name: getpaymentscheduleitem
+        method: GET
+        description: Retrieve a payment schedule item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: item-id
+          in: path
+          type: string
+          description: The unique ID of a payment schedule item.
+          required: true
+      - name: putpaymentscheduleitem
+        method: PUT
+        description: Update a payment schedule item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: item-id
+          in: path
+          type: string
+          description: The unique ID of a payment schedule item.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+    - name: v1-payment-schedule-items-item-id-cancel
+      path: /v1/payment-schedule-items/{item-id}/cancel
+      operations:
+      - name: putcancelpaymentscheduleitem
+        method: PUT
+        description: Cancel a payment schedule item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: item-id
+          in: path
+          type: string
+          description: The unique ID of a payment schedule item.
+          required: true
+    - name: v1-payment-schedule-items-item-id-skip
+      path: /v1/payment-schedule-items/{item-id}/skip
+      operations:
+      - name: putskippaymentscheduleitem
+        method: PUT
+        description: Skip a payment schedule item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: item-id
+          in: path
+          type: string
+          description: The unique ID of a payment schedule item.
+          required: true
+    - name: v1-payment-schedules
+      path: /v1/payment-schedules
+      operations:
+      - name: postpaymentschedule
+        method: POST
+        description: Create a payment schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+      - name: getpaymentschedules
+        method: GET
+        description: List payment schedules by customer account
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: lastProcessedItems
+          in: query
+          type: integer
+          description: Number of the most recent processed payment schedules dispalyed in the response body.
+        - name: nextPendingItems
+          in: query
+          type: integer
+          description: Number of next pending payment schedule items displayed in the response body.
+        - name: accountId
+          in: query
+          type: string
+          description: The ID of the customer account. If neither `accountId` nor `accountNumber` is specified, all payment
+            schedules will be returned.
+        - name: accountNumber
+          in: query
+          type: integer
+          description: The number of the customer account. If neither `accountId` nor `accountNumber` is specified, all payment
+            schedules will be returned.
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+    - name: v1-payment-schedules-batch
+      path: /v1/payment-schedules/batch
+      operations:
+      - name: postpaymentschedules
+        method: POST
+        description: Create multiple payment schedules at once
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+    - name: v1-payment-schedules-statistics-yyyy-mm-dd
+      path: /v1/payment-schedules/statistics/{yyyy-mm-dd}
+      operations:
+      - name: getpaymentschedulestatistic
+        method: GET
+        description: Retrieve payment schedule statistic of a date
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: yyyy-mm-dd
+          in: path
+          type: string
+          description: Specifies the date of the payment schedule statistic you want to view.
+          required: true
+    - name: v1-payment-schedules-paymentScheduleKey
+      path: /v1/payment-schedules/{paymentScheduleKey}
+      operations:
+      - name: getpaymentschedule
+        method: GET
+        description: Retrieve a payment schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: nextPendingItems
+          in: query
+          type: integer
+          description: Number of next pending payment schedule items displayed in the response body.
+        - name: lastProcessedItems
+          in: query
+          type: integer
+          description: Number of the most recent processed payment schedule items dispalyed in the response body.
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: paymentScheduleKey
+          in: path
+          type: string
+          description: The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or
+            `PS-00000007`.
+          required: true
+      - name: putpaymentschedule
+        method: PUT
+        description: Update a payment schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: paymentScheduleKey
+          in: path
+          type: string
+          description: The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or
+            `PS-00000007`.
+          required: true
+    - name: v1-payment-schedules-paymentScheduleKey-cancel
+      path: /v1/payment-schedules/{paymentScheduleKey}/cancel
+      operations:
+      - name: putcancelpaymentschedule
+        method: PUT
+        description: Cancel a payment schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentScheduleKey
+          in: path
+          type: string
+          description: The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or
+            `PS-00000007`.
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-payment-schedules-paymentScheduleKey-items
+      path: /v1/payment-schedules/{paymentScheduleKey}/items
+      operations:
+      - name: postadditemstocustompaymentschedule
+        method: POST
+        description: Add payment schedule items to a custom payment schedule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: paymentScheduleKey
+          in: path
+          type: string
+          description: The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or
+            `PS-00000007`.
+          required: true
+    - name: v1-payment-schedules-paymentScheduleKey-preview
+      path: /v1/payment-schedules/{paymentScheduleKey}/preview
+      operations:
+      - name: putpaymentscheduleupdatepreview
+        method: PUT
+        description: Preview the result of payment schedule updates
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: paymentScheduleKey
+          in: path
+          type: string
+          description: The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or
+            `PS-00000007`.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-payment-schedules-rest
+    port: 8080
+    description: REST adapter for API Reference — Payment Schedules. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/payment-schedule-items/retry-payment
+      name: v1-payment-schedule-items-retry-payment
+      description: REST surface for v1-payment-schedule-items-retry-payment.
+      operations:
+      - method: POST
+        name: postretrypaymentscheduleitem
+        description: Retry failed payment schedule items
+        call: v1-payment-schedules.postretrypaymentscheduleitem
+        with:
+          zuora-version: rest.zuora-version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedule-items/{item-id}
+      name: v1-payment-schedule-items-item-id
+      description: REST surface for v1-payment-schedule-items-item-id.
+      operations:
+      - method: GET
+        name: getpaymentscheduleitem
+        description: Retrieve a payment schedule item
+        call: v1-payment-schedules.getpaymentscheduleitem
+        with:
+          zuora-version: rest.zuora-version
+          item-id: rest.item-id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putpaymentscheduleitem
+        description: Update a payment schedule item
+        call: v1-payment-schedules.putpaymentscheduleitem
+        with:
+          item-id: rest.item-id
+          body: rest.body
+          zuora-version: rest.zuora-version
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedule-items/{item-id}/cancel
+      name: v1-payment-schedule-items-item-id-cancel
+      description: REST surface for v1-payment-schedule-items-item-id-cancel.
+      operations:
+      - method: PUT
+        name: putcancelpaymentscheduleitem
+        description: Cancel a payment schedule item
+        call: v1-payment-schedules.putcancelpaymentscheduleitem
+        with:
+          zuora-version: rest.zuora-version
+          item-id: rest.item-id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedule-items/{item-id}/skip
+      name: v1-payment-schedule-items-item-id-skip
+      description: REST surface for v1-payment-schedule-items-item-id-skip.
+      operations:
+      - method: PUT
+        name: putskippaymentscheduleitem
+        description: Skip a payment schedule item
+        call: v1-payment-schedules.putskippaymentscheduleitem
+        with:
+          zuora-version: rest.zuora-version
+          item-id: rest.item-id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedules
+      name: v1-payment-schedules
+      description: REST surface for v1-payment-schedules.
+      operations:
+      - method: POST
+        name: postpaymentschedule
+        description: Create a payment schedule
+        call: v1-payment-schedules.postpaymentschedule
+        with:
+          body: rest.body
+          zuora-version: rest.zuora-version
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getpaymentschedules
+        description: List payment schedules by customer account
+        call: v1-payment-schedules.getpaymentschedules
+        with:
+          lastProcessedItems: rest.lastProcessedItems
+          nextPendingItems: rest.nextPendingItems
+          accountId: rest.accountId
+          accountNumber: rest.accountNumber
+          zuora-version: rest.zuora-version
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedules/batch
+      name: v1-payment-schedules-batch
+      description: REST surface for v1-payment-schedules-batch.
+      operations:
+      - method: POST
+        name: postpaymentschedules
+        description: Create multiple payment schedules at once
+        call: v1-payment-schedules.postpaymentschedules
+        with:
+          body: rest.body
+          zuora-version: rest.zuora-version
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedules/statistics/{yyyy-mm-dd}
+      name: v1-payment-schedules-statistics-yyyy-mm-dd
+      description: REST surface for v1-payment-schedules-statistics-yyyy-mm-dd.
+      operations:
+      - method: GET
+        name: getpaymentschedulestatistic
+        description: Retrieve payment schedule statistic of a date
+        call: v1-payment-schedules.getpaymentschedulestatistic
+        with:
+          yyyy-mm-dd: rest.yyyy-mm-dd
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedules/{paymentschedulekey}
+      name: v1-payment-schedules-paymentschedulekey
+      description: REST surface for v1-payment-schedules-paymentScheduleKey.
+      operations:
+      - method: GET
+        name: getpaymentschedule
+        description: Retrieve a payment schedule
+        call: v1-payment-schedules.getpaymentschedule
+        with:
+          nextPendingItems: rest.nextPendingItems
+          lastProcessedItems: rest.lastProcessedItems
+          zuora-version: rest.zuora-version
+          paymentScheduleKey: rest.paymentScheduleKey
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putpaymentschedule
+        description: Update a payment schedule
+        call: v1-payment-schedules.putpaymentschedule
+        with:
+          body: rest.body
+          zuora-version: rest.zuora-version
+          paymentScheduleKey: rest.paymentScheduleKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedules/{paymentschedulekey}/cancel
+      name: v1-payment-schedules-paymentschedulekey-cancel
+      description: REST surface for v1-payment-schedules-paymentScheduleKey-cancel.
+      operations:
+      - method: PUT
+        name: putcancelpaymentschedule
+        description: Cancel a payment schedule
+        call: v1-payment-schedules.putcancelpaymentschedule
+        with:
+          paymentScheduleKey: rest.paymentScheduleKey
+          zuora-version: rest.zuora-version
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedules/{paymentschedulekey}/items
+      name: v1-payment-schedules-paymentschedulekey-items
+      description: REST surface for v1-payment-schedules-paymentScheduleKey-items.
+      operations:
+      - method: POST
+        name: postadditemstocustompaymentschedule
+        description: Add payment schedule items to a custom payment schedule
+        call: v1-payment-schedules.postadditemstocustompaymentschedule
+        with:
+          body: rest.body
+          zuora-version: rest.zuora-version
+          paymentScheduleKey: rest.paymentScheduleKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/payment-schedules/{paymentschedulekey}/preview
+      name: v1-payment-schedules-paymentschedulekey-preview
+      description: REST surface for v1-payment-schedules-paymentScheduleKey-preview.
+      operations:
+      - method: PUT
+        name: putpaymentscheduleupdatepreview
+        description: Preview the result of payment schedule updates
+        call: v1-payment-schedules.putpaymentscheduleupdatepreview
+        with:
+          body: rest.body
+          zuora-version: rest.zuora-version
+          paymentScheduleKey: rest.paymentScheduleKey
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-payment-schedules-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Payment Schedules. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: retry-failed-payment-schedule-items
+      description: Retry failed payment schedule items
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-payment-schedules.postretrypaymentscheduleitem
+      with:
+        zuora-version: tools.zuora-version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-payment-schedule-item
+      description: Retrieve a payment schedule item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.getpaymentscheduleitem
+      with:
+        zuora-version: tools.zuora-version
+        item-id: tools.item-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-payment-schedule-item
+      description: Update a payment schedule item
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.putpaymentscheduleitem
+      with:
+        item-id: tools.item-id
+        body: tools.body
+        zuora-version: tools.zuora-version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-payment-schedule-item
+      description: Cancel a payment schedule item
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.putcancelpaymentscheduleitem
+      with:
+        zuora-version: tools.zuora-version
+        item-id: tools.item-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: skip-payment-schedule-item
+      description: Skip a payment schedule item
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.putskippaymentscheduleitem
+      with:
+        zuora-version: tools.zuora-version
+        item-id: tools.item-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-payment-schedule
+      description: Create a payment schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-payment-schedules.postpaymentschedule
+      with:
+        body: tools.body
+        zuora-version: tools.zuora-version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-payment-schedules-customer-account
+      description: List payment schedules by customer account
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.getpaymentschedules
+      with:
+        lastProcessedItems: tools.lastProcessedItems
+        nextPendingItems: tools.nextPendingItems
+        accountId: tools.accountId
+        accountNumber: tools.accountNumber
+        zuora-version: tools.zuora-version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-multiple-payment-schedules-once
+      description: Create multiple payment schedules at once
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-payment-schedules.postpaymentschedules
+      with:
+        body: tools.body
+        zuora-version: tools.zuora-version
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-payment-schedule-statistic-date
+      description: Retrieve payment schedule statistic of a date
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.getpaymentschedulestatistic
+      with:
+        yyyy-mm-dd: tools.yyyy-mm-dd
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-payment-schedule
+      description: Retrieve a payment schedule
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.getpaymentschedule
+      with:
+        nextPendingItems: tools.nextPendingItems
+        lastProcessedItems: tools.lastProcessedItems
+        zuora-version: tools.zuora-version
+        paymentScheduleKey: tools.paymentScheduleKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-payment-schedule
+      description: Update a payment schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.putpaymentschedule
+      with:
+        body: tools.body
+        zuora-version: tools.zuora-version
+        paymentScheduleKey: tools.paymentScheduleKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-payment-schedule
+      description: Cancel a payment schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.putcancelpaymentschedule
+      with:
+        paymentScheduleKey: tools.paymentScheduleKey
+        zuora-version: tools.zuora-version
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-payment-schedule-items-custom
+      description: Add payment schedule items to a custom payment schedule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-payment-schedules.postadditemstocustompaymentschedule
+      with:
+        body: tools.body
+        zuora-version: tools.zuora-version
+        paymentScheduleKey: tools.paymentScheduleKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: preview-result-payment-schedule-updates
+      description: Preview the result of payment schedule updates
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-payment-schedules.putpaymentscheduleupdatepreview
+      with:
+        body: tools.body
+        zuora-version: tools.zuora-version
+        paymentScheduleKey: tools.paymentScheduleKey
+      outputParameters:
+      - type: object
+        mapping: $.

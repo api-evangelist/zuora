@@ -1,0 +1,194 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Product Rate Plan Definitions
+  description: 'API Reference — Product Rate Plan Definitions. 4 operations. Lead operation: Create a product rate plan definition.
+    Self-contained Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Product Rate Plan Definitions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-product-rate-plan-definitions
+    baseUri: https://rest.zuora.com
+    description: API Reference — Product Rate Plan Definitions business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-product-rateplan-definitions
+      path: /v1/product-rateplan-definitions
+      operations:
+      - name: postcreateproductrateplandefinition
+        method: POST
+        description: Create a product rate plan definition
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: getretrieveproductrateplandefinitions
+        method: GET
+        description: List product rate plan definitions
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: charge
+          in: query
+          type: string
+          description: The unique number or ID of the charge for which the product rate plan definitions are to be retrieved.
+        - name: rateplan
+          in: query
+          type: string
+          description: The unique number or ID of the product rate plan for which the product rate plan definitions are to
+            be retrieved.
+    - name: v1-product-rateplan-definitions-product-rateplan-definition-key
+      path: /v1/product-rateplan-definitions/{product-rateplan-definition-key}
+      operations:
+      - name: getretrieveproductrateplandefinition
+        method: GET
+        description: Retrieve a product rate plan definition
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: product-rateplan-definition-key
+          in: path
+          type: string
+          description: The unique ID of the product rate plan definition to be retrieved.
+          required: true
+      - name: deleteproductrateplandefnition
+        method: DELETE
+        description: Delete a product rate plan definition
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: product-rateplan-definition-key
+          in: path
+          type: string
+          description: The unique ID of the product rate plan definition to be deleted.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-product-rate-plan-definitions-rest
+    port: 8080
+    description: REST adapter for API Reference — Product Rate Plan Definitions. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/v1/product-rateplan-definitions
+      name: v1-product-rateplan-definitions
+      description: REST surface for v1-product-rateplan-definitions.
+      operations:
+      - method: POST
+        name: postcreateproductrateplandefinition
+        description: Create a product rate plan definition
+        call: v1-product-rate-plan-definitions.postcreateproductrateplandefinition
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getretrieveproductrateplandefinitions
+        description: List product rate plan definitions
+        call: v1-product-rate-plan-definitions.getretrieveproductrateplandefinitions
+        with:
+          charge: rest.charge
+          rateplan: rest.rateplan
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/product-rateplan-definitions/{product-rateplan-definition-key}
+      name: v1-product-rateplan-definitions-product-rateplan-definition-key
+      description: REST surface for v1-product-rateplan-definitions-product-rateplan-definition-key.
+      operations:
+      - method: GET
+        name: getretrieveproductrateplandefinition
+        description: Retrieve a product rate plan definition
+        call: v1-product-rate-plan-definitions.getretrieveproductrateplandefinition
+        with:
+          product-rateplan-definition-key: rest.product-rateplan-definition-key
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteproductrateplandefnition
+        description: Delete a product rate plan definition
+        call: v1-product-rate-plan-definitions.deleteproductrateplandefnition
+        with:
+          product-rateplan-definition-key: rest.product-rateplan-definition-key
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-product-rate-plan-definitions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Product Rate Plan Definitions. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: create-product-rate-plan-definition
+      description: Create a product rate plan definition
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-product-rate-plan-definitions.postcreateproductrateplandefinition
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-product-rate-plan-definitions
+      description: List product rate plan definitions
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-product-rate-plan-definitions.getretrieveproductrateplandefinitions
+      with:
+        charge: tools.charge
+        rateplan: tools.rateplan
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-product-rate-plan-definition
+      description: Retrieve a product rate plan definition
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-product-rate-plan-definitions.getretrieveproductrateplandefinition
+      with:
+        product-rateplan-definition-key: tools.product-rateplan-definition-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-product-rate-plan-definition
+      description: Delete a product rate plan definition
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-product-rate-plan-definitions.deleteproductrateplandefnition
+      with:
+        product-rateplan-definition-key: tools.product-rateplan-definition-key
+      outputParameters:
+      - type: object
+        mapping: $.

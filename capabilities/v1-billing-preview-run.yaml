@@ -1,0 +1,132 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Billing Preview Run
+  description: 'API Reference — Billing Preview Run. 2 operations. Lead operation: Create a billing preview run. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Billing Preview Run
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-billing-preview-run
+    baseUri: https://rest.zuora.com
+    description: API Reference — Billing Preview Run business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-billing-preview-runs
+      path: /v1/billing-preview-runs
+      operations:
+      - name: postbillingpreviewrun
+        method: POST
+        description: Create a billing preview run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-billing-preview-runs-billingPreviewRunId
+      path: /v1/billing-preview-runs/{billingPreviewRunId}
+      operations:
+      - name: getbillingpreviewrun
+        method: GET
+        description: Retrieve a billing preview run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: zuora-version
+          in: header
+          type: string
+          description: The minor version of the Zuora REST API. See [Minor Version](/api-references/api/overview/#section/API-Versions/Minor-Version)
+            for information about REST API ve
+        - name: billingPreviewRunId
+          in: path
+          type: string
+          description: Id of the billing preview run.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-billing-preview-run-rest
+    port: 8080
+    description: REST adapter for API Reference — Billing Preview Run. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/billing-preview-runs
+      name: v1-billing-preview-runs
+      description: REST surface for v1-billing-preview-runs.
+      operations:
+      - method: POST
+        name: postbillingpreviewrun
+        description: Create a billing preview run
+        call: v1-billing-preview-run.postbillingpreviewrun
+        with:
+          zuora-version: rest.zuora-version
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/billing-preview-runs/{billingpreviewrunid}
+      name: v1-billing-preview-runs-billingpreviewrunid
+      description: REST surface for v1-billing-preview-runs-billingPreviewRunId.
+      operations:
+      - method: GET
+        name: getbillingpreviewrun
+        description: Retrieve a billing preview run
+        call: v1-billing-preview-run.getbillingpreviewrun
+        with:
+          zuora-version: rest.zuora-version
+          billingPreviewRunId: rest.billingPreviewRunId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-billing-preview-run-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Billing Preview Run. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: create-billing-preview-run
+      description: Create a billing preview run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-billing-preview-run.postbillingpreviewrun
+      with:
+        zuora-version: tools.zuora-version
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-billing-preview-run
+      description: Retrieve a billing preview run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-billing-preview-run.getbillingpreviewrun
+      with:
+        zuora-version: tools.zuora-version
+        billingPreviewRunId: tools.billingPreviewRunId
+      outputParameters:
+      - type: object
+        mapping: $.

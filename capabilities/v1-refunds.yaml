@@ -1,0 +1,516 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Refunds
+  description: 'API Reference — Refunds. 9 operations. Lead operation: List refunds. Self-contained Naftiko capability covering
+    one Zuora business surface.'
+  tags:
+  - Zuora
+  - Refunds
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-refunds
+    baseUri: https://rest.zuora.com
+    description: API Reference — Refunds business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-refunds
+      path: /v1/refunds
+      operations:
+      - name: getrefunds
+        method: GET
+        description: List refunds
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: accountId
+          in: query
+          type: string
+          description: This parameter filters the response based on the `accountId` field.
+        - name: amount
+          in: query
+          type: number
+          description: This parameter filters the response based on the `amount` field.
+        - name: createdById
+          in: query
+          type: string
+          description: This parameter filters the response based on the `createdById` field.
+        - name: createdDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `createdDate` field.
+        - name: methodType
+          in: query
+          type: string
+          description: This parameter filters the response based on the `methodType` field.
+        - name: number
+          in: query
+          type: string
+          description: This parameter filters the response based on the `number` field.
+        - name: paymentId
+          in: query
+          type: string
+          description: This parameter filters the response based on the `paymentId` field.
+        - name: refundDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `refundDate` field.
+        - name: status
+          in: query
+          type: string
+          description: This parameter filters the response based on the `status` field.
+        - name: type
+          in: query
+          type: string
+          description: This parameter filters the response based on the `type` field.
+        - name: updatedById
+          in: query
+          type: string
+          description: This parameter filters the response based on the `updatedById` field.
+        - name: updatedDate
+          in: query
+          type: string
+          description: This parameter filters the response based on the `updatedDate` field.
+        - name: sort
+          in: query
+          type: string
+          description: This parameter restricts the order of the data returned in the response. You can use this parameter
+            to supply a dimension you want to sort on.
+    - name: v1-refunds-refundId
+      path: /v1/refunds/{refundId}
+      operations:
+      - name: putupdaterefund
+        method: PUT
+        description: Update a refund
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: refundId
+          in: path
+          type: string
+          description: The unique ID of a refund. For example, 4028905f5a87c0ff015a889e590e00c9.
+          required: true
+    - name: v1-refunds-refundKey
+      path: /v1/refunds/{refundKey}
+      operations:
+      - name: getrefund
+        method: GET
+        description: Retrieve a refund
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: refundKey
+          in: path
+          type: string
+          description: The unique ID of a refund or the refund number. For example, 4028905f5a87c0ff015a889e590e00c9.
+          required: true
+      - name: deleterefund
+        method: DELETE
+        description: Delete a refund
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: refundKey
+          in: path
+          type: string
+          description: The unique ID of a refund or the refund number. For example, 4028905f5a87c0ff015a889e590e00c9.
+          required: true
+    - name: v1-refunds-refundKey-cancel
+      path: /v1/refunds/{refundKey}/cancel
+      operations:
+      - name: putcancelrefund
+        method: PUT
+        description: Cancel a refund
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: refundKey
+          in: path
+          type: string
+          description: The unique ID of a refund or the refund number. For example, 4028905f5a87c0ff015a889e590e00c9.
+          required: true
+    - name: v1-refunds-refundKey-parts
+      path: /v1/refunds/{refundKey}/parts
+      operations:
+      - name: getrefundparts
+        method: GET
+        description: List all parts of a refund
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: refundKey
+          in: path
+          type: string
+          description: The number or unique ID of a refund. For example, 4028905f5a87c0ff015a889e590e00c9.
+          required: true
+    - name: v1-refunds-refundKey-parts-refundpartid
+      path: /v1/refunds/{refundKey}/parts/{refundpartid}
+      operations:
+      - name: getrefundpart
+        method: GET
+        description: Retrieve a refund part
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: refundpartid
+          in: path
+          type: string
+          description: The unique ID of a specific refund part. You can get the refund part ID from the response of [List
+            all parts of a refund](/api-references/api/operation/GET_Refu
+          required: true
+        - name: refundKey
+          in: path
+          type: string
+          description: The number or unique ID of a refund. For example, 4028905f5a87c0ff015a889e590e00c9.
+          required: true
+    - name: v1-refunds-refundKey-parts-refundpartid-itemparts
+      path: /v1/refunds/{refundKey}/parts/{refundpartid}/itemparts
+      operations:
+      - name: getrefunditemparts
+        method: GET
+        description: List all refund part items
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: refundpartid
+          in: path
+          type: string
+          description: The unique ID of a specific refund part. You can get the refund part ID from the response of [List
+            all parts of a refund](/api-references/api/operation/GET_Refu
+          required: true
+        - name: refundKey
+          in: path
+          type: string
+          description: The number or unique ID of a refund. For example, 4028905f5a87c0ff015a889e590e00c9.
+          required: true
+    - name: v1-refunds-refundKey-parts-refundpartid-itemparts-itempartid
+      path: /v1/refunds/{refundKey}/parts/{refundpartid}/itemparts/{itempartid}
+      operations:
+      - name: getrefunditempart
+        method: GET
+        description: Retrieve a refund part item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: itempartid
+          in: path
+          type: string
+          description: The unique ID of a specific refund part item. You can get the refund part item ID from the response
+            of [Get refund part items](/api-references/api/operation/GET
+          required: true
+        - name: refundpartid
+          in: path
+          type: string
+          description: The unique ID of a specific refund part. You can get the refund part ID from the response of [List
+            all parts of a refund](/api-references/api/operation/GET_Refu
+          required: true
+        - name: refundKey
+          in: path
+          type: string
+          description: The number or unique ID of a refund. For example, 4028905f5a87c0ff015a889e590e00c9.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-refunds-rest
+    port: 8080
+    description: REST adapter for API Reference — Refunds. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/refunds
+      name: v1-refunds
+      description: REST surface for v1-refunds.
+      operations:
+      - method: GET
+        name: getrefunds
+        description: List refunds
+        call: v1-refunds.getrefunds
+        with:
+          accountId: rest.accountId
+          amount: rest.amount
+          createdById: rest.createdById
+          createdDate: rest.createdDate
+          methodType: rest.methodType
+          number: rest.number
+          paymentId: rest.paymentId
+          refundDate: rest.refundDate
+          status: rest.status
+          type: rest.type
+          updatedById: rest.updatedById
+          updatedDate: rest.updatedDate
+          sort: rest.sort
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/refunds/{refundid}
+      name: v1-refunds-refundid
+      description: REST surface for v1-refunds-refundId.
+      operations:
+      - method: PUT
+        name: putupdaterefund
+        description: Update a refund
+        call: v1-refunds.putupdaterefund
+        with:
+          body: rest.body
+          refundId: rest.refundId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/refunds/{refundkey}
+      name: v1-refunds-refundkey
+      description: REST surface for v1-refunds-refundKey.
+      operations:
+      - method: GET
+        name: getrefund
+        description: Retrieve a refund
+        call: v1-refunds.getrefund
+        with:
+          refundKey: rest.refundKey
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleterefund
+        description: Delete a refund
+        call: v1-refunds.deleterefund
+        with:
+          refundKey: rest.refundKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/refunds/{refundkey}/cancel
+      name: v1-refunds-refundkey-cancel
+      description: REST surface for v1-refunds-refundKey-cancel.
+      operations:
+      - method: PUT
+        name: putcancelrefund
+        description: Cancel a refund
+        call: v1-refunds.putcancelrefund
+        with:
+          refundKey: rest.refundKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/refunds/{refundkey}/parts
+      name: v1-refunds-refundkey-parts
+      description: REST surface for v1-refunds-refundKey-parts.
+      operations:
+      - method: GET
+        name: getrefundparts
+        description: List all parts of a refund
+        call: v1-refunds.getrefundparts
+        with:
+          refundKey: rest.refundKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/refunds/{refundkey}/parts/{refundpartid}
+      name: v1-refunds-refundkey-parts-refundpartid
+      description: REST surface for v1-refunds-refundKey-parts-refundpartid.
+      operations:
+      - method: GET
+        name: getrefundpart
+        description: Retrieve a refund part
+        call: v1-refunds.getrefundpart
+        with:
+          refundpartid: rest.refundpartid
+          refundKey: rest.refundKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/refunds/{refundkey}/parts/{refundpartid}/itemparts
+      name: v1-refunds-refundkey-parts-refundpartid-itemparts
+      description: REST surface for v1-refunds-refundKey-parts-refundpartid-itemparts.
+      operations:
+      - method: GET
+        name: getrefunditemparts
+        description: List all refund part items
+        call: v1-refunds.getrefunditemparts
+        with:
+          refundpartid: rest.refundpartid
+          refundKey: rest.refundKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/refunds/{refundkey}/parts/{refundpartid}/itemparts/{itempartid}
+      name: v1-refunds-refundkey-parts-refundpartid-itemparts-itempartid
+      description: REST surface for v1-refunds-refundKey-parts-refundpartid-itemparts-itempartid.
+      operations:
+      - method: GET
+        name: getrefunditempart
+        description: Retrieve a refund part item
+        call: v1-refunds.getrefunditempart
+        with:
+          itempartid: rest.itempartid
+          refundpartid: rest.refundpartid
+          refundKey: rest.refundKey
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-refunds-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Refunds. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-refunds
+      description: List refunds
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-refunds.getrefunds
+      with:
+        accountId: tools.accountId
+        amount: tools.amount
+        createdById: tools.createdById
+        createdDate: tools.createdDate
+        methodType: tools.methodType
+        number: tools.number
+        paymentId: tools.paymentId
+        refundDate: tools.refundDate
+        status: tools.status
+        type: tools.type
+        updatedById: tools.updatedById
+        updatedDate: tools.updatedDate
+        sort: tools.sort
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-refund
+      description: Update a refund
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-refunds.putupdaterefund
+      with:
+        body: tools.body
+        refundId: tools.refundId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-refund
+      description: Retrieve a refund
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-refunds.getrefund
+      with:
+        refundKey: tools.refundKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-refund
+      description: Delete a refund
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-refunds.deleterefund
+      with:
+        refundKey: tools.refundKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-refund
+      description: Cancel a refund
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-refunds.putcancelrefund
+      with:
+        refundKey: tools.refundKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-parts-refund
+      description: List all parts of a refund
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-refunds.getrefundparts
+      with:
+        refundKey: tools.refundKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-refund-part
+      description: Retrieve a refund part
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-refunds.getrefundpart
+      with:
+        refundpartid: tools.refundpartid
+        refundKey: tools.refundKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-refund-part-items
+      description: List all refund part items
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-refunds.getrefunditemparts
+      with:
+        refundpartid: tools.refundpartid
+        refundKey: tools.refundKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-refund-part-item
+      description: Retrieve a refund part item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-refunds.getrefunditempart
+      with:
+        itempartid: tools.itempartid
+        refundpartid: tools.refundpartid
+        refundKey: tools.refundKey
+      outputParameters:
+      - type: object
+        mapping: $.

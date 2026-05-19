@@ -1,0 +1,202 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Aggregate Queries
+  description: 'API Reference — Aggregate Queries. 4 operations. Lead operation: Submit an aggregate query job. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Aggregate Queries
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-aggregate-queries
+    baseUri: https://rest.zuora.com
+    description: API Reference — Aggregate Queries business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-batch-query
+      path: /v1/batch-query/
+      operations:
+      - name: postbatchqueryjob
+        method: POST
+        description: Submit an aggregate query job
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-batch-query-jobs-partner-partner-project-project
+      path: /v1/batch-query/jobs/partner/{partner}/project/{project}
+      operations:
+      - name: getlastbatchqueryjob
+        method: GET
+        description: Retrieve the last completed aggregate query job
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: partner
+          in: path
+          type: string
+          description: The unique ID of a data integration partner.
+          required: true
+        - name: project
+          in: path
+          type: string
+          description: The unique ID of a data integration project for a particular partner.
+          required: true
+    - name: v1-batch-query-jobs-jobid
+      path: /v1/batch-query/jobs/{jobid}
+      operations:
+      - name: getbatchqueryjob
+        method: GET
+        description: Retrieve an aggregate query job
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: jobid
+          in: path
+          type: string
+          description: Internal identifier of the query job.
+          required: true
+      - name: deletebatchqueryjob
+        method: DELETE
+        description: Cancel a running aggregate query job
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: jobid
+          in: path
+          type: string
+          description: Internal identifier of the query job.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-aggregate-queries-rest
+    port: 8080
+    description: REST adapter for API Reference — Aggregate Queries. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/batch-query
+      name: v1-batch-query
+      description: REST surface for v1-batch-query.
+      operations:
+      - method: POST
+        name: postbatchqueryjob
+        description: Submit an aggregate query job
+        call: v1-aggregate-queries.postbatchqueryjob
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/batch-query/jobs/partner/{partner}/project/{project}
+      name: v1-batch-query-jobs-partner-partner-project-project
+      description: REST surface for v1-batch-query-jobs-partner-partner-project-project.
+      operations:
+      - method: GET
+        name: getlastbatchqueryjob
+        description: Retrieve the last completed aggregate query job
+        call: v1-aggregate-queries.getlastbatchqueryjob
+        with:
+          partner: rest.partner
+          project: rest.project
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/batch-query/jobs/{jobid}
+      name: v1-batch-query-jobs-jobid
+      description: REST surface for v1-batch-query-jobs-jobid.
+      operations:
+      - method: GET
+        name: getbatchqueryjob
+        description: Retrieve an aggregate query job
+        call: v1-aggregate-queries.getbatchqueryjob
+        with:
+          jobid: rest.jobid
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletebatchqueryjob
+        description: Cancel a running aggregate query job
+        call: v1-aggregate-queries.deletebatchqueryjob
+        with:
+          jobid: rest.jobid
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-aggregate-queries-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Aggregate Queries. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: submit-aggregate-query-job
+      description: Submit an aggregate query job
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: v1-aggregate-queries.postbatchqueryjob
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-last-completed-aggregate-query
+      description: Retrieve the last completed aggregate query job
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-aggregate-queries.getlastbatchqueryjob
+      with:
+        partner: tools.partner
+        project: tools.project
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-aggregate-query-job
+      description: Retrieve an aggregate query job
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-aggregate-queries.getbatchqueryjob
+      with:
+        jobid: tools.jobid
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-running-aggregate-query-job
+      description: Cancel a running aggregate query job
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-aggregate-queries.deletebatchqueryjob
+      with:
+        jobid: tools.jobid
+      outputParameters:
+      - type: object
+        mapping: $.

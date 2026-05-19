@@ -1,0 +1,297 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Bill Run
+  description: 'API Reference — Bill Run. 6 operations. Lead operation: Create a bill run. Self-contained Naftiko capability
+    covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Bill Run
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-bill-run
+    baseUri: https://rest.zuora.com
+    description: API Reference — Bill Run business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-bill-runs
+      path: /v1/bill-runs
+      operations:
+      - name: postcreatebillrun
+        method: POST
+        description: Create a bill run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-bill-runs-billRunId
+      path: /v1/bill-runs/{billRunId}
+      operations:
+      - name: getbillrun
+        method: GET
+        description: Retrieve a bill run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: billRunId
+          in: path
+          type: string
+          description: The unique ID of a bill run.
+          required: true
+      - name: deletedeletebillrun
+        method: DELETE
+        description: Delete a bill run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: billRunId
+          in: path
+          type: string
+          description: The unique ID of a bill run.
+          required: true
+    - name: v1-bill-runs-billRunId-cancel
+      path: /v1/bill-runs/{billRunId}/cancel
+      operations:
+      - name: putcancelbillrun
+        method: PUT
+        description: Cancel a bill run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: billRunId
+          in: path
+          type: string
+          description: The unique ID of a bill run.
+          required: true
+        - name: Request
+          in: body
+          type: object
+          required: true
+    - name: v1-bill-runs-billRunId-post
+      path: /v1/bill-runs/{billRunId}/post
+      operations:
+      - name: putpostbillrun
+        method: PUT
+        description: Post a bill run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: billRunId
+          in: path
+          type: string
+          description: The unique ID of a bill run.
+          required: true
+        - name: Request
+          in: body
+          type: object
+          required: true
+    - name: v1-bill-runs-billRunKey-emails
+      path: /v1/bill-runs/{billRunKey}/emails
+      operations:
+      - name: postemailbillingdocumentsfrombillrun
+        method: POST
+        description: Email billing documents generated from a bill run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: billRunKey
+          in: path
+          type: string
+          description: The ID or number of the bill run. For example, 2c92c8f95d0c886e015d11287a8f0f8b or BR-00000001.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-bill-run-rest
+    port: 8080
+    description: REST adapter for API Reference — Bill Run. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/bill-runs
+      name: v1-bill-runs
+      description: REST surface for v1-bill-runs.
+      operations:
+      - method: POST
+        name: postcreatebillrun
+        description: Create a bill run
+        call: v1-bill-run.postcreatebillrun
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/bill-runs/{billrunid}
+      name: v1-bill-runs-billrunid
+      description: REST surface for v1-bill-runs-billRunId.
+      operations:
+      - method: GET
+        name: getbillrun
+        description: Retrieve a bill run
+        call: v1-bill-run.getbillrun
+        with:
+          billRunId: rest.billRunId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletedeletebillrun
+        description: Delete a bill run
+        call: v1-bill-run.deletedeletebillrun
+        with:
+          billRunId: rest.billRunId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/bill-runs/{billrunid}/cancel
+      name: v1-bill-runs-billrunid-cancel
+      description: REST surface for v1-bill-runs-billRunId-cancel.
+      operations:
+      - method: PUT
+        name: putcancelbillrun
+        description: Cancel a bill run
+        call: v1-bill-run.putcancelbillrun
+        with:
+          billRunId: rest.billRunId
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/bill-runs/{billrunid}/post
+      name: v1-bill-runs-billrunid-post
+      description: REST surface for v1-bill-runs-billRunId-post.
+      operations:
+      - method: PUT
+        name: putpostbillrun
+        description: Post a bill run
+        call: v1-bill-run.putpostbillrun
+        with:
+          billRunId: rest.billRunId
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/bill-runs/{billrunkey}/emails
+      name: v1-bill-runs-billrunkey-emails
+      description: REST surface for v1-bill-runs-billRunKey-emails.
+      operations:
+      - method: POST
+        name: postemailbillingdocumentsfrombillrun
+        description: Email billing documents generated from a bill run
+        call: v1-bill-run.postemailbillingdocumentsfrombillrun
+        with:
+          billRunKey: rest.billRunKey
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-bill-run-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Bill Run. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create-bill-run
+      description: Create a bill run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-bill-run.postcreatebillrun
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-bill-run
+      description: Retrieve a bill run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-bill-run.getbillrun
+      with:
+        billRunId: tools.billRunId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-bill-run
+      description: Delete a bill run
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-bill-run.deletedeletebillrun
+      with:
+        billRunId: tools.billRunId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-bill-run
+      description: Cancel a bill run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-bill-run.putcancelbillrun
+      with:
+        billRunId: tools.billRunId
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: post-bill-run
+      description: Post a bill run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-bill-run.putpostbillrun
+      with:
+        billRunId: tools.billRunId
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: email-billing-documents-generated-bill
+      description: Email billing documents generated from a bill run
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-bill-run.postemailbillingdocumentsfrombillrun
+      with:
+        billRunKey: tools.billRunKey
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,387 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Accounting Periods
+  description: 'API Reference — Accounting Periods. 9 operations. Lead operation: Create an accounting period. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Accounting Periods
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-accounting-periods
+    baseUri: https://rest.zuora.com
+    description: API Reference — Accounting Periods business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-accounting-periods
+      path: /v1/accounting-periods
+      operations:
+      - name: postaccountingperiod
+        method: POST
+        description: Create an accounting period
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: getallaccountingperiods
+        method: GET
+        description: List all accounting periods
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-accounting-periods-ap-id
+      path: /v1/accounting-periods/{ap-id}
+      operations:
+      - name: getaccountingperiod
+        method: GET
+        description: Retrieve an accounting period
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ap-id
+          in: path
+          type: string
+          description: ID of the accounting period you want to get.
+          required: true
+      - name: putupdateaccountingperiod
+        method: PUT
+        description: Update an accounting period
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ap-id
+          in: path
+          type: string
+          description: ID of the accounting period you want to update.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: deleteaccountingperiod
+        method: DELETE
+        description: Delete an accounting period
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ap-id
+          in: path
+          type: string
+          description: ID of the accounting period you want to delete.
+          required: true
+    - name: v1-accounting-periods-ap-id-close
+      path: /v1/accounting-periods/{ap-id}/close
+      operations:
+      - name: putcloseaccountingperiod
+        method: PUT
+        description: Close an accounting period
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ap-id
+          in: path
+          type: string
+          description: ID of the accounting period you want to close.
+          required: true
+    - name: v1-accounting-periods-ap-id-pending-close
+      path: /v1/accounting-periods/{ap-id}/pending-close
+      operations:
+      - name: putpendingcloseaccountingperiod
+        method: PUT
+        description: Set an accounting period to pending close
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ap-id
+          in: path
+          type: string
+          description: ID of the accounting period you want to set to pending close.
+          required: true
+    - name: v1-accounting-periods-ap-id-reopen
+      path: /v1/accounting-periods/{ap-id}/reopen
+      operations:
+      - name: putreopenaccountingperiod
+        method: PUT
+        description: Reopen an accounting period
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ap-id
+          in: path
+          type: string
+          description: ID of the accounting period that you want to re-open.
+          required: true
+    - name: v1-accounting-periods-ap-id-run-trial-balance
+      path: /v1/accounting-periods/{ap-id}/run-trial-balance
+      operations:
+      - name: putruntrialbalance
+        method: PUT
+        description: Run trial balance
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ap-id
+          in: path
+          type: string
+          description: ID of the accounting period for which you want to run a trial balance.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-accounting-periods-rest
+    port: 8080
+    description: REST adapter for API Reference — Accounting Periods. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/accounting-periods
+      name: v1-accounting-periods
+      description: REST surface for v1-accounting-periods.
+      operations:
+      - method: POST
+        name: postaccountingperiod
+        description: Create an accounting period
+        call: v1-accounting-periods.postaccountingperiod
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getallaccountingperiods
+        description: List all accounting periods
+        call: v1-accounting-periods.getallaccountingperiods
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounting-periods/{ap-id}
+      name: v1-accounting-periods-ap-id
+      description: REST surface for v1-accounting-periods-ap-id.
+      operations:
+      - method: GET
+        name: getaccountingperiod
+        description: Retrieve an accounting period
+        call: v1-accounting-periods.getaccountingperiod
+        with:
+          ap-id: rest.ap-id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putupdateaccountingperiod
+        description: Update an accounting period
+        call: v1-accounting-periods.putupdateaccountingperiod
+        with:
+          ap-id: rest.ap-id
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteaccountingperiod
+        description: Delete an accounting period
+        call: v1-accounting-periods.deleteaccountingperiod
+        with:
+          ap-id: rest.ap-id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounting-periods/{ap-id}/close
+      name: v1-accounting-periods-ap-id-close
+      description: REST surface for v1-accounting-periods-ap-id-close.
+      operations:
+      - method: PUT
+        name: putcloseaccountingperiod
+        description: Close an accounting period
+        call: v1-accounting-periods.putcloseaccountingperiod
+        with:
+          ap-id: rest.ap-id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounting-periods/{ap-id}/pending-close
+      name: v1-accounting-periods-ap-id-pending-close
+      description: REST surface for v1-accounting-periods-ap-id-pending-close.
+      operations:
+      - method: PUT
+        name: putpendingcloseaccountingperiod
+        description: Set an accounting period to pending close
+        call: v1-accounting-periods.putpendingcloseaccountingperiod
+        with:
+          ap-id: rest.ap-id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounting-periods/{ap-id}/reopen
+      name: v1-accounting-periods-ap-id-reopen
+      description: REST surface for v1-accounting-periods-ap-id-reopen.
+      operations:
+      - method: PUT
+        name: putreopenaccountingperiod
+        description: Reopen an accounting period
+        call: v1-accounting-periods.putreopenaccountingperiod
+        with:
+          ap-id: rest.ap-id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/accounting-periods/{ap-id}/run-trial-balance
+      name: v1-accounting-periods-ap-id-run-trial-balance
+      description: REST surface for v1-accounting-periods-ap-id-run-trial-balance.
+      operations:
+      - method: PUT
+        name: putruntrialbalance
+        description: Run trial balance
+        call: v1-accounting-periods.putruntrialbalance
+        with:
+          ap-id: rest.ap-id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-accounting-periods-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Accounting Periods. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: create-accounting-period
+      description: Create an accounting period
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-accounting-periods.postaccountingperiod
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-accounting-periods
+      description: List all accounting periods
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-accounting-periods.getallaccountingperiods
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-accounting-period
+      description: Retrieve an accounting period
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-accounting-periods.getaccountingperiod
+      with:
+        ap-id: tools.ap-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-accounting-period
+      description: Update an accounting period
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-accounting-periods.putupdateaccountingperiod
+      with:
+        ap-id: tools.ap-id
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-accounting-period
+      description: Delete an accounting period
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-accounting-periods.deleteaccountingperiod
+      with:
+        ap-id: tools.ap-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: close-accounting-period
+      description: Close an accounting period
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-accounting-periods.putcloseaccountingperiod
+      with:
+        ap-id: tools.ap-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-accounting-period-pending-close
+      description: Set an accounting period to pending close
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-accounting-periods.putpendingcloseaccountingperiod
+      with:
+        ap-id: tools.ap-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: reopen-accounting-period
+      description: Reopen an accounting period
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-accounting-periods.putreopenaccountingperiod
+      with:
+        ap-id: tools.ap-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: run-trial-balance
+      description: Run trial balance
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-accounting-periods.putruntrialbalance
+      with:
+        ap-id: tools.ap-id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,77 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Hosted Pages
+  description: 'API Reference — Hosted Pages. 1 operations. Lead operation: List hosted pages. Self-contained Naftiko capability
+    covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Hosted Pages
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-hosted-pages
+    baseUri: https://rest.zuora.com
+    description: API Reference — Hosted Pages business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-hostedpages
+      path: /v1/hostedpages
+      operations:
+      - name: gethostedpages
+        method: GET
+        description: List hosted pages
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: versionNumber
+          in: query
+          type: string
+          description: Version of the Payment Pages for which you want to retrieve the configuration information. Specify
+            2 for Payment Pages 2.0.
+  exposes:
+  - type: rest
+    namespace: v1-hosted-pages-rest
+    port: 8080
+    description: REST adapter for API Reference — Hosted Pages. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/hostedpages
+      name: v1-hostedpages
+      description: REST surface for v1-hostedpages.
+      operations:
+      - method: GET
+        name: gethostedpages
+        description: List hosted pages
+        call: v1-hosted-pages.gethostedpages
+        with:
+          versionNumber: rest.versionNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-hosted-pages-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Hosted Pages. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-hosted-pages
+      description: List hosted pages
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-hosted-pages.gethostedpages
+      with:
+        versionNumber: tools.versionNumber
+      outputParameters:
+      - type: object
+        mapping: $.

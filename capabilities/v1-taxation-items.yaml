@@ -1,0 +1,194 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Taxation Items
+  description: 'API Reference — Taxation Items. 4 operations. Lead operation: CRUD: Create a taxation item. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Taxation Items
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-taxation-items
+    baseUri: https://rest.zuora.com
+    description: API Reference — Taxation Items business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-object-taxation-item
+      path: /v1/object/taxation-item
+      operations:
+      - name: objectposttaxationitem
+        method: POST
+        description: 'CRUD: Create a taxation item'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: CreateRequest
+          in: body
+          type: string
+          required: true
+    - name: v1-taxationitems-id
+      path: /v1/taxationitems/{id}
+      operations:
+      - name: puttaxationitem
+        method: PUT
+        description: Update a taxation item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+        - name: id
+          in: path
+          type: string
+          description: The unique ID of a taxation item.
+          required: true
+      - name: gettaxationitem
+        method: GET
+        description: Retrieve a taxation item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: The unique ID of a taxation item.
+          required: true
+      - name: deletetaxationitem
+        method: DELETE
+        description: Delete a taxation item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: The unique ID of a taxation item.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-taxation-items-rest
+    port: 8080
+    description: REST adapter for API Reference — Taxation Items. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/object/taxation-item
+      name: v1-object-taxation-item
+      description: REST surface for v1-object-taxation-item.
+      operations:
+      - method: POST
+        name: objectposttaxationitem
+        description: 'CRUD: Create a taxation item'
+        call: v1-taxation-items.objectposttaxationitem
+        with:
+          CreateRequest: rest.CreateRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/taxationitems/{id}
+      name: v1-taxationitems-id
+      description: REST surface for v1-taxationitems-id.
+      operations:
+      - method: PUT
+        name: puttaxationitem
+        description: Update a taxation item
+        call: v1-taxation-items.puttaxationitem
+        with:
+          body: rest.body
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: gettaxationitem
+        description: Retrieve a taxation item
+        call: v1-taxation-items.gettaxationitem
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletetaxationitem
+        description: Delete a taxation item
+        call: v1-taxation-items.deletetaxationitem
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-taxation-items-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Taxation Items. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: crud-create-taxation-item
+      description: 'CRUD: Create a taxation item'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-taxation-items.objectposttaxationitem
+      with:
+        CreateRequest: tools.CreateRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-taxation-item
+      description: Update a taxation item
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-taxation-items.puttaxationitem
+      with:
+        body: tools.body
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-taxation-item
+      description: Retrieve a taxation item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-taxation-items.gettaxationitem
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-taxation-item
+      description: Delete a taxation item
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-taxation-items.deletetaxationitem
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

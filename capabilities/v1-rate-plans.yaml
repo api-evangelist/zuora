@@ -1,0 +1,77 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Rate Plans
+  description: 'API Reference — Rate Plans. 1 operations. Lead operation: Retrieve a rate plan. Self-contained Naftiko capability
+    covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Rate Plans
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-rate-plans
+    baseUri: https://rest.zuora.com
+    description: API Reference — Rate Plans business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-rateplans-ratePlanId
+      path: /v1/rateplans/{ratePlanId}
+      operations:
+      - name: getrateplan
+        method: GET
+        description: Retrieve a rate plan
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ratePlanId
+          in: path
+          type: string
+          description: The ID of the subscription rate plan to be retrieved.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-rate-plans-rest
+    port: 8080
+    description: REST adapter for API Reference — Rate Plans. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/rateplans/{rateplanid}
+      name: v1-rateplans-rateplanid
+      description: REST surface for v1-rateplans-ratePlanId.
+      operations:
+      - method: GET
+        name: getrateplan
+        description: Retrieve a rate plan
+        call: v1-rate-plans.getrateplan
+        with:
+          ratePlanId: rest.ratePlanId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-rate-plans-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Rate Plans. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: retrieve-rate-plan
+      description: Retrieve a rate plan
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-rate-plans.getrateplan
+      with:
+        ratePlanId: tools.ratePlanId
+      outputParameters:
+      - type: object
+        mapping: $.

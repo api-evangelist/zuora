@@ -1,0 +1,240 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Actions
+  description: 'API Reference — Actions. 5 operations. Lead operation: Create. Self-contained Naftiko capability covering
+    one Zuora business surface.'
+  tags:
+  - Zuora
+  - Actions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-actions
+    baseUri: https://rest.zuora.com
+    description: API Reference — Actions business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-action-create
+      path: /v1/action/create
+      operations:
+      - name: actionpostcreate
+        method: POST
+        description: Create
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: createRequest
+          in: body
+          type: string
+          required: true
+    - name: v1-action-delete
+      path: /v1/action/delete
+      operations:
+      - name: actionpostdelete
+        method: POST
+        description: Delete
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deleteRequest
+          in: body
+          type: string
+          required: true
+    - name: v1-action-query
+      path: /v1/action/query
+      operations:
+      - name: actionpostquery
+        method: POST
+        description: Query
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: queryRequest
+          in: body
+          type: string
+          required: true
+    - name: v1-action-queryMore
+      path: /v1/action/queryMore
+      operations:
+      - name: actionpostquerymore
+        method: POST
+        description: QueryMore
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: queryMoreRequest
+          in: body
+          type: string
+          required: true
+    - name: v1-action-update
+      path: /v1/action/update
+      operations:
+      - name: actionpostupdate
+        method: POST
+        description: Update
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: updateRequest
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-actions-rest
+    port: 8080
+    description: REST adapter for API Reference — Actions. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/action/create
+      name: v1-action-create
+      description: REST surface for v1-action-create.
+      operations:
+      - method: POST
+        name: actionpostcreate
+        description: Create
+        call: v1-actions.actionpostcreate
+        with:
+          createRequest: rest.createRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/action/delete
+      name: v1-action-delete
+      description: REST surface for v1-action-delete.
+      operations:
+      - method: POST
+        name: actionpostdelete
+        description: Delete
+        call: v1-actions.actionpostdelete
+        with:
+          deleteRequest: rest.deleteRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/action/query
+      name: v1-action-query
+      description: REST surface for v1-action-query.
+      operations:
+      - method: POST
+        name: actionpostquery
+        description: Query
+        call: v1-actions.actionpostquery
+        with:
+          queryRequest: rest.queryRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/action/querymore
+      name: v1-action-querymore
+      description: REST surface for v1-action-queryMore.
+      operations:
+      - method: POST
+        name: actionpostquerymore
+        description: QueryMore
+        call: v1-actions.actionpostquerymore
+        with:
+          queryMoreRequest: rest.queryMoreRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/action/update
+      name: v1-action-update
+      description: REST surface for v1-action-update.
+      operations:
+      - method: POST
+        name: actionpostupdate
+        description: Update
+        call: v1-actions.actionpostupdate
+        with:
+          updateRequest: rest.updateRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-actions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Actions. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create
+      description: Create
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-actions.actionpostcreate
+      with:
+        createRequest: tools.createRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete
+      description: Delete
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-actions.actionpostdelete
+      with:
+        deleteRequest: tools.deleteRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: query
+      description: Query
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: v1-actions.actionpostquery
+      with:
+        queryRequest: tools.queryRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: querymore
+      description: QueryMore
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: v1-actions.actionpostquerymore
+      with:
+        queryMoreRequest: tools.queryMoreRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update
+      description: Update
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-actions.actionpostupdate
+      with:
+        updateRequest: tools.updateRequest
+      outputParameters:
+      - type: object
+        mapping: $.

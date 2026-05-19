@@ -1,0 +1,427 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Custom Object Records
+  description: 'API Reference — Custom Object Records. 7 operations. Lead operation: Update or delete custom object records.
+    Self-contained Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Custom Object Records
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-custom-object-records
+    baseUri: https://rest.zuora.com
+    description: API Reference — Custom Object Records business capability. Self-contained, no shared references.
+    resources:
+    - name: objects-batch-default-object
+      path: /objects/batch/default/{object}
+      operations:
+      - name: postcustomobjectrecordsbatchupdateordelete
+        method: POST
+        description: Update or delete custom object records
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Zuora-Version
+          in: header
+          type: string
+          description: API version that determines the response schema. The default version is used if this parameter is not
+            included. Specify `Zuora-Version` in the request header if
+        - name: object
+          in: path
+          type: string
+          description: Specifies the custom object's API name as object. It is case-sensitive.
+          required: true
+        - name: CustomObjectRecordBatchRequest
+          in: body
+          type: string
+          required: true
+    - name: objects-records-default-object
+      path: /objects/records/default/{object}
+      operations:
+      - name: postcustomobjectrecords
+        method: POST
+        description: Create custom object records
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Zuora-Version
+          in: header
+          type: string
+          description: API version that determines the response schema. The default version is used if this parameter is not
+            included. Specify `Zuora-Version` in the request header if
+        - name: object
+          in: path
+          type: string
+          description: Specifies the custom object's API name as object. It is case-sensitive.
+          required: true
+        - name: custom objects records
+          in: body
+          type: string
+          required: true
+      - name: getallrecordsforcustomobjecttype
+        method: GET
+        description: List records for a custom object
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Zuora-Version
+          in: header
+          type: string
+          description: API version that determines the response schema. The default version is used if this parameter is not
+            included. Specify `Zuora-Version` in the request header if
+        - name: object
+          in: path
+          type: string
+          description: Specifies the custom object's API name as object. It is case-sensitive.
+          required: true
+        - name: q
+          in: query
+          type: string
+          description: The query string to filter the records of a custom object. See the [Query syntax of custom object records](https://knowledgecenter.zuora.com/BB_Introducing_Z_Bu
+        - name: ids
+          in: query
+          type: string
+          description: 'UUIDs of the records to be queried. Each UUID must be a string of 36 characters. For example:'
+        - name: pageSize
+          in: query
+          type: integer
+          description: The number of records returned per page in the response.
+        - name: cursor
+          in: query
+          type: string
+          description: The `cursor` points to the last record of the previous result set. The cursor record is not included
+            in the query result. The call returns the first page if `cu
+    - name: objects-records-default-object-id
+      path: /objects/records/default/{object}/{id}
+      operations:
+      - name: getcustomobjectrecordbyid
+        method: GET
+        description: Retrieve a custom object record
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Zuora-Version
+          in: header
+          type: string
+          description: API version that determines the response schema. The default version is used if this parameter is not
+            included. Specify `Zuora-Version` in the request header if
+        - name: object
+          in: path
+          type: string
+          description: Specifies the custom object's API name as object. It is case-sensitive.
+          required: true
+        - name: id
+          in: path
+          type: string
+          description: Id identifier in uuid form
+          required: true
+      - name: putcustomobjectrecord
+        method: PUT
+        description: Update a custom object record
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Zuora-Version
+          in: header
+          type: string
+          description: API version that determines the response schema. The default version is used if this parameter is not
+            included. Specify `Zuora-Version` in the request header if
+        - name: object
+          in: path
+          type: string
+          description: Specifies the custom object's API name as object. It is case-sensitive.
+          required: true
+        - name: id
+          in: path
+          type: string
+          description: Id identifier in uuid form
+          required: true
+        - name: objectRecordRequest
+          in: body
+          type: string
+          required: true
+      - name: patchpartialupdatecustomobjectrecord
+        method: PATCH
+        description: Partially update a custom object record
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Zuora-Version
+          in: header
+          type: string
+          description: API version that determines the response schema. The default version is used if this parameter is not
+            included. Specify `Zuora-Version` in the request header if
+        - name: object
+          in: path
+          type: string
+          description: Specifies the custom object's API name as object. It is case-sensitive.
+          required: true
+        - name: id
+          in: path
+          type: string
+          description: Id identifier in uuid form
+          required: true
+        - name: objectRecordPatchRequest
+          in: body
+          type: string
+          required: true
+      - name: deletecustomobjectrecordbyid
+        method: DELETE
+        description: Delete a custom object record
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Zuora-Version
+          in: header
+          type: string
+          description: API version that determines the response schema. The default version is used if this parameter is not
+            included. Specify `Zuora-Version` in the request header if
+        - name: object
+          in: path
+          type: string
+          description: Specifies the custom object's API name as object. It is case-sensitive.
+          required: true
+        - name: id
+          in: path
+          type: string
+          description: Id identifier in uuid form
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-custom-object-records-rest
+    port: 8080
+    description: REST adapter for API Reference — Custom Object Records. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/objects/batch/default/{object}
+      name: objects-batch-default-object
+      description: REST surface for objects-batch-default-object.
+      operations:
+      - method: POST
+        name: postcustomobjectrecordsbatchupdateordelete
+        description: Update or delete custom object records
+        call: v1-custom-object-records.postcustomobjectrecordsbatchupdateordelete
+        with:
+          Zuora-Version: rest.Zuora-Version
+          object: rest.object
+          CustomObjectRecordBatchRequest: rest.CustomObjectRecordBatchRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/objects/records/default/{object}
+      name: objects-records-default-object
+      description: REST surface for objects-records-default-object.
+      operations:
+      - method: POST
+        name: postcustomobjectrecords
+        description: Create custom object records
+        call: v1-custom-object-records.postcustomobjectrecords
+        with:
+          Zuora-Version: rest.Zuora-Version
+          object: rest.object
+          custom objects records: rest.custom objects records
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getallrecordsforcustomobjecttype
+        description: List records for a custom object
+        call: v1-custom-object-records.getallrecordsforcustomobjecttype
+        with:
+          Zuora-Version: rest.Zuora-Version
+          object: rest.object
+          q: rest.q
+          ids: rest.ids
+          pageSize: rest.pageSize
+          cursor: rest.cursor
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/objects/records/default/{object}/{id}
+      name: objects-records-default-object-id
+      description: REST surface for objects-records-default-object-id.
+      operations:
+      - method: GET
+        name: getcustomobjectrecordbyid
+        description: Retrieve a custom object record
+        call: v1-custom-object-records.getcustomobjectrecordbyid
+        with:
+          Zuora-Version: rest.Zuora-Version
+          object: rest.object
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putcustomobjectrecord
+        description: Update a custom object record
+        call: v1-custom-object-records.putcustomobjectrecord
+        with:
+          Zuora-Version: rest.Zuora-Version
+          object: rest.object
+          id: rest.id
+          objectRecordRequest: rest.objectRecordRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchpartialupdatecustomobjectrecord
+        description: Partially update a custom object record
+        call: v1-custom-object-records.patchpartialupdatecustomobjectrecord
+        with:
+          Zuora-Version: rest.Zuora-Version
+          object: rest.object
+          id: rest.id
+          objectRecordPatchRequest: rest.objectRecordPatchRequest
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletecustomobjectrecordbyid
+        description: Delete a custom object record
+        call: v1-custom-object-records.deletecustomobjectrecordbyid
+        with:
+          Zuora-Version: rest.Zuora-Version
+          object: rest.object
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-custom-object-records-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Custom Object Records. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: update-delete-custom-object-records
+      description: Update or delete custom object records
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-custom-object-records.postcustomobjectrecordsbatchupdateordelete
+      with:
+        Zuora-Version: tools.Zuora-Version
+        object: tools.object
+        CustomObjectRecordBatchRequest: tools.CustomObjectRecordBatchRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-custom-object-records
+      description: Create custom object records
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-custom-object-records.postcustomobjectrecords
+      with:
+        Zuora-Version: tools.Zuora-Version
+        object: tools.object
+        custom objects records: tools.custom objects records
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-records-custom-object
+      description: List records for a custom object
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-custom-object-records.getallrecordsforcustomobjecttype
+      with:
+        Zuora-Version: tools.Zuora-Version
+        object: tools.object
+        q: tools.q
+        ids: tools.ids
+        pageSize: tools.pageSize
+        cursor: tools.cursor
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-custom-object-record
+      description: Retrieve a custom object record
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-custom-object-records.getcustomobjectrecordbyid
+      with:
+        Zuora-Version: tools.Zuora-Version
+        object: tools.object
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-custom-object-record
+      description: Update a custom object record
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-custom-object-records.putcustomobjectrecord
+      with:
+        Zuora-Version: tools.Zuora-Version
+        object: tools.object
+        id: tools.id
+        objectRecordRequest: tools.objectRecordRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: partially-update-custom-object-record
+      description: Partially update a custom object record
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-custom-object-records.patchpartialupdatecustomobjectrecord
+      with:
+        Zuora-Version: tools.Zuora-Version
+        object: tools.object
+        id: tools.id
+        objectRecordPatchRequest: tools.objectRecordPatchRequest
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-custom-object-record
+      description: Delete a custom object record
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-custom-object-records.deletecustomobjectrecordbyid
+      with:
+        Zuora-Version: tools.Zuora-Version
+        object: tools.object
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

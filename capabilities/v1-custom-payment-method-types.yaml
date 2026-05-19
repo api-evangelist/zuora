@@ -1,0 +1,257 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Custom Payment Method Types
+  description: 'API Reference — Custom Payment Method Types. 5 operations. Lead operation: Create a draft custom payment method
+    type. Self-contained Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Custom Payment Method Types
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-custom-payment-method-types
+    baseUri: https://rest.zuora.com
+    description: API Reference — Custom Payment Method Types business capability. Self-contained, no shared references.
+    resources:
+    - name: open-payment-method-types
+      path: /open-payment-method-types
+      operations:
+      - name: postcreatedraftopenpaymentmethodtype
+        method: POST
+        description: Create a draft custom payment method type
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: open-payment-method-types-publish-paymentMethodTypeName
+      path: /open-payment-method-types/publish/{paymentMethodTypeName}
+      operations:
+      - name: putpublishopenpaymentmethodtype
+        method: PUT
+        description: Publish a custom payment method type
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentMethodTypeName
+          in: path
+          type: string
+          description: The API name of the custom payment method type, such as `AmazonPay__c_12368`.
+          required: true
+    - name: open-payment-method-types-paymentMethodTypeName
+      path: /open-payment-method-types/{paymentMethodTypeName}
+      operations:
+      - name: putupdateopenpaymentmethodtype
+        method: PUT
+        description: Update a custom payment method type
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentMethodTypeName
+          in: path
+          type: string
+          description: The API name of the custom payment method type, such as `AmazonPay__c_12368`.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: open-payment-method-types-paymentMethodTypeName-draft-revisionNumber
+      path: /open-payment-method-types/{paymentMethodTypeName}/draft/{revisionNumber}
+      operations:
+      - name: getopenpaymentmethodtyperevision
+        method: GET
+        description: Retrieve a specific draft revision of a custom payment method type
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentMethodTypeName
+          in: path
+          type: string
+          description: The API name of the custom payment method type, such as `AmazonPay__c_12368`.
+          required: true
+        - name: revisionNumber
+          in: path
+          type: integer
+          description: The revision number of the draft revision to be retrieved.
+          required: true
+    - name: open-payment-method-types-paymentMethodTypeName-published
+      path: /open-payment-method-types/{paymentMethodTypeName}/published
+      operations:
+      - name: getopenpaymentmethodtypepublish
+        method: GET
+        description: Retrieve a published custom payment method type
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: paymentMethodTypeName
+          in: path
+          type: string
+          description: The API name of the custom payment method type, such as `AmazonPay__c_12368`.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-custom-payment-method-types-rest
+    port: 8080
+    description: REST adapter for API Reference — Custom Payment Method Types. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/open-payment-method-types
+      name: open-payment-method-types
+      description: REST surface for open-payment-method-types.
+      operations:
+      - method: POST
+        name: postcreatedraftopenpaymentmethodtype
+        description: Create a draft custom payment method type
+        call: v1-custom-payment-method-types.postcreatedraftopenpaymentmethodtype
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/open-payment-method-types/publish/{paymentmethodtypename}
+      name: open-payment-method-types-publish-paymentmethodtypename
+      description: REST surface for open-payment-method-types-publish-paymentMethodTypeName.
+      operations:
+      - method: PUT
+        name: putpublishopenpaymentmethodtype
+        description: Publish a custom payment method type
+        call: v1-custom-payment-method-types.putpublishopenpaymentmethodtype
+        with:
+          paymentMethodTypeName: rest.paymentMethodTypeName
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/open-payment-method-types/{paymentmethodtypename}
+      name: open-payment-method-types-paymentmethodtypename
+      description: REST surface for open-payment-method-types-paymentMethodTypeName.
+      operations:
+      - method: PUT
+        name: putupdateopenpaymentmethodtype
+        description: Update a custom payment method type
+        call: v1-custom-payment-method-types.putupdateopenpaymentmethodtype
+        with:
+          paymentMethodTypeName: rest.paymentMethodTypeName
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/open-payment-method-types/{paymentmethodtypename}/draft/{revisionnumber}
+      name: open-payment-method-types-paymentmethodtypename-draft-revisionnumber
+      description: REST surface for open-payment-method-types-paymentMethodTypeName-draft-revisionNumber.
+      operations:
+      - method: GET
+        name: getopenpaymentmethodtyperevision
+        description: Retrieve a specific draft revision of a custom payment method type
+        call: v1-custom-payment-method-types.getopenpaymentmethodtyperevision
+        with:
+          paymentMethodTypeName: rest.paymentMethodTypeName
+          revisionNumber: rest.revisionNumber
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/open-payment-method-types/{paymentmethodtypename}/published
+      name: open-payment-method-types-paymentmethodtypename-published
+      description: REST surface for open-payment-method-types-paymentMethodTypeName-published.
+      operations:
+      - method: GET
+        name: getopenpaymentmethodtypepublish
+        description: Retrieve a published custom payment method type
+        call: v1-custom-payment-method-types.getopenpaymentmethodtypepublish
+        with:
+          paymentMethodTypeName: rest.paymentMethodTypeName
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-custom-payment-method-types-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Custom Payment Method Types. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: create-draft-custom-payment-method
+      description: Create a draft custom payment method type
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-custom-payment-method-types.postcreatedraftopenpaymentmethodtype
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: publish-custom-payment-method-type
+      description: Publish a custom payment method type
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-custom-payment-method-types.putpublishopenpaymentmethodtype
+      with:
+        paymentMethodTypeName: tools.paymentMethodTypeName
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-custom-payment-method-type
+      description: Update a custom payment method type
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-custom-payment-method-types.putupdateopenpaymentmethodtype
+      with:
+        paymentMethodTypeName: tools.paymentMethodTypeName
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-specific-draft-revision-custom
+      description: Retrieve a specific draft revision of a custom payment method type
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-custom-payment-method-types.getopenpaymentmethodtyperevision
+      with:
+        paymentMethodTypeName: tools.paymentMethodTypeName
+        revisionNumber: tools.revisionNumber
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-published-custom-payment-method
+      description: Retrieve a published custom payment method type
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-custom-payment-method-types.getopenpaymentmethodtypepublish
+      with:
+        paymentMethodTypeName: tools.paymentMethodTypeName
+      outputParameters:
+      - type: object
+        mapping: $.

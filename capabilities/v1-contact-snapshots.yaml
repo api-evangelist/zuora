@@ -1,0 +1,77 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Contact Snapshots
+  description: 'API Reference — Contact Snapshots. 1 operations. Lead operation: Retrieve a contact snapshot. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Contact Snapshots
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-contact-snapshots
+    baseUri: https://rest.zuora.com
+    description: API Reference — Contact Snapshots business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-contact-snapshots-contact-snapshot-id
+      path: /v1/contact-snapshots/{contact-snapshot-id}
+      operations:
+      - name: getcontactsnapshot
+        method: GET
+        description: Retrieve a contact snapshot
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: contact-snapshot-id
+          in: path
+          type: string
+          description: The unique ID of the contact snapshot to be retrieved. For example, 2c92c8955bd63cc1015bd7c151af02ab.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-contact-snapshots-rest
+    port: 8080
+    description: REST adapter for API Reference — Contact Snapshots. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/contact-snapshots/{contact-snapshot-id}
+      name: v1-contact-snapshots-contact-snapshot-id
+      description: REST surface for v1-contact-snapshots-contact-snapshot-id.
+      operations:
+      - method: GET
+        name: getcontactsnapshot
+        description: Retrieve a contact snapshot
+        call: v1-contact-snapshots.getcontactsnapshot
+        with:
+          contact-snapshot-id: rest.contact-snapshot-id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-contact-snapshots-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Contact Snapshots. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: retrieve-contact-snapshot
+      description: Retrieve a contact snapshot
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-contact-snapshots.getcontactsnapshot
+      with:
+        contact-snapshot-id: tools.contact-snapshot-id
+      outputParameters:
+      - type: object
+        mapping: $.

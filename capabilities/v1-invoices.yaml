@@ -1,0 +1,761 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Invoices
+  description: 'API Reference — Invoices. 17 operations. Lead operation: Create a standalone invoice. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Invoices
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-invoices
+    baseUri: https://rest.zuora.com
+    description: API Reference — Invoices business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-invoices
+      path: /v1/invoices
+      operations:
+      - name: poststandaloneinvoice
+        method: POST
+        description: Create a standalone invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: putbatchupdateinvoices
+        method: PUT
+        description: Update invoices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-invoices-batch
+      path: /v1/invoices/batch
+      operations:
+      - name: poststandaloneinvoices
+        method: POST
+        description: Create standalone invoices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-invoices-bulk-post
+      path: /v1/invoices/bulk-post
+      operations:
+      - name: postpostinvoices
+        method: POST
+        description: Post invoices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-invoices-invoiceKey
+      path: /v1/invoices/{invoiceKey}
+      operations:
+      - name: putupdateinvoice
+        method: PUT
+        description: Update an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV-0000001.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: deletedeleteinvoice
+        method: DELETE
+        description: Delete an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice to be deleted. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV-0000001.
+          required: true
+      - name: getgetinvoice
+        method: GET
+        description: Retrieve an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV-0000001.
+          required: true
+    - name: v1-invoices-invoiceKey-application-parts
+      path: /v1/invoices/{invoiceKey}/application-parts
+      operations:
+      - name: getinvoiceapplicationparts
+        method: GET
+        description: List all application parts of an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV-0000001.
+          required: true
+    - name: v1-invoices-invoiceKey-einvoice-generate
+      path: /v1/invoices/{invoiceKey}/einvoice/generate
+      operations:
+      - name: putgenerationeinvoicegenerationforinvoices
+        method: PUT
+        description: Generate an e-invoice file for an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV-0000001.
+          required: true
+    - name: v1-invoices-invoiceKey-emails
+      path: /v1/invoices/{invoiceKey}/emails
+      operations:
+      - name: postemailinvoice
+        method: POST
+        description: Email an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV-0000001.
+          required: true
+    - name: v1-invoices-invoiceKey-files
+      path: /v1/invoices/{invoiceKey}/files
+      operations:
+      - name: postuploadfileforinvoice
+        method: POST
+        description: Upload a file for an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice that you want to upload a PDF file for. For example, 2c92c8955bd63cc1015bd7c151af02ab
+            or INV00000001.
+          required: true
+        - name: file
+          in: formData
+          type: file
+          description: The PDF file to upload for the invoice.
+      - name: getinvoicefiles
+        method: GET
+        description: List all files of an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The unique ID or number of an invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV00000001.
+          required: true
+    - name: v1-invoices-invoiceKey-items
+      path: /v1/invoices/{invoiceKey}/items
+      operations:
+      - name: getinvoiceitems
+        method: GET
+        description: List all items of an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The unique ID or number of an invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV00000001.
+          required: true
+    - name: v1-invoices-invoiceKey-items-itemId-taxation-items
+      path: /v1/invoices/{invoiceKey}/items/{itemId}/taxation-items
+      operations:
+      - name: gettaxationitemsofinvoiceitem
+        method: GET
+        description: List all taxation items of an invoice item
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The unique ID or number of an invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV00000001.
+          required: true
+        - name: itemId
+          in: path
+          type: string
+          description: The unique ID of an invoice item. For example, 2c86c8955bd63cc1015bd7c151af02ef.
+          required: true
+    - name: v1-invoices-invoiceKey-reverse
+      path: /v1/invoices/{invoiceKey}/reverse
+      operations:
+      - name: putreverseinvoice
+        method: PUT
+        description: Reverse an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV-0000001.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+    - name: v1-invoices-invoiceKey-taxationitems
+      path: /v1/invoices/{invoiceKey}/taxationitems
+      operations:
+      - name: postinvtaxationitems
+        method: POST
+        description: Create taxation items for an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The unique ID or number of an invoice. For example, 8a8082e65b27f6c3015ba45ff82c7172 or INV00000001.
+          required: true
+        - name: body
+          in: body
+          type: string
+          required: true
+    - name: v1-invoices-invoiceKey-write-off
+      path: /v1/invoices/{invoiceKey}/write-off
+      operations:
+      - name: putwriteoffinvoice
+        method: PUT
+        description: Write off an invoice
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceKey
+          in: path
+          type: string
+          description: The ID or number of the invoice. For example, 2c92c8955bd63cc1015bd7c151af02ab or INV-0000001.
+          required: true
+        - name: Request
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-invoices-rest
+    port: 8080
+    description: REST adapter for API Reference — Invoices. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/invoices
+      name: v1-invoices
+      description: REST surface for v1-invoices.
+      operations:
+      - method: POST
+        name: poststandaloneinvoice
+        description: Create a standalone invoice
+        call: v1-invoices.poststandaloneinvoice
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putbatchupdateinvoices
+        description: Update invoices
+        call: v1-invoices.putbatchupdateinvoices
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/batch
+      name: v1-invoices-batch
+      description: REST surface for v1-invoices-batch.
+      operations:
+      - method: POST
+        name: poststandaloneinvoices
+        description: Create standalone invoices
+        call: v1-invoices.poststandaloneinvoices
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/bulk-post
+      name: v1-invoices-bulk-post
+      description: REST surface for v1-invoices-bulk-post.
+      operations:
+      - method: POST
+        name: postpostinvoices
+        description: Post invoices
+        call: v1-invoices.postpostinvoices
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}
+      name: v1-invoices-invoicekey
+      description: REST surface for v1-invoices-invoiceKey.
+      operations:
+      - method: PUT
+        name: putupdateinvoice
+        description: Update an invoice
+        call: v1-invoices.putupdateinvoice
+        with:
+          invoiceKey: rest.invoiceKey
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletedeleteinvoice
+        description: Delete an invoice
+        call: v1-invoices.deletedeleteinvoice
+        with:
+          invoiceKey: rest.invoiceKey
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getgetinvoice
+        description: Retrieve an invoice
+        call: v1-invoices.getgetinvoice
+        with:
+          invoiceKey: rest.invoiceKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/application-parts
+      name: v1-invoices-invoicekey-application-parts
+      description: REST surface for v1-invoices-invoiceKey-application-parts.
+      operations:
+      - method: GET
+        name: getinvoiceapplicationparts
+        description: List all application parts of an invoice
+        call: v1-invoices.getinvoiceapplicationparts
+        with:
+          invoiceKey: rest.invoiceKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/einvoice/generate
+      name: v1-invoices-invoicekey-einvoice-generate
+      description: REST surface for v1-invoices-invoiceKey-einvoice-generate.
+      operations:
+      - method: PUT
+        name: putgenerationeinvoicegenerationforinvoices
+        description: Generate an e-invoice file for an invoice
+        call: v1-invoices.putgenerationeinvoicegenerationforinvoices
+        with:
+          invoiceKey: rest.invoiceKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/emails
+      name: v1-invoices-invoicekey-emails
+      description: REST surface for v1-invoices-invoiceKey-emails.
+      operations:
+      - method: POST
+        name: postemailinvoice
+        description: Email an invoice
+        call: v1-invoices.postemailinvoice
+        with:
+          Request: rest.Request
+          invoiceKey: rest.invoiceKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/files
+      name: v1-invoices-invoicekey-files
+      description: REST surface for v1-invoices-invoiceKey-files.
+      operations:
+      - method: POST
+        name: postuploadfileforinvoice
+        description: Upload a file for an invoice
+        call: v1-invoices.postuploadfileforinvoice
+        with:
+          invoiceKey: rest.invoiceKey
+          file: rest.file
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getinvoicefiles
+        description: List all files of an invoice
+        call: v1-invoices.getinvoicefiles
+        with:
+          invoiceKey: rest.invoiceKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/items
+      name: v1-invoices-invoicekey-items
+      description: REST surface for v1-invoices-invoiceKey-items.
+      operations:
+      - method: GET
+        name: getinvoiceitems
+        description: List all items of an invoice
+        call: v1-invoices.getinvoiceitems
+        with:
+          invoiceKey: rest.invoiceKey
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/items/{itemid}/taxation-items
+      name: v1-invoices-invoicekey-items-itemid-taxation-items
+      description: REST surface for v1-invoices-invoiceKey-items-itemId-taxation-items.
+      operations:
+      - method: GET
+        name: gettaxationitemsofinvoiceitem
+        description: List all taxation items of an invoice item
+        call: v1-invoices.gettaxationitemsofinvoiceitem
+        with:
+          invoiceKey: rest.invoiceKey
+          itemId: rest.itemId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/reverse
+      name: v1-invoices-invoicekey-reverse
+      description: REST surface for v1-invoices-invoiceKey-reverse.
+      operations:
+      - method: PUT
+        name: putreverseinvoice
+        description: Reverse an invoice
+        call: v1-invoices.putreverseinvoice
+        with:
+          invoiceKey: rest.invoiceKey
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/taxationitems
+      name: v1-invoices-invoicekey-taxationitems
+      description: REST surface for v1-invoices-invoiceKey-taxationitems.
+      operations:
+      - method: POST
+        name: postinvtaxationitems
+        description: Create taxation items for an invoice
+        call: v1-invoices.postinvtaxationitems
+        with:
+          invoiceKey: rest.invoiceKey
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/invoices/{invoicekey}/write-off
+      name: v1-invoices-invoicekey-write-off
+      description: REST surface for v1-invoices-invoiceKey-write-off.
+      operations:
+      - method: PUT
+        name: putwriteoffinvoice
+        description: Write off an invoice
+        call: v1-invoices.putwriteoffinvoice
+        with:
+          invoiceKey: rest.invoiceKey
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-invoices-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Invoices. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create-standalone-invoice
+      description: Create a standalone invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-invoices.poststandaloneinvoice
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-invoices
+      description: Update invoices
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-invoices.putbatchupdateinvoices
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-standalone-invoices
+      description: Create standalone invoices
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-invoices.poststandaloneinvoices
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: post-invoices
+      description: Post invoices
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-invoices.postpostinvoices
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-invoice
+      description: Update an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-invoices.putupdateinvoice
+      with:
+        invoiceKey: tools.invoiceKey
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-invoice
+      description: Delete an invoice
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-invoices.deletedeleteinvoice
+      with:
+        invoiceKey: tools.invoiceKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-invoice
+      description: Retrieve an invoice
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-invoices.getgetinvoice
+      with:
+        invoiceKey: tools.invoiceKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-application-parts-invoice
+      description: List all application parts of an invoice
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-invoices.getinvoiceapplicationparts
+      with:
+        invoiceKey: tools.invoiceKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-e-invoice-file-invoice
+      description: Generate an e-invoice file for an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-invoices.putgenerationeinvoicegenerationforinvoices
+      with:
+        invoiceKey: tools.invoiceKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: email-invoice
+      description: Email an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-invoices.postemailinvoice
+      with:
+        Request: tools.Request
+        invoiceKey: tools.invoiceKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: upload-file-invoice
+      description: Upload a file for an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-invoices.postuploadfileforinvoice
+      with:
+        invoiceKey: tools.invoiceKey
+        file: tools.file
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-files-invoice
+      description: List all files of an invoice
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-invoices.getinvoicefiles
+      with:
+        invoiceKey: tools.invoiceKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-items-invoice
+      description: List all items of an invoice
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-invoices.getinvoiceitems
+      with:
+        invoiceKey: tools.invoiceKey
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-taxation-items-invoice
+      description: List all taxation items of an invoice item
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-invoices.gettaxationitemsofinvoiceitem
+      with:
+        invoiceKey: tools.invoiceKey
+        itemId: tools.itemId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: reverse-invoice
+      description: Reverse an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-invoices.putreverseinvoice
+      with:
+        invoiceKey: tools.invoiceKey
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-taxation-items-invoice
+      description: Create taxation items for an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-invoices.postinvtaxationitems
+      with:
+        invoiceKey: tools.invoiceKey
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: write-off-invoice
+      description: Write off an invoice
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-invoices.putwriteoffinvoice
+      with:
+        invoiceKey: tools.invoiceKey
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,91 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — OAuth
+  description: 'API Reference — OAuth. 1 operations. Lead operation: Create an OAuth token. Self-contained Naftiko capability
+    covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - OAuth
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-oauth
+    baseUri: https://rest.zuora.com
+    description: API Reference — OAuth business capability. Self-contained, no shared references.
+    resources:
+    - name: oauth-token
+      path: /oauth/token
+      operations:
+      - name: createtoken
+        method: POST
+        description: Create an OAuth token
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: client_id
+          in: formData
+          type: string
+          description: The Client ID of the OAuth client.
+          required: true
+        - name: client_secret
+          in: formData
+          type: string
+          description: The Client Secret that was displayed when the OAuth client was created.
+          required: true
+        - name: grant_type
+          in: formData
+          type: string
+          description: The OAuth grant type that will be used to generate the token. The value of this parameter must be `client_credentials`.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-oauth-rest
+    port: 8080
+    description: REST adapter for API Reference — OAuth. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/oauth/token
+      name: oauth-token
+      description: REST surface for oauth-token.
+      operations:
+      - method: POST
+        name: createtoken
+        description: Create an OAuth token
+        call: v1-oauth.createtoken
+        with:
+          client_id: rest.client_id
+          client_secret: rest.client_secret
+          grant_type: rest.grant_type
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-oauth-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — OAuth. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create-oauth-token
+      description: Create an OAuth token
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-oauth.createtoken
+      with:
+        client_id: tools.client_id
+        client_secret: tools.client_secret
+        grant_type: tools.grant_type
+      outputParameters:
+      - type: object
+        mapping: $.

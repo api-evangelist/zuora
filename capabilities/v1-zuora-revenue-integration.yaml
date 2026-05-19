@@ -1,0 +1,76 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Zuora Revenue Integration
+  description: 'API Reference — Zuora Revenue Integration. 1 operations. Lead operation: Update a Zuora Revenue accounting
+    code. Self-contained Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Zuora Revenue Integration
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-zuora-revenue-integration
+    baseUri: https://rest.zuora.com
+    description: API Reference — Zuora Revenue Integration business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-revpro-accounting-codes
+      path: /v1/revpro-accounting-codes
+      operations:
+      - name: putrevproaccountingcodes
+        method: PUT
+        description: Update a Zuora Revenue accounting code
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-zuora-revenue-integration-rest
+    port: 8080
+    description: REST adapter for API Reference — Zuora Revenue Integration. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/v1/revpro-accounting-codes
+      name: v1-revpro-accounting-codes
+      description: REST surface for v1-revpro-accounting-codes.
+      operations:
+      - method: PUT
+        name: putrevproaccountingcodes
+        description: Update a Zuora Revenue accounting code
+        call: v1-zuora-revenue-integration.putrevproaccountingcodes
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-zuora-revenue-integration-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Zuora Revenue Integration. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: update-zuora-revenue-accounting-code
+      description: Update a Zuora Revenue accounting code
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-zuora-revenue-integration.putrevproaccountingcodes
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

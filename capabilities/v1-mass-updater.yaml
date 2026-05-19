@@ -1,0 +1,171 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Mass Updater
+  description: 'API Reference — Mass Updater. 3 operations. Lead operation: Perform a mass action. Self-contained Naftiko
+    capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Mass Updater
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-mass-updater
+    baseUri: https://rest.zuora.com
+    description: API Reference — Mass Updater business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-bulk
+      path: /v1/bulk
+      operations:
+      - name: postmassupdater
+        method: POST
+        description: Perform a mass action
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: file
+          in: formData
+          type: file
+          description: File containing data about the mass action you want to perform. The file requirements are the same
+            as when uploading a file through the Mass Updater in the Zuor
+          required: true
+        - name: params
+          in: formData
+          type: string
+          description: Container for the following fields. You must format this parameter as a JSON object.
+          required: true
+    - name: v1-bulk-bulk-key
+      path: /v1/bulk/{bulk-key}
+      operations:
+      - name: getmassupdater
+        method: GET
+        description: List all results of a mass action
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bulk-key
+          in: path
+          type: string
+          description: String of 32 characters that identifies a mass action. You get the bulk-key after performing a mass
+            action through the REST API.
+          required: true
+    - name: v1-bulk-bulk-key-stop
+      path: /v1/bulk/{bulk-key}/stop
+      operations:
+      - name: putmassupdater
+        method: PUT
+        description: Stop a mass action
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bulk-key
+          in: path
+          type: string
+          description: String of 32 characters that identifies a mass action. You get the bulk-key after performing a mass
+            action through the REST API.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-mass-updater-rest
+    port: 8080
+    description: REST adapter for API Reference — Mass Updater. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/bulk
+      name: v1-bulk
+      description: REST surface for v1-bulk.
+      operations:
+      - method: POST
+        name: postmassupdater
+        description: Perform a mass action
+        call: v1-mass-updater.postmassupdater
+        with:
+          file: rest.file
+          params: rest.params
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/bulk/{bulk-key}
+      name: v1-bulk-bulk-key
+      description: REST surface for v1-bulk-bulk-key.
+      operations:
+      - method: GET
+        name: getmassupdater
+        description: List all results of a mass action
+        call: v1-mass-updater.getmassupdater
+        with:
+          bulk-key: rest.bulk-key
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/bulk/{bulk-key}/stop
+      name: v1-bulk-bulk-key-stop
+      description: REST surface for v1-bulk-bulk-key-stop.
+      operations:
+      - method: PUT
+        name: putmassupdater
+        description: Stop a mass action
+        call: v1-mass-updater.putmassupdater
+        with:
+          bulk-key: rest.bulk-key
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-mass-updater-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Mass Updater. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: perform-mass-action
+      description: Perform a mass action
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-mass-updater.postmassupdater
+      with:
+        file: tools.file
+        params: tools.params
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-results-mass-action
+      description: List all results of a mass action
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-mass-updater.getmassupdater
+      with:
+        bulk-key: tools.bulk-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: stop-mass-action
+      description: Stop a mass action
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: v1-mass-updater.putmassupdater
+      with:
+        bulk-key: tools.bulk-key
+      outputParameters:
+      - type: object
+        mapping: $.

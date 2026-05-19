@@ -1,0 +1,76 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Sign Up
+  description: 'API Reference — Sign Up. 1 operations. Lead operation: Sign up. Self-contained Naftiko capability covering
+    one Zuora business surface.'
+  tags:
+  - Zuora
+  - Sign Up
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-sign-up
+    baseUri: https://rest.zuora.com
+    description: API Reference — Sign Up business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-sign-up
+      path: /v1/sign-up
+      operations:
+      - name: postsignup
+        method: POST
+        description: Sign up
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: string
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-sign-up-rest
+    port: 8080
+    description: REST adapter for API Reference — Sign Up. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/sign-up
+      name: v1-sign-up
+      description: REST surface for v1-sign-up.
+      operations:
+      - method: POST
+        name: postsignup
+        description: Sign up
+        call: v1-sign-up.postsignup
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-sign-up-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Sign Up. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: sign-up
+      description: Sign up
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-sign-up.postsignup
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

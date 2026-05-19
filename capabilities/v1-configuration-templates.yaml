@@ -1,0 +1,350 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Configuration Templates
+  description: 'API Reference — Configuration Templates. 8 operations. Lead operation: Download a template. Self-contained
+    Naftiko capability covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Configuration Templates
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-configuration-templates
+    baseUri: https://rest.zuora.com
+    description: API Reference — Configuration Templates business capability. Self-contained, no shared references.
+    resources:
+    - name: deployment-manager-deployment_artifacts
+      path: /deployment-manager/deployment_artifacts
+      operations:
+      - name: getdownloaddeploymenttemplate
+        method: GET
+        description: Download a template
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_template_id
+          in: query
+          type: string
+          description: Id which template needs to be downloaded.
+          required: true
+    - name: deployment-manager-deployment_artifacts-compare
+      path: /deployment-manager/deployment_artifacts/compare
+      operations:
+      - name: postcomparetemplate
+        method: POST
+        description: Compare settings between a source tenant and a target tenant
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: tenant
+          in: query
+          type: string
+          description: Customers need to specify tenant ID.
+          required: true
+        - name: template
+          in: formData
+          type: file
+          description: Template contains the config metadata and target tenant information.
+    - name: deployment-manager-deployment_artifacts-deploy
+      path: /deployment-manager/deployment_artifacts/deploy
+      operations:
+      - name: postmigratetenantsettings
+        method: POST
+        description: Migrate settings from source tenant to target tenant
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: tenant
+          in: query
+          type: string
+          description: Customers need to specify tenant ID in query parameter.
+          required: true
+        - name: request
+          in: body
+          type: string
+          description: Request Details.
+          required: true
+    - name: deployment-manager-deployment_artifacts-retrieve-settings
+      path: /deployment-manager/deployment_artifacts/retrieve-settings
+      operations:
+      - name: getsourcecomponentdetails
+        method: GET
+        description: List all details of source components
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: deployment-manager-deployment_templates
+      path: /deployment-manager/deployment_templates
+      operations:
+      - name: postdeploymenttemplate
+        method: POST
+        description: Create a deployment template
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: request
+          in: body
+          type: string
+          description: CreateTemplateRequestContent JSON object which contains the details to create a template.
+          required: true
+      - name: gettemplates
+        method: GET
+        description: List all templates
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: deployment-manager-deployment_templates-id
+      path: /deployment-manager/deployment_templates/{id}
+      operations:
+      - name: getdeploymenttemplatedetail
+        method: GET
+        description: List all details of a template
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: The ID of the template that needs to be retrieved.
+          required: true
+      - name: deletedeploymenttemplate
+        method: DELETE
+        description: Delete a template
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          description: The ID of the template that needs to be deleted.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-configuration-templates-rest
+    port: 8080
+    description: REST adapter for API Reference — Configuration Templates. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/deployment-manager/deployment-artifacts
+      name: deployment-manager-deployment-artifacts
+      description: REST surface for deployment-manager-deployment_artifacts.
+      operations:
+      - method: GET
+        name: getdownloaddeploymenttemplate
+        description: Download a template
+        call: v1-configuration-templates.getdownloaddeploymenttemplate
+        with:
+          deployment_template_id: rest.deployment_template_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployment-manager/deployment-artifacts/compare
+      name: deployment-manager-deployment-artifacts-compare
+      description: REST surface for deployment-manager-deployment_artifacts-compare.
+      operations:
+      - method: POST
+        name: postcomparetemplate
+        description: Compare settings between a source tenant and a target tenant
+        call: v1-configuration-templates.postcomparetemplate
+        with:
+          tenant: rest.tenant
+          template: rest.template
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployment-manager/deployment-artifacts/deploy
+      name: deployment-manager-deployment-artifacts-deploy
+      description: REST surface for deployment-manager-deployment_artifacts-deploy.
+      operations:
+      - method: POST
+        name: postmigratetenantsettings
+        description: Migrate settings from source tenant to target tenant
+        call: v1-configuration-templates.postmigratetenantsettings
+        with:
+          tenant: rest.tenant
+          request: rest.request
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployment-manager/deployment-artifacts/retrieve-settings
+      name: deployment-manager-deployment-artifacts-retrieve-settings
+      description: REST surface for deployment-manager-deployment_artifacts-retrieve-settings.
+      operations:
+      - method: GET
+        name: getsourcecomponentdetails
+        description: List all details of source components
+        call: v1-configuration-templates.getsourcecomponentdetails
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployment-manager/deployment-templates
+      name: deployment-manager-deployment-templates
+      description: REST surface for deployment-manager-deployment_templates.
+      operations:
+      - method: POST
+        name: postdeploymenttemplate
+        description: Create a deployment template
+        call: v1-configuration-templates.postdeploymenttemplate
+        with:
+          request: rest.request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: gettemplates
+        description: List all templates
+        call: v1-configuration-templates.gettemplates
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployment-manager/deployment-templates/{id}
+      name: deployment-manager-deployment-templates-id
+      description: REST surface for deployment-manager-deployment_templates-id.
+      operations:
+      - method: GET
+        name: getdeploymenttemplatedetail
+        description: List all details of a template
+        call: v1-configuration-templates.getdeploymenttemplatedetail
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletedeploymenttemplate
+        description: Delete a template
+        call: v1-configuration-templates.deletedeploymenttemplate
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-configuration-templates-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Configuration Templates. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: download-template
+      description: Download a template
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-configuration-templates.getdownloaddeploymenttemplate
+      with:
+        deployment_template_id: tools.deployment_template_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: compare-settings-between-source-tenant
+      description: Compare settings between a source tenant and a target tenant
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: v1-configuration-templates.postcomparetemplate
+      with:
+        tenant: tools.tenant
+        template: tools.template
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: migrate-settings-source-tenant-target
+      description: Migrate settings from source tenant to target tenant
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: v1-configuration-templates.postmigratetenantsettings
+      with:
+        tenant: tools.tenant
+        request: tools.request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-details-source-components
+      description: List all details of source components
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-configuration-templates.getsourcecomponentdetails
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-deployment-template
+      description: Create a deployment template
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-configuration-templates.postdeploymenttemplate
+      with:
+        request: tools.request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-templates
+      description: List all templates
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-configuration-templates.gettemplates
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-details-template
+      description: List all details of a template
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-configuration-templates.getdeploymenttemplatedetail
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-template
+      description: Delete a template
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-configuration-templates.deletedeploymenttemplate
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.

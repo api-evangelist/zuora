@@ -1,0 +1,178 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Offers
+  description: 'API Reference — Offers. 4 operations. Lead operation: Create an offer. Self-contained Naftiko capability covering
+    one Zuora business surface.'
+  tags:
+  - Zuora
+  - Offers
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-offers
+    baseUri: https://rest.zuora.com
+    description: API Reference — Offers business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-offers
+      path: /v1/offers
+      operations:
+      - name: postcreateoffer
+        method: POST
+        description: Create an offer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Request
+          in: body
+          type: string
+          required: true
+      - name: getlistoffers
+        method: GET
+        description: List offers
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-offers-offer-key
+      path: /v1/offers/{offer-key}
+      operations:
+      - name: getretrieveoffer
+        method: GET
+        description: Retrieve an offer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: offer-key
+          in: path
+          type: string
+          description: The unique number or ID of the offer to be retrieved.
+          required: true
+      - name: deleteoffer
+        method: DELETE
+        description: Delete an offer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: offer-key
+          in: path
+          type: string
+          description: The unique number or ID of the offer to be deleted.
+          required: true
+  exposes:
+  - type: rest
+    namespace: v1-offers-rest
+    port: 8080
+    description: REST adapter for API Reference — Offers. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/offers
+      name: v1-offers
+      description: REST surface for v1-offers.
+      operations:
+      - method: POST
+        name: postcreateoffer
+        description: Create an offer
+        call: v1-offers.postcreateoffer
+        with:
+          Request: rest.Request
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getlistoffers
+        description: List offers
+        call: v1-offers.getlistoffers
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/offers/{offer-key}
+      name: v1-offers-offer-key
+      description: REST surface for v1-offers-offer-key.
+      operations:
+      - method: GET
+        name: getretrieveoffer
+        description: Retrieve an offer
+        call: v1-offers.getretrieveoffer
+        with:
+          offer-key: rest.offer-key
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteoffer
+        description: Delete an offer
+        call: v1-offers.deleteoffer
+        with:
+          offer-key: rest.offer-key
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-offers-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Offers. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: create-offer
+      description: Create an offer
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: v1-offers.postcreateoffer
+      with:
+        Request: tools.Request
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-offers
+      description: List offers
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-offers.getlistoffers
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-offer
+      description: Retrieve an offer
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-offers.getretrieveoffer
+      with:
+        offer-key: tools.offer-key
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-offer
+      description: Delete an offer
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: v1-offers.deleteoffer
+      with:
+        offer-key: tools.offer-key
+      outputParameters:
+      - type: object
+        mapping: $.

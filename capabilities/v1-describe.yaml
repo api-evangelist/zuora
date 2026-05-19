@@ -1,0 +1,84 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: API Reference — Describe
+  description: 'API Reference — Describe. 1 operations. Lead operation: Describe an object. Self-contained Naftiko capability
+    covering one Zuora business surface.'
+  tags:
+  - Zuora
+  - Describe
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ZUORA_API_KEY: ZUORA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: v1-describe
+    baseUri: https://rest.zuora.com
+    description: API Reference — Describe business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-describe-object
+      path: /v1/describe/{object}
+      operations:
+      - name: getdescribe
+        method: GET
+        description: Describe an object
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: object
+          in: path
+          type: string
+          description: API name of an object in your Zuora tenant. For example, `InvoiceItem`. See [Zuora Object Model](/rest-api/general-concepts/object-model/)
+            for the list of valid
+          required: true
+        - name: showCurrencyConversionInformation
+          in: query
+          type: string
+          description: Set the value to `yes` to get additional currency conversion information in the result.
+  exposes:
+  - type: rest
+    namespace: v1-describe-rest
+    port: 8080
+    description: REST adapter for API Reference — Describe. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/describe/{object}
+      name: v1-describe-object
+      description: REST surface for v1-describe-object.
+      operations:
+      - method: GET
+        name: getdescribe
+        description: Describe an object
+        call: v1-describe.getdescribe
+        with:
+          object: rest.object
+          showCurrencyConversionInformation: rest.showCurrencyConversionInformation
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: v1-describe-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for API Reference — Describe. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: describe-object
+      description: Describe an object
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: v1-describe.getdescribe
+      with:
+        object: tools.object
+        showCurrencyConversionInformation: tools.showCurrencyConversionInformation
+      outputParameters:
+      - type: object
+        mapping: $.
