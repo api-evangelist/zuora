@@ -8,202 +8,206 @@ position: Consumer
 access: 3rd-Party
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-- Billing
-- Finance
-- Payments
-- Subscriptions
+  - Billing
+  - Finance
+  - Payments
+  - Subscriptions
 created: '2025-02-17'
 modified: '2026-05-19'
 url: https://raw.githubusercontent.com/api-evangelist/zuora/refs/heads/main/apis.yml
 specificationVersion: '0.19'
 apis:
-- aid: zuora:v1-api
-  name: Zuora V1 API
-  description: The Zuora v1 REST API provides complete coverage of Zuora Billing, Payments, and Platform features. It enables
-    developers to automate billing operations, manage subscriptions, process payments, and integrate Zuora with external applications.
-  humanURL: https://developer.zuora.com/v1-api-reference/introduction
-  tags:
-  - Billing
-  - Payments
-  - Subscriptions
-  properties:
-  - type: Documentation
-    url: https://developer.zuora.com/v1-api-reference/introduction
-  - type: Reference
-    url: https://developer.zuora.com/v1-api-reference/api/overview/
-  - type: ChangeLog
-    url: https://developer.zuora.com/docs/get-started/changelogs/v1-api-changelog/
-  - type: NaftikoCapability
-    url: capabilities/v1-api-health.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-accounting-codes.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-accounting-periods.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-accounts.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-actions.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-aggregate-queries.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-attachments.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-bill-run.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-bill-run-health.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-billing-documents.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-billing-preview-run.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-catalog.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-catalog-groups.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-configuration-templates.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-contact-snapshots.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-contacts.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-credit-memos.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-custom-event-triggers.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-custom-exchange-rates.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-custom-object-definitions.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-custom-object-jobs.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-custom-object-records.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-custom-payment-method-types.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-custom-scheduled-events.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-data-labeling.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-data-queries.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-debit-memos.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-delivery-adjustments.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-describe.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-e-invoicing.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-electronic-payments-health.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-files.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-fulfillments.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-hosted-pages.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-imports.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-invoice-schedules.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-invoices.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-journal-runs.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-mass-updater.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-notifications.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-oauth.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-offers.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-operations.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-order-actions.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-order-line-items.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-orders.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-authorization.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-gateway-reconciliation.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-gateways.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-method-snapshots.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-method-transaction-logs.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-method-updater.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-methods.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-runs.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-schedules.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payment-transaction-logs.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-payments.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-prepaid-with-drawdown.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-price-book-items.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-product-charge-definitions.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-product-rate-plan-charge-tiers.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-product-rate-plan-charges.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-product-rate-plan-definitions.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-product-rate-plans.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-products.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-rsa-signatures.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-ramps.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-rate-plans.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-refunds.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-regenerate.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-sequence-sets.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-settings.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-sign-up.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-subscriptions.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-summary-journal-entries.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-taxation-items.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-usage.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-workflows.yaml
-  - type: NaftikoCapability
-    url: capabilities/v1-zuora-revenue-integration.yaml
+  - aid: zuora:v1-api
+    name: Zuora V1 API
+    description: The Zuora v1 REST API provides complete coverage of Zuora Billing, Payments, and Platform features. It enables
+      developers to automate billing operations, manage subscriptions, process payments, and integrate Zuora with external applications.
+    humanURL: https://developer.zuora.com/v1-api-reference/introduction
+    tags:
+    - Billing
+    - Payments
+    - Subscriptions
+    properties:
+    - type: Documentation
+      url: https://developer.zuora.com/v1-api-reference/introduction
+    - type: Reference
+      url: https://developer.zuora.com/v1-api-reference/api/overview/
+    - type: ChangeLog
+      url: https://developer.zuora.com/docs/get-started/changelogs/v1-api-changelog/
+    - type: NaftikoCapability
+      url: capabilities/v1-api-health.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-accounting-codes.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-accounting-periods.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-accounts.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-actions.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-aggregate-queries.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-attachments.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-bill-run.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-bill-run-health.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-billing-documents.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-billing-preview-run.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-catalog.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-catalog-groups.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-configuration-templates.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-contact-snapshots.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-contacts.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-credit-memos.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-custom-event-triggers.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-custom-exchange-rates.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-custom-object-definitions.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-custom-object-jobs.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-custom-object-records.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-custom-payment-method-types.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-custom-scheduled-events.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-data-labeling.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-data-queries.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-debit-memos.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-delivery-adjustments.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-describe.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-e-invoicing.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-electronic-payments-health.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-files.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-fulfillments.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-hosted-pages.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-imports.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-invoice-schedules.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-invoices.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-journal-runs.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-mass-updater.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-notifications.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-oauth.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-offers.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-operations.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-order-actions.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-order-line-items.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-orders.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-authorization.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-gateway-reconciliation.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-gateways.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-method-snapshots.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-method-transaction-logs.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-method-updater.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-methods.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-runs.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-schedules.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payment-transaction-logs.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-payments.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-prepaid-with-drawdown.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-price-book-items.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-product-charge-definitions.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-product-rate-plan-charge-tiers.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-product-rate-plan-charges.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-product-rate-plan-definitions.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-product-rate-plans.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-products.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-rsa-signatures.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-ramps.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-rate-plans.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-refunds.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-regenerate.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-sequence-sets.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-settings.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-sign-up.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-subscriptions.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-summary-journal-entries.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-taxation-items.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-usage.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-workflows.yaml
+    - type: NaftikoCapability
+      url: capabilities/v1-zuora-revenue-integration.yaml
 common:
-- url: https://developer.zuora.com/
-  name: Zuora Developer Center
-  type: Portal
-  description: 'null'
-- url: https://docs.zuora.com/
-  name: Zuora Product Documentation
-  type: Documentation
-  description: 'null'
-- url: https://www.zuora.com/
-  name: Zuora - Subscription Management Platform
-  type: Website
-  description: 'null'
+  - type: GitHubOrganization
+    url: https://github.com/zuora
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/zuora
+  - url: https://developer.zuora.com/
+    name: Zuora Developer Center
+    type: Portal
+    description: 'null'
+  - url: https://docs.zuora.com/
+    name: Zuora Product Documentation
+    type: Documentation
+    description: 'null'
+  - url: https://www.zuora.com/
+    name: Zuora - Subscription Management Platform
+    type: Website
+    description: 'null'
 maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
+  - FN: Kin Lane
+    email: kin@apievangelist.com
