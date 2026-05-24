@@ -208,6 +208,8 @@ common:
     name: Zuora - Subscription Management Platform
     type: Website
     description: 'null'
+  - type: LLMsTxt
+    url: https://developer.zuora.com/llms.txt
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
