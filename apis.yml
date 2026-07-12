@@ -37,6 +37,8 @@ apis:
       - type: ChangeLog
         url: https://developer.zuora.com/docs/get-started/changelogs/v1-api-changelog/
 common:
+  - type: DomainSecurity
+    url: security/zuora-domain-security.yml
   - type: GitHubOrganization
     url: https://github.com/zuora
   - type: LinkedIn
@@ -55,6 +57,8 @@ common:
     description: 'null'
   - type: LlmsText
     url: https://developer.zuora.com/llms.txt
+  - url: https://www.zuora.com/resources/blog/
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
