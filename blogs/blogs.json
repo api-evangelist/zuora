@@ -1,0 +1,14 @@
+{
+  "repo": "zuora",
+  "feeds": [
+    {
+      "source": "https://www.zuora.com/resources/blog/",
+      "feed_url": "https://www.zuora.com/resources/blog/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "fetched": "2026-07-11T11:50:51Z",
+  "post_count": 12
+}
