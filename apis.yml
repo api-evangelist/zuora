@@ -37,6 +37,8 @@ apis:
       - type: ChangeLog
         url: https://developer.zuora.com/docs/get-started/changelogs/v1-api-changelog/
 common:
+  - type: AgenticAccess
+    url: agentic-access/zuora-agentic-access.yml
   - type: DomainSecurity
     url: security/zuora-domain-security.yml
   - type: GitHubOrganization
