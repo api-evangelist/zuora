@@ -1,0 +1,1101 @@
+swagger: '2.0'
+info:
+  version: '2023-12-15'
+  title: API Reference Accounting Codes Sign Up API
+  description: "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n"
+  contact:
+    email: docs@zuora.com
+host: rest.zuora.com
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Sign Up
+  description: "A light-weight API to sign up customers and subscribe. \n\nYou need to have the [Orders](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders) or [Orders Harmonization](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders/Orders_Harmonization) feature enabled to use this API.\n"
+paths:
+  /v1/sign-up:
+    post:
+      summary: Sign up
+      description: "This call performs many actions. You can use this operation to implement the standard requirements for signing up a customer, such as validating the uniqueness of an account and limiting the number of subscriptions per account. Also, you can use this operation to create a subscription, generate an invoice, and collect payment for a new or existing customer. \n\n**Note:** You need to have the [Orders](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders) or [Orders Harmonization](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders/Orders_Harmonization) feature enabled to use this API.\n\nFor a new customer, you can perform the following tasks in one call. Note that you can skip creating a payment meethod and still get the subscription and invoice successfully created.\n* Create an account\n* Create a payment method\n* Subscribe to a product in the product catalog and create a subscription\n* Generate an invoice\n* Collect payment\n\nFor an existing customer, you can use an account identification field of an external system to specify the account.\n\nYou can make [make asynchronous requests](/rest-api/general-concepts/async-requests/) when using the \"Sign up\" operation.\n"
+      operationId: POST_SignUp
+      tags:
+      - Sign Up
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Charge_Metrics_Accept'
+      - name: body
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/SignUpRequest'
+      responses:
+        '200':
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+              minLength: 36
+              maxLength: 36
+            Zuora-Track-Id:
+              type: string
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+              maxLength: 64
+          schema:
+            $ref: '#/definitions/SignUpResponse'
+          examples:
+            application/json:
+              orderNumber: O-00000001
+              status: Completed
+              accountNumber: A00000001
+              accountId: 4028818284f5f8130184f5fe1e9011e8
+              subscriptionNumber: A-S00000001
+              subscriptionId: 4028818284f5f8130184f5fe214611f3
+              invoiceNumber: INV00000001
+              invoiceId: 4028818284f5f8130184f5fe23b8120c
+              paymentNumber: P-00000001
+              paymentId: 4028818284f5f8130184f5fe24b71218
+              paidAmount: 300.0
+              success: true
+definitions:
+  AccountData:
+    description: 'The information of the account that you are to create through the "Sign up" operation.
+
+      '
+    properties:
+      accountNumber:
+        maxLength: 70
+        type: string
+      autoPay:
+        description: Specifies whether future payments are to be automatically billed when they are due. Possible values are `true`, `false`.
+        type: boolean
+      batch:
+        description: '**Note**: By default, you have 50 configurable account batches. To increase the limit to 200 batches, you must have the <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Performance_Booster_Elite" target="_blank">Performance Booster Elite</a> package.
+
+          '
+        type: string
+      billCycleDay:
+        description: Day of the month that the account prefers billing periods to begin on. If set to 0, the bill cycle day will be set as "AutoSet".
+        maximum: 31
+        minimum: 0
+        type: integer
+      billToContact:
+        $ref: '#/definitions/ContactInfo'
+      communicationProfileId:
+        type: string
+      creditMemoTemplateId:
+        description: '**Note:** This field is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+
+          The unique ID of the credit memo template, configured in **Billing Settings** > **Manage Billing Document Configuration** through the Zuora UI. For example, 2c92c08a6246fdf101626b1b3fe0144b.
+
+          '
+        type: string
+      crmId:
+        maxLength: 100
+        type: string
+      currency:
+        description: '3 uppercase character currency code.
+
+
+          For payment method authorization, if the `paymentMethod` > `currencyCode` field is specified, `currencyCode` is used. Otherwise, this `currency` field is used for payment method authorization. If no currency is specified for the account, the default currency of the account is then used.
+
+          '
+        type: string
+      customFields:
+        $ref: '#/definitions/CustomFields'
+      debitMemoTemplateId:
+        description: '**Note:** This field is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+
+          The unique ID of the debit memo template, configured in **Billing Settings** > **Manage Billing Document Configuration** through the Zuora UI. For example, 2c92c08d62470a8501626b19d24f19e2.
+
+          '
+        type: string
+      invoiceTemplateId:
+        type: string
+      name:
+        maxLength: 255
+        type: string
+      notes:
+        maxLength: 65535
+        type: string
+      paymentMethod:
+        $ref: '#/definitions/SignUpPaymentMethod'
+      paymentTerm:
+        type: string
+      purchaseOrderNumber:
+        description: 'The number of the purchase order associated with this account. Purchase order information generally comes from customers.
+
+          '
+        maxLength: 100
+        type: string
+      sequenceSetId:
+        description: "The ID of the billing document sequence set to assign to the customer account. \n\nThe billing documents to generate for this account will adopt the prefix and starting document number configured in the sequence set.\n"
+        type: string
+      soldToContact:
+        $ref: '#/definitions/ContactInfo'
+      taxInfo:
+        $ref: '#/definitions/SignUpTaxInfo'
+    required:
+    - billCycleDay
+    - billToContact
+    - currency
+    - name
+    type: object
+  SubscriptionData:
+    properties:
+      customFields:
+        $ref: '#/definitions/CustomFields'
+      invoiceSeparately:
+        description: 'Specifies whether the subscription appears on a separate invoice when Zuora generates invoices.
+
+          '
+        type: boolean
+      notes:
+        description: 'Notes about the subscription. These notes are only visible to Zuora users.
+
+          '
+        maxLength: 500
+        type: string
+      ratePlans:
+        $ref: '#/definitions/RatePlans'
+      startDate:
+        format: date
+        type: string
+      subscriptionNumber:
+        description: 'Subscription number of the subscription to create, for example, A-S00000001.
+
+
+          If you do not set this field, Zuora will generate a subscription number.
+
+          '
+        maxLength: 100
+        type: string
+      terms:
+        $ref: '#/definitions/TermInfo'
+    type: object
+  CustomFields:
+    additionalProperties:
+      description: "The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information. \n\nThe Sign up API is based on Orders. The root element uses the custom field defintion on an \"Order\" object, `accountData` uses the custom field defintion on an \"Account\" object, and `subscriptionData` uses the custom field defintion on an \"Order Action\" object (not on an \"Subscription\" object).\n"
+    description: 'Container for custom fields.
+
+      '
+    title: CustomFields
+    type: object
+  SignUpRequest:
+    example:
+      accountData:
+        autoPay: false
+        billCycleDay: '15'
+        billToContact:
+          country: US
+          firstName: foo
+          lastName: bar
+          state: California
+        currency: USD
+        customFields:
+          CustomerUserId__c: User_269145114619000
+        name: User
+        paymentMethod:
+          makeDefault: true
+          secondTokenId: '010'
+          tokenId: User_269145114619000
+          type: CreditCardReferenceTransaction
+      accountIdentifierField: CustomerUserId__c
+      options:
+        billingTargetDate: '2021-07-01'
+        collectPayment: true
+        maxSubscriptionsPerAccount: 0
+        runBilling: true
+      subscriptionData:
+        invoiceSeparately: false
+        ratePlans:
+        - productRatePlanId: 4028818284f5f8130184f5fe1a73101f
+        startDate: '2021-04-15'
+        terms:
+          autoRenew: false
+          initialTerm:
+            period: 6
+            periodType: Month
+            startDate: '2021-04-15'
+            termType: TERMED
+          renewalSetting: RENEW_WITH_SPECIFIC_TERM
+          renewalTerms:
+          - period: 6
+            periodType: Month
+    properties:
+      accountData:
+        $ref: '#/definitions/AccountData'
+      accountIdentifierField:
+        description: Specify the name of the field that holds external account id
+        type: string
+      customFields:
+        $ref: '#/definitions/CustomFields'
+      options:
+        $ref: '#/definitions/Options'
+      paymentData:
+        $ref: '#/definitions/PaymentData'
+      subscriptionData:
+        $ref: '#/definitions/SubscriptionData'
+    type: object
+  SignUpTaxInfo:
+    description: 'Information about the tax exempt status of a customer account.
+
+      '
+    properties:
+      VATId:
+        description: 'EU Value Added Tax ID.
+
+
+          **Note:** This feature is in Limited Availability. If you wish to have access to the feature, submit a request at [Zuora Global Support](https://support.zuora.com).
+
+          '
+        maxLength: 25
+        type: string
+      companyCode:
+        description: 'Unique code that identifies a company account in Avalara. Use this field to calculate taxes based on origin and sold-to addresses in Avalara.
+
+
+          **Note:** This feature is in Limited Availability. If you wish to have access to the feature, submit a request at [Zuora Global Support](https://support.zuora.com).
+
+          '
+        maxLength: 50
+        type: string
+      exemptCertificateId:
+        description: 'ID of the customer tax exemption certificate. Applicable if you use Zuora Tax or Connect tax engines.
+
+          '
+        maxLength: 32
+        type: string
+      exemptCertificateType:
+        description: 'Type of tax exemption certificate that the customer holds. Applicable if you use Zuora Tax or Connect tax engines.
+
+          '
+        maxLength: 32
+        type: string
+      exemptDescription:
+        description: 'Description of the tax exemption certificate that the customer holds. Applicable if you use Zuora Tax or Connect tax engines.
+
+          '
+        maxLength: 500
+        type: string
+      exemptEffectiveDate:
+        description: 'Date when the customer tax exemption starts, in YYYY-MM-DD format. Applicable if you use Zuora Tax or Connect tax engines.
+
+          '
+        format: date
+        type: string
+      exemptExpirationDate:
+        description: 'Date when the customer tax exemption expires, in YYYY-MM-DD format. Applicable if you use Zuora Tax or Connect tax engines.
+
+          '
+        format: date
+        type: string
+      exemptIssuingJurisdiction:
+        description: 'Jurisdiction in which the customer tax exemption certificate was issued.
+
+          '
+        maxLength: 32
+        type: string
+      exemptStatus:
+        default: 'No'
+        description: "Status of the account tax exemption. Applicable if you use Zuora Tax or Connect tax engines. Required if you use Zuora Tax. \n"
+        enum:
+        - 'No'
+        - 'Yes'
+        - PendingVerification
+        type: string
+    title: taxInfo
+    type: object
+  SignUpCreatePaymentMethodCreditCard:
+    properties:
+      cardHolderInfo:
+        $ref: '#/definitions/SignUpCreatePaymentMethodCardholderInfo'
+      cardNumber:
+        description: 'Credit card number.
+
+          '
+        type: string
+      cardType:
+        description: 'The type of the credit card.
+
+
+          Possible values include `Visa`, `MasterCard`, `AmericanExpress`, `Discover`, `JCB`, and `Diners`. For more information about credit card types supported by different payment gateways, see [Supported Payment Gateways](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways).
+
+          '
+        type: string
+      checkDuplicated:
+        type: boolean
+      expirationMonth:
+        description: 'One or two digit expiration month (1-12) of the credit card.
+
+          '
+        type: string
+      expirationYear:
+        description: 'Four-digit expiration year of the credit card.
+
+          '
+        type: string
+      mitConsentAgreementRef:
+        description: 'Specifies your reference for the stored credential consent agreement that you have established with the customer. Only applicable if you set the `mitProfileAction` field.
+
+          '
+        maxLength: 128
+        type: string
+      mitConsentAgreementSrc:
+        description: 'Required if you set the `mitProfileAction` field. Specifies how the consent agreement has been established with the customer. The allowed value is `External`. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `External` set to this field.
+
+          '
+        enum:
+        - External
+        type: string
+      mitNetworkTransactionId:
+        description: 'Specifies the ID of a network transaction. Only applicable if you set the `mitProfileAction` field to `Persist`.
+
+          '
+        maxLength: 128
+        type: string
+      mitProfileAction:
+        description: 'Specifies how Zuora creates and activates the stored credential profile. If you do not specify this field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Activate` set to this field.
+
+          '
+        enum:
+        - Activate
+        - Persist
+        type: string
+      mitProfileAgreedOn:
+        description: 'The date on which the profile is agreed. The date format is `yyyy-mm-dd`.
+
+          '
+        format: date
+        type: string
+      mitProfileType:
+        description: 'Required if you set the `mitProfileAction` field. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Recurring` set to this field.
+
+          '
+        enum:
+        - Recurring
+        type: string
+      securityCode:
+        description: 'CVV or CVV2 security code of the credit card.
+
+
+          To ensure PCI compliance, this value is not stored and cannot be queried.
+
+          '
+        type: string
+    type: object
+  SignUpCreatePaymentMethodCardholderInfo:
+    description: 'Container for cardholder information. If provided, Zuora will
+
+      only use this information for this card. Otherwise, Zuora will use
+
+      the account''''s existing bill-to contact information for this card.
+
+      '
+    properties:
+      addressLine1:
+        description: 'First address line, 255 characters or less.
+
+          '
+        type: string
+      addressLine2:
+        description: 'Second address line, 255 characters or less.
+
+          '
+        type: string
+      cardHolderName:
+        description: 'The card holder''s full name as it appears on the card, e.g., "John J Smith", 50 characters or less.
+
+          '
+        type: string
+      city:
+        description: 'City, 40 characters or less.
+
+          '
+        type: string
+      country:
+        description: 'Country, must be a valid country name or abbreviation.
+
+          '
+        type: string
+      email:
+        description: 'Card holder''s email address, 80 characters or less.
+
+          '
+        type: string
+      phone:
+        description: 'Phone number, 40 characters or less.
+
+          '
+        type: string
+      state:
+        description: 'State; must be a valid state name or 2-character abbreviation.
+
+          '
+        type: string
+      zipCode:
+        description: 'Zip code, 20 characters or less.
+
+          '
+        type: string
+    required:
+    - cardHolderName
+    title: cardHolderInfo
+    type: object
+  RatePlan:
+    properties:
+      customFields:
+        $ref: '#/definitions/CustomFields'
+      productRatePlanId:
+        description: 'Internal identifier of the product rate plan that the rate plan is based on.
+
+          '
+        type: string
+    type: object
+  SignUpCreatePMPayPalECPayPalNativeEC:
+    properties:
+      BAID:
+        description: 'ID of a PayPal billing agreement, for example, I-1TJ3GAGG82Y9.
+
+          '
+        type: string
+      email:
+        description: "Email address associated with the payment method. This field is only supported for PayPal payment methods and is required if you want to create any of the following PayPal payment methods:\n  - PayPal Express Checkout payment method \n  - PayPal Adaptive payment method\n  - PayPal Commerce Platform payment method\n"
+        type: string
+    type: object
+  SignUpCreatePaymentMethodCommon:
+    properties:
+      accountKey:
+        description: 'Internal ID of the customer account that will own the payment method.
+
+          '
+        type: string
+      authGateway:
+        description: 'Internal ID of the payment gateway that Zuora will use to authorize the payments that are made with the payment method.
+
+
+          If you do not set this field, Zuora will use one of the following payment gateways instead:
+
+
+          * The default payment gateway of the customer account that owns the payment method, if the `accountKey` field is set.
+
+          * The default payment gateway of your Zuora tenant, if the `accountKey` field is not set.
+
+          '
+        type: string
+      ipAddress:
+        description: "The IPv4 or IPv6 information of the user when the payment method is created or updated. Some gateways use this field for fraud prevention. If this field is passed to Zuora, Zuora directly passes it to gateways. \n\nIf the IP address length is beyond 45 characters, a validation error occurs.\n"
+        type: string
+      makeDefault:
+        default: false
+        description: 'Specifies whether the payment method will be the default payment method of the customer account that owns the payment method. Only applicable if the `accountKey` field is set.
+
+          '
+        type: boolean
+    type: object
+  SignUpPaymentMethodObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the payment method. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a payment method object.
+
+      '
+    title: paymentMethodFieldsCustom
+    type: object
+  SignUpCreatePaymentMethodCreditCardReferenceTransaction:
+    properties:
+      secondTokenId:
+        description: 'The second token id of CreditCardReferenceTransaction.
+
+          '
+        type: string
+      tokenId:
+        description: 'The token id of payment method, required field of CreditCardReferenceTransaction type.
+
+          '
+        type: string
+    type: object
+  SignUpCreatePaymentMethodPayPalAdaptive:
+    properties:
+      preapprovalKey:
+        description: 'The PayPal preapproval key.
+
+          '
+        type: string
+    type: object
+  PaymentData:
+    properties:
+      authTransactionId:
+        description: 'The authorization transaction ID from the payment gateway.
+
+          '
+        type: string
+      authorizedAmount:
+        description: 'The amount that is authorized before this API call. Only used for the Delay Capture function.
+
+          '
+        format: double
+        type: number
+      authorizedCurrency:
+        description: The authorization of currency code that occurs before this API call. We will verify whether it is same as the account's currency.
+        type: string
+    type: object
+  SignUpResponse_reasons:
+    properties:
+      code:
+        description: 'The error code of response.
+
+          '
+        type: string
+      message:
+        description: 'The detail information of the error response
+
+          '
+        type: string
+    type: object
+  TermInfo_renewalTerms:
+    properties:
+      period:
+        description: 'Duration of the renewal term in months, years, days, or weeks, depending on the value of the `periodType` field.
+
+          '
+        type: integer
+      periodType:
+        description: 'Unit of time that the renewal term is measured in.
+
+          '
+        enum:
+        - Month
+        - Year
+        - Day
+        - Week
+        type: string
+    type: object
+  SignUpResponse:
+    properties:
+      accountId:
+        description: The account id for the order.
+        type: string
+      accountNumber:
+        description: The account number for the order.
+        type: string
+      creditMemoId:
+        description: An array of the credit memo id generated in this order request. The credit memo is only available if you have the Invoice Settlement feature enabled.
+        type: string
+      creditMemoNumber:
+        description: An array of the credit memo numbers generated in this order request. The credit memo is only available if you have the Invoice Settlement feature enabled.
+        type: string
+      invoiceId:
+        description: The invoice id generated in this order request
+        type: string
+      invoiceNumber:
+        description: The invoice number generated in this order request
+        type: string
+      orderNumber:
+        description: The order number of the order created.
+        type: string
+      paidAmount:
+        description: The total amount collected in this order request.
+        type: string
+      paymentId:
+        description: The payment id that is collected in this order request.
+        type: string
+      paymentNumber:
+        description: The payment number that is collected in this order request.
+        type: string
+      processId:
+        description: 'The Id of the process that handles the operation.
+
+          '
+        type: string
+      reasons:
+        items:
+          $ref: '#/definitions/SignUpResponse_reasons'
+        type: array
+      status:
+        description: Status of the order. `Pending` is only applicable for an order that contains a `CreateSubscription` order action.
+        enum:
+        - Completed
+        - Pending
+        type: string
+      subscriptionId:
+        description: The subscription id of the order.
+        type: string
+      subscriptionNumber:
+        description: The subscription number of the order.
+        type: string
+      success:
+        description: 'Indicates whether the call succeeded.
+
+          '
+        type: boolean
+    type: object
+  SignUpPaymentMethod:
+    allOf:
+    - properties:
+        type:
+          description: 'Type of payment method. The following types of the payment method are supported:
+
+            '
+          enum:
+          - PayPalEC
+          - PayPalNativeEC
+          - PayPalAdaptive
+          - CreditCard
+          - CreditCardReferenceTransaction
+          type: string
+      required:
+      - type
+      type: object
+    - $ref: '#/definitions/SignUpCreatePaymentMethodCreditCardReferenceTransaction'
+    - $ref: '#/definitions/SignUpCreatePMPayPalECPayPalNativeEC'
+    - $ref: '#/definitions/SignUpCreatePaymentMethodPayPalAdaptive'
+    - $ref: '#/definitions/SignUpCreatePaymentMethodCreditCard'
+    - $ref: '#/definitions/SignUpCreatePaymentMethodCommon'
+    - $ref: '#/definitions/SignUpPaymentMethodObjectCustomFields'
+  Options:
+    description: Invoice or Payment.
+    properties:
+      billingTargetDate:
+        description: Date through which to calculate charges if an invoice is generated. See [What is a Target Date?](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/G_Bill_Runs/Creating_Bill_Runs#What_is_a_Target_Date.3F).
+        format: date
+        type: string
+      collectPayment:
+        description: Indicates if the current request needs to collect payments. This value can not be 'true' when 'runBilling' flag is 'false'.
+        type: boolean
+      maxSubscriptionsPerAccount:
+        type: number
+      runBilling:
+        description: Indicates if the current request needs to generate an invoice. The invoice will be generated against all subscriptions included in this order.
+        type: boolean
+    type: object
+  RatePlans:
+    items:
+      $ref: '#/definitions/RatePlan'
+    type: array
+  TermInfo:
+    description: 'Container for the terms and renewal settings of the subscription.
+
+      '
+    properties:
+      autoRenew:
+        description: 'Specifies whether the subscription automatically renews at the end of the each term. Only applicable if the type of the first term is `TERMED`.
+
+          '
+        type: boolean
+      initialTerm:
+        $ref: '#/definitions/TermInfo_initialTerm'
+      renewalSetting:
+        description: 'Specifies the type of the terms that follow the first term if the subscription is renewed. Only applicable if the type of the first term is `TERMED`.
+
+
+          * `RENEW_WITH_SPECIFIC_TERM` - Each renewal term has a predefined duration. The first entry in `renewalTerms` specifies the duration of the second term of the subscription, the second entry in `renewalTerms` specifies the duration of the third term of the subscription, and so on. The last entry in `renewalTerms` specifies the ultimate duration of each renewal term.
+
+          * `RENEW_TO_EVERGREEN` - The second term of the subscription does not have a predefined duration.
+
+          '
+        enum:
+        - RENEW_WITH_SPECIFIC_TERM
+        - RENEW_TO_EVERGREEN
+        type: string
+      renewalTerms:
+        $ref: '#/definitions/TermInfo_renewalTerms'
+    required:
+    - initialTerm
+    type: object
+  TermInfo_initialTerm:
+    description: 'Information about the first term of the subscription.
+
+      '
+    properties:
+      period:
+        description: 'Duration of the first term in months, years, days, or weeks, depending on the value of the `periodType` field. Only applicable if the value of the `termType` field is `TERMED`.
+
+          '
+        type: integer
+      periodType:
+        description: 'Unit of time that the first term is measured in. Only applicable if the value of the `termType` field is `TERMED`.
+
+          '
+        enum:
+        - Month
+        - Year
+        - Day
+        - Week
+        type: string
+      startDate:
+        description: 'Start date of the first term, in YYYY-MM-DD format.
+
+          '
+        format: date
+        type: string
+      termType:
+        description: 'Type of the first term. If the value of this field is `TERMED`, the first term has a predefined duration based on the value of the `period` field. If the value of this field is `EVERGREEN`, the first term does not have a predefined duration.
+
+          '
+        enum:
+        - TERMED
+        - EVERGREEN
+        type: string
+    required:
+    - termType
+    type: object
+  ContactInfo:
+    allOf:
+    - description: 'Contact details associated with an account.
+
+        '
+      properties:
+        address1:
+          description: 'First line of the contact''s address. This is often a street address or a business name.
+
+            '
+          maxLength: 255
+          type: string
+        address2:
+          description: 'Second line of the contact''s address.
+
+            '
+          maxLength: 255
+          type: string
+        city:
+          description: 'City of the contact''s address.
+
+            '
+          maxLength: 40
+          type: string
+        contactDescription:
+          description: 'A description for the contact.
+
+            '
+          maxLength: 100
+          type: string
+        country:
+          description: 'Country; must be a valid country name or abbreviation. If using [Zuora Tax](https://knowledgecenter.zuora.com/Zuora_Billing/Taxes/A_Zuora_Tax), you must specify a country in the bill-to contact to calculate tax.
+
+            '
+          maxLength: 64
+          type: string
+        county:
+          description: 'County of the contact''s address.
+
+            '
+          maxLength: 32
+          type: string
+        customFields:
+          $ref: '#/definitions/CustomFields'
+        fax:
+          description: 'Fax number of the contact.
+
+            '
+          maxLength: 40
+          type: string
+        firstName:
+          description: 'First name of the contact.
+
+            '
+          maxLength: 100
+          type: string
+        homePhone:
+          description: 'Home phone number of the contact.
+
+            '
+          maxLength: 40
+          type: string
+        lastName:
+          description: ''
+          maxLength: 100
+          type: string
+        mobilePhone:
+          description: 'Mobile phone number of the contact.
+
+            '
+          maxLength: 40
+          type: string
+        nickname:
+          description: 'Nickname of the contact.
+
+            '
+          maxLength: 100
+          type: string
+        otherPhone:
+          description: 'Additional phone number of the contact. Use the `otherPhoneType` field to specify the type of phone number.
+
+            '
+          maxLength: 40
+          type: string
+        otherPhoneType:
+          description: 'Specifies the type of phone number in the `otherPhone` field.
+
+            '
+          enum:
+          - Work
+          - Mobile
+          - Home
+          - Other
+          type: string
+        personalEmail:
+          description: 'Personal email address of the contact.
+
+            '
+          format: email
+          maxLength: 80
+          type: string
+        postalCode:
+          description: 'ZIP code or other postal code of the contact''s address.
+
+            '
+          maxLength: 20
+          type: string
+        state:
+          description: 'State or province of the contact''s address.
+
+            '
+          maxLength: 40
+          type: string
+        taxRegion:
+          description: 'Region defined in your taxation rules. Only applicable if you use Zuora Tax.
+
+            '
+          maxLength: 32
+          type: string
+        workEmail:
+          description: 'Business email address of the contact.
+
+            '
+          format: email
+          maxLength: 80
+          type: string
+        workPhone:
+          description: 'Business phone number of the contact.
+
+            '
+          maxLength: 40
+          type: string
+      required:
+      - firstName
+      - lastName
+      type: object
+    - {}
+parameters:
+  GLOBAL_HEADER_Accept_Encoding:
+    name: Accept-Encoding
+    in: header
+    required: false
+    type: string
+    description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+  GLOBAL_HEADER_Charge_Metrics_Accept:
+    name: Accept
+    in: header
+    required: false
+    type: string
+    description: 'Expressed as MIME types that the client is able to understand. Using content negotiation, the server then selects one of the proposals, uses it and informs the client of its choice with the `Content-Type` response header. The possible response MIME types are `application/json-seq` compatible with http://jsonlines.org/, and `text/csv` compatible with RFC 4180. `application/json-seq` is the default response MIME type. If the `Accept` header is not sepecified, or set */*, the response body is returned in application/json-seq MIME type.
+
+      '
+  GLOBAL_HEADER_Zuora_Org_Ids:
+    name: Zuora-Org-Ids
+    in: header
+    required: false
+    type: string
+    description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+  GLOBAL_HEADER_Idempotency_Key:
+    name: Idempotency-Key
+    in: header
+    required: false
+    type: string
+    maxLength: 255
+    description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+  GLOBAL_HEADER_Content_Encoding:
+    name: Content-Encoding
+    in: header
+    required: false
+    type: string
+    description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+      '
+  GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+    name: Zuora-Entity-Ids
+    in: header
+    required: false
+    type: string
+    description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+      '
+  GLOBAL_HEADER_Zuora_Track_Id:
+    name: Zuora-Track-Id
+    in: header
+    required: false
+    type: string
+    maxLength: 64
+    description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+      The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+      '
+  GLOBAL_HEADER_Authorization_OAuth:
+    name: Authorization
+    in: header
+    required: true
+    type: string
+    description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+      '
+x-tagGroups:
+- name: Authentication
+  tags:
+  - OAuth
+- name: Products
+  tags:
+  - Products
+  - Catalog
+  - Catalog Groups
+  - Offers
+  - Price Book Items
+  - Product Rate Plans
+  - Product Rate Plan Definitions
+  - Product Rate Plan Charges
+  - Product Charge Definitions
+  - Product Rate Plan Charge Tiers
+  - Zuora Revenue Integration
+- name: Customer Accounts
+  tags:
+  - Accounts
+  - Contacts
+  - Contact Snapshots
+- name: Orders and Subscriptions
+  tags:
+  - Sign Up
+  - Orders
+  - Order Actions
+  - Order Line Items
+  - Fulfillments
+  - Ramps
+  - Subscriptions
+  - Rate Plans
+- name: Advanced Consumption Billing
+  tags:
+  - Prepaid with Drawdown
+- name: Usage
+  tags:
+  - Usage
+- name: Billing Documents
+  tags:
+  - Delivery Adjustments
+  - Billing Documents
+  - Invoices
+  - Credit Memos
+  - Debit Memos
+  - E-Invoicing
+  - Invoice Schedules
+  - Taxation Items
+  - Sequence Sets
+  - Operations
+- name: Bill Runs
+  tags:
+  - Bill Run
+  - Billing Preview Run
+- name: Payment Methods
+  tags:
+  - Payment Methods
+  - Custom Payment Method Types
+  - Payment Method Updater
+  - Payment Method Snapshots
+  - Payment Method Transaction Logs
+  - Hosted Pages
+  - RSA Signatures
+- name: Payments
+  tags:
+  - Payment Authorization
+  - Payment Gateways
+  - Payment Gateway Reconciliation
+  - Payments
+  - Payment Transaction Logs
+  - Payment Runs
+  - Payment Schedules
+  - Refunds
+- name: Finance
+  tags:
+  - Accounting Codes
+  - Accounting Periods
+  - Summary Journal Entries
+  - Journal Runs
+  - Mass Updater
+- name: Events and Notifications
+  tags:
+  - Notifications
+  - Custom Event Triggers
+  - Custom Scheduled Events
+- name: Custom Objects
+  tags:
+  - Custom Object Definitions
+  - Custom Object Records
+  - Custom Object Jobs
+- name: System Health
+  tags:
+  - API Health
+  - Bill Run Health
+  - Electronic Payments Health
+- name: Workflow
+  tags:
+  - Workflows
+- name: Data Query
+  tags:
+  - Data Queries
+- name: AQuA
+  tags:
+  - Aggregate Queries
+- name: Deployment Manager
+  tags:
+  - Configuration Templates
+- name: Multiple Organizations
+  tags:
+  - Data Labeling
+- name: Order to Revenue
+  tags:
+  - Regenerate
+- name: General-Purpose Operations
+  tags:
+  - Actions
+  - Settings
+  - Files
+  - Imports
+  - Custom Exchange Rates
+  - Attachments
+  - Describe

@@ -1,0 +1,1790 @@
+swagger: '2.0'
+info:
+  version: '2023-12-15'
+  title: API Reference Accounting Codes Rate Plans API
+  description: "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n"
+  contact:
+    email: docs@zuora.com
+host: rest.zuora.com
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Rate Plans
+  description: "A rate plan is part of a subscription or an amendment to a subscription, and it comes from a product rate plan. Like a product and its product rate plans, a subscription can have one or more rate plans. \nRate plans are sometimes called subscription rate plans. Rate plans that are part of an amendment are sometimes called amendment rate plans.\n\nRate plans represent a price or a collection of prices for a service you sell. An individual rate plan contains all charges specific to a particular subscription.\n"
+paths:
+  /v1/rateplans/{ratePlanId}:
+    get:
+      summary: Retrieve a rate plan
+      operationId: GET_RatePlan
+      description: '
+
+        Retrieves the detailed information about a specific subscription rate plan.
+
+
+        * If you have the [Orders](https://knowledgecenter.zuora.com/BC_Subscription_Management/Orders/AA_Overview_of_Orders#Orders) feature enabled, this operation retrieves information about a subscription rate plan and the related order that has amended the rate plan.
+
+
+        * If you have the [Orders Harmonization](https://knowledgecenter.zuora.com/Billing/Subscriptions/Orders/Orders_Harmonization/Orders_Harmonization) feature enabled, this operation retrieves information about a subscription rate plan and the related order and amendment that have amended the rate plan.
+
+
+        * If you are an existing Zuora Subscribe and Amend customer, this operation retrieves information about a subscription rate plan and the related amendment that has amended the rate plan.
+
+
+        **Note:** Orders is now generally available as of Zuora Billing Release 284 (August 2020). If you are an existing Zuora Subscribe and Amend customer and want to adopt Orders, see [What is Orders Harmonization](https://knowledgecenter.zuora.com/Billing/Subscriptions/Orders/Orders_Harmonization/Orders_Harmonization#What_is_Orders_Harmonization.3F) and join the [Orders Harmonization community group](https://community.zuora.com/t5/Orders-Harmonization/gp-p/Orders-Harmonization) for more information. If you want to enable Orders, submit a request at [Zuora Global Support](https://support.zuora.com/).
+
+
+        **Note:** You can only retrieve information about the following order actions:
+
+
+        * `addProduct`
+
+        * `updateProduct`
+
+        * `removeProduct`
+
+        * `changePlan`
+
+        '
+      tags:
+      - Rate Plans
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: ratePlanId
+        in: path
+        description: The ID of the subscription rate plan to be retrieved.
+        required: true
+        type: string
+        format: string
+      responses:
+        200:
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          schema:
+            $ref: '#/definitions/GetOrderActionRatePlanResponse'
+          examples:
+            application/json:
+              success: true
+              id: 402880e47ccbaca1017ccbdd63aa18c8
+              lastChangeType: Update
+              productId: 2c9890207c9649c0017c96a0588201a2
+              productName: MMORPG game
+              productSku: SKU-00000001
+              productRatePlanId: 2c9890207c9649c0017c96a0f11001a4
+              ratePlanName: Rate Plan 1
+              subscriptionId: 402880e47ccbaca1017ccbdd644d18d0
+              subscriptionVersion: 5
+              amendment:
+                id: 402880e47ccbaca1017ccbdd63c818cb
+                type: UpdateProduct
+                code: A-AM00000047
+                effectiveDate: '2021-12-29'
+                description: null
+                name: update
+                createdBy: 2c9890207c9649c0017c969bc6330002
+                createdDate: '2021-10-29 19:44:16'
+                updatedBy: 2c9890207c9649c0017c969bc6330002
+                updatedDate: '2021-10-29 19:44:16'
+                serviceActivationDate: '2021-12-29'
+                customerAcceptanceDate: '2021-12-29'
+                contractEffectiveDate: '2021-12-29'
+              order:
+                id: 402880e47ccbaca1017ccbdd7b0e18fd
+                orderNumber: O-00000037
+                orderActions:
+                - id: 402880e47ccbaca1017ccbdd7b1418ff
+                  serviceActivationDate: '2021-12-29'
+                  customerAcceptanceDate: '2021-12-29'
+                  contractEffectiveDate: '2021-12-29'
+                  type: UpdateProduct
+                  updateProduct:
+                    ratePlanId: 402880e47ccbaca1017ccbdd620818ba
+                    uniqueToken: null
+                    specificUpdateDate: null
+                    newRatePlanId: 402880e47ccbaca1017ccbdd63aa18c8
+                    productRatePlanId: 2c9890207c9649c0017c96a0f11001a4
+                    chargeUpdates: []
+                    customFields: {}
+definitions:
+  OrderActionRatePlanUsageOveragePricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        includedUnits:
+          description: 'Number of free units that may be consumed.
+
+            '
+          minimum: 0
+          type: number
+        numberOfPeriods:
+          description: 'Number of periods that Zuora considers when calculating overage charges with overage smoothing.
+
+            '
+          minimum: 1
+          type: integer
+        overagePrice:
+          description: 'Price per overage unit consumed.
+
+            '
+          type: number
+        overageUnusedUnitsCreditOption:
+          description: 'Specifies whether to credit the customer for unused units.
+
+
+            If the value of this field is `CreditBySpecificRate`, use the `unusedUnitsCreditRates` field to specify the rate at which to credit the customer for unused units.
+
+            '
+          enum:
+          - NoCredit
+          - CreditBySpecificRate
+          type: string
+        unusedUnitsCreditRates:
+          description: 'Per-unit rate at which to credit the customer for unused units. Only applicable if the value of the `overageUnusedUnitsCreditOption` field is `CreditBySpecificRate`.
+
+            '
+          type: number
+      type: object
+    description: 'Pricing information about a usage charge that uses the "overage" charge model. In this charge model, the charge has an allowance of free units and a fixed price per additional unit consumed.
+
+      '
+    title: usageOverage
+  OrderActionRatePlanRecurringFlatFeePricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPrice:
+          type: number
+      type: object
+  OrderActionRatePlanRatePlanOverride:
+    description: 'Rate plan associated with a subscription.
+
+      '
+    properties:
+      chargeOverrides:
+        description: 'List of charges associated with the rate plan.
+
+          '
+        items:
+          $ref: '#/definitions/OrderActionRatePlanChargeOverride'
+        type: array
+      customFields:
+        $ref: '#/definitions/OrderActionRatePlanRatePlanObjectCustomFields'
+      newRatePlanId:
+        description: 'Internal identifier of the rate plan.
+
+          '
+        type: string
+      productRatePlanId:
+        description: 'Internal identifier of the product rate plan that the rate plan is based on.
+
+          '
+        type: string
+      uniqueToken:
+        description: 'Unique identifier for the rate plan. This identifier enables you to refer to the rate plan before the rate plan has an internal identifier in Zuora.
+
+
+          For instance, suppose that you want to use a single order to add a product to a subscription and later update the same product. When you add the product, you can set a unique identifier for the rate plan. Then when you update the product, you can use the same unique identifier to specify which rate plan to modify.
+
+          '
+        maxLength: 50
+        type: string
+    required:
+    - productRatePlanId
+    title: ratePlan
+    type: object
+  CommonResponseType:
+    properties:
+      processId:
+        description: 'The Id of the process that handle the operation.
+
+          '
+        type: string
+      reasons:
+        items:
+          properties:
+            code:
+              description: 'The error code of response.
+
+                '
+              type: string
+            message:
+              description: 'The detail information of the error response
+
+                '
+              type: string
+          type: object
+        type: array
+      success:
+        description: 'Indicates whether the call succeeded.
+
+          '
+        type: boolean
+    type: object
+  OrderActionRatePlanChargeModelDataOverride:
+    description: 'Container for charge model configuration data.
+
+
+      **Note**: This field is only available if you have the High Water Mark, Pre-Rated Pricing, or Multi-Attribute Pricing charge models enabled. The charge models are available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+      '
+    properties:
+      chargeModelConfiguration:
+        properties:
+          customFieldPerUnitRate:
+            description: 'The custom field that carries the per-unit rate for each usage record. For example, `perUnitAmount__c`.
+
+
+              This field is only available for the usage-based charges that use the Pre-Rated Per Unit Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+              '
+            type: string
+          customFieldTotalAmount:
+            description: 'The custom field that carries the total amount to charge for a usage record. For example, `totalAmount__c`.
+
+
+              This field is only available for the usage-based charges that use the Pre-Rated Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+              '
+            type: string
+          formula:
+            description: 'The pricing formula to calculate actual rating amount for each usage record.
+
+
+              This field is only available for the usage-based charges that use the Multi-Attribute Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+              '
+            type: string
+        type: object
+      tiers:
+        description: 'List of cumulative pricing tiers in the charge.
+
+
+          **Note**: When you override tiers of the charge with a High Water Mark Pricing charge model, you have to provide all of the tiers, including the ones you do not want to change. The new tiers will completely override the previous ones. The High Water Mark Pricing charge models are available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+          '
+        items:
+          $ref: '#/definitions/OrderActionRatePlanChargeTier'
+        type: array
+    title: chargeModelData
+    type: object
+  OrderActionRatePlanEndConditions:
+    description: 'Specifies when a charge becomes inactive.
+
+      '
+    properties:
+      endDateCondition:
+        description: 'Condition for the charge to become inactive.
+
+
+          If the value of this field is `Fixed_Period`, the charge is active for a predefined duration based on the value of the `upToPeriodsType` and `upToPeriods` fields.
+
+
+          If the value of this field is `Specific_End_Date`, use the `specificEndDate` field to specify the date when then charge becomes inactive.
+
+          '
+        enum:
+        - Subscription_End
+        - Fixed_Period
+        - Specific_End_Date
+        type: string
+      specificEndDate:
+        description: 'Date in YYYY-MM-DD format. Only applicable if the value of the `endDateCondition` field is `Specific_End_Date`.
+
+          '
+        format: date
+        type: string
+      upToPeriods:
+        description: 'Duration of the charge in billing periods, days, weeks, months, or years, depending on the value of the `upToPeriodsType` field. Only applicable if the value of the `endDateCondition` field is `Fixed_Period`.
+
+          '
+        type: integer
+      upToPeriodsType:
+        description: 'Unit of time that the charge duration is measured in. Only applicable if the value of the `endDateCondition` field is `Fixed_Period`.
+
+          '
+        enum:
+        - Billing_Periods
+        - Days
+        - Weeks
+        - Months
+        - Years
+        type: string
+    title: endDate
+    type: object
+  OrderActionRatePlanRecurringPerUnitPricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPrice:
+          type: number
+        quantity:
+          minimum: 0
+          type: number
+      type: object
+  DeliveryScheduleParams:
+    properties:
+      frequency:
+        description: 'Specifies the frequency for delivery schedule
+
+          '
+        enum:
+        - Weekly
+        type: string
+      friday:
+        description: 'Indicates whether delivery on friday.
+
+          '
+        type: boolean
+      monday:
+        description: 'Indicates whether delivery on monday.
+
+          '
+        type: boolean
+      saturday:
+        description: 'Indicates whether delivery on saturday.
+
+          '
+        type: boolean
+      sunday:
+        description: 'Indicates whether delivery on sunday.
+
+          '
+        type: boolean
+      thursday:
+        description: 'Indicates whether delivery on thursday.
+
+          '
+        type: boolean
+      tuesday:
+        description: 'Indicates whether delivery on tuesday.
+
+          '
+        type: boolean
+      wednesday:
+        description: 'Indicates whether delivery on wednesday.
+
+          '
+        type: boolean
+    type: object
+  OrderActionRatePlanChargeTier:
+    properties:
+      endingUnit:
+        description: 'Limit on the number of units for which the tier is effective.
+
+          '
+        type: number
+      price:
+        description: 'Price or per-unit price of the tier, depending on the value of the `priceFormat` field.
+
+          '
+        type: number
+      priceFormat:
+        description: 'Specifies whether the tier has a fixed price or a per-unit price.
+
+          '
+        enum:
+        - FlatFee
+        - PerUnit
+        type: string
+      startingUnit:
+        description: 'Number of units at which the tier becomes effective.
+
+          '
+        type: number
+      tier:
+        description: 'Index of the tier in the charge.
+
+          '
+        minimum: 1
+        type: integer
+    required:
+    - tier
+    - startingUnit
+    - price
+    - priceFormat
+    title: chargeTier
+    type: object
+  OrderActionRatePlanUsageVolumePricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        ratingGroup:
+          description: "Specifies how Zuora groups usage records when rating usage. See [Usage Rating by Group](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Usage/Usage_Rating_by_Group) for more information.\n  * ByBillingPeriod (default): The rating is based on all the usages in a billing period.\n  * ByUsageStartDate: The rating is based on all the usages on the same usage start date.\n  * ByUsageRecord: The rating is based on each usage record.\n  * ByUsageUpload: The rating is based on all the usages in a uploaded usage file (.xls or .csv). If you import a mass usage in a single upload, which contains multiple usage files in .xls or .csv format, usage records are grouped for each usage file.\n"
+          enum:
+          - ByBillingPeriod
+          - ByUsageStartDate
+          - ByUsageRecord
+          - ByUsageUpload
+          type: string
+        tiers:
+          description: 'List of variable pricing tiers in the charge.
+
+            '
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+    description: 'Pricing information about a usage charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are consumed.
+
+      '
+    title: usageVolume
+  OrderActionRatePlanUsageTieredPricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        tiers:
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+  OrderActionRatePlanUsageOveragePricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        includedUnits:
+          description: 'A certain quantity of units for free in the overage charge model. It cannot be negative. It must be 0 and above. Decimals are allowed.
+
+            '
+          type: number
+        overagePrice:
+          type: number
+      type: object
+  OrderActionRatePlanRecurringTieredPricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        quantity:
+          minimum: 0
+          type: number
+        tiers:
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+  OrderActionRatePlanOneTimeTieredPricingOverride:
+    description: 'Pricing information about a one-time charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are purchased.
+
+      '
+    properties:
+      quantity:
+        description: 'Number of units purchased.
+
+          '
+        minimum: 0
+        type: number
+      tiers:
+        description: 'List of cumulative pricing tiers in the charge.
+
+          '
+        items:
+          $ref: '#/definitions/OrderActionRatePlanChargeTier'
+        type: array
+    title: oneTimeTiered
+    type: object
+  OrderActionRatePlanUsageTieredWithOveragePricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        overagePrice:
+          type: number
+        tiers:
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+  OrderActionRatePlanRecurringVolumePricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        quantity:
+          minimum: 0
+          type: number
+        tiers:
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+  OrderActionRatePlanDiscountPricingUpdate:
+    properties:
+      applyDiscountTo:
+        description: 'Specifies which type of charge the discount charge applies to.
+
+          '
+        enum:
+        - ONETIME
+        - RECURRING
+        - USAGE
+        - ONETIMERECURRING
+        - ONETIMEUSAGE
+        - RECURRINGUSAGE
+        - ONETIMERECURRINGUSAGE
+        type: string
+      discountLevel:
+        description: 'Application scope of the discount charge. For example, if the value of this field is `subscription` and the value of the `applyDiscountTo` field is `RECURRING`, the discount charge applies to all recurring charges in the same subscription as the discount charge.
+
+          '
+        enum:
+        - rateplan
+        - subscription
+        - account
+        type: string
+      discountPercentage:
+        description: 'The amount of the discount as a percentage. This field is only used for percentage discounts.
+
+          '
+        type: number
+      priceChangeOption:
+        description: 'Specifies how Zuora changes the price of the charge each time the subscription renews.
+
+          '
+        enum:
+        - NoChange
+        - UseLatestProductCatalogPricing
+        type: string
+    type: object
+  OrderActionRatePlanUsageVolumePricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        tiers:
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+  OrderActionRatePlanAmendment:
+    description: 'The amendment that is related to the subscription rate plan.
+
+      '
+    properties:
+      code:
+        description: 'The amendment code.
+
+          '
+        type: string
+      contractEffectiveDate:
+        description: 'The date when the amendment becomes effective for billing purposes, as `yyyy-mm-dd`.
+
+          '
+        format: date
+        type: string
+      createdBy:
+        description: 'The ID of the user who created this amendment.
+
+          '
+        type: string
+      createdDate:
+        description: The time that the amendment gets created in the system, in the `YYYY-MM-DD HH:MM:SS` format.
+        format: datetime
+        type: string
+      customerAcceptanceDate:
+        description: 'The date when the customer accepts the amendment changes to the subscription, as `yyyy-mm-dd`.
+
+          '
+        format: date
+        type: string
+      description:
+        description: 'Description of the amendment.
+
+          '
+        type: string
+      effectiveDate:
+        description: "The date when the amendment changes take effective. \n"
+        format: date
+        type: string
+      id:
+        description: 'The amendment ID.
+
+          '
+        type: string
+      name:
+        description: 'The name of the amendment.
+
+          '
+        type: string
+      serviceActivationDate:
+        description: 'The date when service is activated, as `yyyy-mm-dd`.
+
+          '
+        format: date
+        type: string
+      type:
+        description: 'Type of the amendment.
+
+          Possible values are:
+
+
+
+          - NewProduct
+
+          - RemoveProduct
+
+          - UpdateProduct
+
+          '
+        type: string
+      updatedBy:
+        description: The ID of the user who updated this amendment.
+        type: string
+      updatedDate:
+        description: The time that the amendment gets updated in the system, in the `YYYY-MM-DD HH:MM:SS` format.
+        format: datetime
+        type: string
+    type: object
+  OrderActionRatePlanDiscountPricingOverride:
+    description: 'Pricing information about a discount charge.
+
+      '
+    properties:
+      applyDiscountTo:
+        description: 'Specifies which type of charge the discount charge applies to.
+
+          '
+        enum:
+        - ONETIME
+        - RECURRING
+        - USAGE
+        - ONETIMERECURRING
+        - ONETIMEUSAGE
+        - RECURRINGUSAGE
+        - ONETIMERECURRINGUSAGE
+        type: string
+      discountAmount:
+        description: 'Only applicable if the discount charge is a fixed-amount discount.
+
+          '
+        type: number
+      discountLevel:
+        description: 'Application scope of the discount charge. For example, if the value of this field is `subscription` and the value of the `applyDiscountTo` field is `RECURRING`, the discount charge applies to all recurring charges in the same subscription as the discount charge.
+
+          '
+        enum:
+        - rateplan
+        - subscription
+        - account
+        type: string
+      discountPercentage:
+        description: 'Only applicable if the discount charge is a percentage discount.
+
+          '
+        type: number
+      priceChangeOption:
+        description: 'Specifies how Zuora changes the price of the charge each time the subscription renews.
+
+          '
+        enum:
+        - NoChange
+        - UseLatestProductCatalogPricing
+        type: string
+    title: discount
+    type: object
+  OrderActionRatePlanUsagePerUnitPricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPrice:
+          type: number
+      type: object
+  OrderActionRatePlanRecurringDeliveryPricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        deliverySchedule:
+          $ref: '#/definitions/DeliveryScheduleParams'
+        listPrice:
+          description: 'Price of the charge in each recurring period.
+
+            '
+          type: number
+      type: object
+    description: 'Pricing information about a recurring charge that uses the Delivery Pricing charge model. In this charge model, the charge has a fixed price. This field is only available if you have the Delivery Pricing charge model enabled.
+
+
+      **Note**: The Delivery Pricing charge model is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at <a href="http://support.zuora.com/" target="_blank">Zuora Global Support</a>.
+
+      '
+    title: recurringDelivery
+  OrderActionRatePlanTriggerParams:
+    description: 'Specifies when a charge becomes active.
+
+      '
+    properties:
+      specificTriggerDate:
+        description: "Date in YYYY-MM-DD format. Only applicable if the value of the `triggerEvent` field is `SpecificDate`.\n\nWhile this field is applicable, if this field is not set, your `CreateSubscription` order action creates a `Pending` order and a `Pending Acceptance` subscription. If at the same time the service activation date is required and not set, a `Pending Activation` subscription is created.\n\nWhile this field is applicable, if this field is not set, the following order actions create a `Pending` order but do not impact the subscription status. **Note**: This feature is in **Limited Availability**. If you want to have access to the feature, submit a request at [Zuora Global Support](http://support.zuora.com/).\n * AddProduct\n * UpdateProduct\n * RemoveProduct\n * RenewSubscription\n * TermsAndConditions\n"
+        format: date
+        type: string
+      triggerEvent:
+        description: 'Condition for the charge to become active.
+
+
+          If the value of this field is `SpecificDate`, use the `specificTriggerDate` field to specify the date when the charge becomes active.
+
+          '
+        enum:
+        - ContractEffective
+        - ServiceActivation
+        - CustomerAcceptance
+        type: string
+    title: startDate
+    type: object
+  OrderActionRatePlanUsageFlatFeePricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPrice:
+          description: 'Price of the charge.
+
+            '
+          type: number
+      type: object
+    description: 'Pricing information about a usage charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
+
+      '
+    title: usageFlatFee
+  OrderActionRatePlanRecurringDeliveryPricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        deliverySchedule:
+          $ref: '#/definitions/DeliveryScheduleParams'
+        listPrice:
+          type: number
+      type: object
+  OrderActionRatePlanOrder:
+    description: 'The order that is related to the subscription rate plan.
+
+      '
+    properties:
+      id:
+        description: The order ID.
+        type: string
+      orderActions:
+        items:
+          $ref: '#/definitions/OrderActionRatePlanOrderAction'
+        type: array
+      orderNumber:
+        description: The order number of the order.
+        type: string
+    type: object
+  OrderActionRatePlanOrderAction:
+    description: Represents the processed order action.
+    properties:
+      addProduct:
+        $ref: '#/definitions/OrderActionRatePlanRatePlanOverride'
+      customFields:
+        $ref: '#/definitions/OrderActionRatePlanOrderActionObjectCustomFields'
+      id:
+        description: The Id of the order action processed in the order.
+        type: string
+      removeProduct:
+        $ref: '#/definitions/OrderActionRatePlanRemoveProduct'
+      type:
+        description: Type of the order action.
+        enum:
+        - AddProduct
+        - UpdateProduct
+        - RemoveProduct
+        type: string
+      updateProduct:
+        $ref: '#/definitions/OrderActionRatePlanRatePlanUpdate'
+    type: object
+  OrderActionRatePlanRecurringVolumePricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPriceBase:
+          description: 'Specifies the duration of each recurring period.
+
+
+            **Note**: The `Per_Year` and `Per_Specific_Months` enum values are available only if you have the <a href="https://knowledgecenter.zuora.com/Billing/Subscriptions/Product_Catalog/I_Annual_List_Price" target="_blank">Annual List Price</a> feature enabled.
+
+            '
+          enum:
+          - Per_Billing_Period
+          - Per_Month
+          - Per_Week
+          - Per_Year
+          - Per_Specific_Months
+          type: string
+        quantity:
+          description: 'Number of units purchased.
+
+            '
+          minimum: 0
+          type: number
+        specificListPriceBase:
+          description: 'The number of months for the list price base of the charge. This field is required if you set the value of the `listPriceBase` field to `Per_Specific_Months`.
+
+            '
+          format: int32
+          maximum: 200
+          minimum: 1
+          type: integer
+        tiers:
+          description: 'List of variable pricing tiers in the charge.
+
+            '
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+    description: 'Pricing information about a recurring charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are purchased.
+
+      '
+    title: recurringVolume
+  OrderActionRatePlanChargeOverride:
+    description: 'Charge associated with a rate plan.
+
+      '
+    properties:
+      billing:
+        description: 'Billing information about the charge.
+
+          '
+        properties:
+          billCycleDay:
+            description: 'Day of the month that each billing period begins on. Only applicable if the value of the `billCycleType` field is `SpecificDayofMonth`.
+
+              '
+            maximum: 31
+            minimum: 0
+            type: integer
+          billCycleType:
+            description: "Specifies how Zuora determines the day that each billing period begins on.\n\n  * `DefaultFromCustomer` - Each billing period begins on the bill cycle day of the account that owns the subscription.\n  * `SpecificDayofMonth` - Use the `billCycleDay` field to specify the day of the month that each billing period begins on.\n  * `SubscriptionStartDay` - Each billing period begins on the same day of the month as the start date of the subscription.\n  * `ChargeTriggerDay` - Each billing period begins on the same day of the month as the date when the charge becomes active.\n  * `SpecificDayofWeek` - Use the `weeklyBillCycleDay` field to specify the day of the week that each billing period begins on.\n"
+            enum:
+            - DefaultFromCustomer
+            - SpecificDayofMonth
+            - SubscriptionStartDay
+            - ChargeTriggerDay
+            - SpecificDayofWeek
+            type: string
+          billingPeriod:
+            description: 'Billing frequency of the charge. The value of this field controls the duration of each billing period.
+
+
+              If the value of this field is `Specific_Months` or `Specific_Weeks`, use the `specificBillingPeriod` field to specify the duration of each billing period.
+
+              '
+            enum:
+            - Month
+            - Quarter
+            - Semi_Annual
+            - Annual
+            - Eighteen_Months
+            - Two_Years
+            - Three_Years
+            - Five_Years
+            - Specific_Months
+            - Subscription_Term
+            - Week
+            - Specific_Weeks
+            type: string
+          billingPeriodAlignment:
+            description: 'Specifies how Zuora determines when to start new billing periods. You can use this field to align the billing periods of different charges.
+
+
+              * `AlignToCharge` - Zuora starts a new billing period on the first billing day that falls on or after the date when the charge becomes active.
+
+              * `AlignToSubscriptionStart` - Zuora starts a new billing period on the first billing day that falls on or after the start date of the subscription.
+
+              * `AlignToTermStart` - For each term of the subscription, Zuora starts a new billing period on the first billing day that falls on or after the start date of the term.
+
+
+              See the `billCycleType` field for information about how Zuora determines the billing day.
+
+              '
+            enum:
+            - AlignToCharge
+            - AlignToSubscriptionStart
+            - AlignToTermStart
+            type: string
+          billingTiming:
+            description: 'Specifies whether to invoice for a billing period on the first day of the billing period (billing in advance) or the first day of the next billing period (billing in arrears).
+
+              '
+            enum:
+            - IN_ADVANCE
+            - IN_ARREARS
+            type: string
+          specificBillingPeriod:
+            description: 'Duration of each billing period in months or weeks, depending on the value of the `billingPeriod` field. Only applicable if the value of the `billingPeriod` field is `Specific_Months` or `Specific_Weeks`.
+
+              '
+            type: integer
+          weeklyBillCycleDay:
+            description: 'Day of the week that each billing period begins on. Only applicable if the value of the `billCycleType` field is `SpecificDayofWeek`.
+
+              '
+            enum:
+            - Sunday
+            - Monday
+            - Tuesday
+            - Wednesday
+            - Thursday
+            - Friday
+            - Saturday
+            type: string
+        type: object
+      chargeNumber:
+        description: 'Charge number of the charge. For example, C-00000307.
+
+
+          If you do not set this field, Zuora will generate the charge number.
+
+          '
+        maxLength: 50
+        type: string
+      customFields:
+        $ref: '#/definitions/OrderActionRatePlanRatePlanChargeObjectCustomFields'
+      description:
+        description: 'Description of the charge.
+
+          '
+        maxLength: 500
+        type: string
+      endDate:
+        $ref: '#/definitions/OrderActionRatePlanEndConditions'
+      pricing:
+        description: 'Pricing information about the charge.
+
+          '
+        properties:
+          chargeModelData:
+            $ref: '#/definitions/OrderActionRatePlanChargeModelDataOverride'
+          discount:
+            $ref: '#/definitions/OrderActionRatePlanDiscountPricingOverride'
+          oneTimeFlatFee:
+            $ref: '#/definitions/OrderActionRatePlanOneTimeFlatFeePricingOverride'
+          oneTimePerUnit:
+            $ref: '#/definitions/OrderActionRatePlanOneTimePerUnitPricingOverride'
+          oneTimeTiered:
+            $ref: '#/definitions/OrderActionRatePlanOneTimeTieredPricingOverride'
+          oneTimeVolume:
+            $ref: '#/definitions/OrderActionRatePlanOneTimeVolumePricingOverride'
+          recurringDelivery:
+            $ref: '#/definitions/OrderActionRatePlanRecurringDeliveryPricingOverride'
+          recurringFlatFee:
+            $ref: '#/definitions/OrderActionRatePlanRecurringFlatFeePricingOverride'
+          recurringPerUnit:
+            $ref: '#/definitions/OrderActionRatePlanRecurringPerUnitPricingOverride'
+          recurringTiered:
+            $ref: '#/definitions/OrderActionRatePlanRecurringTieredPricingOverride'
+          recurringVolume:
+            $ref: '#/definitions/OrderActionRatePlanRecurringVolumePricingOverride'
+          usageFlatFee:
+            $ref: '#/definitions/OrderActionRatePlanUsageFlatFeePricingOverride'
+          usageOverage:
+            $ref: '#/definitions/OrderActionRatePlanUsageOveragePricingOverride'
+          usagePerUnit:
+            $ref: '#/definitions/OrderActionRatePlanUsagePerUnitPricingOverride'
+          usageTiered:
+            $ref: '#/definitions/OrderActionRatePlanUsageTieredPricingOverride'
+          usageTieredWithOverage:
+            $ref: '#/definitions/OrderActionRatePlanUsageTieredWithOveragePricingOverride'
+          usageVolume:
+            $ref: '#/definitions/OrderActionRatePlanUsageVolumePricingOverride'
+        type: object
+      productRatePlanChargeId:
+        description: 'Internal identifier of the product rate plan charge that the charge is based on.
+
+          '
+        type: string
+      revRecCode:
+        description: 'Revenue Recognition Code
+
+          '
+        maxLength: 70
+        type: string
+      revRecTriggerCondition:
+        description: "Specifies the revenue recognition trigger condition.\n\n  * `Contract Effective Date`\n  * `Service Activation Date`\n  * `Customer Acceptance Date`\n"
+        enum:
+        - Contract Effective Date
+        - Service Activation Date
+        - Customer Acceptance Date
+        type: string
+      revenueRecognitionRuleName:
+        description: "Specifies the revenue recognition rule.\n\n  * `Recognize upon invoicing`\n  * `Recognize daily over time`\n"
+        enum:
+        - Recognize upon invoicing
+        - Recognize daily over time
+        type: string
+      startDate:
+        $ref: '#/definitions/OrderActionRatePlanTriggerParams'
+      uniqueToken:
+        description: 'Unique identifier for the charge. This identifier enables you to refer to the charge before the charge has an internal identifier in Zuora.
+
+
+          For instance, suppose that you want to use a single order to add a product to a subscription and later update the same product. When you add the product, you can set a unique identifier for the charge. Then when you update the product, you can use the same unique identifier to specify which charge to modify.
+
+          '
+        maxLength: 50
+        type: string
+    required:
+    - productRatePlanChargeId
+    title: charge
+    type: object
+  OrderActionRatePlanRatePlanObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the Rate Plan object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a Rate Plan object.
+
+      '
+    title: ratePlanFieldsCustom
+    type: object
+  OrderActionRatePlanUsageTieredWithOveragePricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        numberOfPeriods:
+          description: 'Number of periods that Zuora considers when calculating overage charges with overage smoothing.
+
+            '
+          minimum: 1
+          type: integer
+        overagePrice:
+          description: 'Price per overage unit consumed.
+
+            '
+          type: number
+        overageUnusedUnitsCreditOption:
+          description: 'Specifies whether to credit the customer for unused units.
+
+
+            If the value of this field is `CreditBySpecificRate`, use the `unusedUnitsCreditRates` field to specify the rate at which to credit the customer for unused units.
+
+            '
+          enum:
+          - NoCredit
+          - CreditBySpecificRate
+          type: string
+        tiers:
+          description: 'List of cumulative pricing tiers in the charge.
+
+            '
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+        unusedUnitsCreditRates:
+          description: 'Per-unit rate at which to credit the customer for unused units. Only applicable if the value of the `overageUnusedUnitsCreditOption` field is `CreditBySpecificRate`.
+
+            '
+          type: number
+      type: object
+    description: 'Pricing information about a usage charge that uses the "tiered with overage" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are consumed. The charge also has a fixed price per unit consumed beyond the limit of the final tier.
+
+      '
+    title: usageTieredWithOverage
+  OrderActionRatePlanUsageFlatFeePricingUpdate:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPrice:
+          type: number
+      type: object
+  OrderActionRatePlanOneTimePerUnitPricingOverride:
+    description: 'Pricing information about a one-time charge that uses the "per unit" charge model. In this charge model, the charge has a fixed price per unit purchased.
+
+      '
+    properties:
+      listPrice:
+        description: 'Per-unit price of the charge.
+
+          '
+        type: number
+      quantity:
+        description: 'Number of units purchased.
+
+          '
+        minimum: 0
+        type: number
+    title: oneTimePerUnit
+    type: object
+  OrderActionRatePlanRemoveProduct:
+    description: 'Information about an order action of type `RemoveProduct`.
+
+      '
+    properties:
+      ratePlanId:
+        description: 'Internal identifier of the rate plan to remove.
+
+          '
+        type: string
+      uniqueToken:
+        description: A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.A unique string in the order to represent the rate plan.
+        type: string
+    title: removeProduct
+    type: object
+  OrderActionRatePlanOrderActionObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the Order Action object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of an Order Action object.
+
+      '
+    title: orderActionFieldsCustom
+    type: object
+  OrderActionRatePlanUsagePerUnitPricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPrice:
+          description: 'Per-unit price of the charge.
+
+            '
+          type: number
+        ratingGroup:
+          description: "Specifies how Zuora groups usage records when rating usage. See [Usage Rating by Group](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Usage/Usage_Rating_by_Group) for more information.\n  * ByBillingPeriod (default): The rating is based on all the usages in a billing period.\n  * ByUsageStartDate: The rating is based on all the usages on the same usage start date.\n  * ByUsageRecord: The rating is based on each usage record.\n  * ByUsageUpload: The rating is based on all the usages in a uploaded usage file (.xls or .csv). If you import a mass usage in a single upload, which contains multiple usage files in .xls or .csv format, usage records are grouped for each usage file.\n"
+          enum:
+          - ByBillingPeriod
+          - ByUsageStartDate
+          - ByUsageRecord
+          - ByUsageUpload
+          type: string
+      type: object
+    description: 'Pricing information about a usage charge that uses the "per unit" charge model. In this charge model, the charge has a fixed price per unit consumed.
+
+      '
+    title: usagePerUnit
+  OrderActionRatePlanPriceChangeParams:
+    properties:
+      priceChangeOption:
+        description: 'Specifies how Zuora changes the price of the charge each time the subscription renews.
+
+
+          If the value of this field is `SpecificPercentageValue`, use the `priceIncreasePercentage` field to specify how much the price of the charge should change.
+
+          '
+        enum:
+        - NoChange
+        - SpecificPercentageValue
+        - UseLatestProductCatalogPricing
+        type: string
+      priceIncreasePercentage:
+        description: 'Specifies the percentage by which the price of the charge should change each time the subscription renews. Only applicable if the value of the `priceChangeOption` field is `SpecificPercentageValue`.
+
+          '
+        minimum: -100
+        type: number
+    type: object
+  OrderActionRatePlanOneTimeFlatFeePricingOverride:
+    description: 'Pricing information about a one-time charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
+
+      '
+    properties:
+      listPrice:
+        description: 'Price of the charge.
+
+          '
+        type: number
+    required:
+    - listPrice
+    title: oneTimeFlatFee
+    type: object
+  OrderActionRatePlanOneTimeVolumePricingOverride:
+    description: 'Pricing information about a one-time charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are purchased.
+
+      '
+    properties:
+      quantity:
+        description: 'Number of units purchased.
+
+          '
+        minimum: 0
+        type: number
+      tiers:
+        description: 'List of variable pricing tiers in the charge.
+
+          '
+        items:
+          $ref: '#/definitions/OrderActionRatePlanChargeTier'
+        type: array
+    title: oneTimeVolume
+    type: object
+  OrderActionRatePlanChargeUpdate:
+    description: The JSON object containing the information for a charge update in the 'UpdateProduct' type order action.
+    properties:
+      billing:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanBillingUpdate'
+        description: 'Billing information about the charge.
+
+          '
+      chargeNumber:
+        description: 'Read only. Identifies the charge to be updated.
+
+          '
+        type: string
+      customFields:
+        $ref: '#/definitions/OrderActionRatePlanRatePlanChargeObjectCustomFields'
+      description:
+        description: 'Description of the charge.
+
+          '
+        type: string
+      effectiveDate:
+        $ref: '#/definitions/OrderActionRatePlanTriggerParams'
+      pricing:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanPricingUpdate'
+        description: 'Pricing information about the charge.
+
+          '
+      uniqueToken:
+        description: 'A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.
+
+          '
+        type: string
+    type: object
+  OrderActionRatePlanRatePlanUpdate:
+    description: 'Information about an order action of type `UpdateProduct`.
+
+      '
+    properties:
+      chargeUpdates:
+        items:
+          $ref: '#/definitions/OrderActionRatePlanChargeUpdate'
+        type: array
+      customFields:
+        $ref: '#/definitions/OrderActionRatePlanRatePlanObjectCustomFields'
+      newRatePlanId:
+        description: 'Internal identifier of the updated rate plan in the new subscription version.
+
+          '
+        type: string
+      ratePlanId:
+        description: 'Internal identifier of the rate plan that was updated.
+
+          '
+        type: string
+      specificUpdateDate:
+        description: '
+
+          The date when the Update Product order action takes effect. This field is only applicable if there is already a future-dated Update Product order action on the subscription. The format of the date is yyyy-mm-dd.
+
+
+          See [Update a Product on Subscription with Future-dated Updates](https://knowledgecenter.zuora.com/BC_Subscription_Management/Orders/AC_Orders_Tutorials/C_Update_a_Product_in_a_Subscription/Update_a_Product_on_Subscription_with_Future-dated_Updates) for more information about this feature.
+
+          '
+        format: date
+        type: string
+      uniqueToken:
+        description: 'A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.
+
+          '
+        type: string
+    title: updateProduct
+    type: object
+  GetOrderActionRatePlanResponse:
+    allOf:
+    - $ref: '#/definitions/CommonResponseType'
+    - properties:
+        amendment:
+          $ref: '#/definitions/OrderActionRatePlanAmendment'
+        externallyManagedPlanId:
+          description: 'The unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
+
+            '
+          type: string
+        id:
+          description: Unique subscription rate-plan ID.
+          type: string
+        lastChangeType:
+          description: 'Latest change type. Possible values are:
+
+
+            - New
+
+            - Update
+
+            - Remove
+
+            '
+          type: string
+        order:
+          $ref: '#/definitions/OrderActionRatePlanOrder'
+        productId:
+          description: 'Product ID
+
+            '
+          type: string
+        productName:
+          description: 'The name of the product.
+
+            '
+          type: string
+        productRatePlanId:
+          description: 'Product rate plan ID
+
+            '
+          type: string
+        productSku:
+          description: 'The unique SKU for the product.
+
+            '
+          type: string
+        ratePlanName:
+          description: 'The name of the rate plan.
+
+            '
+          type: string
+        subscriptionId:
+          description: 'Subscription ID.
+
+            '
+          type: string
+        subscriptionVersion:
+          description: 'The version of the subscription.
+
+            '
+      type: object
+  OrderActionRatePlanPricingUpdate:
+    properties:
+      chargeModelData:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanChargeModelDataOverride'
+        description: 'Container for charge model configuration data.
+
+          '
+      discount:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanDiscountPricingUpdate'
+        description: 'Pricing information about a discount charge.
+
+          '
+      recurringDelivery:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanRecurringDeliveryPricingUpdate'
+        description: 'Pricing information about a recurring charge that uses the Delivery Pricing charge model. In this charge model, the charge has a fixed price. This field is only available if you have the Delivery Pricing charge model enabled.
+
+
+          **Note**: The Delivery Pricing charge model is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at <a href="http://support.zuora.com/" target="_blank">Zuora Global Support</a>.
+
+          '
+      recurringFlatFee:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanRecurringFlatFeePricingUpdate'
+        description: 'Pricing information about a recurring charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
+
+          '
+      recurringPerUnit:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanRecurringPerUnitPricingUpdate'
+        description: 'Pricing information about a recurring charge that uses the "per unit" charge model. In this charge model, the charge has a fixed price per unit purchased.
+
+          '
+      recurringTiered:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanRecurringTieredPricingUpdate'
+        description: 'Pricing information about a recurring charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are purchased.
+
+          '
+      recurringVolume:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanRecurringVolumePricingUpdate'
+        description: 'Pricing information about a recurring charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are purchased.
+
+          '
+      usageFlatFee:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanUsageFlatFeePricingUpdate'
+        description: 'Pricing information about a usage charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
+
+          '
+      usageOverage:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanUsageOveragePricingUpdate'
+        description: 'Pricing information about a usage charge that uses the "overage" charge model. In this charge model, the charge has an allowance of free units and a fixed price per additional unit consumed.
+
+          '
+      usagePerUnit:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanUsagePerUnitPricingUpdate'
+        description: 'Pricing information about a usage charge that uses the "per unit" charge model. In this charge model, the charge has a fixed price per unit consumed.
+
+          '
+      usageTiered:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanUsageTieredPricingUpdate'
+        description: 'Pricing information about a usage charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are consumed.
+
+          '
+      usageTieredWithOverage:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanUsageTieredWithOveragePricingUpdate'
+        description: 'Pricing information about a usage charge that uses the "tiered with overage" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are consumed. The charge also has a fixed price per unit consumed beyond the limit of the final tier.
+
+          '
+      usageVolume:
+        allOf:
+        - $ref: '#/definitions/OrderActionRatePlanUsageVolumePricingUpdate'
+        description: 'Pricing information about a usage charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are consumed.
+
+          '
+    type: object
+  OrderActionRatePlanRatePlanChargeObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the Rate Plan Charge object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a Rate Plan Charge object.
+
+      '
+    title: ratePlanChargeFieldsCustom
+    type: object
+  OrderActionRatePlanRecurringPerUnitPricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPrice:
+          description: 'Per-unit price of the charge in each recurring period.
+
+            '
+          type: number
+        listPriceBase:
+          description: "Specifies the duration of each recurring period.\n\n**Note**: The `Per_Year` and `Per_Specific_Months` enum values are available only if you have the <a href=\"https://knowledgecenter.zuora.com/Billing/Subscriptions/Product_Catalog/I_Annual_List_Price\" target=\"_blank\">Annual List Price</a> feature enabled.              \n"
+          enum:
+          - Per_Billing_Period
+          - Per_Month
+          - Per_Week
+          - Per_Year
+          - Per_Specific_Months
+          type: string
+        quantity:
+          description: 'Number of units purchased.
+
+            '
+          minimum: 0
+          type: number
+        specificListPriceBase:
+          description: 'The number of months for the list price base of the charge. This field is required if you set the value of the `listPriceBase` field to `Per_Specific_Months`.
+
+            '
+          format: int32
+          maximum: 200
+          minimum: 1
+          type: integer
+      type: object
+    description: 'Pricing information about a recurring charge that uses the "per unit" charge model. In this charge model, the charge has a fixed price per unit purchased.
+
+      '
+    title: recurringPerUnit
+  OrderActionRatePlanUsageTieredPricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        ratingGroup:
+          description: "Specifies how Zuora groups usage records when rating usage. See [Usage Rating by Group](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Usage/Usage_Rating_by_Group) for more information.\n  * ByBillingPeriod (default): The rating is based on all the usages in a billing period.\n  * ByUsageStartDate: The rating is based on all the usages on the same usage start date.\n  * ByUsageRecord: The rating is based on each usage record.\n  * ByUsageUpload: The rating is based on all the usages in a uploaded usage file (.xls or .csv). If you import a mass usage in a single upload, which contains multiple usage files in .xls or .csv format, usage records are grouped for each usage file.\n"
+          enum:
+          - ByBillingPeriod
+          - ByUsageStartDate
+          - ByUsageRecord
+          - ByUsageUpload
+          type: string
+        tiers:
+          description: 'List of cumulative pricing tiers in the charge.
+
+            '
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+    description: 'Pricing information about a usage charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are consumed.
+
+      '
+    title: usageTiered
+  OrderActionRatePlanRecurringTieredPricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPriceBase:
+          description: 'Specifies the duration of each recurring period.
+
+            '
+          enum:
+          - Per_Billing_Period
+          - Per_Month
+          - Per_Week
+          - Per_Year
+          - Per_Specific_Months
+          type: string
+        quantity:
+          description: 'Number of units purchased.
+
+            '
+          minimum: 0
+          type: number
+        specificListPriceBase:
+          description: 'The number of months for the list price base of the charge. This field is required if you set the value of the `listPriceBase` field to `Per_Specific_Months`.
+
+            '
+          format: int32
+          maximum: 200
+          minimum: 1
+          type: integer
+        tiers:
+          description: 'List of cumulative pricing tiers in the charge.
+
+            '
+          items:
+            $ref: '#/definitions/OrderActionRatePlanChargeTier'
+          type: array
+      type: object
+    description: 'Pricing information about a recurring charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are purchased.
+
+      '
+    title: recurringTiered
+  OrderActionRatePlanRecurringFlatFeePricingOverride:
+    allOf:
+    - $ref: '#/definitions/OrderActionRatePlanPriceChangeParams'
+    - properties:
+        listPrice:
+          description: 'Price of the charge in each recurring period.
+
+            '
+          type: number
+        listPriceBase:
+          description: 'Specifies the duration of each recurring period.
+
+            '
+          enum:
+          - Per_Billing_Period
+          - Per_Month
+          - Per_Week
+          - Per_Year
+          - Per_Specific_Months
+          type: string
+        specificListPriceBase:
+          description: 'The number of months for the list price base of the charge. The value of this field is `null` if you do not set the value of the `listPriceBase` field to `Per_Specific_Months`.
+
+            '
+          format: int32
+          maximum: 200
+          minimum: 1
+          type: integer
+      type: object
+    description: 'Pricing information about a recurring charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
+
+      '
+    title: recurringFlatFee
+  OrderActionRatePlanBillingUpdate:
+    properties:
+      billingPeriodAlignment:
+        enum:
+        - AlignToCharge
+        - AlignToSubscriptionStart
+        - AlignToTermStart
+        type: string
+    type: object
+parameters:
+  GLOBAL_HEADER_Accept_Encoding:
+    name: Accept-Encoding
+    in: header
+    required: false
+    type: string
+    description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+  GLOBAL_HEADER_Zuora_Org_Ids:
+    name: Zuora-Org-Ids
+    in: header
+    required: false
+    type: string
+    description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+  GLOBAL_HEADER_Content_Encoding:
+    name: Content-Encoding
+    in: header
+    required: false
+    type: string
+    description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+      '
+  GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+    name: Zuora-Entity-Ids
+    in: header
+    required: false
+    type: string
+    description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+      '
+  GLOBAL_HEADER_Zuora_Track_Id:
+    name: Zuora-Track-Id
+    in: header
+    required: false
+    type: string
+    maxLength: 64
+    description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+      The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+      '
+  GLOBAL_HEADER_Authorization_OAuth_optional:
+    name: Authorization
+    in: header
+    required: false
+    type: string
+    description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+      '
+x-tagGroups:
+- name: Authentication
+  tags:
+  - OAuth
+- name: Products
+  tags:
+  - Products
+  - Catalog
+  - Catalog Groups
+  - Offers
+  - Price Book Items
+  - Product Rate Plans
+  - Product Rate Plan Definitions
+  - Product Rate Plan Charges
+  - Product Charge Definitions
+  - Product Rate Plan Charge Tiers
+  - Zuora Revenue Integration
+- name: Customer Accounts
+  tags:
+  - Accounts
+  - Contacts
+  - Contact Snapshots
+- name: Orders and Subscriptions
+  tags:
+  - Sign Up
+  - Orders
+  - Order Actions
+  - Order Line Items
+  - Fulfillments
+  - Ramps
+  - Subscriptions
+  - Rate Plans
+- name: Advanced Consumption Billing
+  tags:
+  - Prepaid with Drawdown
+- name: Usage
+  tags:
+  - Usage
+- name: Billing Documents
+  tags:
+  - Delivery Adjustments
+  - Billing Documents
+  - Invoices
+  - Credit Memos
+  - Debit Memos
+  - E-Invoicing
+  - Invoice Schedules
+  - Taxation Items
+  - Sequence Sets
+  - Operations
+- name: Bill Runs
+  tags:
+  - Bill Run
+  - Billing Preview Run
+- name: Payment Methods
+  tags:
+  - Payment Methods
+  - Custom Payment Method Types
+  - Payment Method Updater
+  - Payment Method Snapshots
+  - Payment Method Transaction Logs
+  - Hosted Pages
+  - RSA Signatures
+- name: Payments
+  tags:
+  - Payment Authorization
+  - Payment Gateways
+  - Payment Gateway Reconciliation
+  - Payments
+  - Payment Transaction Logs
+  - Payment Runs
+  - Payment Schedules
+  - Refunds
+- name: Finance
+  tags:
+  - Accounting Codes
+  - Accounting Periods
+  - Summary Journal Entries
+  - Journal Runs
+  - Mass Updater
+- name: Events and Notifications
+  tags:
+  - Notifications
+  - Custom Event Triggers
+  - Custom Scheduled Events
+- name: Custom Objects
+  tags:
+  - Custom Object Definitions
+  - Custom Object Records
+  - Custom Object Jobs
+- name: System Health
+  tags:
+  - API Health
+  - Bill Run Health
+  - Electronic Payments Health
+- name: Workflow
+  tags:
+  - Workflows
+- name: Data Query
+  tags:
+  - Data Queries
+- name: AQuA
+  tags:
+  - Aggregate Queries
+- name: Deployment Manager
+  tags:
+  - Configuration Templates
+- name: Multiple Organizations
+  tags:
+  - Data Labeling
+- name: Order to Revenue
+  tags:
+  - Regenerate
+- name: General-Purpose Operations
+  tags:
+  - Actions
+  - Settings
+  - Files
+  - Imports
+  - Custom Exchange Rates
+  - Attachments
+  - Describe

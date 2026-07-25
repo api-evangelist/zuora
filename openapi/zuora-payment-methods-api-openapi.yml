@@ -1,0 +1,3101 @@
+swagger: '2.0'
+info:
+  version: '2023-12-15'
+  title: API Reference Accounting Codes Payment Methods API
+  description: "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n"
+  contact:
+    email: docs@zuora.com
+host: rest.zuora.com
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Payment Methods
+  description: 'Payment methods represents payment method details associated with a customer account.
+
+    '
+paths:
+  /v1/payment-methods:
+    post:
+      summary: Create a payment method
+      operationId: POST_PaymentMethods
+      description: "You can use this operation to create either a payment method associated with a specific customer account, or an orphan payment method that is not associated with any customer account. The orphan payment method must be associated with a customer account within 10 days. Otherwise, it will be deleted.\n\nThis operation supports the payment methods listed below.\n        \n### Credit Card\nThe following request body fields are applicable to this payment method:\n* `cardHolderInfo` (`cardHolderName` required)\n* `cardNumber` (required)\n* `cardType` (required)\n* `expirationMonth` (required)\n* `expirationYear` (required)\n* `mitConsentAgreementRef`\n* `mitConsentAgreementSrc`\n* `mitNetworkTransactionId`\n* `mitProfileAction`\n* `mitProfileType`\n* `mitProfileAgreedOn`\n* `securityCode`\n* `checkDuplicated`\n* `mandateInfo`\n\n### Credit Card (CC) Reference Transaction\nThe following request body fields are applicable to this payment method:\n* `tokenId` (required)\n* `secondTokenId`\n* `creditCardMaskNumber`\n* `mandateInfo`\n\n### ACH\nThe following request body fields are applicable to this payment method:\n* `bankABACode` (required)\n* `bankAccountName` (required)\n* `bankAccountNumber` (required)\n* `bankAccountType` (required)\n* `bankName` (required)\n* `addressLine1`\n* `addressLine2`\n* `phone`\n* `city`\n* `country`\n* `state`\n* `zipCode`\n* `mandateInfo`\n\n### SEPA\nThe following request body fields are applicable to this payment method:\n* `IBAN` (required). This field is required, except for creating tokenized SEPA payment methods on Adyen Integration v2.0.\n* `accountHolderInfo` (required)\n* `businessIdentificationCode`\n* `mandateInfo`\n* `accountMaskNumber`\n\n### Betalingsservice (Direct Debit DK)\nThe following request body fields are applicable to this payment method:\n* `accountNumber` (required)\n* `identityNumber` (required)\n* `bankCode` (required)\n* `accountHolderInfo` (required)\n* `mandateInfo`\n\n### Autogiro (Direct Debit SE)\nThe following request body fields are applicable to this payment method:        \n* `accountNumber` (required)\n* `identityNumber` (required)\n* `branchCode` (required)\n* `accountHolderInfo` (required) \n* `mandateInfo`\n\n### Bacs (Direct Debit UK)\nThe following request body fields are applicable to this payment method:        \n* `accountNumber` (required). This field is required, except for creating tokenized BACS payment methods on Stripe v2.\n* `bankCode` (required)\n* `accountHolderInfo` (required)\n* `mandateInfo`\n* `accountMaskNumber`\n\n### Becs (Direct Entry AU)\nThe following request body fields are applicable to this payment method:        \n* `accountNumber` (required)\n* `branchCode` (required)\n* `accountHolderInfo` (required)\n* `mandateInfo`\n\n### Becsnz (Direct Debit NZ)\nThe following request body fields are applicable to this payment method:        \n* `accountNumber` (required)\n* `bankCode` (required)\n* `branchCode` (required)\n* `accountHolderInfo` (required)\n* `mandateInfo`\n\n### PAD (Pre-Authorized Debit)\nThe following request body fields are applicable to this payment method:\n* `accountNumber` (required)\n* `bankCode` (required)\n* `branchCode` (required)\n* `accountHolderInfo` (required)\n* `mandateInfo`\n\n### PayPal Express Checkout\nThe following request body fields are specific to this payment method:\n* `BAID` (required)\n* `email` (required)\n\n### PayPal Native Express Checkout\nThe following request body fields are specific to this payment method:\n* `BAID` (required)\n* `email` (optional)\n\n### PayPal Adaptive\nThe following request body fields are specific to this payment method:\n* `preapprovalKey` (required)\n* `email` (required)\n\n### PayPal Commerce Platform\nThe following request body fields are applicable to the creation of a payment method with the PayPal Commerce Platform gateway integration:\n* `BAID` (required)\n* `email` (required)\n\n\n### Apple Pay on Adyen Integration v2.0\nSee [Set up Adyen Apple Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Apple_Pay_on_Web/Set_up_Adyen_Apple_Pay) for details.\n\n### Google Pay on Adyen Integration v2.0\nSee [Set up Adyen Google Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Adyen_Google_Pay) for details.\n\n### Google Pay on Chase Paymentech Orbital Gateway\nSee [Set up Google Pay on Chase](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Google_Pay_on_Chase) for details.\n\n### Custom payment methods\nWith the support of Universal Payment Connector (UPC) and Open Payment Method (OPM) services, you can create custom payment methods by using the fields defined in a definition file for this type of custom payment method. See [Set up custom payment gateways and payment methods](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) for details.\n"
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: Request
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/POSTPaymentMethodRequest'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              id: 2c92a09650a7a80a0150ab50a5b746bd
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/POSTPaymentMethodResponse'
+  /v1/payment-methods/decryption:
+    post:
+      summary: Create an Apple Pay payment method
+      operationId: POST_PaymentMethodsDecryption
+      description: "The decryption API endpoint can conditionally perform 4 tasks in one atomic call:\n  * Decrypt Apple Pay Payment token\n  * Create Credit Card Payment Method in Zuora with decrypted Apple Pay information\n  * Create a stored credential profile within the Apple Pay payment method\n  * Process Payment on a specified Invoice (optional)\n"
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: Request
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/POSTPaymentMethodDecryption'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              paymentMethodId: 2c92c8f83dcbd8b1013dcce1d6a600ce
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/POSTPaymentMethodResponseDecryption'
+  /v1/payment-methods/{payment-method-id}:
+    put:
+      summary: Update a payment method
+      operationId: PUT_PaymentMethod
+      description: "This operation allows you to update an existing payment method. \n\nThe following request body fields can be updated for any payment method types except for Credit Card Reference Transaction:\n* `authGateway`\n* `gatewayOptions`\n* `accountHolderInfo`\n* `ipAddress`\n* Custom fields\n\nThe following request body fields can be updated only for the Credit Card payment method:\n* `expirationMonth` \n* `expirationYear`\n* `securityCode`\n\nThe following request body field can be updated for the Credit Card, Credit Card Reference Transaction, ACH, and Bank Transfer payment methods:\n* `mandateInfo` \n"
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: payment-method-id
+        in: path
+        required: true
+        type: string
+        description: Unique ID of the payment method to update.
+      - name: Request
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/PUTPaymentMethodRequest'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              id: 2c92c0f86c99b4eb016cae1ee301728f
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/PUTPaymentMethodResponse'
+    get:
+      summary: Retrieve a payment method
+      operationId: GET_PaymentMethod
+      description: 'This operation allows you to get the detailed information about a payment method.
+
+
+        **Note:** This operation also supports retrieving the custom payment method created through the [Open Payment Method](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) service.
+
+        '
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: payment-method-id
+        in: path
+        required: true
+        type: string
+        description: Unique ID of the payment method to update.
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              cardNumber: '************1111'
+              expirationMonth: 11
+              expirationYear: 2027
+              creditCardType: Visa
+              accountHolderInfo:
+                accountHolderName: John Smith
+                phone: '86123456789'
+                email: example@google.com
+                addressLine1: ABC
+                addressLine2: EFT
+                zipCode: '844000'
+                city: Example City
+                country: United States
+                state: Example State
+              mandateInfo:
+                mitProfileAction: null
+                mitProfileType: null
+                mitConsentAgreementSrc: null
+                mitConsentAgreementRef: null
+                mitTransactionId: null
+                mitProfileAgreedOn: null
+              id: 4028839f7d26a155017d26af16ef0001
+              type: CreditCard
+              isDefault: true
+              accountKey: 4028839f7ca29000017ca29c1ce8003f
+              status: Active
+              lastTransaction: Approved
+              useDefaultRetryRule: true
+              bankIdentificationNumber: '411111'
+              deviceSessionId: null
+              existingMandate: null
+              ipAddress: null
+              lastFailedSaleTransactionDate: null
+              lastTransactionDateTime: '2021-11-15 18:59:08'
+              lastTransactionStatus: Approved
+              maxConsecutivePaymentFailures: null
+              numConsecutiveFailures: 0
+              paymentRetryWindow: null
+              totalNumberOfProcessedPayments: 0
+              totalNumberOfErrorPayments: 0
+              createdDate: '2021-11-15 18:59:08'
+              updatedDate: '2021-11-15 18:59:08'
+              createdBy: 402881e522cf4f9b0122cf5d82860002
+              updatedBy: 402881e522cf4f9b0122cf5d82860002
+              AA_PICKLIST__c: null
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/GETPaymentMethodResponse'
+    delete:
+      summary: Delete a payment method
+      operationId: DELETE_PaymentMethods
+      description: 'Deletes a credit card payment method.
+
+
+        If the specified payment method is the account''s default payment
+
+        method, the request will fail.  In that case, you must first designate a
+
+        different payment method for that customer to be the default.
+
+        '
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: payment-method-id
+        in: path
+        required: true
+        type: string
+        description: Unique identifier of a payment method. (Since this ID is unique, and linked to a customer account in the system, no customer identifier is needed.)
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/CommonResponseType'
+  /v1/payment-methods/{payment-method-id}/verify:
+    put:
+      description: 'Sends an authorization request to the corresponding payment gateway to verify the payment method, even though no changes are made for the payment method. Supported payment methods are Credit Cards and Paypal.
+
+
+        Zuora now supports performing a standalone zero dollar verification or one dollar authorization for credit cards. It also supports a billing agreement status check on PayPal payment methods.
+
+
+        If a payment method is created by Hosted Payment Pages and is not assigned to any billing account, the payment method cannot be verified through this operation.
+
+        '
+      summary: Verify a payment method
+      operationId: PUT_VerifyPaymentMethods
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - type: string
+        in: path
+        name: payment-method-id
+        required: true
+        description: 'The ID of the payment method to be verified.
+
+          '
+      - name: body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/PUTVerifyPaymentMethodType'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              success: true
+              paymentMethodId: 402890765d9ce329015da18034ee0057
+          schema:
+            $ref: '#/definitions/PUTVerifyPaymentMethodResponseType'
+  /v1/payment-methods/{payment-method-id}/scrub:
+    put:
+      tags:
+      - Payment Methods
+      summary: Scrub a payment method
+      operationId: PUT_ScrubPaymentMethods
+      description: "\nThis operation enables you to replace all sensitive data in a payment method, related payment method snapshot table, and four related log tables with dummy values that will be stored in Zuora databases. \n\nThis operation will scrub the sensitive data and soft-delete the specified payment method at the same time. \n\nIf you want to delete or anonymize personal data in Zuora, you must scrub the payment method before anonymizing the associated account and contact. See [Delete or anonymize personal data](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Responding_to_individual_requests_for_access%2C_correction%2C_and_deletion_of_data_under_applicable_privacy_laws#Edit_and_correct_personal_data) for more information.\n\n**Note:** In order to use this operation, you must ensure that the **Scrub Sensitive Data of Specific Payment Method payments** permission is enabled in your user role. Contact your tenant administrator if you want to enable this permission. See [Scrub Payment Methods](https://knowledgecenter.zuora.com/CB_Billing/L_Payment_Methods/Scrub_Payment_Methods) for more information.\n"
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: payment-method-id
+        in: path
+        required: true
+        description: 'The ID of the payment method where you want to scrub the sensitive data.
+
+          '
+        type: string
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/CommonResponseType'
+  /v1/payment-methods/{payment-method-id}/profiles:
+    post:
+      description: 'Creates a stored credential profile within a payment method.
+
+
+        The stored credential profile represents a consent agreement that you have established with a customer. When you use the payment method in a transaction, Zuora may include information from the stored credential profile to inform the payment processor that the transaction is related to your pre-existing consent agreement with the customer.
+
+        '
+      summary: Create a stored credential profile
+      operationId: POST_CreateStoredCredentialProfile
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: payment-method-id
+        type: string
+        in: path
+        required: true
+        description: 'ID of a payment method.
+
+          '
+      - name: Request
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/CreateStoredCredentialProfileRequest'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+              paymentMethodId: 402881836953a3c7016953aec290000d
+              number: 3
+          description: ''
+          schema:
+            $ref: '#/definitions/ModifiedStoredCredentialProfileResponse'
+    get:
+      description: 'Retrieves the stored credential profiles within a payment method.
+
+        '
+      summary: List stored credential profiles of a payment method
+      operationId: GET_StoredCredentialProfiles
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: payment-method-id
+        type: string
+        in: path
+        required: true
+        description: 'ID of a payment method.
+
+          '
+      - name: includeAll
+        type: boolean
+        default: false
+        in: query
+        description: 'Specifies whether to retrieve all the stored credential profiles within the payment method.
+
+
+          By default, Zuora returns only the stored credential profiles with `Agreed` or `Active` status. If you set this parameter to `true`, Zuora returns all the stored credential profiles.
+
+          '
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              profiles:
+              - paymentMethodId: 402881836953a3c7016953aec290000d
+                number: 1
+                brand: Visa
+                status: Cancelled
+                type: Recurring
+                consentAgreementSrc: External
+                consentAgreementRef: ACCT1338AgreementV1.pdf
+                agreedOn: '2019-03-06 07:45:55'
+                activatedOn: '2019-03-06 07:45:55'
+                cancelledOn: '2019-03-13 07:52:16'
+                expiredOn: null
+              - paymentMethodId: 402881836953a3c7016953aec290000d
+                number: 2
+                brand: Visa
+                status: Active
+                type: Recurring
+                consentAgreementSrc: External
+                consentAgreementRef: ACCT1338AgreementV2.pdf
+                agreedOn: '2019-03-13 07:55:08'
+                activatedOn: '2019-03-13 07:55:08'
+                cancelledOn: null
+                expiredOn: null
+              success: true
+          schema:
+            $ref: '#/definitions/GetStoredCredentialProfilesResponse'
+  /v1/payment-methods/{payment-method-id}/profiles/{profile-number}/cancel:
+    post:
+      description: 'Cancels a stored credential profile within a payment method.
+
+
+        Cancelling the stored credential profile indicates that the stored credentials are no longer valid, per a customer request. You cannot reactivate the stored credential profile after you have cancelled it.
+
+        '
+      summary: Cancel a stored credential profile
+      operationId: POST_CancelStoredCredentialProfile
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: payment-method-id
+        type: string
+        in: path
+        required: true
+        description: 'ID of a payment method.
+
+          '
+      - name: profile-number
+        type: integer
+        in: path
+        required: true
+        description: 'Number that identifies a stored credential profile within the payment method.
+
+          '
+      consumes: []
+      x-code-samples:
+      - lang: curl
+        label: Curl
+        source: 'curl -X POST -H "Authorization: Bearer 6d151216ef504f65b8ff6e9e9e8356d3" "https://rest.zuora.com/v1/payment-methods/{payment-method-id}/profiles/{profile-number}/cancel"
+
+          '
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+              paymentMethodId: 402881836953a3c7016953aec290000d
+              number: 1
+          description: ''
+          schema:
+            $ref: '#/definitions/ModifiedStoredCredentialProfileResponse'
+  /v1/payment-methods/{payment-method-id}/profiles/{profile-number}/expire:
+    post:
+      description: 'Expires a stored credential profile within a payment method.
+
+
+        Expiring the stored credential profile indicates that the stored credentials are no longer valid, per an expiration policy in the stored credential transaction framework. You cannot reactivate the stored credential profile after you have expired it.
+
+        '
+      summary: Expire a stored credential profile
+      operationId: POST_ExpireStoredCredentialProfile
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: payment-method-id
+        type: string
+        in: path
+        required: true
+        description: 'ID of a payment method.
+
+          '
+      - name: profile-number
+        type: integer
+        in: path
+        required: true
+        description: 'Number that identifies a stored credential profile within the payment method.
+
+          '
+      consumes: []
+      x-code-samples:
+      - lang: curl
+        label: Curl
+        source: 'curl -X POST -H "Authorization: Bearer 6d151216ef504f65b8ff6e9e9e8356d3" "https://rest.zuora.com/v1/payment-methods/{payment-method-id}/profiles/{profile-number}/expire"
+
+          '
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+              paymentMethodId: 402881836953a3c7016953aec290000d
+              number: 2
+          description: ''
+          schema:
+            $ref: '#/definitions/ModifiedStoredCredentialProfileResponse'
+  /payment-methods/apple-pay/domains:
+    post:
+      description: "Before adding Apple Pay to your checkout flow by integrating with the JavaScript SDK provided by Zuora, your domains that will show the Apple Pay button must be registered with Apple. Use this operation to register a domain. \n\nFor more information about Zuora's JavaScript SDK for Apple Pay integration, see <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0\" target=\"_blank\">Set up Apple Pay through the JavaScript SDK approach</a>.\n"
+      summary: Register an Apple Pay domain
+      operationId: POST_RegisterApplePayDomain
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: Request
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/POSTRegisterApplePayDomainRequest'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              id: 402881a38924ff1001892502da090021
+              domainName: testapplepay.zuora.com
+              domainVerified: true
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/POSTRegisterApplePayDomainResponse'
+    get:
+      description: 'Use this operation to retrieve details of your domains that are already registered with Apple for Apple Pay button integration implemented through Zuora''s JavaScript SDK.
+
+
+        You can use `domainName` as the query parameter to restrict domains returned in the response. Specify a domain name and the registered domains containing the specified domain name will be returned.
+
+
+        For more information about Zuora''s JavaScript SDK for Apple Pay integration, see <a href="https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0" target="_blank">Set up Apple Pay through the JavaScript SDK approach</a>.
+
+        '
+      summary: List registered Apple Pay domains
+      operationId: GET_ListApplePayDomains
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: domainName
+        type: string
+        in: query
+        description: "Specifies a domain name such as `zuora.com` and the registered domains containing the specified domain name will be returned. \n\nFor example, `test1.zuora.com` and `test2.zuora.com` are two registered domains, but `zuora.com` is not registered. If you specify `zuora.com` in this query field, the data of `test1.zuora.com` and `test2.zuora.com` will be returned.\n"
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              domains:
+              - id: 402881a38924ff1001892502da090021
+                domainName: testapplepay.zuora.com
+                domainVerified: true
+                createdBy: 402881e522cf4f9b0122cf5d82860002
+                createdOn: '2023-07-05 00:44:51'
+                updatedBy: 402881e522cf4f9b0122cf5d82860002
+                updatedOn: '2023-07-05 00:44:51'
+              - id: 402881a3891fe7b401891fec61d40036
+                domainName: test1.zuora.com
+                domainVerified: false
+                createdBy: 402881e522cf4f9b0122cf5d82860002
+                createdOn: '2023-07-04 01:02:12'
+                updatedBy: 402881e522cf4f9b0122cf5d82860002
+                updatedOn: '2023-07-04 01:02:12'
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/GETListApplePayDomainsResponse'
+  /payment-methods/apple-pay/domains/{id}:
+    delete:
+      description: 'Use this operation to unregister a domain with Apple for Apple Pay button integration implemented through Zuora''s JavaScript SDK.
+
+
+        For more information about Zuora''s JavaScript SDK for Apple Pay integration, see <a href="https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0" target="_blank">Set up Apple Pay through the JavaScript SDK approach</a>.
+
+        '
+      summary: Unregister an Apple Pay domain
+      operationId: DELETE_UnregisterApplePayDomain
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The ID of the domain, such as `402881a38924ff1001892502da090021`.
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/DELETEUnresigerApplePayDomainResponse'
+  /web-payments/sessions:
+    post:
+      description: 'When implementing Apple Pay integration by using Zuora''s JavaScript SDK, use this operation to create a payment session on your server side. The response of this API operation contains a token for the payment session data. Send the token back to your client side to use in the subsequent implementation step. For more information, see [Set up Apple Pay through the JavaScript SDK approach](https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0).
+
+        '
+      summary: Create a payment session
+      operationId: POST_CreatePaymentSession
+      tags:
+      - Payment Methods
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: Request
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/POSTCreatePaymentSessionRequest'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              token: LTljuuLaDQnHxeVpWaX6zq2xY2FJ6sSE
+          description: ''
+          schema:
+            $ref: '#/definitions/POSTCreatePaymentSessionResponse'
+definitions:
+  CommonResponseType:
+    properties:
+      processId:
+        description: 'The Id of the process that handle the operation.
+
+          '
+        type: string
+      reasons:
+        items:
+          properties:
+            code:
+              description: 'The error code of response.
+
+                '
+              type: string
+            message:
+              description: 'The detail information of the error response
+
+                '
+              type: string
+          type: object
+        type: array
+      success:
+        description: 'Indicates whether the call succeeded.
+
+          '
+        type: boolean
+    type: object
+  PUTPMAccountHolderInfo:
+    description: 'The account holder information. This field is not supported in updating Credit Card Reference Transaction payment methods.
+
+      '
+    properties:
+      addressLine1:
+        description: 'The first line of the address for the account holder.
+
+
+          This field is required for SEPA Direct Debit payment methods on Stripe v2 for [certain countries](https://stripe.com/docs/payments/sepa-debit/set-up-payment?platform=web#web-submit-payment-method).
+
+          '
+        type: string
+      addressLine2:
+        description: "The second line of the address for the account holder. \n"
+        type: string
+      city:
+        description: 'The city where the account holder stays.
+
+          '
+        type: string
+      country:
+        description: 'The country where the account holder stays.
+
+
+          This field is required for SEPA payment methods on Stripe v2 for [certain countries](https://stripe.com/docs/payments/sepa-debit/set-up-payment?platform=web#web-submit-payment-method).
+
+          '
+        type: string
+      email:
+        description: 'The email address of the account holder.
+
+          '
+        type: string
+      phone:
+        description: 'The phone number of the account holder.
+
+          '
+        type: string
+      state:
+        description: 'The state where the account holder stays.
+
+          '
+        type: string
+      zipCode:
+        description: 'The zip code for the address of the account holder.
+
+          '
+        type: string
+    title: accountHolderInfo
+    type: object
+  POSTCreatePaymentSessionResponse:
+    properties:
+      token:
+        description: 'The token for the payment session data. Send the token back to your client side for identifying your website to Zuora.
+
+
+          For more information, see [Set up Apple Pay through the JavaScript SDK approach](https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0).
+
+          '
+        type: string
+    type: object
+  GETPaymentMethodResponseACH:
+    properties:
+      bankABACode:
+        description: 'The nine-digit routing number or ABA number used by banks. This field is only required if the `type` field is set to `ACH`.
+
+          '
+        type: string
+      bankAccountName:
+        description: 'The name of the account holder, which can be either a person or a company. This field is only required if the `type` field is set to `ACH`.
+
+          '
+        type: string
+      bankAccountNumber:
+        description: 'The bank account number associated with the ACH payment. This field is only required if the `type` field is set to `ACH`.
+
+          '
+        type: string
+      bankAccountType:
+        description: 'The type of bank account associated with the ACH payment. This field is only required if the `type` field is set to `ACH`.
+
+
+          When creating an ACH payment method on Adyen, this field is required by Zuora but it is not required by Adyen. To create the ACH payment method successfully, specify a real value for this field if you can. If it is not possible to get the real value for it, specify any of the allowed values as a dummy value, `Checking` preferably.
+
+          '
+        enum:
+        - BusinessChecking
+        - BusinessSaving
+        - Checking
+        - Saving
+        type: string
+      bankName:
+        description: 'The name of the bank where the ACH payment account is held. This field is only required if the `type` field is set to `ACH`.
+
+
+          When creating an ACH payment method on Adyen, this field is required by Zuora but it is not required by Adyen. To create the ACH payment method successfully, specify a real value for this field if you can. If it is not possible to get the real value for it, specify a dummy value.
+
+          '
+        type: string
+    type: object
+  POSTPaymentMethodDecryption:
+    example:
+      accountID: 402891a25a02e11c015a02f3c6100003
+      integrationType: ApplePay
+      invoiceId: INV000000005
+      merchantID: merchant.CN.com.zuora.services416
+      mitConsentAgreementSrc: External
+      mitProfileAction: Activate
+      mitProfileType: Recurring
+      paymentGateway: CyberSourceOPG
+      paymentToken:
+        data: xGc......JDxuYz1gug0KZRrGXJQ=
+        header:
+          ephemeralPublicKey: MFkwEw......TMbLoojKBA==
+          publicKeyHash: HuLvfqvLon......9jEyX0w=
+          transactionId: abbadd18818baea1f37b40844c9e09afa9733b0eccb373905b811da43cf1753b
+        signature: MIAGCSqGSIb......AEtrLSv7hE9gAAAAAAAA==
+        version: EC_v1
+      processPayment: true
+    properties:
+      accountID:
+        description: 'The ID of the customer account associated with this payment method.
+
+          To create an orphan payment method that is not associated with any customer account, you do not need to specify this field during creation. However, you must associate the orphan payment method with a customer account within 10 days. Otherwise, this orphan payment method will be deleted.'
+        type: string
+      cardHolderInfo:
+        $ref: '#/definitions/CreatePaymentMethodCardholderInfo'
+      integrationType:
+        description: 'Field to identify the token decryption type.
+
+
+          **Note:** The only value at this time is `ApplePay`.
+
+
+          '
+        type: string
+      invoiceId:
+        description: 'The id of invoice this payment will apply to.
+
+
+          **Note:** When `processPayment` is `true`, this field is required.
+
+          Only one invoice can be paid; for scenarios where you want to pay for multiple invoices, set `processPayment` to `false` and call payment API separately.
+
+          '
+        type: string
+      merchantID:
+        description: 'The Merchant ID that was configured for use with Apple Pay in the Apple iOS Developer Center.
+
+          '
+        type: string
+      mitConsentAgreementSrc:
+        description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nSpecify how the consent agreement has been established with the customer. The allowed value is `External`. It is required if the `mitProfileAction` field is specified. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `External` set to this field.\n"
+        enum:
+        - External
+        type: string
+      mitProfileAction:
+        description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nSpecify either of the following values in this field:\n    \n  - `Activate` - Use this value if you are creating the stored credential profile after receiving the customer's consent.\n    \n    Zuora will create the stored credential profile then send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile. If the CIT succeeds, the status of the stored credential profile will be `Active`. If the CIT does not succeed, Zuora will not create a stored credential profile.\n      \n    If the payment gateway does not support the stored credential transaction framework, the status of the stored credential profile will be `Agreed`.\n    \n  - `Persist` - Use this value if the stored credential profile represents a stored credential profile in an external system. The status of the payment method's stored credential profile will be `Active`.\n\n  If you do not specify this field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Activate` set to this field.\n    \n"
+        enum:
+        - Activate
+        - Persist
+        type: string
+      mitProfileType:
+        description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nThis field indicates the type of the stored credential profile to process recurring or unsecheduled transactions. It is required if the `mitProfileAction` field is specified. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Recurring` set to this field.\n    \n"
+        enum:
+        - Recurring
+        - Unscheduled
+        type: string
+      paymentGateway:
+        description: 'The label name of the gateway instance configured in Zuora that should process the payment. When creating a Payment, this must be a valid gateway instance ID and this gateway must support the specific payment method. If not specified, the default gateway of your Zuora customer account will be used.
+
+
+          **Note:** When `processPayment` is `true`, this field is required. When `processPayment` is `false`, the default payment gateway of your Zuora customer account will be used no matter whether a payment gateway instance is specified in the `paymentGateway` field.
+
+          '
+        type: string
+      paymentToken:
+        description: 'The complete JSON Object representing the encrypted payment token payload returned in the response from the Apple Pay session.
+
+
+          '
+        type: object
+      processPayment:
+        description: "A boolean flag to control whether a payment should be processed after creating payment method. The payment amount will be equivalent to the amount the merchant supplied in the ApplePay session. Default is false.\n\nIf this field is set to `true`, you must specify the `paymentGateway` field with the payment gateway instance name.\n\nIf this field is set to `false`:\n  - The default payment gateway of your Zuora customer account will be used no matter whether a payment gateway instance is specified in the `paymentGateway` field. \n  - You must select the **Verify new credit card** check box on the gateway instance settings page. Otherwise, the cryptogram will not be sent to the gateway.\n  - A separate subscribe or payment API call is required after this payment method creation call.\n"
+        type: boolean
+    required:
+    - integrationType
+    - merchantID
+    - paymentToken
+    type: object
+  POSTPMMandateInfo:
+    description: 'The mandate information for the Credit Card, Apple Pay, Google Pay, Credit Card Reference Transaction, ACH, or Bank Transfer payment method.
+
+
+      The following mandate fields are common to all supported payment methods:
+
+      * `mandateId`
+
+      * `mandateReason`
+
+      * `mandateStatus`
+
+
+      The following mandate fields are specific to the ACH and Bank Transfer payment methods:
+
+      * `mandateReceivedStatus`
+
+      * `existingMandateStatus`
+
+      * `mandateCreationDate`
+
+      * `mandateUpdateDate`
+
+
+      The following mandate fields are specific to the Credit Card, Apple Pay, and Google Pay payment methods:
+
+      * `mitTransactionId`
+
+      * `mitProfileAgreedOn`
+
+      * `mitConsentAgreementRef`
+
+      * `mitConsentAgreementSrc`
+
+      * `mitProfileType`
+
+      * `mitProfileAction`
+
+      '
+    properties:
+      existingMandateStatus:
+        description: 'Indicates whether the mandate is an existing mandate.
+
+          '
+        enum:
+        - 'Yes'
+        - 'No'
+        type: string
+      mandateCreationDate:
+        description: 'The date on which the mandate was created.
+
+          '
+        format: date
+        type: string
+      mandateId:
+        description: 'The mandate ID.
+
+          '
+        type: string
+      mandateReason:
+        description: 'The reason of the mandate from the gateway side.
+
+          '
+        type: string
+      mandateReceivedStatus:
+        description: 'Indicates whether the mandate is received from the gateway
+
+          '
+        enum:
+        - 'Yes'
+        - 'No'
+        type: string
+      mandateStatus:
+        description: 'The status of the mandate from the gateway side.
+
+          '
+        type: string
+      mandateUpdateDate:
+        description: 'The date on which the mandate was updated.
+
+          '
+        format: date
+        type: string
+      mitConsentAgreementRef:
+        description: "Reference for the consent agreement that you have established with the customer.  \n"
+        type: string
+      mitConsentAgreementSrc:
+        description: 'Required if you set the `mitProfileAction` field. Specifies how the consent agreement has been established with the customer. The allowed value is `External`. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `External` set to this field.
+
+          '
+        enum:
+        - External
+        type: string
+      mitProfileAction:
+        description: "Specifies how Zuora creates and activates the stored credential profile. Only applicable if you set the `status` field to `Active`.\n\n- `Activate` (default) - Use this value if you are creating the stored credential profile after receiving the customer's consent.\n\n  Zuora will create the stored credential profile then send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile. If the CIT succeeds, the status of the stored credential profile will be `Active`. If the CIT does not succeed, Zuora will not create a stored credential profile.\n  \n  If the payment gateway does not support the stored credential transaction framework, the status of the stored credential profile will be `Agreed`.\n\n\n- `Persist` - Use this value if the stored credential profile represents a stored credential profile in an external system. The status of the payment method's stored credential profile will be `Active`.\n\nIf you do not specify this field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Activate` set to this field.\n"
+        enum:
+        - Activate
+        - Persist
+        type: string
+      mitProfileAgreedOn:
+        description: 'The date on which the stored credential profile is agreed. The date format is `yyyy-mm-dd`.
+
+          '
+        format: date
+        type: string
+      mitProfileType:
+        description: 'Indicates the type of the stored credential profile. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Recurring` set to this field.
+
+          '
+        type: string
+      mitTransactionId:
+        description: 'Specifies the ID of the transaction. Only applicable if you set the `mitProfileAction` field to `Persist`.
+
+          '
+        maxLength: 128
+        type: string
+    title: mandateInfo
+    type: object
+  POSTPaymentMethodRequest:
+    allOf:
+    - properties:
+        accountKey:
+          description: "Internal ID of the customer account that will own the payment method. \n\nTo create an orphan payment method that is not associated with any customer account, you do not need to specify this field during creation. However, you must associate the orphan payment method with a customer account within 10 days. Otherwise, this orphan payment method will be deleted.\n"
+          type: string
+        authGateway:
+          description: 'Internal ID of the payment gateway that Zuora will use to authorize the payments that are made with the payment method.
+
+
+            If you do not set this field, Zuora will use one of the following payment gateways instead:
+
+
+            * The default payment gateway of the customer account that owns the payment method, if the `accountKey` field is set.
+
+            * The default payment gateway of your Zuora tenant, if the `accountKey` field is not set.
+
+            '
+          type: string
+        gatewayOptions:
+          description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
+
+
+            Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
+
+            '
+          properties:
+            key:
+              description: 'The name of a gateway-specific parameter.
+
+                '
+              type: string
+            value:
+              description: 'The value of the gateway-specific parameter.
+
+                '
+              type: string
+          type: object
+        ipAddress:
+          description: "The IPv4 or IPv6 information of the user when the payment method is created or updated. Some gateways use this field for fraud prevention. If this field is passed to Zuora, Zuora directly passes it to gateways. \n\nIf the IP address length is beyond 45 characters, a validation error occurs.\n\nFor validating SEPA payment methods on Stripe v2, this field is required.\n"
+          type: string
+        makeDefault:
+          default: false
+          description: 'Specifies whether the payment method will be the default payment method of the customer account that owns the payment method. Only applicable if the `accountKey` field is set.
+
+
+            When you set this field to `true`, make sure the payment method is supported by the default payment gateway.
+
+            '
+          type: boolean
+        mandateInfo:
+          description: 'The mandate information for the Credit Card, Credit Card Reference Transaction, ACH, or Bank Transfer payment method.
+
+            '
+          properties:
+            mandateId:
+              description: 'The mandate ID.
+
+
+                When creating an ACH payment method, if you need to pass in tokenized information, use the `mandateId` instead of `tokenId` field.
+
+                '
+              maxLength: 36
+              type: string
+            mandateReason:
+              description: 'The reason of the mandate from the gateway side.
+
+                '
+              maxLength: 64
+              type: string
+            mandateStatus:
+              description: 'The status of the mandate from the gateway side.
+
+                '
+              maxLength: 64
+              type: string
+          type: object
+        skipValidation:
+          default: false
+          description: "Specify whether to skip the validation of the information through the payment gateway. For example, when migrating your payment methods, you can set this field to `true` to skip the validation. \n"
+          type: boolean
+        type:
+          description: 'Type of the payment method. Possible values include:
+
+
+            * `CreditCard` - Credit card payment method.
+
+            * `CreditCardReferenceTransaction` - Credit Card Reference Transaction. See [Supported payment methods](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Supported_Payment_Methods) for payment gateways that support this type of payment method.
+
+            * `ACH` - ACH payment method.
+
+            * `SEPA` - Single Euro Payments Area.
+
+            * `Betalingsservice` - Direct Debit DK.
+
+            * `Autogiro` - Direct Debit SE.
+
+            * `Bacs` - Direct Debit UK.
+
+            * `Becs` - Direct Entry AU.
+
+            * `Becsnz` - Direct Debit NZ.
+
+            * `PAD` - Pre-Authorized Debit.
+
+            * `PayPalCP` - PayPal Commerce Platform payment method. Use this type if you are using a [PayPal Commerce Platform Gateway](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Commerce_Platform_Gateway) instance.
+
+            * `PayPalEC` - PayPal Express Checkout payment method. Use this type if you are using a [PayPal Payflow Pro Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Payflow_Pro%2C_Website_Payments_Payflow_Edition%2C_Website_Pro_Payment_Gateway) instance.
+
+            * `PayPalNativeEC` - PayPal Native Express Checkout payment method. Use this type if you are using a [PayPal Express Checkout Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Express_Checkout_Gateway) instance.
+
+            * `PayPalAdaptive` - PayPal Adaptive payment method. Use this type if you are using a [PayPal Adaptive Payment Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Adaptive_Payments_Gateway) instance.
+
+            * `AdyenApplePay` - Apple Pay on Adyen Integration v2.0. See [Set up Adyen Apple Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Apple_Pay_on_Web/Set_up_Adyen_Apple_Pay) for details.
+
+            * `AdyenGooglePay` - Google Pay on Adyen Integration v2.0. See [Set up Adyen Google Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Adyen_Google_Pay) for details.
+
+            * `GooglePay` - Google Pay on Chase Paymentech Orbital gateway integration. See [Set up Google Pay on Chase](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Google_Pay_on_Chase) for details.
+
+            * You can also specify a custom payment method type. See [Set up custom payment gateways and payment methods](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) for details.
+
+
+            Note that Zuora is continuously adding new payment method types.
+
+            '
+          type: string
+      required:
+      - type
+      type: object
+    - $ref: '#/definitions/CreatePMPayPalECPayPalNativeECPayPalCP'
+    - $ref: '#/definitions/CreatePaymentMethodPayPalAdaptive'
+    - $ref: '#/definitions/CreatePaymentMethodCreditCard'
+    - $ref: '#/definitions/CreatePaymentMethodACH'
+    - $ref: '#/definitions/CreatePaymentMethodBankTransfer'
+    - $ref: '#/definitions/CreatePaymentMethodCCReferenceTransaction'
+    - $ref: '#/definitions/CreatePaymentMethodApplePayAdyen'
+    - $ref: '#/definitions/CreatePaymentMethodGooglePayAdyenChase'
+    - $ref: '#/definitions/PaymentMethodObjectCustomFields'
+    example:
+      BAID: I-1TJ3GAGG82Y9
+      accountKey: 2c92c0f95be68649015bf14e001f2760
+      email: customer@example.com
+      type: PayPalEC
+  CreatePaymentMethodCreditCard:
+    properties:
+      cardHolderInfo:
+        $ref: '#/definitions/CreatePaymentMethodCardholderInfo'
+      cardNumber:
+        description: 'Credit card number. This field is required if `type` is set to `CreditCard`.
+
+          '
+        type: string
+      cardType:
+        description: 'The type of the credit card. This field is required if `type` is set to `CreditCard`.
+
+
+          Possible values include `Visa`, `MasterCard`, `AmericanExpress`, `Discover`, `JCB`, and `Diners`. For more information about credit card types supported by different payment gateways, see [Supported Payment Gateways](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways).
+
+          '
+        type: string
+      checkDuplicated:
+        description: "Indicates whether the duplication check is performed when you create a new credit card payment method. The default value is `false`.\n\nWith this field set to `true`, Zuora will check all active payment methods associated with the same billing account to ensure that no duplicate credit card payment methods are created. An error is returned if a duplicate payment method is found.\n        \nThe following fields are used for the duplication check:\n  - `cardHolderName`\n  - `expirationMonth`\n  - `expirationYear`\n  - `creditCardMaskNumber`. It is the masked credit card number generated by Zuora. For example:\n    ```\n    ************1234\n    ```\n"
+        type: boolean
+      expirationMonth:
+        description: 'One or two digit expiration month (1-12) of the credit card. This field is required if `type` is set to `CreditCard`.
+
+          '
+        type: integer
+      expirationYear:
+        description: 'Four-digit expiration year of the credit card. This field is required if `type` is set to `CreditCard`.
+
+          '
+        type: integer
+      mitConsentAgreementRef:
+        description: 'Specifies your reference for the stored credential consent agreement that you have established with the customer. Only applicable if you set the `mitProfileAction` field.
+
+          '
+        maxLength: 128
+        type: string
+      mitConsentAgreementSrc:
+        description: 'Required if you set the `mitProfileAction` field. Specifies how the consent agreement has been established with the customer. The allowed value is `External`. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `External` set to this field.
+
+          '
+        enum:
+        - External
+        type: string
+      mitNetworkTransactionId:
+        description: 'Specifies the ID of a network transaction. Only applicable if you set the `mitProfileAction` field to `Persist`.
+
+          '
+        maxLength: 128
+        type: string
+      mitProfileAction:
+        description: "Specifies how Zuora creates and activates the stored credential profile.\n\n- `Activate` - Use this value if you are creating the stored credential profile after receiving the customer's consent.\n\n  Zuora will create the stored credential profile then send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile. If the CIT succeeds, the status of the stored credential profile will be `Active`. If the CIT does not succeed, Zuora will not create a stored credential profile.\n  \n  If the payment gateway does not support the stored credential transaction framework, the status of the stored credential profile will be `Agreed`.\n\n\n- `Persist` - Use this value if the stored credential profile represents a stored credential profile in an external system. The status of the payment method's stored credential profile will be `Active`.\n\nIf you do not specify this field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Activate` set to this field.\n"
+        enum:
+        - Activate
+        - Persist
+        type: string
+      mitProfileAgreedOn:
+        description: 'The date on which the profile is agreed. The date format is `yyyy-mm-dd`.
+
+          '
+        format: date
+        type: string
+      mitProfileType:
+        description: 'Required if you set the `mitProfileAction` field. Indicates the type of the stored credential profile to process recurring or unsecheduled transactions. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Recurring` set to this field.
+
+          '
+        enum:
+        - Recurring
+        - Unscheduled
+        type: string
+      screeningAmount:
+        description: 'For <a href="https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Chase_Orbital_Payment_Gateway" target="_blank">Chase Paymentech Orbital Gateway</a> integrations, if the Safetech Fraud service is enabled, use this field to pass in the amount used for fraud screening for Credit Card validation transactions.
+
+
+          Two-decimal amount is supported.
+
+
+          If the `screeningAmount` field is not specified, the authorization amount is used for fraud screening.
+
+          '
+        format: decimal
+        type: number
+      securityCode:
+        description: 'CVV or CVV2 security code of the credit card.
+
+
+          To ensure PCI compliance, this value is not stored and cannot be queried.
+
+          '
+        type: string
+    type: object
+  CreatePaymentMethodCardholderInfo:
+    description: 'Container for cardholder information. This container field is required for credit card payment methods. The nested `cardHolderName` field is required.
+
+      '
+    properties:
+      addressLine1:
+        description: 'First address line, 255 characters or less.
+
+          '
+        type: string
+      addressLine2:
+        description: 'Second address line, 255 characters or less.
+
+          '
+        type: string
+      cardHolderName:
+        description: 'The card holder''s full name as it appears on the card, e.g., "John J Smith", 50 characters or less.
+
+          '
+        type: string
+      city:
+        description: 'City, 40 characters or less.
+
+          It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
+
+          '
+        type: string
+      country:
+        description: 'Country, must be a valid country name or abbreviation.
+
+          It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
+
+          '
+        type: string
+      email:
+        description: 'Card holder''s email address, 80 characters or less.
+
+          '
+        type: string
+      phone:
+        description: 'Phone number, 40 characters or less.
+
+          '
+        type: string
+      state:
+        description: 'State; must be a valid state name or 2-character abbreviation.
+
+          '
+        type: string
+      zipCode:
+        description: 'Zip code, 20 characters or less.
+
+          '
+        type: string
+    required:
+    - cardHolderName
+    title: cardHolderInfo
+    type: object
+  GETPaymentMethodResponsePayPal:
+    properties:
+      BAID:
+        description: 'ID of a PayPal billing agreement. For example, I-1TJ3GAGG82Y9.
+
+          '
+        type: string
+      email:
+        description: "Email address associated with the PayPal payment method. \n"
+        type: string
+      preapprovalKey:
+        description: 'The PayPal preapproval key.
+
+          '
+        type: string
+    type: object
+  GetStoredCredentialProfilesResponse:
+    properties:
+      profiles:
+        description: 'Container for stored credential profiles.
+
+          '
+        items:
+          properties:
+            activatedOn:
+              description: 'The date when the stored credential profile was activated (if applicable).
+
+                '
+              format: date-time
+              type: string
+            agreedOn:
+              description: 'The date when the stored credential profile was created.
+
+                '
+              format: date-time
+              type: string
+            brand:
+              description: 'The stored credential transaction framework. For example, Visa.
+
+                '
+              type: string
+            cancelledOn:
+              description: 'The date when the stored credential profile was cancelled (if applicable).
+
+                '
+              format: date-time
+              type: string
+            consentAgreementRef:
+              description: 'Your reference for the consent agreement that you have established with the customer.
+
+                '
+              maxLength: 128
+              type: string
+            consentAgreementSrc:
+              enum:
+              - External
+              type: string
+            expiredOn:
+              description: 'The date when the stored credential profile was expired (if applicable).
+
+                '
+              format: date-time
+              type: string
+            number:
+              description: 'The number that identifies the stored credential profile within the payment method.
+
+                '
+              type: integer
+            paymentMethodId:
+              description: 'ID of the payment method.
+
+                '
+              type: string
+            status:
+              description: 'The status of the stored credential profile.
+
+
+                * `Agreed` - The stored credential profile has not been validated via an authorization transaction with the payment gateway.
+
+                * `Active` - The stored credential profile has been validated via an authorization transaction with the payment gateway.
+
+                * `Cancelled` - The stored credentials are no longer valid, per a customer request. Zuora cannot use the stored credentials in transactions.
+
+                * `Expired` - The stored credentials are no longer valid, per an expiration policy in the stored credential transaction framework. Zuora cannot use the stored credentials in transactions.
+
+                '
+              enum:
+              - Agreed
+              - Active
+              - Cancelled
+              - Expired
+              type: string
+            type:
+              enum:
+              - Recurring
+              - Unscheduled
+              type: string
+        type: array
+      success:
+        type: boolean
+    type: object
+  CreatePMPayPalECPayPalNativeECPayPalCP:
+    properties:
+      BAID:
+        description: 'ID of a PayPal billing agreement. For example, I-1TJ3GAGG82Y9.
+
+          '
+        type: string
+      email:
+        description: "Email address associated with the payment method. This field is supported for the following payment methods:\n  - PayPal payment methods. This field is required for creating any of the following PayPal payment methods.\n    - PayPal Express Checkout\n    - PayPal Adaptive\n    - PayPal Commerce Platform\n  - Apple Pay and Google Pay payment methods on Adyen v2.0. This field will be passed to Adyen as `shopperEmail`.\n"
+        type: string
+    type: object
+  GETPaymentMethodResponseBankTransfer:
+    properties:
+      IBAN:
+        description: 'The International Bank Account Number used to create the SEPA payment method. The value is masked.
+
+          '
+        type: string
+      accountNumber:
+        description: 'The number of the customer''s bank account and it is masked.
+
+          '
+        type: string
+      bankCode:
+        description: "The sort code or number that identifies the bank. This is also known as the sort code.         \n"
+        type: string
+      bankTransferType:
+        description: 'The type of the Bank Transfer payment method. For example, `SEPA`.
+
+          '
+        type: string
+      branchCode:
+        description: "The branch code of the bank used for Direct Debit.          \n"
+        type: string
+      businessIdentificationCode:
+        description: "The BIC code used for SEPA. The value is masked.       \n"
+        type: string
+      identityNumber:
+        description: "The identity number used for Bank Transfer.        \n"
+        type: string
+    type: object
+  CreateStoredCredentialProfileRequest:
+    example:
+      authGateway: 4028905f5702783601570291e14c0015
+      consentAgreementRef: ACCT1338AgreementV1.pdf
+      consentAgreementSrc: External
+      status: Active
+      type: Recurring
+    properties:
+      action:
+        description: "Specifies how Zuora activates the stored credential profile. Only applicable if you set the `status` field to `Active`.\n\n- `Activate` (default) - Use this value if you are creating the stored credential profile after receiving the customer's consent.\n\n  Zuora will create the stored credential profile then send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile. If the CIT succeeds, the status of the stored credential profile will be `Active`. If the CIT does not succeed, Zuora will not create a stored credential profile.\n  \n  If the payment gateway does not support the stored credential transaction framework, the status of the stored credential profile will be `Agreed`.\n\n\n- `Persist` - Use this value if the stored credential profile represents a stored credential profile in an external system. The status of the payment method's stored credential profile will be `Active`.\n"
+        enum:
+        - Activate
+        - Persist
+        type: string
+      agreedOn:
+        description: 'The date on which the profile is agreed. The date format is `yyyy-mm-dd`.
+
+          '
+        format: date
+        type: string
+      authGateway:
+        description: 'Specifies the ID of the payment gateway that Zuora will use when activating the stored credential profile.
+
+          '
+        type: string
+      cardSecurityCode:
+        description: 'The security code of the credit card.
+
+          '
+        type: string
+      consentAgreementRef:
+        description: 'Specifies your reference for the consent agreement that you have established with the customer.
+
+          '
+        maxLength: 128
+        type: string
+      consentAgreementSrc:
+        description: 'Specifies how the consent agreement has been established with the customer. The allowed value is `External`.
+
+          '
+        enum:
+        - External
+        type: string
+      networkTransactionId:
+        description: 'The ID of a network transaction. Only applicable if you set the `action` field to `Persist`.
+
+          '
+        maxLength: 128
+        type: string
+      status:
+        description: "Specifies the status of the stored credential profile.\n\n- `Active` - Use this value if you are creating the stored credential profile after receiving the customer's consent, or if the stored credential profile represents a stored credential profile in an external system.\n\n  You can use the `action` field to specify how Zuora activates the stored credential profile.\n\n\n- `Agreed` - Use this value if you are migrating the payment method to the stored credential transaction framework.\n\n  In this case, Zuora will not send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile.\n"
+        enum:
+        - Agreed
+        - Active
+        type: string
+      type:
+        description: 'Indicates the type of the stored credential profile to process recurring or unsecheduled transactions.
+
+          '
+        enum:
+        - Recurring
+        - Unscheduled
+        type: string
+    required:
+    - status
+    - type
+    - consentAgreementSrc
+    type: object
+  DELETEUnresigerApplePayDomainResponse:
+    properties:
+      success:
+        description: Indicates whether this call succeeds.
+        type: boolean
+    type: object
+  POSTRegisterApplePayDomainRequest:
+    example:
+      domainName: testapplepay.zuora.com
+    properties:
+      domainName:
+        description: 'The name of the domain to be registered with Apple Pay, such as `testapplepay.zuora.com`.
+
+          '
+        type: string
+    required:
+    - domainName
+    type: object
+  PaymentMethodObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the payment method. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a payment method object.
+
+      '
+    title: paymentMethodFieldsCustom
+    type: object
+  PUTPaymentMethodRequest:
+    allOf:
+    - properties:
+        accountHolderInfo:
+          $ref: '#/definitions/PUTPMAccountHolderInfo'
+        accountKey:
+          description: 'The ID of the customer account associated with this payment method, such as `2x92c0f859b0480f0159d3a4a6ee5bb6`.
+
+
+            **Note:** You can use this field to associate an orphan payment method with a customer account. If a payment method is already associated with a customer account, you cannot change the associated payment method through this operation. You cannot remove the previous account ID and leave this field empty, either.
+
+            '
+          type: string
+        authGateway:
+          description: "Specifies the ID of the payment gateway that Zuora will use to authorize the payments that are made with the payment method. \n\nThis field is not supported in updating Credit Card Reference Transaction payment methods.\n"
+          type: string
+        currencyCode:
+          description: 'The currency used for payment method authorization.
+
+            '
+          type: string
+        gatewayOptions:
+          description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
+
+
+            Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
+
+
+            This field is not supported in updating Credit Card Reference Transaction payment methods.
+
+            '
+          properties:
+            key:
+              description: 'The name of a gateway-specific parameter.
+
+                '
+              type: string
+            value:
+              description: 'The value of the gateway-specific parameter.
+
+                '
+              type: string
+          type: object
+        ipAddress:
+          description: "The IPv4 or IPv6 information of the user when the payment method is created or updated. Some gateways use this field for fraud prevention. If this field is passed to Zuora, Zuora directly passes it to gateways. \n\nIf the IP address length is beyond 45 characters, a validation error occurs.\n\nFor validating SEPA payment methods on Stripe v2, this field is required.\n"
+          type: string
+        mandateInfo:
+          description: 'The mandate information for the Credit Card, Credit Card Reference Transaction, ACH, or Bank Transfer payment method.
+
+            '
+          properties:
+            mandateId:
+              description: 'The mandate ID.
+
+                '
+              maxLength: 36
+              type: string
+            mandateReason:
+              description: 'The reason of the mandate from the gateway side.
+
+                '
+              maxLength: 64
+              type: string
+            mandateStatus:
+              description: 'The status of the mandate from the gateway side.
+
+                '
+              maxLength: 64
+              type: string
+          type: object
+      type: object
+    - $ref: '#/definitions/PUTPMCreditCardInfo'
+    - $ref: '#/definitions/PUTPaymentMethodObjectCustomFields'
+    example:
+      accountHolderInfo:
+        addressLine1: address 1
+        phone: '1333333333'
+      expirationMonth: 8
+      expirationYear: 2024
+      securityCode: '123'
+  POSTPaymentMethodResponse:
+    allOf:
+    - $ref: '#/definitions/CommonResponseType'
+    - properties:
+        id:
+          description: 'Internal ID of the payment method that was created.
+
+            '
+          type: string
+        reasons:
+          items:
+            description: 'Error information. Only applicable if the payment method was not created.
+
+              '
+            properties:
+              code:
+                description: 'Error code.
+
+                  '
+                type: string
+              message:
+                description: 'Error message.
+
+                  '
+                type: string
+            type: object
+          type: array
+      type: object
+  PUTPaymentMethodResponse:
+    properties:
+      id:
+        description: 'ID of the updated payment method.
+
+          '
+        type: string
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  CreatePaymentMethodBankTransfer:
+    properties:
+      IBAN:
+        description: "The International Bank Account Number. \n\nThis field is required if the `type` field is set to `SEPA`. However, for creating tokenized SEPA payment methods on Adyen Integration v2.0, this field is optional. \n  - If the `tokenize` field is `true`, `IBAN` is required. \n  - If the `tokens` field is specified,  `IBAN` is not required but `accountMaskNumber` is required.\n"
+        type: string
+      accountHolderInfo:
+        description: "This container field is required for the following bank transfer payment methods. The nested `accountHolderName` field is required.\n  - Direct Debit NZ (`Becsnz`)\n  - Single Euro Payments Area (`SEPA`)\n  - Direct Debit UK (`Bacs`)\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
+        properties:
+          accountHolderName:
+            description: 'Required.
+
+
+              The full name of the bank account holder.
+
+              '
+            maxLength: 60
+            type: string
+          addressLine1:
+            description: 'The first line of the address for the account holder.
+
+
+              This field is required for SEPA Direct Debit payment methods on Stripe v2 for [certain countries](https://stripe.com/docs/payments/sepa-debit/set-up-payment?platform=web#web-submit-payment-method).
+
+              '
+            type: string
+          addressLine2:
+            description: "The second line of the address for the account holder. \n"
+            type: string
+          city:
+            description: 'The city where the account holder stays.
+
+
+              It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
+
+              '
+            type: string
+          country:
+            description: 'The country where the account holder stays.
+
+
+              This field is required for SEPA payment methods on Stripe v2 for [certain countries](https://stripe.com/docs/payments/sepa-debit/set-up-payment?platform=web#web-submit-payment-method).
+
+              '
+            type: string
+          email:
+            description: 'The email address of the account holder.
+
+              '
+            type: string
+          firstName:
+            description: 'The first name of the account holder.
+
+              '
+            type: string
+          lastName:
+            description: 'The last name of the account holder.
+
+              '
+            type: string
+          phone:
+            description: 'The phone number of the account holder.
+
+              '
+            type: string
+          state:
+            description: 'The state where the account holder stays.
+
+              '
+            type: string
+          zipCode:
+            description: 'The zip code for the address of the account holder.
+
+              '
+            type: string
+        type: object
+      accountMaskNumber:
+        description: "The masked account number such as ****1234.\n\nWhen creating the following tokenized payment methods, if the `tokens` field is provided, this `accountMaskNumber` field is required.\n  - SEPA payment methods on Adyen\n  - BACS payment methods on Stripe\n\nFor more information about how to create the preceding tokenized payment methods, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
+        type: string
+      accountNumber:
+        description: "The number of the customer's bank account. This field is required for the following bank transfer payment methods:\n  - Direct Entry AU (`Becs`)\n  - Direct Debit NZ (`Becsnz`)\n  - Direct Debit UK (`Bacs`). For creating tokenized BACS payment methods on Stripe v2, this field is optional. If the `tokens` field is specified, `accountNumber` is not required but  `accountMaskNumber` is required.\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
+        type: string
+      bankCode:
+        description: "The sort code or number that identifies the bank. This is also known as the sort code. This field is required for the following bank transfer payment methods:\n  - Direct Debit UK (`Bacs`)\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Direct Debit NZ (`Becsnz`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
+        type: string
+      branchCode:
+        description: "The branch code of the bank used for direct debit. This field is required for the following bank transfer payment methods:\n  - Sweden Direct Debit (`Autogiro`)\n  - Direct Entry AU (`Becs`)\n  - Direct Debit NZ (`Becsnz`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
+        type: string
+      businessIdentificationCode:
+        description: 'The BIC code used for SEPA.
+
+          '
+        type: string
+      currencyCode:
+        description: 'The currency used for payment method authorization.
+
+
+          If this field is not specified, `currency` specified for the account is used for payment method authorization. If no currency is specified for the account, the default currency of the account is then used.
+
+          '
+        type: string
+      identityNumber:
+        description: "The identity number used for Bank Transfer. This field is required for the following bank transfer payment methods:\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n"
+        type: string
+      tokenize:
+        default: false
+        description: "When creating a SEPA payment method on Adyen Integration v2.0, use this field to specify whether to tokenize the payment method with IBAN. If `tokenize` is `true`, `IBAN` is required.\n\nIf the `tokens` field is provided, this `tokenize` field is not required. \n\nFor more information about how to create tokenized SEPA payment methods on Adyen, see <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>.\n"
+        type: boolean
+      tokens:
+        description: "To create the following tokenized payment methods, pass in the existing token information:\n  - Tokenized SEPA payment methods on Adyen Integration v2.0\n  - Tokenized BACS payment methods on Stripe v2\n\nFor more information about how to create the preceding tokenized payment methods, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
+        properties:
+          gatewayType:
+            description: "Required. \n\nThe type of the payment gateway to generate the tokens. This field is case-sensitive.\n"
+            enum:
+            - Adyen
+            - Stripe
+            type: string
+          secondTokenId:
+            description: "Pass in the second token of the payment method. The value of this field varies depending on gateways. For more information, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
+            type: string
+          thirdTokenId:
+            description: 'Pass in the third token of the payment method.
+
+              '
+            type: string
+          tokenId:
+            description: "Required. \n\nPass in the first token of the payment method. The value of this field varies depending on gateways. For more information, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
+            type: string
+        type: object
+    type: object
+  POSTRegisterApplePayDomainResponse:
+    properties:
+      domainName:
+        description: 'The name of the domain registered with Apple Pay, such as `testapplepay.zuora.com`.
+
+          '
+        type: string
+      domainVerified:
+        description: 'Indicates whether the domain registration is successfully verified.
+
+          '
+        type: boolean
+      id:
+        description: 'The ID of the domain, such as `402881a38924ff1001892502da090021`.
+
+          '
+        type: string
+      success:
+        description: 'Indicates whether this call succeeds.
+
+          '
+        type: boolean
+    type: object
+  POSTPaymentMethodResponseDecryption:
+    properties:
+      amount:
+        description: 'The payment amount contained within the encrypted token.
+
+          '
+        type: string
+      paymentId:
+        description: 'The ID of newly processed payment,
+
+          '
+        type: string
+      paymentMethodId:
+        description: 'ID of the newly-created payment method.
+
+          '
+        type: string
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  PUTPaymentMethodObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the payment method. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+
+        Custom fields are not supported in updating Credit Card Reference Transaction payment methods.
+
+        '
+    description: 'Container for custom fields of a payment method object.
+
+      '
+    title: paymentMethodFieldsCustom
+    type: object
+  PUTVerifyPaymentMethodType:
+    example:
+      gatewayOptions:
+        Comments: test
+        IPAddress: 192.168.1.1
+      paymentGatewayName: Adyen
+      securityCode: '737'
+    properties:
+      currencyCode:
+        description: "The currency used for payment method authorization. \n"
+        type: string
+      gatewayOptions:
+        description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
+
+
+          Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
+
+          '
+        properties:
+          key:
+            description: 'The name of a gateway-specific parameter.
+
+              '
+            type: string
+          value:
+            description: 'The value of the gateway-specific parameter.
+
+              '
+            type: string
+        type: object
+      paymentGatewayName:
+        description: 'The name of the payment gateway instance. If no value is specified for this field, the default payment gateway of the customer account will be used.
+
+          '
+        type: string
+      securityCode:
+        description: 'The CVV or CVV2 security code for the credit card or debit card. To ensure PCI compliance, the value of this field is not stored and cannot be queried.
+
+          '
+        type: string
+    type: object
+  CreatePaymentMethodApplePayAdyen:
+    properties:
+      applePaymentData:
+        description: 'This field is specific for setting up Apple Pay for Adyen to include payload with Apple Pay token or Apple payment data. This information should be stringified. For more information, see [Set up Adyen Apple Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Apple_Pay_on_Web/Set_up_Adyen_Apple_Pay).
+
+          '
+        type: string
+    type: object
+  POSTCreatePaymentSessionRequest:
+    example:
+      accountId: 402880de8779e14f018779e82905000f
+      amount: '100'
+      currency: USD
+      paymentGateway: e884322ab8c711edab030242ac120004
+      processPayment: true
+    properties:
+      accountId:
+        description: 'The ID of the customer account in Zuora that is associated with this payment method.
+
+          '
+        type: string
+      amount:
+        description: 'The amount of the payment.
+
+
+          This field is required if `processPayment` is `true`.
+
+          '
+        type: number
+      authAmount:
+        description: 'The authorization amount for the payment method. Specify a value greater than 0.
+
+
+          This field is required if `processPayment` is false.
+
+          '
+        type: number
+      currency:
+        description: 'The currency of the payment in the format of the three-character ISO currency code.
+
+          '
+        type: string
+      paymentGateway:
+        description: 'The ID of the payment gateway instance configured in Zuora that will process the payment, such as `e884322ab8c711edab030242ac120004`.
+
+          '
+        type: string
+      processPayment:
+        description: 'Indicate whether a payment should be processed after creating the payment method.
+
+
+          If this field is set to `true`, you must specify the `amount` field.
+
+
+          If this field is set to `false`, you must specify the `authAmount` field. The payment method will be verified through the payment gateway instance specified in the `paymentGateway` field.
+
+          '
+        type: boolean
+    required:
+    - accountId
+    - currency
+    - paymentGateway
+    - processPayment
+    type: object
+  PUTVerifyPaymentMethodResponseType:
+    properties:
+      paymentMethodId:
+        description: 'The ID of the verified payment method.
+
+          '
+        type: string
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  GETPaymentMethodResponse:
+    allOf:
+    - properties:
+        accountHolderInfo:
+          $ref: '#/definitions/GETPMAccountHolderInfo'
+        bankIdentificationNumber:
+          description: 'The first six or eight digits of the payment method''s number, such as the credit card number or account number. Banks use this number to identify a payment method.
+
+            '
+          type: string
+        createdBy:
+          description: ID of the user who created this payment method.
+          type: string
+        createdOn:
+          description: 'The date and time when the payment method was created, in `yyyy-mm-dd hh:mm:ss` format.
+
+            '
+          format: date-time
+          type: string
+        creditCardMaskNumber:
+          description: 'The masked credit card number, such as:
+
+            ```
+
+            *********1112
+
+            ```
+
+            '
+          type: string
+        creditCardType:
+          description: 'The type of the credit card or debit card.
+
+
+            Possible values include `Visa`, `MasterCard`, `AmericanExpress`, `Discover`, `JCB`, and `Diners`. For more information about credit card types supported by different payment gateways, see [Supported Payment Gateways](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways).
+
+
+            **Note:** This field is only returned for the Credit Card and Debit Card payment types.
+
+            '
+          type: string
+        deviceSessionId:
+          description: 'The session ID of the user when the `PaymentMethod` was created or updated.
+
+            '
+          type: string
+        existingMandate:
+          description: 'Indicates whether the mandate is an existing mandate.
+
+            '
+          enum:
+          - 'Yes'
+          - 'No'
+          type: string
+        id:
+          description: 'The payment method ID.
+
+            '
+          type: string
+        ipAddress:
+          description: 'The IP address of the user when the payment method was created or updated.
+
+            '
+          type: string
+        isDefault:
+          description: 'Indicates whether this payment method is the default payment method for the account.
+
+            '
+          type: boolean
+        lastFailedSaleTransactionDate:
+          description: 'The date of the last failed attempt to collect payment with this payment method.
+
+            '
+          format: date-time
+          type: string
+        lastTransaction:
+          description: ID of the last transaction of this payment method.
+          type: string
+        lastTransactionTime:
+          description: The time when the last transaction of this payment method happened.
+          format: date-time
+          type: string
+        mandateInfo:
+          $ref: '#/definitions/POSTPMMandateInfo'
+        maxConsecutivePaymentFailures:
+          description: 'The number of allowable consecutive failures Zuora attempts with the payment method before stopping.
+
+            '
+          type: integer
+        numConsecutiveFailures:
+          description: "The number of consecutive failed payments for this payment method. It is reset to `0` upon successful payment. \n"
+          format: int32
+          type: integer
+        paymentRetryWindow:
+          description: 'The retry interval setting, which prevents making a payment attempt if the last failed attempt was within the last specified number of hours.
+
+            '
+          type: integer
+        secondTokenId:
+          description: 'A gateway unique identifier that replaces sensitive payment method data.
+
+
+            **Note:** This field is only returned for the Credit Card Reference Transaction payment type.
+
+            '
+          type: string
+        status:
+          description: 'The status of the payment method.
+
+            '
+          enum:
+          - Active
+          - Closed
+          - Scrubbed
+          type: string
+        tokenId:
+          description: 'A gateway unique identifier that replaces sensitive payment method data or represents a gateway''s unique customer profile.
+
+
+            **Note:** This field is only returned for the Credit Card Reference Transaction payment type.
+
+            '
+          type: string
+        totalNumberOfErrorPayments:
+          description: 'The number of error payments that used this payment method.
+
+            '
+          format: int32
+          type: integer
+        totalNumberOfProcessedPayments:
+          description: 'The number of successful payments that used this payment method.
+
+            '
+          format: int32
+          type: integer
+        type:
+          description: 'The type of the payment method. For example, `CreditCard`.
+
+            '
+          type: string
+        updatedBy:
+          description: ID of the user who made the last update to this payment method.
+          type: string
+        updatedOn:
+          description: 'The last date and time when the payment method was updated, in `yyyy-mm-dd hh:mm:ss` format.
+
+            '
+          format: date-time
+          type: string
+        useDefaultRetryRule:
+          description: 'Indicates whether this payment method uses the default retry rules configured in the Zuora Payments settings.
+
+            '
+          type: boolean
+      type: object
+    - $ref: '#/definitions/PaymentMethodObjectCustomFields'
+    - $ref: '#/definitions/GETPaymentMethodResponseBankTransfer'
+    - $ref: '#/definitions/GETPaymentMethodResponseACH'
+    - $ref: '#/definitions/GETPaymentMethodResponseCreditCard'
+    - $ref: '#/definitions/GETPaymentMethodResponsePayPal'
+    - $ref: '#/definitions/GETPaymentMethodResponseGooglePay'
+    - $ref: '#/definitions/GETPaymentMethodResponseApplePay'
+  GETPMAccountHolderInfo:
+    description: 'The account holder information.
+
+      '
+    properties:
+      accountHolderName:
+        description: 'The full name of the account holder.
+
+          '
+        type: string
+      addressLine1:
+        description: 'The first line of the address for the account holder.
+
+          '
+        type: string
+      addressLine2:
+        description: "The second line of the address for the account holder. \n"
+        type: string
+      city:
+        description: 'The city where the account holder stays.
+
+          '
+        type: string
+      country:
+        description: 'The country where the account holder stays.
+
+
+          When creating a payment method through a translated UI or Payment Page, a country name in a translated language might be selected. Regardless of the country texts selected when creating the payment method, only the country name listed in [Country Names and Their ISO Standard 2- and 3-Digit Codes](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/D_Country%2C_State%2C_and_Province_Codes/A_Country_Names_and_Their_ISO_Codes) returns in this field. Internationalization is not supported for the API field value.
+
+          '
+        type: string
+      email:
+        description: 'The email address of the account holder.
+
+          '
+        type: string
+      phone:
+        description: 'The phone number of the account holder.
+
+          '
+        type: string
+      state:
+        description: 'The state where the account holder stays.
+
+          '
+        type: string
+      zipCode:
+        description: 'The zip code for the address of the account holder.
+
+          '
+        type: string
+    title: accountHolderInfo
+    type: object
+  ModifiedStoredCredentialProfileResponse:
+    properties:
+      number:
+        description: 'The number that identifies the stored credential profile within the payment method.
+
+          '
+        type: integer
+      paymentMethodId:
+        description: 'ID of the payment method.
+
+          '
+        type: string
+      success:
+        type: boolean
+    type: object
+  CreatePaymentMethodGooglePayAdyenChase:
+    properties:
+      googlePaymentToken:
+        description: 'This field is specific for setting up Google Pay for Adyen and Chase gateway integrations to specify the stringified Google Pay token. For more information, see [Set up Adyen Google Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Adyen_Google_Pay) and [Set up Google Pay on Chase](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Google_Pay_on_Chase).
+
+          '
+        type: string
+    type: object
+  GETPaymentMethodResponseGooglePay:
+    properties:
+      googleBIN:
+        description: 'This field is only available for Google Pay payment methods.
+
+          '
+        type: string
+      googleCardNumber:
+        description: 'This field is only available for Google Pay payment methods.
+
+          '
+        type: string
+      googleCardType:
+        description: 'This field is only available for Google Pay payment methods.
+
+
+          For Google Pay payment methods on Adyen, the first 100 characters of [paymentMethodVariant](https://docs.adyen.com/development-resources/paymentmethodvariant) returned from Adyen are stored in this field.
+
+          '
+        type: string
+      googleExpiryDate:
+        description: 'This field is only available for Google Pay payment methods.
+
+          '
+        type: string
+      googleGatewayToken:
+        description: 'This field is only available for Google Pay payment methods.
+
+          '
+        type: string
+    type: object
+  CreatePaymentMethodPayPalAdaptive:
+    properties:
+      preapprovalKey:
+        description: 'The PayPal preapproval key.
+
+          '
+        type: string
+    type: object
+  GETListApplePayDomainsResponse:
+    properties:
+      domains:
+        description: 'Container for domains that are already registered with Apple Pay.
+
+          '
+        items:
+          properties:
+            createdBy:
+              description: 'The ID of the user who created this domain.
+
+                '
+              type: string
+            createdOn:
+              description: "The date and time when the domain was created, in `yyyy-mm-dd hh:mm:ss` format. \n"
+              format: date-time
+              type: string
+            domainName:
+              description: "The name of the domain registered with Apple Pay, such as `testapplepay.zuora.com`. \n"
+              type: string
+            domainVerified:
+              description: "Indicates whether the domain registration is successfully verified. \n"
+              type: boolean
+            id:
+              description: 'The ID of the domain, such as `402881a38924ff1001892502da090021`.
+
+                '
+              type: string
+            updatedBy:
+              description: 'The ID of the user who made the last update to this domain.
+
+                '
+              type: string
+            updatedOn:
+              description: 'The last date and time when the domain was updated, in `yyyy-mm-dd hh:mm:ss` format.
+
+                '
+              format: date-time
+              type: string
+        type: array
+      success:
+        description: 'Indicates whether this call succeeds.
+
+          '
+        type: boolean
+    type: object
+  GETPaymentMethodResponseCreditCard:
+    properties:
+      cardNumber:
+        description: "The masked credit card number.\n\nWhen `cardNumber` is `null`, the following fields will not be returned:\n  - `expirationMonth`\n  - `expirationYear`\n  - `accountHolderInfo`\n"
+        type: string
+      expirationMonth:
+        description: "One or two digits expiration month (1-12).\n        \n"
+        type: integer
+      expirationYear:
+        description: 'Four-digit expiration year.
+
+          '
+        type: integer
+      securityCode:
+        description: "The CVV or CVV2 security code for the credit card or debit card.\n            Only required if changing expirationMonth, expirationYear, or cardHolderName.\n            To ensure PCI compliance, this value isn''t stored and can''t be queried.                  \n"
+        type: string
+    type: object
+  GETPaymentMethodResponseApplePay:
+    properties:
+      appleBIN:
+        description: 'This field is only available for Apple Pay payment methods.
+
+          '
+        type: string
+      appleCardNumber:
+        description: 'This field is only available for Apple Pay payment methods.
+
+          '
+        type: string
+      appleCardType:
+        description: 'This field is only available for Apple Pay payment methods.
+
+
+          For Apple Pay payment methods on Adyen, the first 100 characters of [paymentMethodVariant](https://docs.adyen.com/development-resources/paymentmethodvariant) returned from Adyen are stored in this field.
+
+          '
+        type: string
+      appleExpiryDate:
+        description: 'This field is only available for Apple Pay payment methods.
+
+          '
+        type: string
+      appleGatewayToken:
+        description: 'This field is only available for Apple Pay payment methods.
+
+          '
+        type: string
+    type: object
+  CreatePaymentMethodACH:
+    properties:
+      addressLine1:
+        description: 'First address line, 255 characters or less.
+
+          '
+        type: string
+      addressLine2:
+        description: 'Second address line, 255 characters or less.
+
+          '
+        type: string
+      bankABACode:
+        description: 'The nine-digit routing number or ABA number used by banks. This field is only required if the `type` field is set to `ACH`.
+
+          '
+        type: string
+      bankAccountName:
+        description: 'The name of the account holder, which can be either a person or a company. This field is only required if the `type` field is set to `ACH`.
+
+
+          For ACH payment methods on the BlueSnap integration, see [Overview of BlueSnap gateway integration](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways/BlueSnap_Gateway/Overview_of_BlueSnap_gateway_integration#Payer_Name_Extraction) for more information about how Zuora splits the string in this field into two parts and passes them to BlueSnap''s `firstName` and `lastName` fields.
+
+          '
+        maxLength: 70
+        type: string
+      bankAccountNumber:
+        description: 'The bank account number associated with the ACH payment. This field is only required if the `type` field is set to `ACH`.
+
+          '
+        maxLength: 30
+        type: string
+      bankAccountType:
+        description: 'The type of bank account associated with the ACH payment. This field is only required if the `type` field is set to `ACH`.
+
+
+          When creating an ACH payment method on Adyen, this field is required by Zuora but it is not required by Adyen. To create the ACH payment method successfully, specify a real value for this field if you can. If it is not possible to get the real value for it, specify any of the allowed values as a dummy value, `Checking` preferably.
+
+          '
+        enum:
+        - BusinessChecking
+        - BusinessSaving
+        - Checking
+        - Saving
+        type: string
+      bankName:
+        description: 'The name of the bank where the ACH payment account is held. This field is only required if the `type` field is set to `ACH`.
+
+
+          When creating an ACH payment method on Adyen, this field is required by Zuora but it is not required by Adyen. To create the ACH payment method successfully, specify a real value for this field if you can. If it is not possible to get the real value for it, specify a dummy value.
+
+          '
+        maxLength: 70
+        type: string
+      city:
+        description: "City, 40 characters or less.\n\nIt is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.\n    \n"
+        type: string
+      country:
+        description: 'Country, must be a valid country name or abbreviation.
+
+
+          See [Country Names and Their ISO Standard 2- and 3-Digit Codes](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/D_Country%2C_State%2C_and_Province_Codes/A_Country_Names_and_Their_ISO_Codes) for the list of supported country names and abbreviations.
+
+
+          It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
+
+          '
+        type: string
+      phone:
+        description: 'Phone number, 40 characters or less.
+
+          '
+        type: string
+      state:
+        description: 'State, must be a valid state name or 2-character abbreviation.
+
+
+          See [United States Standard State Codes](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/D_Country%2C_State%2C_and_Province_Codes/B_State_Names_and_2-Digit_Codes) and [Canadian Standard Province Codes](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/D_Country%2C_State%2C_and_Province_Codes/C_Canadian_Province_Names_and_2-Digit_Codes) for the list of supported names and abbreviations.
+
+          '
+        type: string
+      zipCode:
+        description: 'Zip code, 20 characters or less.
+
+          '
+        type: string
+    type: object
+  PUTPMCreditCardInfo:
+    properties:
+      expirationMonth:
+        description: "One or two digits expiration month (1-12).\n        \n"
+        type: integer
+      expirationYear:
+        description: 'Four-digit expiration year.
+
+          '
+        type: integer
+      securityCode:
+        description: "Optional. It is the CVV or CVV2 security code specific for the credit card or debit card. To ensure PCI compliance, this value is not stored and cannot be queried. \n\nIf securityCode code is not passed in the request payload, this operation only updates related fields in the payload. It does not validate the payment method through the gateway.\n\nIf securityCode is passed in the request payload, this operation retrieves the credit card information from payload and validates them through the gateway.\n"
+        type: string
+    type: object
+  CreatePaymentMethodCCReferenceTransaction:
+    properties:
+      creditCardMaskNumber:
+        description: 'The masked credit card number, such as:
+
+          ```
+
+          *********1112
+
+          ```
+
+
+          This field is specific for the CC Reference Transaction payment method. It is an optional field that you can use to distinguish different CC Reference Transaction payment methods.
+
+
+          Though there are no special restrictions on the input string, it is highly recommended to specify a card number that is masked.
+
+          '
+        maxLength: 19
+        type: string
+      secondTokenId:
+        description: "A gateway unique identifier that replaces sensitive payment method data. \n\n`secondTokenId` is conditionally required only when `tokenId` is being used to represent a gateway customer profile. `secondTokenId` is used in the CC Reference Transaction payment method.\n"
+        type: string
+      tokenId:
+        description: "A gateway unique identifier that replaces sensitive payment method data or represents a gateway's unique customer profile. `tokenId` is required for the CC Reference Transaction payment method.\n\nWhen `tokenId` is used to represent a customer profile, `secondTokenId` is conditionally required for representing the underlying tokenized payment method.\n\nThe values for the `tokenId` and `secondTokenId` fields differ for gateways. For more information, see the Knowledge Center article specific to each gateway that supports the CC Reference Transaction payment method.\n\n**Note:** \n  - When creating an ACH payment method, if you need to pass in tokenized information, use the `mandateId` instead of `tokenId` field.\n  - When creating the following payment methods, if you need to pass in token information, use the `tokens` > `tokenId` and `tokens` > `secondTokenId` fields instead of this `tokenId` field:\n      - SEPA on Adyen Integration v2.0\n      - BACS on Stripe v2\n    \n"
+        type: string
+    type: object
+parameters:
+  GLOBAL_HEADER_Accept_Encoding:
+    name: Accept-Encoding
+    in: header
+    required: false
+    type: string
+    description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+  GLOBAL_HEADER_Zuora_Org_Ids:
+    name: Zuora-Org-Ids
+    in: header
+    required: false
+    type: string
+    description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+  GLOBAL_HEADER_Idempotency_Key:
+    name: Idempotency-Key
+    in: header
+    required: false
+    type: string
+    maxLength: 255
+    description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+  GLOBAL_HEADER_Content_Encoding:
+    name: Content-Encoding
+    in: header
+    required: false
+    type: string
+    description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+      '
+  GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+    name: Zuora-Entity-Ids
+    in: header
+    required: false
+    type: string
+    description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+      '
+  GLOBAL_HEADER_Zuora_Track_Id:
+    name: Zuora-Track-Id
+    in: header
+    required: false
+    type: string
+    maxLength: 64
+    description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+      The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+      '
+  GLOBAL_HEADER_Authorization_OAuth_optional:
+    name: Authorization
+    in: header
+    required: false
+    type: string
+    description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+      '
+x-tagGroups:
+- name: Authentication
+  tags:
+  - OAuth
+- name: Products
+  tags:
+  - Products
+  - Catalog
+  - Catalog Groups
+  - Offers
+  - Price Book Items
+  - Product Rate Plans
+  - Product Rate Plan Definitions
+  - Product Rate Plan Charges
+  - Product Charge Definitions
+  - Product Rate Plan Charge Tiers
+  - Zuora Revenue Integration
+- name: Customer Accounts
+  tags:
+  - Accounts
+  - Contacts
+  - Contact Snapshots
+- name: Orders and Subscriptions
+  tags:
+  - Sign Up
+  - Orders
+  - Order Actions
+  - Order Line Items
+  - Fulfillments
+  - Ramps
+  - Subscriptions
+  - Rate Plans
+- name: Advanced Consumption Billing
+  tags:
+  - Prepaid with Drawdown
+- name: Usage
+  tags:
+  - Usage
+- name: Billing Documents
+  tags:
+  - Delivery Adjustments
+  - Billing Documents
+  - Invoices
+  - Credit Memos
+  - Debit Memos
+  - E-Invoicing
+  - Invoice Schedules
+  - Taxation Items
+  - Sequence Sets
+  - Operations
+- name: Bill Runs
+  tags:
+  - Bill Run
+  - Billing Preview Run
+- name: Payment Methods
+  tags:
+  - Payment Methods
+  - Custom Payment Method Types
+  - Payment Method Updater
+  - Payment Method Snapshots
+  - Payment Method Transaction Logs
+  - Hosted Pages
+  - RSA Signatures
+- name: Payments
+  tags:
+  - Payment Authorization
+  - Payment Gateways
+  - Payment Gateway Reconciliation
+  - Payments
+  - Payment Transaction Logs
+  - Payment Runs
+  - Payment Schedules
+  - Refunds
+- name: Finance
+  tags:
+  - Accounting Codes
+  - Accounting Periods
+  - Summary Journal Entries
+  - Journal Runs
+  - Mass Updater
+- name: Events and Notifications
+  tags:
+  - Notifications
+  - Custom Event Triggers
+  - Custom Scheduled Events
+- name: Custom Objects
+  tags:
+  - Custom Object Definitions
+  - Custom Object Records
+  - Custom Object Jobs
+- name: System Health
+  tags:
+  - API Health
+  - Bill Run Health
+  - Electronic Payments Health
+- name: Workflow
+  tags:
+  - Workflows
+- name: Data Query
+  tags:
+  - Data Queries
+- name: AQuA
+  tags:
+  - Aggregate Queries
+- name: Deployment Manager
+  tags:
+  - Configuration Templates
+- name: Multiple Organizations
+  tags:
+  - Data Labeling
+- name: Order to Revenue
+  tags:
+  - Regenerate
+- name: General-Purpose Operations
+  tags:
+  - Actions
+  - Settings
+  - Files
+  - Imports
+  - Custom Exchange Rates
+  - Attachments
+  - Describe

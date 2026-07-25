@@ -1,0 +1,1804 @@
+swagger: '2.0'
+info:
+  version: '2023-12-15'
+  title: API Reference Accounting Codes Payment Runs API
+  description: "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n"
+  contact:
+    email: docs@zuora.com
+host: rest.zuora.com
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Payment Runs
+  description: 'Use payment runs to collect payments using electronic payment methods, for example, credit cards and ACH.
+
+    For more information about payment runs, see <a href="https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/K_Payment_Operations/CA_Payment_Runs/A_Introduction_to_Payment_Runs" target="_blank">Payment Runs</a>.
+
+    '
+paths:
+  /v1/payment-runs:
+    post:
+      description: "Creates a payment run. You can create a payment run to be executed immediately after it is created, or a scheduled payment run to be executed in future.\n\nTo filter the payments to be collected for a payment run, you can use either of the following methods but not both:\n\n  - Use the `accountId`, `batch`, `billCycleDay`, `currency`, `paymentGatewayId`, and `billingRunId` fields to define the billing documents to be collected.\n  - Use the `data` field to specify the records of accounts and billing documents to be collected, in a more flexible manner. See [Create custom payment runs through Zuora REST API](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/K_Payment_Operations/CA_Payment_Runs/Create_custom_payment_runs_through_Zuora_REST_API) for more information.\n\nIf no filter criteria are specified in the request body, the payment run collects payments for all accounts.\n"
+      summary: Create a payment run
+      operationId: POST_PaymentRun
+      tags:
+      - Payment Runs
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - in: body
+        name: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/POSTPaymentRunRequest'
+      responses:
+        200:
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              id: 2c92c0856078bbcb0160957bbb8f0b32
+              number: PR-00002120
+              targetDate: '2017-12-28'
+              runDate: null
+              status: Completed
+              executedOn: '2017-12-28 09:00:06'
+              completedOn: '2017-12-28 09:00:06'
+              applyCreditBalance: false
+              consolidatedPayment: false
+              processPaymentWithClosedPM: false
+              collectPayment: true
+              createdDate: '2017-12-27 09:00:02'
+              createdById: 2c92c0f958fffd7d015914aeefc71a5d
+              updatedDate: '2017-12-28 09:00:06'
+              updatedById: 2c92c0f958fffd7d015914aeefc71a5d
+              success: true
+          schema:
+            $ref: '#/definitions/GETPaymentRunType'
+    get:
+      description: "Retrieves the information about all payment runs. You can define filterable fields to restrict the data returned in the response.\n\n### Filtering\n\nYou can use query parameters to restrict the data returned in the response. Each query parameter corresponds to one field in the response body.\n\nIf the value of a filterable field is string, you can set the corresponding query parameter to `null` when filtering. Then, you can get the response data with this field value being `null`. \n\nExamples:\n\n- /v1/payment-runs?status=Processed\n\n- /v1/payment-runs?targetDate=2017-10-10&status=Pending\n\n- /v1/payment-runs?status=Completed&sort=+updatedDate\n"
+      summary: List payment runs
+      operationId: GET_PaymentRuns
+      tags:
+      - Payment Runs
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_REQUEST_page'
+      - $ref: '#/parameters/GLOBAL_REQUEST_pageSize'
+      - name: createdById
+        in: query
+        type: string
+        required: false
+        description: 'This parameter filters the response based on the `createdById` field.
+
+          '
+      - name: createdDate
+        in: query
+        type: string
+        format: date-time
+        required: false
+        description: 'This parameter filters the response based on the `createdDate` field.
+
+          '
+      - name: status
+        in: query
+        type: string
+        enum:
+        - Pending
+        - Processing
+        - Completed
+        - Error
+        - Canceled
+        required: false
+        description: 'This parameter filters the response based on the `status` field.
+
+          '
+      - name: targetDate
+        in: query
+        type: string
+        format: date
+        required: false
+        description: 'This parameter filters the response based on the `targetDate` field.
+
+          '
+      - name: updatedById
+        in: query
+        type: string
+        required: false
+        description: 'This parameter filters the response based on the `updatedById` field.
+
+          '
+      - name: updatedDate
+        in: query
+        type: string
+        format: date-time
+        required: false
+        description: 'This parameter filters the response based on the `updatedDate` field.
+
+          '
+      - name: sort
+        in: query
+        type: string
+        required: false
+        description: "This parameter restricts the order of the data returned in the response. You can use this parameter to supply a dimension you want to sort on.\n\nA sortable field uses the following form: \n\n*operator* *field_name*\n\nYou can use at most two sortable fields in one URL path. Use a comma to separate sortable fields. For example:  *operator* *field_name*, *operator* *field_name*  \n\n*operator* is used to mark the order of sequencing. The operator is optional. If you only specify the sortable field without any operator, the response data is sorted in descending order by this field.\n\n  - The `-` operator indicates an ascending order.\n  - The `+` operator indicates a descending order.\n\nBy default, the response data is displayed in descending order by payment run number.\n\n*field_name* indicates the name of a sortable field. The supported sortable fields of this operation are as below:\n\n  - targetDate\n  - status\n  - createdDate\n  - createdById\n  - updatedDate\n  - updatedById\n\nExamples:\n\n- /v1/payment-runs?sort=+createdDate\n\n- /v1/payment-runs?status=Processing&sort=-createdById,+targetDate\n"
+      responses:
+        200:
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              paymentRuns:
+              - id: 2c92c0856078bbcb016096576ccb75ca
+                number: PR-00002121
+                targetDate: '2017-12-28'
+                runDate: null
+                status: Completed
+                executedOn: '2017-12-28 13:00:00'
+                completedOn: '2017-12-28 13:00:00'
+                applyCreditBalance: false
+                consolidatedPayment: false
+                processPaymentWithClosedPM: false
+                collectPayment: true
+                createdDate: '2017-12-27 13:00:00'
+                createdById: 2c92c0f956bc8fcb0156f8eee04b4d54
+                updatedDate: '2017-12-28 13:00:00'
+                updatedById: 2c92c0f956bc8fcb0156f8eee04b4d54
+              nextPage: /payment-runs?page=2
+              success: true
+          schema:
+            $ref: '#/definitions/GETPaymentRunCollectionType'
+  /v1/payment-runs/{paymentRunKey}:
+    put:
+      summary: Update a payment run
+      operationId: PUT_PaymentRun
+      description: 'Updates the information about an unexecuted payment run. Only pending payment runs can be updated.
+
+
+        If none of the **accountId**, **batch**, **billCycleDay**, **currency**, **paymentGatewayId**, and **billingRunId** fields is specified in the request body, the corresponding payment run collects payments for all accounts.
+
+        '
+      tags:
+      - Payment Runs
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - in: path
+        name: paymentRunKey
+        description: 'The unique ID of a payment run or the payment run number. For example, 402890245f097f39015f0f074a2e0566.
+
+          '
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/PUTPaymentRunRequest'
+      responses:
+        200:
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              id: 402890245f097f39015f0f074a2e0566
+              number: PR-00000391
+              status: Pending
+              rundate: null
+              targetDate: '2017-10-12'
+              completedOn: null
+              accountId: 402890245f097f39015f0e9fcdd60558
+              executedOn: null
+              autoApplyCreditMemo: true
+              autoApplyUnappliedPayment: true
+              consolidatedPayment: true
+              processPaymentWithClosedPM: true
+              collectPayment: true
+              createdDate: '2017-09-22 12:37:22'
+              createdById: 402881e522cf4f9b0122cf5d82860002
+              updatedDate: '2017-09-22 12:37:22'
+              updatedById: 402881e522cf4f9b0122cf5d82860002
+              success: true
+          schema:
+            $ref: '#/definitions/GETPaymentRunType'
+    get:
+      summary: Retrieve a payment run
+      operationId: GET_PaymentRun
+      description: 'Retrives the information about a specific payment run.
+
+        '
+      tags:
+      - Payment Runs
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - in: path
+        name: paymentRunKey
+        description: 'The unique ID of a payment run or the payment run number. For example, 402890245f097f39015f0f074a2e0566.
+
+          '
+        required: true
+        type: string
+      responses:
+        200:
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              id: 2c92c0856078bbcb0160957bbb8f0b32
+              number: PR-00002120
+              targetDate: '2017-12-28'
+              runDate: null
+              status: Completed
+              executedOn: '2017-12-28 09:00:06'
+              completedOn: '2017-12-28 09:00:06'
+              applyCreditBalance: false
+              consolidatedPayment: false
+              processPaymentWithClosedPM: false
+              collectPayment: true
+              createdDate: '2017-12-27 09:00:02'
+              createdById: 2c92c0f958fffd7d015914aeefc71a5d
+              updatedDate: '2017-12-28 09:00:06'
+              updatedById: 2c92c0f958fffd7d015914aeefc71a5d
+              success: true
+          schema:
+            $ref: '#/definitions/GETPaymentRunType'
+    delete:
+      summary: Delete a payment run
+      operationId: DELETE_PaymentRun
+      description: 'Deletes a payment run. Only payment runs with the Canceled or Error status can be deleted.
+
+        '
+      tags:
+      - Payment Runs
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - in: path
+        name: paymentRunKey
+        description: 'The unique ID of a payment run or the payment run number. For example, 402890245f097f39015f0f074a2e0566.
+
+          '
+        required: true
+        type: string
+      responses:
+        200:
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          schema:
+            $ref: '#/definitions/CommonResponseType'
+          examples:
+            application/json:
+              success: true
+  /v1/payment-runs/{paymentRunKey}/summary:
+    get:
+      summary: Retrieve a payment run summary
+      operationId: GET_PaymentRunSummary
+      description: 'Retrives the summary of a payment run.
+
+        '
+      tags:
+      - Payment Runs
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - in: path
+        name: paymentRunKey
+        description: 'The unique ID of a payment run or the payment run number. For example, 402890245f097f39015f0f074a2e0566.
+
+          '
+        required: true
+        type: string
+      responses:
+        200:
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              numberOfErrors: 0
+              numberOfReceivables: 1
+              numberOfPayments: 1
+              numberOfUnprocessedReceivables: 0
+              numberOfCreditBalanceAdjustments: 0
+              numberOfInvoices: 0
+              numberOfUnprocessedInvoices: 0
+              numberOfCreditMemos: 1
+              numberOfDebitMemos: 1
+              numberOfUnappliedPayments: 1
+              numberOfUnprocessedDebitMemos: 0
+              totalValues:
+              - totalValueOfReceivables: 256 USD
+                totalValueOfPayments: 56 USD
+                totalValueOfErrors: 0 USD
+                totalValueOfUnprocessedReceivables: 0 USD
+                totalValueOfCreditBalance: 0 USD
+                totalValueOfInvoices: 0 USD
+                totalValueOfUnprocessedInvoices: 0 USD
+                totalValueOfDebitMemos: 256 USD
+                totalValueOfCreditMemos: 100 USD
+                totalValueOfUnappliedPayments: 100 USD
+                totalValueOfUnprocessedDebitMemos: 0 USD
+              success: true
+          schema:
+            $ref: '#/definitions/GETPaymentRunSummaryResponse'
+  /v1/payment-runs/{paymentRunKey}/data:
+    get:
+      summary: Retrieve payment run data
+      operationId: GET_PaymentRunData
+      description: "Retrieves payment run data and the processing result with details, if the `data` field was specified in the Create payment run operation.\n   \n"
+      tags:
+      - Payment Runs
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - in: path
+        name: paymentRunKey
+        description: 'The unique ID of a payment run or the payment run number. For example, 402890245f097f39015f0f074a2e0566.
+
+          '
+        required: true
+        type: string
+      responses:
+        200:
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              data:
+              - accountId: 402881ed738ddf2001738def8db50058
+                documentId: 402881ed738ddf2001738df388fd009e
+                documentType: Invoice
+                amount: 80
+                paymentMethodId: 402881ed738ddf2001738def8e60005b
+                paymentGatewayId: 402881ed738ddf2001738def8b630050
+                comment: Comment1
+                customField1__c: cf_value1
+                customField2__c: cf_value2
+                result: Processed
+                amountToCollect: 80
+                amountCollected: 80
+                transactions:
+                - id: 402881ed738ddf2001738dfafad6012c
+                  type: Payment
+                  appliedAmount: 40
+                  amount: 40
+                  status: Processed
+                - id: 402881ed738ddf2001738df7572400e6
+                  type: CreditMemo
+                  appliedAmount: 10
+                - id: 402881ed738ddf2001738df715d800dd
+                  type: UnappliedPayment
+                  appliedAmount: 30
+              - accountId: 402881ed738ddf2001738def8db50058
+                documentType: DebitMemo
+                documentId: 402881ed738ddf2001738df5b90a00c0
+                amount: 70
+                paymentMethodId: 402881ed738ddf2001738df97dbe00fe
+                paymentGatewayId: 402881ed738ddf2001738def8b630050
+                comment: Comment2
+                customField1__c: cf_value3
+                customField2__c: cf_value4
+                result: Processed
+                amountToCollect: 70
+                amountCollected: 70
+                transactions:
+                - id: 402881ed738ddf2001738dfafcbd013b
+                  type: Payment
+                  appliedAmount: 70
+                  amount: 70
+                  status: Processed
+              - accountId: c49b85cd8ba742edb5ab4b3da90fc4c0
+                documentId: 7dab18d036dc4c94bbec853afb12affb
+                documentType: Invoice
+                paymentMethodId: 1906df6f56f049c8b7457dc31f62d0ec
+                comment: Comment3
+                customField1__c: cf_value5
+                customField2__c: cf_value6
+                paymentGatewayId: 768929c2f51947e79e73703bfc9bca7d
+                result: Error
+                errorCode: Invalid_Request_Data
+                errorMessage: Payment method is closed
+              success: true
+          schema:
+            $ref: '#/definitions/GETPaymentRunDataArrayResponse'
+definitions:
+  GETPaymentRunDataElementResponse:
+    allOf:
+    - properties:
+        accountId:
+          description: 'The customer account ID specified in the `data` field when creating the payment run.
+
+            '
+          type: string
+        accountNumber:
+          description: 'The customer account number specified in the `data` field when creating the payment run.
+
+            '
+          type: string
+        amount:
+          description: 'The amount specified in the `data` field when creating the payment run. `null` is returned if it was not specified.
+
+            '
+          type: number
+        amountCollected:
+          description: 'The amount that is collected.
+
+            '
+          type: number
+        amountToCollect:
+          description: 'The amount to be collected.
+
+            '
+          type: number
+        comment:
+          description: 'The comment specified in the `data` field when creating the payment run. `null` is returned if it was not specified.
+
+            '
+          type: string
+        currency:
+          description: 'This field is only available if support for standalone payments is enabled.
+
+
+            The currency of the standalone payment. The currency of the standalone payment can be different from the payment currency defined in the customer account settings.
+
+            '
+          type: string
+        documentId:
+          description: 'The billing document ID specified in the `data` field when creating the payment run. `null` is returned if it was not specified.
+
+            '
+          type: string
+        documentNumber:
+          description: 'The billing document number specified in the `data` field when creating the payment run. `null` is returned if it was not specified.
+
+            '
+          type: string
+        documentType:
+          description: 'The billing document type specified in the `data` field when creating the payment run. `null` is returned if it was not specified.
+
+            '
+          enum:
+          - Invoice
+          - DebitMemo
+          type: string
+        errorCode:
+          description: 'The error code of the response.
+
+            '
+          type: string
+        errorMessage:
+          description: 'The detailed information of the error response.
+
+            '
+          type: string
+        paymentGatewayId:
+          description: 'The payment gateway ID specified in the `data` field when creating the payment run. `null` is returned if it was not specified.
+
+            '
+          type: string
+        paymentMethodId:
+          description: 'The payment method ID specified in the `data` field when creating the payment run. `null` is returned if it was not specified.
+
+            '
+          type: string
+        result:
+          description: 'Indicates whether the data is processed successfully or not.
+
+            '
+          enum:
+          - Processed
+          - Error
+          type: string
+        standalone:
+          description: 'This field is only available if the support for standalone payment is enabled.
+
+
+            The value `true` indicates this is a standalone payment that is created and processed in Zuora through Zuora gateway integration but will be settled outside of Zuora. No settlement data will be created. The standalone payment cannot be applied, unapplied, or transferred.
+
+            '
+          type: boolean
+        transactions:
+          description: 'Container for transactions that apply to the current request. Each element contains an array of the settlement/payment applied to the record.
+
+            '
+          items:
+            $ref: '#/definitions/GETPaymentRunDataTransactionElementResponse'
+          type: array
+      title: payment run data
+      type: object
+    - $ref: '#/definitions/PaymentObjectCustomFields'
+  CommonResponseType:
+    properties:
+      processId:
+        description: 'The Id of the process that handle the operation.
+
+          '
+        type: string
+      reasons:
+        items:
+          properties:
+            code:
+              description: 'The error code of response.
+
+                '
+              type: string
+            message:
+              description: 'The detail information of the error response
+
+                '
+              type: string
+          type: object
+        type: array
+      success:
+        description: 'Indicates whether the call succeeded.
+
+          '
+        type: boolean
+    type: object
+  GETPaymentRunDataArrayResponse:
+    properties:
+      data:
+        description: 'Container for payment run data. Each element in the array is a record processed by the payment run.
+
+          '
+        items:
+          $ref: '#/definitions/GETPaymentRunDataElementResponse'
+        type: array
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  GETPaymentRunSummaryResponse:
+    properties:
+      numberOfCreditBalanceAdjustments:
+        description: '**Note:** This field is only available if you have the Credit Balance feature enabled.
+
+
+          The number of credit balance adjustments that are successfully processed in the payment run.
+
+          '
+        type: integer
+      numberOfCreditMemos:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total number of credit memos that are successfully processed in the payment run.
+
+          '
+        type: integer
+      numberOfDebitMemos:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total number of debit memos that are picked up for processing in the payment run.
+
+          '
+        type: integer
+      numberOfErrorInputData:
+        description: 'The number of input data that are processed with errors.
+
+          '
+        type: integer
+      numberOfErrors:
+        description: 'The number of payments with the status of `Error` and `Processing`.
+
+          '
+        type: integer
+      numberOfInputData:
+        description: 'The total number of input data.
+
+          '
+        type: integer
+      numberOfInvoices:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total number of invoices that are picked up for processing in the payment run.
+
+          '
+        type: integer
+      numberOfPayments:
+        description: 'The number of payments that are successfully processed in the payment run.
+
+          '
+        type: integer
+      numberOfProcessedInputData:
+        description: 'The number of input data that are successfully processed.
+
+          '
+        type: integer
+      numberOfReceivables:
+        description: 'The total number of receivables that are picked up for processing in the payment run.
+
+
+          The value of this field is the sum of the value of the `numberOfInvoices` field and that of the `numberOfDebitMemos` field.
+
+          '
+        type: integer
+      numberOfUnappliedPayments:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The number of unapplied payments that are successfully processed in the payment run.
+
+          '
+        type: integer
+      numberOfUnprocessedDebitMemos:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The number of debit memos with remaining positive balances after the payment run is completed.
+
+          '
+        type: integer
+      numberOfUnprocessedInvoices:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The number of invoices with remaining positive balances after the payment run is completed.
+
+          '
+        type: integer
+      numberOfUnprocessedReceivables:
+        description: 'The number of receivables with remaining positive balances after the payment run is completed.
+
+          '
+        type: integer
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+      totalValues:
+        description: 'Container for total values.
+
+          '
+        items:
+          $ref: '#/definitions/GETPaymentRunSummaryTotalValues'
+        type: array
+    type: object
+  PUTPaymentRunRequest:
+    example:
+      autoApplyCreditMemo: 'true'
+      autoApplyUnappliedPayment: 'true'
+      consolidatedPayment: 'true'
+      processPaymentWithClosedPM: 'true'
+      targetDate: '2017-10-12'
+    properties:
+      accountId:
+        description: 'The ID of the customer account associated with the payment run.
+
+
+          This field conflicts with each of the `batch`, `billCycleDay`, `currency`, `paymentGatewayId`, and `billingRunId` fields. If there are such conflicts, an error occurs and an error message is returned.
+
+          '
+        format: uuid
+        type: string
+      applyCreditBalance:
+        description: '**Note:** This field is only available if you have the Credit Balance feature enabled and the Invoice Settlement feature disabled.
+
+
+          Whether to apply credit balances in the payment run. This field is only available when you have Invoice Settlement feature disabled.
+
+          '
+        type: boolean
+      autoApplyCreditMemo:
+        description: '**Note:** This field is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+
+          Whether to automatically apply a posted credit memo to one or more receivables in the payment run.
+
+          '
+        type: boolean
+      autoApplyUnappliedPayment:
+        description: '**Note:** This field is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+
+          Whether to automatically apply unapplied payments to  one or more receivables in the payment run.
+
+          '
+        type: boolean
+      batch:
+        description: "The alias name given to a batch. The batch name is a string of 50 characters or less.\n\nThis field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned. \n\n**Note**: By default, you have 50 configurable account batches. To increase the limit to 200 batches, you must have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Performance_Booster_Elite\" target=\"_blank\">Performance Booster Elite</a> package.\n"
+        type: string
+      billCycleDay:
+        description: 'The billing cycle day (BCD), the day of the month when a bill run generates invoices for the account. The value must be equal to or less then 31, and 31 is mean the EOM.
+
+
+          This field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned.
+
+          '
+        type: string
+      billingRunId:
+        description: 'The ID of a bill run.
+
+
+          This field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned.
+
+          '
+        format: uuid
+        type: string
+      collectPayment:
+        description: "Whether to process electronic payments during the execution of payment runs. \n\nIf the Payment user permission \"Process Electronic Payment\" is disabled, this field will be ignored.\n"
+        type: boolean
+      consolidatedPayment:
+        description: "**Note:** The **Process Electronic Payment** permission also needs to be allowed for a Manage Payment Runs role to work. See [Payments Roles](https://knowledgecenter.zuora.com/CF_Users_and_Administrators/A_Administrator_Settings/User_Roles/e_Payments_Roles) for more information. \n\nWhether to process a single payment for all receivables that are due on an account.\n"
+        type: boolean
+      currency:
+        description: 'A currency defined in the web-based UI administrative settings.
+
+
+          This field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned.
+
+          '
+        type: string
+      organizationLabels:
+        description: "The organizations that the run is created for. \n\nFor each item in the array, either the `organizationId` or the `organizationName` field is required.\n\nThis field is only required when you have already turned on Multi-Org feature.\n"
+        items:
+          properties:
+            organizationId:
+              description: 'The organization ID.
+
+                '
+              type: string
+            organizationName:
+              description: 'The organization name.
+
+                '
+              type: string
+          type: object
+        type: array
+      paymentGatewayId:
+        description: 'The ID of the gateway instance that processes the payment.
+
+
+          This field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned.
+
+          '
+        format: uuid
+        type: string
+      processPaymentWithClosedPM:
+        description: "**Note:** The **Process Electronic Payment** permission also needs to be allowed for a Manage Payment Runs role to work. See [Payments Roles](https://knowledgecenter.zuora.com/CF_Users_and_Administrators/A_Administrator_Settings/User_Roles/e_Payments_Roles) for more information. \n\nWhether to process payments even if the default payment method is closed.\n"
+        type: boolean
+      runDate:
+        description: 'The date and time when the scheduled payment run is to be executed, in `yyyy-mm-dd hh:mm:ss` format. The backend will ignore mintues and seconds in the field value. For example, if you specify `2017-03-01 11:30:37` for this value, this payment run will be run at 2017-03-01 11:00:00.
+
+          '
+        format: date-time
+        type: string
+      targetDate:
+        description: 'The target date used to determine which receivables to be paid in the payment run. The payments are collected for all receivables with the due date no later than the target date.
+
+          '
+        format: date
+        type: string
+    type: object
+  GETPaymentRunSummaryTotalValues:
+    properties:
+      totalValueOfCreditBalance:
+        description: '**Note:** This field is only available if you have the Credit Balance feature enabled.
+
+
+          The total amount of credit balance after the payment run is completed.
+
+          '
+        type: string
+      totalValueOfCreditMemos:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total amount of credit memos that are successfully processed in the payment run.
+
+          '
+        type: string
+      totalValueOfDebitMemos:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total amount of debit memos that are picked up for processing in the payment run.
+
+          '
+        type: string
+      totalValueOfErrors:
+        description: 'The total amount of receivables associated with the payments with the status of `Error` and `Processing`.
+
+          '
+        type: string
+      totalValueOfInvoices:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total amount of invoices that are picked up for processing in the payment run.
+
+          '
+        type: string
+      totalValueOfPayments:
+        description: 'The total amount of payments that are successfully processed in the payment run.
+
+          '
+        type: string
+      totalValueOfReceivables:
+        description: 'The total amount of receivables associated with the payment run.
+
+
+          The value of this field is the sum of the value of the `totalValueOfInvoices` field and that of the `totalValueOfDebitMemos` field.
+
+          '
+        type: string
+      totalValueOfUnappliedPayments:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total amount of unapplied payments that are successfully processed in the payment run.
+
+          '
+        type: integer
+      totalValueOfUnprocessedDebitMemos:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total amount of debit memos with remaining positive balances after the payment run is completed.
+
+          '
+        type: string
+      totalValueOfUnprocessedInvoices:
+        description: '**Note:** This field is only available if you have the Invoice Settlement feature enabled.
+
+
+          The total amount of invoices with remaining positive balances after the payment run is completed.
+
+          '
+        type: string
+      totalValueOfUnprocessedReceivables:
+        description: 'The total amount of receivables with remaining positive balances after the payment run is completed.
+
+          '
+        type: string
+    title: totalValues
+    type: object
+  POSTPaymentRunDataElementRequest:
+    allOf:
+    - properties:
+        accountId:
+          description: 'A valid account ID associated with the payment run.
+
+
+            If `consolidatedPayment` is set to `true`, this field is used in processing a single payment for invoices/debit memos due on an account.
+
+            '
+          type: string
+        accountNumber:
+          description: 'The number of the customer account associated with the payment run, such as `A00000001`.
+
+
+            You can specify either `accountNumber` or `accountId` for a customer account, but not both of them.
+
+
+            If `consolidatedPayment` is set to `true`, this field is used in processing a single payment for invoices, debit memos, and standalone payments due on an account.
+
+            '
+          type: string
+        amount:
+          description: 'The amount to be collected for the specified invoice/debit memo. `amount` must be a positive numeric value no more than the balance of the specified invoice/debit memo.
+
+
+            This field is only available when `documentId` is specified. If `amount` is not specified, whole balance of the invoice/debit memo is collected.
+
+            '
+          type: number
+        comment:
+          description: 'Additional comments.
+
+            '
+          type: string
+        currency:
+          description: 'Note: This field is only available if support for standalone payments is enabled.
+
+
+            The currency of the standalone payment. Specify this field only if the `standalone` field is `true`. The currency of the standalone payment can be different from the payment currency defined in the customer account settings.
+
+            '
+          type: string
+        dataItems:
+          description: "The array of data for each Invoice if you want to collect payment for particular items through one payment method. The grouped items are sent as one data record.\n\nHere is another example for a data item:\n  ```\n  {\n    \"accountId\": \"60c81b5bc51649e8a7d1b48303194790\",\n    \"documentId\": \"2c9081a03c63c94c013c6894af5602dd\",\n    \"documentType\": \"Invoice\",\n    \"dataItems\": [\n      {\n          \"documentItemId\": \"8a92ab0e8ab14c53018ac746961c10d1\",\n          \"amount\": 40\n      },\n      {\n          \"taxItemId\": \"8a92ab0e8ab14c53018ac746961c10d2\",\n          \"amount\": 40\n      }\n  ],\n    \"amount\": 80,\n    \"paymentMethodId\": \"2c9081a03c6d7b51013c6d7e4ada0a1c\",\n    \"paymentGatewayId\": \"d2abe8342e1811ea80e774b9452e17ea\",\n    \"comment\": \"Payment Comments\",\n    \"customField1__c\": \"cf_value1\",\n    \"customField2__c\": \"cf_value2\"\n  },\n  ```\n"
+          properties:
+            amount:
+              description: 'The total amount to be collected for the specified invoice/debit memo item. The sum of the item amount should be equal to document amount.
+
+                '
+              type: number
+            documentItemId:
+              description: 'The ID of a billing document of the invoice item or debit memo item.
+
+                '
+              type: string
+            taxItemId:
+              description: 'The tax ID of the invoice item or debit memo item.
+
+                '
+              type: string
+          title: dataItems
+          type: object
+        documentId:
+          description: 'The ID of a billing document associated with the payment run. `documentId` must be valid and match with `documentType`.
+
+
+            You must either specify both `documentId` and `documentType`, or specify neither of them.
+
+
+            If neither of `documentType` and `documentId` is specified, all invoices/debit memos with open balance of the account are collected.
+
+            '
+          type: string
+        documentNumber:
+          description: 'The number of a billing document associated with the payment run. `documentNumber` must be valid and match with `documentType`.
+
+
+            You must either specify both `documentNumber` and `documentType`, or specify neither of them.
+
+
+            If neither of `documentType` and `documentNumber` is specified, all invoices/debit memos with open balance of the account are collected.
+
+            '
+          type: string
+        documentType:
+          description: 'The type of a billing document associated with the payment run. The value can be `Invoice` or `DebitMemo`, but `DebitMemo` is only supported if the Invoice Settlement feature is enabled.
+
+
+            You must either specify both `documentType` and `documentId`, or specify neither of them.
+
+
+            If neither of `documentType` and `documentId` is specified, all invoices/debit memos with open balance of the account are collected.
+
+            '
+          enum:
+          - Invoice
+          - DebitMemo
+          type: string
+        paymentGatewayId:
+          description: 'The ID of the payment gateway for collecting invoices/debit memos. The specified payment gateway must be valid and active. If it is not specified, the default payment gateway of the account is used. If no payment gateway is configured for the account, the default payment gateway of the tenant is used.
+
+
+            If `consolidatedPayment` is set to `true`, this field is used in processing a single payment for invoices/debit memos due on an account.
+
+            '
+          type: string
+        paymentMethodId:
+          description: 'The ID of the payment method for collecting invoices/debit memos. The specified payment method must be a valid non-system payment method. If it is not specified, the default payment method of the account is used regardless of the `autoPay` value of the account.
+
+
+            If `processPaymentWithClosedPM` is set to `false`, the payment method cannot be closed.
+
+
+            If the payment retry rules are enabled, the payment method must meet the rules.
+
+
+            If `consolidatedPayment` is set to `true`, this field is used in processing a single payment for invoices/debit memos due on an account.
+
+            '
+          type: string
+        standalone:
+          default: false
+          description: "Note: This field is only available if support for standalone payments is enabled.\n\nSpecify `true` to indicate that this is a standalone payment that will be created and processed in Zuora through Zuora gateway integration but will be settled outside of Zuora. When `standalone` is set to `true`:\n  - `accountId` or `accountNumber` is required.\n  - `amount` is required. \n  - The amount will not be summed up into the account balance and key metrics regardless of the payment currency.\n  - No settlement data will be created.\n  - Either the applied amount or the unapplied amount of the payment is zero.\n  - The standalone payment cannot be applied, unapplied, or transferred.\n"
+          type: boolean
+      type: object
+    - $ref: '#/definitions/PaymentObjectCustomFields'
+  GETPaymentRunDataTransactionElementResponse:
+    properties:
+      amount:
+        description: 'The total amount of the newly generated payment.
+
+
+          **Note:** This field is only available if `type` is `Payment`.
+
+          '
+        type: number
+      appliedAmount:
+        description: 'The amount allocated to this data record.
+
+          '
+        type: number
+      errorCode:
+        description: 'The error code of the response.
+
+
+          **Note:** This field is only available if `type` is `Payment`.
+
+          '
+        type: string
+      errorMessage:
+        description: 'The detailed information of the error response.
+
+
+          **Note:** This field is only available if `type` is `Payment`.
+
+          '
+        type: string
+      id:
+        description: 'The ID of the current transaction.
+
+          '
+        type: string
+      status:
+        description: 'The status of the newly generated payment.
+
+
+          **Note:** This field is only available if `type` is `Payment`.
+
+          '
+        enum:
+        - Processed
+        - Processing
+        - Error
+        type: string
+      type:
+        description: 'The type of the current transaction.
+
+          '
+        enum:
+        - Payment
+        - CreditMemo
+        - UnappliedPayment
+        - CreditBalanceAdjustment
+        type: string
+    title: payment run transaction
+    type: object
+  PaymentObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the Payment object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a Payment object.
+
+      '
+    title: paymentFieldsCustom
+    type: object
+  GETPaymentRunCollectionType:
+    properties:
+      nextPage:
+        description: 'The URL for requesting the next page of the response, if it exists; otherwise absent.
+
+          '
+        type: string
+      paymentRuns:
+        description: 'Container for payment runs.
+
+          '
+        items:
+          $ref: '#/definitions/GETPaymentRunType'
+        type: array
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  POSTPaymentRunRequest:
+    example:
+      accountId: 402890245f097f39015f0e9fcdd60558
+      autoApplyCreditMemo: 'true'
+      autoApplyUnappliedPayment: 'true'
+      consolidatedPayment: 'true'
+      processPaymentWithClosedPM: 'true'
+      targetDate: '2017-10-10'
+    properties:
+      accountId:
+        description: 'The ID of the customer account associated with the payment run.
+
+
+          This field conflicts with each of the `batch`, `billCycleDay`, `currency`, `paymentGatewayId`, and `billingRunId` fields. If there are such conflicts, an error occurs and an error message is returned.
+
+          '
+        format: uuid
+        type: string
+      applyCreditBalance:
+        description: 'If `applyCreditBalance` is true, the credit memo or unapplied payment on the order account will be automatically applied to the invoices generated by this order. The credit memo generated by this order will not be automatically applied to any invoices.
+
+          '
+        type: boolean
+      autoApplyCreditMemo:
+        description: '**Note:** This field is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+
+          Whether to automatically apply a posted credit memo to one or more receivables in the payment run.
+
+          '
+        type: boolean
+      autoApplyUnappliedPayment:
+        description: '**Note:** This field is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+
+          Whether to automatically apply unapplied payments to  one or more receivables in the payment run.
+
+          '
+        type: boolean
+      batch:
+        description: "The alias name given to a batch. The batch name is a string of 50 characters or less.\n\nThis field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned. \n\n**Note**: By default, you have 50 configurable account batches. To increase the limit to 200 batches, you must have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Performance_Booster_Elite\" target=\"_blank\">Performance Booster Elite</a> package.\n"
+        type: string
+      billCycleDay:
+        description: 'The billing cycle day (BCD), the day of the month when a bill run generates invoices for the account. The value must be equal to or less then 31, and 31 is mean the EOM.
+
+
+          This field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned.
+
+          '
+        type: string
+      billingRunId:
+        description: 'The ID of a bill run.
+
+
+          This field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned.
+
+          '
+        format: uuid
+        type: string
+      collectPayment:
+        description: "Whether to process electronic payments during the execution of payment runs. \n\nIf the Payment user permission \"Process Electronic Payment\" is disabled, this field will be ignored.\n"
+        type: boolean
+      consolidatedPayment:
+        description: "**Note:** The **Process Electronic Payment** permission also needs to be allowed for a Manage Payment Runs role to work. See [Payments Roles](https://knowledgecenter.zuora.com/CF_Users_and_Administrators/A_Administrator_Settings/User_Roles/e_Payments_Roles) for more information. \n\nWhether to process a single payment for all receivables that are due on an account.\n"
+        type: boolean
+      currency:
+        description: 'A currency defined in the web-based UI administrative settings.
+
+
+          This field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned.
+
+          '
+        type: string
+      data:
+        description: "\nThe array of data for specifying records of accounts and invoices/debit memos that will be collected and processed by a payment run.\n\nWhen you specify the data array, ensure that at least one record is passed in. If an empty array is specified, `accountId`, `batch`, `billCycleDay`, `currency`, `paymentGatewayId`, and `billingRunId` fields will be used to define the billing documents to be collected.\n\nA maximum of 50K records are allowed to be passed into the `data` array.\n\nHere is an example:\n```\n  {\n    \"accountId\": \"60c81b5bc51649e8a7d1b48303194790\",\n    \"documentId\": \"2c9081a03c63c94c013c6894af5602dd\",\n    \"documentType\": \"Invoice\",\n    \"amount\": 80,\n    \"paymentMethodId\": \"2c9081a03c6d7b51013c6d7e4ada0a1c\",\n    \"paymentGatewayId\": \"d2abe8342e1811ea80e774b9452e17ea\",\n    \"comment\": \"Payment Comments\",\n    \"customField1__c\": \"cf_value1\",\n    \"customField2__c\": \"cf_value2\"\n  }\n```\n\nHere is another example for a standalone payment:\n```\n  {\n    \"accountId\": \"account2\",\n    \"amount\": 100,\n    \"currency\": \"GBP\",\n    \"standalone\": true\n  }\n```\n"
+        items:
+          $ref: '#/definitions/POSTPaymentRunDataElementRequest'
+        title: payment run data
+        type: array
+      organizationLabels:
+        description: "The organizations that the run is created for. \n\nFor each item in the array, either the `organizationId` or the `organizationName` field is required.\n\nThis field is only required when you have already turned on Multi-Org feature.\n"
+        items:
+          properties:
+            organizationId:
+              description: 'The organization ID.
+
+                '
+              type: string
+            organizationName:
+              description: 'The organization name.
+
+                '
+              type: string
+          type: object
+        type: array
+      paymentGatewayId:
+        description: 'The ID of the gateway instance that processes the payment.
+
+
+          This field conflicts with the `accountId` field. If they are both specified in the request body, an error occurs and an error message is returned.
+
+          '
+        format: uuid
+        type: string
+      processPaymentWithClosedPM:
+        description: "**Note:** The **Process Electronic Payment** permission also needs to be allowed for a Manage Payment Runs role to work. See [Payments Roles](https://knowledgecenter.zuora.com/CF_Users_and_Administrators/A_Administrator_Settings/User_Roles/e_Payments_Roles) for more information. \n\nWhether to process payments even if the default payment method is closed.\n"
+        type: boolean
+      runDate:
+        description: "The date and time when the scheduled payment run is to be executed, in `yyyy-mm-dd hh:mm:ss` format. The backend will ignore mintues and seconds in the field value. For example, if you specify `2017-03-01 11:30:37` for this value, this payment run will be run at 2017-03-01 11:00:00.\n\nYou must specify either the `runDate` field or the `targetDate` field in the request body. If you specify the `runDate` field, the scheduced payment run is to be executed on the run date. If you specify the `targetDate` field, the payment run is executed immediately after it is created. \n"
+        format: date-time
+        type: string
+      targetDate:
+        description: "The target date used to determine which receivables to be paid in the payment run. The payments are collected for all receivables with the due date no later than the target date.\n\nYou must specify either the `runDate` field or the `targetDate` field in the request body. If you specify the `runDate` field, the scheduced payment run is to be executed on the run date. If you specify the `targetDate` field, the payment run is executed immediately after it is created. \n"
+        format: date
+        type: string
+    type: object
+  GETPaymentRunType:
+    properties:
+      accountId:
+        description: 'The ID of the customer account associated with the payment run.
+
+          '
+        type: string
+      applyCreditBalance:
+        description: '**Note:** This field is only available if you have the Credit Balance feature enabled and the Invoice Settlement feature disabled.
+
+
+          Whether to apply credit balances in the payment run. This field is only available when you have Invoice Settlement feature disabled.
+
+          '
+        type: boolean
+      autoApplyCreditMemo:
+        description: '**Note:** This field is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+
+          Whether to automatically apply a posted credit memo to one or more receivables in the payment run.
+
+          '
+        type: boolean
+      autoApplyUnappliedPayment:
+        description: '**Note:** This field is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+
+          Whether to automatically apply unapplied payments to  one or more receivables in the payment run.
+
+          '
+        type: boolean
+      batch:
+        description: 'The alias name given to a batch.
+
+          '
+        example: Batch1
+        type: string
+      billCycleDay:
+        description: "The billing cycle day (BCD), the day of the month when a bill run generates invoices for the account. \n"
+        example: 1
+        type: string
+      billingRunId:
+        description: 'The ID of the bill run.
+
+          '
+        format: uuid
+        type: string
+      collectPayment:
+        description: "Whether to process electronic payments during the execution of payment runs. \n"
+        type: boolean
+      completedOn:
+        description: 'The date and time when the payment run is completed, in `yyyy-mm-dd hh:mm:ss` format. For example, 2017-03-01 11:39:58.
+
+          '
+        format: date-time
+        type: string
+      consolidatedPayment:
+        description: "**Note:** The **Process Electronic Payment** permission also needs to be allowed for a Manage Payment Runs role to work. See [Payments Roles](https://knowledgecenter.zuora.com/CF_Users_and_Administrators/A_Administrator_Settings/User_Roles/e_Payments_Roles) for more information. \n\nWhether to process a single payment for all receivables that are due on an account.\n"
+        type: boolean
+      createdById:
+        description: 'The ID of the Zuora user who created the payment run.
+
+          '
+        type: string
+      createdDate:
+        description: 'The date and time when the payment run was created, in `yyyy-mm-dd hh:mm:ss` format. For example, 2017-03-01 15:31:10.
+
+          '
+        format: date-time
+        type: string
+      currency:
+        description: 'A currency defined in the web-based UI administrative settings.
+
+          '
+        example: USD
+        type: string
+      executedOn:
+        description: 'The date and time when the payment run is executed, in `yyyy-mm-dd hh:mm:ss` format. For example, 2017-03-01 11:30:37.
+
+          '
+        format: date-time
+        type: string
+      id:
+        description: 'The ID of the payment run.
+
+          '
+        type: string
+      number:
+        description: 'The identification number of the payment run.
+
+          '
+        type: string
+      organizationLabels:
+        description: "The organization(s) that the object belongs to. \n\nNote: This field is available only when the Multi-Org feature is enabled.\n"
+        items:
+          properties:
+            organizationId:
+              description: 'The organization ID.
+
+                '
+              type: string
+            organizationName:
+              description: 'The organization name.
+
+                '
+              type: string
+          type: object
+        type: array
+      paymentGatewayId:
+        description: 'The ID of the gateway instance that processes the payment.
+
+          '
+        format: uuid
+        type: string
+      processPaymentWithClosedPM:
+        description: "**Note:** The **Process Electronic Payment** permission also needs to be allowed for a Manage Payment Runs role to work. See [Payments Roles](https://knowledgecenter.zuora.com/CF_Users_and_Administrators/A_Administrator_Settings/User_Roles/e_Payments_Roles) for more information. \n\nWhether to process payments even if the default payment method is closed.\n"
+        type: boolean
+      runDate:
+        description: 'The date and time when the scheduled payment run is to be executed for collecting payments.
+
+          '
+        format: date-time
+        type: string
+      status:
+        description: 'The status of the created payment run.
+
+          '
+        enum:
+        - Pending
+        - Processing
+        - Completed
+        - Error
+        - Canceled
+        type: string
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+      targetDate:
+        description: "The target date used to determine which receivables to be collected in the payment run. \n"
+        format: date
+        type: string
+      updatedById:
+        description: 'The ID of the Zuora user who last updated the payment run.
+
+          '
+        type: string
+      updatedDate:
+        description: 'The date and time when the payment run was last updated, in `yyyy-mm-dd hh:mm:ss` format. For example, 2017-03-02 15:36:10.
+
+          '
+        format: date-time
+        type: string
+    title: paymentRuns
+    type: object
+parameters:
+  GLOBAL_HEADER_Accept_Encoding:
+    name: Accept-Encoding
+    in: header
+    required: false
+    type: string
+    description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+  GLOBAL_HEADER_Zuora_Org_Ids:
+    name: Zuora-Org-Ids
+    in: header
+    required: false
+    type: string
+    description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+  GLOBAL_HEADER_Idempotency_Key:
+    name: Idempotency-Key
+    in: header
+    required: false
+    type: string
+    maxLength: 255
+    description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+  GLOBAL_HEADER_Content_Encoding:
+    name: Content-Encoding
+    in: header
+    required: false
+    type: string
+    description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+      '
+  GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+    name: Zuora-Entity-Ids
+    in: header
+    required: false
+    type: string
+    description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+      '
+  GLOBAL_HEADER_Zuora_Track_Id:
+    name: Zuora-Track-Id
+    in: header
+    required: false
+    type: string
+    maxLength: 64
+    description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+      The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+      '
+  GLOBAL_REQUEST_pageSize:
+    name: pageSize
+    in: query
+    required: false
+    type: integer
+    maximum: 40
+    default: 20
+    description: 'The number of records returned per page in the response.
+
+      '
+  GLOBAL_HEADER_Authorization_OAuth_optional:
+    name: Authorization
+    in: header
+    required: false
+    type: string
+    description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+      '
+  GLOBAL_REQUEST_page:
+    name: page
+    in: query
+    required: false
+    type: integer
+    minimum: 1
+    default: 1
+    description: 'The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.
+
+      '
+x-tagGroups:
+- name: Authentication
+  tags:
+  - OAuth
+- name: Products
+  tags:
+  - Products
+  - Catalog
+  - Catalog Groups
+  - Offers
+  - Price Book Items
+  - Product Rate Plans
+  - Product Rate Plan Definitions
+  - Product Rate Plan Charges
+  - Product Charge Definitions
+  - Product Rate Plan Charge Tiers
+  - Zuora Revenue Integration
+- name: Customer Accounts
+  tags:
+  - Accounts
+  - Contacts
+  - Contact Snapshots
+- name: Orders and Subscriptions
+  tags:
+  - Sign Up
+  - Orders
+  - Order Actions
+  - Order Line Items
+  - Fulfillments
+  - Ramps
+  - Subscriptions
+  - Rate Plans
+- name: Advanced Consumption Billing
+  tags:
+  - Prepaid with Drawdown
+- name: Usage
+  tags:
+  - Usage
+- name: Billing Documents
+  tags:
+  - Delivery Adjustments
+  - Billing Documents
+  - Invoices
+  - Credit Memos
+  - Debit Memos
+  - E-Invoicing
+  - Invoice Schedules
+  - Taxation Items
+  - Sequence Sets
+  - Operations
+- name: Bill Runs
+  tags:
+  - Bill Run
+  - Billing Preview Run
+- name: Payment Methods
+  tags:
+  - Payment Methods
+  - Custom Payment Method Types
+  - Payment Method Updater
+  - Payment Method Snapshots
+  - Payment Method Transaction Logs
+  - Hosted Pages
+  - RSA Signatures
+- name: Payments
+  tags:
+  - Payment Authorization
+  - Payment Gateways
+  - Payment Gateway Reconciliation
+  - Payments
+  - Payment Transaction Logs
+  - Payment Runs
+  - Payment Schedules
+  - Refunds
+- name: Finance
+  tags:
+  - Accounting Codes
+  - Accounting Periods
+  - Summary Journal Entries
+  - Journal Runs
+  - Mass Updater
+- name: Events and Notifications
+  tags:
+  - Notifications
+  - Custom Event Triggers
+  - Custom Scheduled Events
+- name: Custom Objects
+  tags:
+  - Custom Object Definitions
+  - Custom Object Records
+  - Custom Object Jobs
+- name: System Health
+  tags:
+  - API Health
+  - Bill Run Health
+  - Electronic Payments Health
+- name: Workflow
+  tags:
+  - Workflows
+- name: Data Query
+  tags:
+  - Data Queries
+- name: AQuA
+  tags:
+  - Aggregate Queries
+- name: Deployment Manager
+  tags:
+  - Configuration Templates
+- name: Multiple Organizations
+  tags:
+  - Data Labeling
+- name: Order to Revenue
+  tags:
+  - Regenerate
+- name: General-Purpose Operations
+  tags:
+  - Actions
+  - Settings
+  - Files
+  - Imports
+  - Custom Exchange Rates
+  - Attachments
+  - Describe

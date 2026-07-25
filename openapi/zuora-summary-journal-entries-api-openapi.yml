@@ -1,0 +1,1275 @@
+swagger: '2.0'
+info:
+  version: '2023-12-15'
+  title: API Reference Accounting Codes Summary Journal Entries API
+  description: "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n"
+  contact:
+    email: docs@zuora.com
+host: rest.zuora.com
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Summary Journal Entries
+  description: "A summary journal entry is a summary of Zuora transaction amounts organized by accounting code and general ledger segments. A segment adds more reporting granularity through business dimensions, such as country or product. \n\nFor more information, see <a href=\"https://knowledgecenter.zuora.com/Billing/Finance/F_Summary_Journal_Entries/A_SJE_Introduction\" target=\"_blank\">Summary Journal Entries Introduction</a>\n"
+paths:
+  /v1/journal-entries:
+    post:
+      summary: Create a summary journal entry
+      operationId: POST_SummaryJournalEntry
+      description: "This REST API reference describes how to manually create a summary journal entry. Request and response field descriptions and sample code are provided.\n### Requirements\n1.The sum of debits must equal the sum of credits in the summary journal entry.\n\n2.The following applies only if you use foreign currency conversion:\n  * If you have configured Aggregate transactions with different currencies during a Journal Run to \"Yes\", the value of the **currency** field must be the same as your tenant's home currency. That is, you must create journal entries using your home currency.\n  * All journal entries in an accounting period must either all be aggregated or all be unaggregated. You cannot have a mix of aggregated and unaggregated journal entries in the same accounting period.\n"
+      tags:
+      - Summary Journal Entries
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: Request
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/POSTJournalEntryType'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+              journalEntryNumber: JE-00000001
+          description: ''
+          schema:
+            $ref: '#/definitions/POSTJournalEntryResponseType'
+  /v1/journal-entries/journal-runs/{jr-number}:
+    get:
+      summary: List all summary journal entries in a journal run
+      operationId: GET_AllSummaryJournalEntries
+      description: '
+
+        This REST API reference describes how to retrieve information about all summary journal entries in a journal run.
+
+        '
+      tags:
+      - Summary Journal Entries
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_REQUEST_page'
+      - $ref: '#/parameters/GLOBAL_REQUEST_pageSize_finance_revenue'
+      - name: jr-number
+        in: path
+        description: Journal run number.
+        required: true
+        type: string
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+              journalEntries:
+              - number: JE-00000006
+                status: Created
+                journalEntryDate: '2016-12-31'
+                currency: USD
+                homeCurrency: USD
+                aggregateCurrency: true
+                transactionType: Invoice Item
+                accountingPeriodName: Dec'16
+                timePeriodStart: '2016-12-01'
+                timePeriodEnd: '2016-12-31'
+                transferredToAccounting: 'No'
+                notes: note
+                segments:
+                - segmentName: Seg1
+                  segmentValue: seg value
+                journalEntryItems:
+                - accountingCodeType: AccountsReceivable
+                  accountingCodeName: Accounts Receivable
+                  glAccountName: Accounts Receivable
+                  glAccountNumber: 10-001-000-1234
+                  type: Debit
+                  amount: 100.0
+                  homeCurrencyAmount: 100.0
+                - accountingCodeType: SalesRevenue
+                  accountingCodeName: Sales Revenue
+                  glAccountName: Sales Revenue
+                  glAccountNumber: 10-001-000-1000
+                  type: Credit
+                  amount: 100.0
+                  homeCurrencyAmount: 100.0
+          description: ''
+          schema:
+            $ref: '#/definitions/GETJournalEntriesInJournalRunType'
+  /v1/journal-entries/{je-number}:
+    get:
+      summary: Retrieve a summary journal entry
+      operationId: GET_SummaryJournalEntry
+      description: 'This REST API reference describes how to get information about a summary journal entry by its journal entry number.
+
+        '
+      tags:
+      - Summary Journal Entries
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: je-number
+        in: path
+        description: ''
+        required: true
+        type: string
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              number: JE-00000001
+              status: Created
+              journalEntryDate: '2016-01-31'
+              currency: USD
+              homeCurrency: USD
+              aggregateCurrency: true
+              transactionType: Revenue Event Item
+              accountingPeriodName: Jan'16
+              timePeriodStart: '2016-01-01'
+              timePeriodEnd: '2016-01-31'
+              transferredToAccounting: null
+              transferredBy: null
+              transferDateTime: null
+              notes: null
+              segments:
+              - segmentName: Customer Code
+                segmentValue: A00000001
+              - segmentName: Charge Type
+                segmentValue: OneTime
+              journalEntryItems:
+              - accountingCodeType: DeferredRevenue
+                accountingCodeName: Deferred Revenue
+                glAccountName: null
+                glAccountNumber: null
+                type: Debit
+                homeCurrencyAmount: 424.08
+                amount: 424.08
+              - accountingCodeType: SalesRevenue
+                accountingCodeName: Professional Services Revenue
+                glAccountName: null
+                glAccountNumber: null
+                type: Credit
+                homeCurrencyAmount: 424.08
+                amount: 424.08
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/GETJournalEntryDetailType'
+    delete:
+      summary: Delete a summary journal entry
+      operationId: DELETE_SummaryJournalEntry
+      description: 'This reference describes how to delete a summary journal entry using the REST API.
+
+
+        You must have the "Delete Cancelled Journal Entry" user permission enabled to delete summary journal entries.
+
+
+        A summary journal entry must be canceled before it can be deleted.
+
+        '
+      tags:
+      - Summary Journal Entries
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: je-number
+        in: path
+        required: true
+        type: string
+        description: Journal entry number in the format JE-00000001.
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/CommonResponseType'
+  /v1/journal-entries/{je-number}/cancel:
+    put:
+      summary: Cancel a summary journal entry
+      operationId: PUT_SummaryJournalEntry
+      description: "\nThis reference describes how to cancel a summary journal entry using the REST API.\n    \nYou must have the \"Cancel Journal Entry\" user permission enabled to cancel summary journal entries.\n    \nA summary journal entry cannot be canceled if its Transferred to Accounting status is \"Yes\" or \"Processing\".\n"
+      tags:
+      - Summary Journal Entries
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: je-number
+        in: path
+        description: Journal entry number in the format JE-00000001.
+        required: true
+        type: string
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/CommonResponseType'
+  /v1/journal-entries/{je-number}/basic-information:
+    put:
+      summary: Update a summary journal entry
+      operationId: PUT_BasicSummaryJournalEntry
+      description: '
+
+        This REST API reference describes how to update the basic information of a summary journal entry. Request and response field descriptions and sample code are provided.
+
+        '
+      tags:
+      - Summary Journal Entries
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - name: je-number
+        in: path
+        description: Journal entry number in the format JE-00000001.
+        required: true
+        type: string
+      - name: Request
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/PUT_BasicSummaryJournalEntryType'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/CommonResponseType'
+definitions:
+  CommonResponseType:
+    properties:
+      processId:
+        description: 'The Id of the process that handle the operation.
+
+          '
+        type: string
+      reasons:
+        items:
+          properties:
+            code:
+              description: 'The error code of response.
+
+                '
+              type: string
+            message:
+              description: 'The detail information of the error response
+
+                '
+              type: string
+          type: object
+        type: array
+      success:
+        description: 'Indicates whether the call succeeded.
+
+          '
+        type: boolean
+    type: object
+  GETJournalEntriesInJournalRunType:
+    properties:
+      journalEntries:
+        description: 'Key name that represents the list of journal entries.
+
+          '
+        items:
+          $ref: '#/definitions/GETJournalEntryDetailTypeWithoutSuccess'
+        type: array
+      nextPage:
+        description: 'URL to retrieve the next page of the response if it exists; otherwise absent.
+
+          '
+        format: URL
+        type: string
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  JournalEntryItemObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the Journal Entry Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a Journal Entry Item object.
+
+      '
+    title: journalEntryItemFieldsCustom
+    type: object
+  PUTJournalEntryItemType:
+    allOf:
+    - properties:
+        accountingCodeName:
+          description: 'Name of the accounting code.
+
+
+            If the Journal Entry Item has a blank accounting code, enter the empty string.
+
+            '
+          type: string
+        accountingCodeType:
+          description: "Accounting code type.\n\nNote that `On-Account Receivable` is only available if you enable the Invoice Settlement feature. \n"
+          enum:
+          - AccountsReceivable
+          - On-Account Receivable
+          - Cash
+          - OtherAssets
+          - CustomerCashOnAccount
+          - DeferredRevenue
+          - SalesTaxPayable
+          - OtherLiabilities
+          - SalesRevenue
+          - SalesDiscounts
+          - OtherRevenue
+          - OtherEquity
+          - BadDebt
+          - OtherExpenses
+          type: string
+        type:
+          description: 'Type of journal entry item. '
+          enum:
+          - Credit
+          - Debit
+          type: string
+      required:
+      - accountingCodeName
+      - type
+      type: object
+    - $ref: '#/definitions/JournalEntryItemObjectCustomFields'
+    title: journalEntryItems
+  GETJournalEntrySegmentType:
+    properties:
+      segmentName:
+        description: 'Name of segment.
+
+          '
+        type: string
+      segmentValue:
+        description: 'Value of segment in this summary journal entry.
+
+          '
+        type: string
+    title: segments
+    type: object
+  GETJournalEntryItemType:
+    allOf:
+    - properties:
+        accountingCodeName:
+          description: 'Name of the accounting code.
+
+            '
+          type: string
+        accountingCodeType:
+          description: "Accounting code type.\n\nNote that `On-Account Receivable` is only available if you enable the Invoice Settlement feature. \n"
+          enum:
+          - AccountsReceivable
+          - On-Account Receivable
+          - Cash
+          - OtherAssets
+          - CustomerCashOnAccount
+          - DeferredRevenue
+          - SalesTaxPayable
+          - OtherLiabilities
+          - SalesRevenue
+          - SalesDiscounts
+          - OtherRevenue
+          - OtherEquity
+          - BadDebt
+          - OtherExpenses
+          type: string
+        amount:
+          description: 'Journal entry item amount in transaction currency.
+
+            '
+          format: decimal
+          type: string
+        glAccountName:
+          description: 'The account number in the general ledger (GL) that corresponds to the accounting code.
+
+            '
+          type: string
+        glAccountNumber:
+          description: 'The account name in the general ledger (GL) that corresponds to the accounting code.
+
+            '
+          type: string
+        homeCurrencyAmount:
+          description: 'Journal entry item amount in home currency.
+
+            '
+          format: decimal
+          type: string
+        type:
+          description: 'Type of journal entry item. '
+          enum:
+          - Credit
+          - Debit
+          type: string
+      type: object
+    - $ref: '#/definitions/JournalEntryItemObjectCustomFields'
+    title: journalEntryItems
+  GETJournalEntryDetailTypeWithoutSuccess:
+    allOf:
+    - properties:
+        accountingPeriodName:
+          description: 'Name of the accounting period that the journal entry belongs to.
+
+            '
+          type: string
+        aggregateCurrency:
+          description: 'Returns true if the journal entry is aggregating currencies. That is, if the journal entry was created when the `Aggregate transactions with different currencies during a JournalRun` setting was configured to "Yes". Otherwise, returns `false`.
+
+            '
+          type: boolean
+        currency:
+          description: 'Currency used.
+
+            '
+          type: string
+        homeCurrency:
+          description: 'Home currency used.
+
+            '
+          type: string
+        journalEntryDate:
+          description: 'Date of the journal entry.
+
+            '
+          format: date
+          type: string
+        journalEntryItems:
+          description: 'Key name that represents the list of journal entry items.
+
+            '
+          items:
+            $ref: '#/definitions/GETJournalEntryItemType'
+          type: array
+        notes:
+          description: 'Additional information about this record.
+
+            Character limit: 2,000
+
+            '
+          type: string
+        number:
+          description: 'Journal entry number in the format JE-00000001.
+
+            '
+          type: string
+        organizationLabel:
+          description: 'The organization that this object belongs to.
+
+
+            Note: This field is available only when the Multi-Org feature is enabled.
+
+            '
+          type: string
+        segments:
+          description: 'List of segments that apply to the summary journal entry.
+
+            '
+          items:
+            $ref: '#/definitions/GETJournalEntrySegmentType'
+          type: array
+        status:
+          description: 'Status of journal entry. '
+          enum:
+          - Created
+          - Cancelled
+          type: string
+        timePeriodEnd:
+          description: 'End date of time period included in the journal entry.
+
+            '
+          format: date
+          type: string
+        timePeriodStart:
+          description: 'Start date of time period included in the journal entry.
+
+            '
+          format: date
+          type: string
+        transactionType:
+          description: 'Transaction type of the transactions included in the summary journal entry.
+
+            '
+          type: string
+        transferDateTime:
+          description: 'Date and time that transferredToAccounting was changed to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
+
+            '
+          format: date-time
+          type: string
+        transferredBy:
+          description: 'User ID of the person who changed transferredToAccounting to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
+
+            '
+          type: string
+        transferredToAccounting:
+          description: 'Status shows whether the journal entry has been transferred to an accounting system. '
+          enum:
+          - 'No'
+          - Processing
+          - 'Yes'
+          - Error
+          - Ignore
+          type: string
+      type: object
+    - $ref: '#/definitions/JournalEntryObjectCustomFields'
+    title: journalEntries
+  POSTJournalEntryResponseType:
+    properties:
+      journalEntryNumber:
+        description: 'Journal entry number in the format JE-00000001.
+
+          '
+        type: string
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  PUT_BasicSummaryJournalEntryType:
+    allOf:
+    - properties:
+        journalEntryItems:
+          description: 'Key name that represents the list of journal entry items.
+
+            '
+          items:
+            $ref: '#/definitions/PUTJournalEntryItemType'
+          type: array
+        notes:
+          description: 'Additional information about this record.
+
+
+            ***Character limit:*** 2,000
+
+            '
+          type: string
+        transferredToAccounting:
+          description: "Status shows whether the journal entry has been transferred to an accounting system. \n\nThis field cannot be changed after the summary journal entry has been canceled.\n\n**Note:** The Zuora Finance ***Override Transferred to Accounting*** permission is required to change `transferredToAccounting` from `Yes` to any other value.\n"
+          enum:
+          - 'No'
+          - Processing
+          - 'Yes'
+          - Error
+          - Ignore
+          type: string
+      type: object
+    - $ref: '#/definitions/JournalEntryObjectCustomFields'
+    example:
+      journalEntryItems:
+      - accountingCodeName: Accounts Receivable
+        type: Credit
+      - accountingCodeName: ''
+        type: Debit
+      notes: Transfer to accounting system
+      transferredToAccounting: 'Yes'
+  GETJournalEntryDetailType:
+    allOf:
+    - properties:
+        accountingPeriodName:
+          description: 'Name of the accounting period that the journal entry belongs to.
+
+            '
+          type: string
+        aggregateCurrency:
+          description: 'Returns true if the journal entry is aggregating currencies. That is, if the journal entry was created when the `Aggregate transactions with different currencies during a Journal Run` setting was configured to `Yes`. Otherwise, returns `false`.
+
+            '
+          type: boolean
+        currency:
+          description: 'Currency used.
+
+            '
+          type: string
+        homeCurrency:
+          description: 'Home currency used.
+
+            '
+          type: string
+        journalEntryDate:
+          description: 'Date of the journal entry.
+
+            '
+          format: date
+          type: string
+        journalEntryItems:
+          description: 'Key name that represents the list of journal entry items.
+
+            '
+          items:
+            $ref: '#/definitions/GETJournalEntryItemType'
+          type: array
+        notes:
+          description: '
+
+            Additional information about this record.
+
+            Character limit: 2,000
+
+            '
+          type: string
+        number:
+          description: 'Journal entry number in the format JE-00000001.
+
+            '
+          type: string
+        organizationLabel:
+          description: 'The organization that this object belongs to.
+
+
+            Note: This field is available only when the Multi-Org feature is enabled.
+
+            '
+          type: string
+        segments:
+          description: 'List of segments that apply to the summary journal entry.
+
+            '
+          items:
+            $ref: '#/definitions/GETJournalEntrySegmentType'
+          type: array
+        status:
+          description: 'Status of journal entry.
+
+            '
+          enum:
+          - Created
+          - Cancelled
+          type: string
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+        timePeriodEnd:
+          description: 'End date of time period included in the journal entry.
+
+            '
+          format: date
+          type: string
+        timePeriodStart:
+          description: 'Start date of time period included in the journal entry.
+
+            '
+          format: date
+          type: string
+        transactionType:
+          description: 'Transaction type of the transactions included in the summary journal entry.
+
+            '
+          type: string
+        transferDateTime:
+          description: 'Date and time that transferredToAccounting was changed to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
+
+            '
+          format: date-time
+          type: string
+        transferredBy:
+          description: 'User ID of the person who changed transferredToAccounting to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
+
+            '
+          type: string
+        transferredToAccounting:
+          description: 'Status shows whether the journal entry has been transferred to an accounting system. '
+          enum:
+          - 'No'
+          - Processing
+          - 'Yes'
+          - Error
+          - Ignore
+          type: string
+      type: object
+    - $ref: '#/definitions/JournalEntryObjectCustomFields'
+  POSTJournalEntrySegmentType:
+    properties:
+      segmentName:
+        description: 'Name of segment. You must use the segment name that has already been specified in the default segment rule. In addition, segments need to be passed in the order where they were defined in the segmentation rule. If multiple segments are configured in the default rule, you need to specify all of them in order. '
+        type: string
+      segmentValue:
+        description: 'Value of segment in this summary journal entry.
+
+          '
+        type: string
+    required:
+    - segmentName
+    - segmentValue
+    title: segments
+    type: object
+  POSTJournalEntryType:
+    allOf:
+    - properties:
+        accountingPeriodName:
+          description: 'Name of the accounting period. The open-ended accounting period is named `Open-Ended`.
+
+            '
+          type: string
+        currency:
+          description: 'The type of currency used. Currency must be active.
+
+            '
+          type: string
+        journalEntryDate:
+          description: 'Date of the journal entry.
+
+            '
+          format: date
+          type: string
+        journalEntryItems:
+          description: 'Key name that represents the list of journal entry items.
+
+            '
+          items:
+            $ref: '#/definitions/POSTJournalEntryItemType'
+          type: array
+        notes:
+          description: 'The number associated with the revenue event.
+
+
+            Character limit: 2,000
+
+            '
+          type: string
+        organizationLabel:
+          description: "Name of the organization that the journal entry belongs to.  \n\nThis field is only required when you have already turned on Multi-Org feature.    \n"
+          type: string
+        segments:
+          description: 'List of segments that apply to the summary journal entry.
+
+            '
+          items:
+            $ref: '#/definitions/POSTJournalEntrySegmentType'
+          type: array
+        transferredToAccounting:
+          description: 'Status shows whether the journal entry has been transferred to an accounting system.
+
+            '
+          enum:
+          - 'No'
+          - Processing
+          - 'Yes'
+          - Error
+          - Ignore
+          type: string
+      required:
+      - journalEntryDate
+      - accountingPeriodName
+      - currency
+      - journalEntryItems
+      type: object
+    - $ref: '#/definitions/JournalEntryObjectCustomFields'
+    example:
+      accountingPeriodName: Nov-2014
+      currency: USD
+      journalEntryDate: '2014-09-09'
+      journalEntryItems:
+      - accountingCodeName: Accounts Receivable
+        accountingCodeType: Deferred Revenue
+        amount: '400.9'
+        homeCurrencyAmount: '801.8'
+        type: Credit
+      - accountingCodeName: Subscription Revenue
+        accountingCodeType: Sales Revenue
+        amount: '400.9'
+        homeCurrencyAmount: '801.8'
+        type: Debit
+      notes: my account
+      segments:
+      - segmentName: billToCountry
+        segmentValue: United States
+      - segmentName: billToState
+        segmentValue: California
+      transferredToAccounting: 'No'
+  POSTJournalEntryItemType:
+    allOf:
+    - properties:
+        accountingCodeName:
+          description: 'Name of the accounting code.
+
+            '
+          type: string
+        accountingCodeType:
+          description: "Accounting code type. This field is required if `accountingCodeName` is not unique.\n\nNote that `On-Account Receivable` is only available if you enable the Invoice Settlement feature. \n"
+          enum:
+          - AccountsReceivable
+          - On-Account Receivable
+          - Cash
+          - OtherAssets
+          - CustomerCashOnAccount
+          - DeferredRevenue
+          - SalesTaxPayable
+          - OtherLiabilities
+          - SalesRevenue
+          - SalesDiscounts
+          - OtherRevenue
+          - OtherEquity
+          - BadDebt
+          - OtherExpenses
+          type: string
+        amount:
+          description: 'Journal entry item amount in transaction currency.
+
+            '
+          format: decimal
+          type: string
+        homeCurrencyAmount:
+          description: 'Journal entry item amount in home currency.
+
+
+            This field is required if you have set your home currency for foreign currency conversion. Otherwise, do not pass this field.
+
+            '
+          format: decimal
+          type: string
+        type:
+          description: 'Type of journal entry item. '
+          enum:
+          - Credit
+          - Debit
+          type: string
+      required:
+      - accountingCodeName
+      - type
+      - amount
+      type: object
+    - $ref: '#/definitions/JournalEntryItemObjectCustomFields'
+    title: journalEntryItems
+  JournalEntryObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the Journal Entry object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a Journal Entry object.
+
+      '
+    title: journalEntryFieldsCustom
+    type: object
+parameters:
+  GLOBAL_HEADER_Accept_Encoding:
+    name: Accept-Encoding
+    in: header
+    required: false
+    type: string
+    description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+  GLOBAL_HEADER_Zuora_Org_Ids:
+    name: Zuora-Org-Ids
+    in: header
+    required: false
+    type: string
+    description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+  GLOBAL_HEADER_Idempotency_Key:
+    name: Idempotency-Key
+    in: header
+    required: false
+    type: string
+    maxLength: 255
+    description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+  GLOBAL_HEADER_Content_Encoding:
+    name: Content-Encoding
+    in: header
+    required: false
+    type: string
+    description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+      '
+  GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+    name: Zuora-Entity-Ids
+    in: header
+    required: false
+    type: string
+    description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+      '
+  GLOBAL_HEADER_Zuora_Track_Id:
+    name: Zuora-Track-Id
+    in: header
+    required: false
+    type: string
+    maxLength: 64
+    description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+      The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+      '
+  GLOBAL_HEADER_Authorization_OAuth_optional:
+    name: Authorization
+    in: header
+    required: false
+    type: string
+    description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+      '
+  GLOBAL_REQUEST_pageSize_finance_revenue:
+    name: pageSize
+    in: query
+    required: false
+    type: integer
+    maximum: 300
+    default: 8
+    description: 'The number of records returned per page in the response.
+
+      '
+  GLOBAL_REQUEST_page:
+    name: page
+    in: query
+    required: false
+    type: integer
+    minimum: 1
+    default: 1
+    description: 'The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.
+
+      '
+x-tagGroups:
+- name: Authentication
+  tags:
+  - OAuth
+- name: Products
+  tags:
+  - Products
+  - Catalog
+  - Catalog Groups
+  - Offers
+  - Price Book Items
+  - Product Rate Plans
+  - Product Rate Plan Definitions
+  - Product Rate Plan Charges
+  - Product Charge Definitions
+  - Product Rate Plan Charge Tiers
+  - Zuora Revenue Integration
+- name: Customer Accounts
+  tags:
+  - Accounts
+  - Contacts
+  - Contact Snapshots
+- name: Orders and Subscriptions
+  tags:
+  - Sign Up
+  - Orders
+  - Order Actions
+  - Order Line Items
+  - Fulfillments
+  - Ramps
+  - Subscriptions
+  - Rate Plans
+- name: Advanced Consumption Billing
+  tags:
+  - Prepaid with Drawdown
+- name: Usage
+  tags:
+  - Usage
+- name: Billing Documents
+  tags:
+  - Delivery Adjustments
+  - Billing Documents
+  - Invoices
+  - Credit Memos
+  - Debit Memos
+  - E-Invoicing
+  - Invoice Schedules
+  - Taxation Items
+  - Sequence Sets
+  - Operations
+- name: Bill Runs
+  tags:
+  - Bill Run
+  - Billing Preview Run
+- name: Payment Methods
+  tags:
+  - Payment Methods
+  - Custom Payment Method Types
+  - Payment Method Updater
+  - Payment Method Snapshots
+  - Payment Method Transaction Logs
+  - Hosted Pages
+  - RSA Signatures
+- name: Payments
+  tags:
+  - Payment Authorization
+  - Payment Gateways
+  - Payment Gateway Reconciliation
+  - Payments
+  - Payment Transaction Logs
+  - Payment Runs
+  - Payment Schedules
+  - Refunds
+- name: Finance
+  tags:
+  - Accounting Codes
+  - Accounting Periods
+  - Summary Journal Entries
+  - Journal Runs
+  - Mass Updater
+- name: Events and Notifications
+  tags:
+  - Notifications
+  - Custom Event Triggers
+  - Custom Scheduled Events
+- name: Custom Objects
+  tags:
+  - Custom Object Definitions
+  - Custom Object Records
+  - Custom Object Jobs
+- name: System Health
+  tags:
+  - API Health
+  - Bill Run Health
+  - Electronic Payments Health
+- name: Workflow
+  tags:
+  - Workflows
+- name: Data Query
+  tags:
+  - Data Queries
+- name: AQuA
+  tags:
+  - Aggregate Queries
+- name: Deployment Manager
+  tags:
+  - Configuration Templates
+- name: Multiple Organizations
+  tags:
+  - Data Labeling
+- name: Order to Revenue
+  tags:
+  - Regenerate
+- name: General-Purpose Operations
+  tags:
+  - Actions
+  - Settings
+  - Files
+  - Imports
+  - Custom Exchange Rates
+  - Attachments
+  - Describe

@@ -1,0 +1,2556 @@
+swagger: '2.0'
+info:
+  version: '2023-12-15'
+  title: API Reference Accounting Codes Product Rate Plans API
+  description: "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n"
+  contact:
+    email: docs@zuora.com
+host: rest.zuora.com
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Product Rate Plans
+  description: 'A product rate plan is the part of a product that your customers subscribe to. Each product can have multiple product rate plans, and each product rate plan can have multiple product rate plan charges, which are fees for products and their product rate plans.
+
+    '
+paths:
+  /v1/products/{product-key}/product-rate-plans:
+    get:
+      summary: List all product rate plans of a product
+      operationId: GET_ProductRatePlans
+      description: 'Retrieves information about all product rate plans of a specific product.
+
+        '
+      tags:
+      - Product Rate Plans
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_REQUEST_page'
+      - $ref: '#/parameters/GLOBAL_REQUEST_pageSize'
+      - name: product-key
+        in: path
+        type: string
+        description: 'The unique ID or SKU of a product. For example, 2c92c0f96487e16a016487f663c71a61 or SKU-00000987.
+
+          '
+        required: true
+      - name: show-charge-definitions
+        in: query
+        description: 'Specifies whether to include the product charge definitions of this rate plan in the response.
+
+
+          **Note**: This parameter is applicable only if the Attribute Based Pricing feature is enabled. To access this feature, submit a request at <a href="https://support.zuora.com" target="_blank">Zuora Global Support</a>.
+
+          '
+        required: false
+        type: boolean
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          examples:
+            application/json:
+              productRatePlans:
+              - id: 40289f466464127601646473d6f7000f
+                status: Active
+                name: New Rate Plan
+                description: ''
+                effectiveStartDate: '2016-07-01'
+                effectiveEndDate: '2020-07-31'
+                grade: 3
+                productRatePlanNumber: PRP-00000001
+                productRatePlanCharges:
+                - id: 40289f4664641276016464740dd0001c
+                  name: New Component
+                  type: Recurring
+                  model: FlatFee
+                  uom: null
+                  pricingSummary:
+                  - USD100
+                  pricing:
+                  - currency: USD
+                    price: 100
+                    tiers: null
+                    includedUnits: null
+                    overagePrice: null
+                    discountPercentage: null
+                    discountAmount: null
+                  defaultQuantity: null
+                  applyDiscountTo: null
+                  discountLevel: null
+                  discountClass: null
+                  productDiscountApplyDetails: []
+                  endDateCondition: Subscription_End
+                  upToPeriods: null
+                  upToPeriodsType: null
+                  billingDay: DefaultFromCustomer
+                  listPriceBase: Per_Billing_Period
+                  specificListPriceBase: null
+                  billingTiming: IN_ADVANCE
+                  billingPeriod: Month
+                  billingPeriodAlignment: AlignToCharge
+                  specificBillingPeriod: null
+                  smoothingModel: null
+                  numberOfPeriods: null
+                  overageCalculationOption: null
+                  overageUnusedUnitsCreditOption: null
+                  unusedIncludedUnitPrice: null
+                  usageRecordRatingOption: null
+                  priceChangeOption: null
+                  priceIncreasePercentage: null
+                  useTenantDefaultForPriceChange: null
+                  taxable: false
+                  taxCode: ''
+                  taxMode: null
+                  triggerEvent: ContractEffective
+                  description: ''
+                  revenueRecognitionRuleName: Recognize upon invoicing
+                  revRecTriggerCondition: ContractEffectiveDate
+                  revRecCode: ''
+                  useDiscountSpecificAccountingCode: null
+                  productRatePlanChargeNumber: PRPC-00000001
+                  financeInformation:
+                    recognizedRevenueAccountingCode: ''
+                    recognizedRevenueAccountingCodeType: null
+                    deferredRevenueAccountingCode: ''
+                    deferredRevenueAccountingCodeType: null
+                  productChargeDefinitions: https://rest.zuora.com/v1/product-charge-definitions?charge=8a80808e8aaf3b0a018aaf3f2beb022b&rateplan=8a80808e8aaf3b0a018aaf3ed4cf021e
+              success: true
+          description: ''
+          schema:
+            $ref: '#/definitions/GETProductRatePlansResponse'
+  /v1/product-rate-plans/{id}:
+    get:
+      summary: Retrieve a product rate plan by ID
+      operationId: GET_ProductRatePlan
+      description: 'Retrieves a product rate plan by its ID.
+
+        '
+      tags:
+      - Product Rate Plans
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+              id: 402888e67f8b3a68017f8bbb2a06062d
+              status: Active
+              name: New Rate Plan Change
+              description: ''
+              effectiveStartDate: '2012-02-01'
+              effectiveEndDate: '2032-02-01'
+              grade: 3
+              externallyManagedPlanIds:
+              - Apple0001
+              - Apple0002
+              - Google0003
+              externalIdSourceSystem: apple
+              productRatePlanNumber: PRP-00000008
+              success: true
+          schema:
+            $ref: '#/definitions/GETProductRatePlanWithExternalIdResponse'
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - type: string
+        in: path
+        name: id
+        required: true
+        description: 'The ID, external ID, or the natural key of the product rate plan to be retrieved. For example, `402888e67f8b3a68017f8bbb2a06062d`, `Apple0001`, or `PRP-00000008`.
+
+          '
+  /v1/product-rate-plans/external-id/{id}:
+    get:
+      summary: List product rate plans by external ID
+      operationId: GET_ProductRatePlansByExternalID
+      description: 'Retrieves information about one or multiple product rate plans by external ID.
+
+        '
+      tags:
+      - Product Rate Plans
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: ''
+          examples:
+            application/json:
+            - id: 2c989020823f450c01823fef40421eb6
+              status: Active
+              name: My rate plan 072706
+              description: ''
+              effectiveStartDate: '2022-01-01'
+              effectiveEndDate: '2023-01-01'
+              externalIdSourceSystem: apple
+              externallyManagedPlanIds:
+              - a
+            - id: 2c989020823f450c01823fede57d1eb5
+              status: Active
+              name: My rate plan 072705
+              description: ''
+              effectiveStartDate: '2022-01-01'
+              effectiveEndDate: '2023-01-01'
+              externalIdSourceSystem: apple
+              externallyManagedPlanIds:
+              - a
+          schema:
+            $ref: '#/definitions/GETProductRatePlanWithExternalIdMultiResponse'
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - type: string
+        in: path
+        name: id
+        required: true
+        description: 'The external ID of the product rate plan to be retrieved. For example, `Apple0001`.
+
+          '
+  /v1/object/product-rate-plan:
+    post:
+      summary: 'CRUD: Create a product rate plan'
+      operationId: Object_POSTProductRatePlan
+      description: 'Retrieves a product rate plan.
+
+        '
+      tags:
+      - Product Rate Plans
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_REQUEST_rejectUnknownFields'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_X_Zuora_WSDL_Version'
+      - name: CreateRequest
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/ProxyCreateProductRatePlan'
+      responses:
+        '200':
+          examples:
+            application/json:
+              Success: true
+              Id: 2c93808457d787030157e0324735512b
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyCreateOrModifyResponse'
+        '400':
+          examples:
+            application/json:
+              Errors:
+              - Code: INVALID_VALUE
+                Message: The account number 123xProxy is invalid.
+              Success: false
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyBadRequestResponse'
+        '401':
+          examples:
+            application/json:
+              message: Authentication error
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            WWW-Authenticate:
+              type: string
+              enum:
+              - Basic realm=Zuora API, ZSession realm=Zuora API, Bearer realm=Zuora API
+              description: 'The value of this header is:
+
+
+                ```
+
+                Basic realm=Zuora API, ZSession realm=Zuora API, Bearer realm=Zuora API
+
+                ```
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyUnauthorizedResponse'
+  /v1/object/product-rate-plan/{id}:
+    get:
+      summary: 'CRUD: Retrieve a product rate plan'
+      operationId: Object_GETProductRatePlan
+      description: 'Retrieves a product rate plan.
+
+        '
+      tags:
+      - Product Rate Plans
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_X_Zuora_WSDL_Version'
+      - name: fields
+        in: query
+        required: false
+        type: string
+        description: Object fields to return
+      - name: id
+        in: path
+        description: Object id
+        required: true
+        type: string
+      responses:
+        '200':
+          examples:
+            application/json:
+              ProductId: 2c93808457d787030157e02da0231850
+              Id: 2c93808457d787030157e02da0d91852
+              CreatedById: 2c93808457d787030157e02d84c116d5
+              CreatedDate: '2016-10-20T05:41:09.000+02:00'
+              UpdatedDate: '2016-10-20T05:41:09.000+02:00'
+              EffectiveStartDate: '1966-10-20'
+              UpdatedById: 2c93808457d787030157e02d84c116d5
+              Name: ProductRatePlan1476934869186_new
+              EffectiveEndDate: '2066-10-20'
+              Description: Test create product rateplan via API
+              Grade: 3
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyGetProductRatePlan'
+        '401':
+          examples:
+            application/json:
+              message: Authentication error
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            WWW-Authenticate:
+              type: string
+              enum:
+              - Basic realm=Zuora API, ZSession realm=Zuora API, Bearer realm=Zuora API
+              description: 'The value of this header is:
+
+
+                ```
+
+                Basic realm=Zuora API, ZSession realm=Zuora API, Bearer realm=Zuora API
+
+                ```
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyUnauthorizedResponse'
+        '404':
+          examples:
+            application/json:
+              records: {}
+              size: 0
+              done: true
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyNoDataResponse'
+    put:
+      summary: 'CRUD: Update a product rate plan'
+      operationId: Object_PUTProductRatePlan
+      description: 'Updates a product rate plan.
+
+        '
+      tags:
+      - Product Rate Plans
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_REQUEST_rejectUnknownFields'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_X_Zuora_WSDL_Version'
+      - name: id
+        in: path
+        description: Object id
+        required: true
+        type: string
+      - name: ModifyRequest
+        in: body
+        description: ''
+        required: true
+        schema:
+          $ref: '#/definitions/ProxyModifyProductRatePlan'
+      responses:
+        '200':
+          examples:
+            application/json:
+              Success: true
+              Id: 2c93808457d787030157e02da0d91852
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyCreateOrModifyResponse'
+        '401':
+          examples:
+            application/json:
+              message: Authentication error
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            WWW-Authenticate:
+              type: string
+              enum:
+              - Basic realm=Zuora API, ZSession realm=Zuora API, Bearer realm=Zuora API
+              description: 'The value of this header is:
+
+
+                ```
+
+                Basic realm=Zuora API, ZSession realm=Zuora API, Bearer realm=Zuora API
+
+                ```
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyUnauthorizedResponse'
+    delete:
+      summary: 'CRUD: Delete a product rate plan'
+      operationId: Object_DELETEProductRatePlan
+      description: 'Deletes a product rate plan.
+
+        '
+      tags:
+      - Product Rate Plans
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth_optional'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: id
+        in: path
+        description: Object id
+        required: true
+        type: string
+      responses:
+        '200':
+          examples:
+            application/json:
+              success: true
+              id: 2c93808457d787030157e02d9dde184f
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyDeleteResponse'
+        '401':
+          examples:
+            application/json:
+              message: Authentication error
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            WWW-Authenticate:
+              type: string
+              enum:
+              - Basic realm=Zuora API, ZSession realm=Zuora API, Bearer realm=Zuora API
+              description: 'The value of this header is:
+
+
+                ```
+
+                Basic realm=Zuora API, ZSession realm=Zuora API, Bearer realm=Zuora API
+
+                ```
+
+                '
+          schema:
+            $ref: '#/definitions/ProxyUnauthorizedResponse'
+definitions:
+  ProxyDeleteResponse:
+    properties:
+      id:
+        description: ''
+        type: string
+      success:
+        description: ''
+        type: boolean
+    type: object
+  ProductRatePlanChargeObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the Product Rate Plan Charge object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a Product Rate Plan Charge object.
+
+      '
+    title: productRatePlanChargeFieldsCustom
+    type: object
+  ProxyUnauthorizedResponse:
+    properties:
+      message:
+        description: 'Error message.
+
+
+          If the error message is "Authentication error", ensure that the `Authorization` request header contains valid authentication credentials, then retry the request. See [Authentication](/rest-api/general-concepts/authentication/) for more information.
+
+
+          If the error message is "Failed to get user info", retry the request.
+
+          '
+        type: string
+    type: object
+  GETProductRatePlanWithExternalIdResponse:
+    properties:
+      ExternalIdSourceSystem:
+        description: 'The combination of `externallyManagedPlanId` and `externalIdSourceSystem` is the unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
+
+          '
+        type: string
+      description:
+        description: 'The short description of the product rate plan.
+
+          '
+        type: string
+      effectiveEndDate:
+        description: 'The end date of the product rate plan.
+
+          '
+        format: date
+        type: string
+      effectiveStartDate:
+        description: 'The start date of the product rate plan.
+
+          '
+        format: date
+        type: string
+      externallyManagedPlanIds:
+        description: 'The unique identifier for the product rate plan in a third-party store. This field is used to represent a rate plan created through third-party stores.
+
+          '
+        items:
+          type: string
+        type: array
+      grade:
+        description: 'The grade of the product rate plan.
+
+
+          **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
+
+          '
+        type: number
+      id:
+        description: 'The unique product rate plan ID.
+
+          '
+        type: string
+      name:
+        description: 'The name of the product rate plan.
+
+          '
+        type: string
+      organizationLabels:
+        description: "The organization(s) that the object belongs to. \n\nNote: This field is available only when the Multi-Org feature is enabled.            \n"
+        items:
+          properties:
+            organizationId:
+              description: 'The organization ID.
+
+                '
+              type: string
+            organizationName:
+              description: 'The organization name.
+
+                '
+              type: string
+          type: object
+        type: array
+      productRatePlanNumber:
+        description: 'The natural key of the product rate plan.
+
+          '
+        type: string
+      status:
+        description: "The status of the product rate plan. \n"
+        enum:
+        - Active
+        - Expired
+        - NotStarted
+        type: string
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  ProxyNoDataResponse:
+    properties:
+      done:
+        description: ''
+        type: boolean
+      records:
+        description: ''
+        items:
+          type: object
+        type: array
+      size:
+        description: ''
+        type: integer
+    type: object
+  ProductRatePlanObjectNSFields:
+    description: 'Container for Product Rate Plan fields provided by the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+      '
+    properties:
+      BillingPeriod__NS:
+        description: 'Billing period associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        enum:
+        - Monthly
+        - Quarterly
+        - Annual
+        - Semi-Annual
+        type: string
+      Class__NS:
+        description: 'Class associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      Department__NS:
+        description: 'Department associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      IncludeChildren__NS:
+        description: 'Specifies whether the corresponding item in NetSuite is visible under child subsidiaries. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        enum:
+        - 'Yes'
+        - 'No'
+        type: string
+      IntegrationId__NS:
+        description: 'ID of the corresponding object in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      IntegrationStatus__NS:
+        description: 'Status of the product rate plan''s synchronization with NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      ItemType__NS:
+        description: 'Type of item that is created in NetSuite for the product rate plan. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        enum:
+        - Inventory
+        - Non Inventory
+        - Service
+        type: string
+      Location__NS:
+        description: 'Location associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      MultiCurrencyPrice__NS:
+        description: 'Multi-currency price associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      Price__NS:
+        description: 'Price associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      Subsidiary__NS:
+        description: 'Subsidiary associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      SyncDate__NS:
+        description: 'Date when the product rate plan was synchronized with NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+    title: productRatePlanFieldsNS
+    type: object
+  GETProductRatePlanChargeType:
+    allOf:
+    - properties:
+        applyDiscountTo:
+          description: 'Specifies where (to what charge type) the discount will be applied. These field values are case-sensitive.
+
+
+            Permissible values:
+
+            - RECURRING
+
+            - USAGE
+
+            - ONETIMERECURRING
+
+            - ONETIMEUSAGE
+
+            - RECURRINGUSAGE
+
+            - ONETIMERECURRINGUSAGE
+
+            '
+          type: string
+        billingDay:
+          description: 'The bill cycle day (BCD) for the charge. The BCD determines which day of the month or week the customer is billed. The BCD value in the account can override the BCD in this object.
+
+            '
+          type: string
+        billingPeriod:
+          description: 'The billing period for the charge. The start day of the billing period is also called the bill cycle day (BCD).
+
+
+            Values:
+
+            - Month
+
+            - Quarter
+
+            - Annual
+
+            - Semi_Annual
+
+            - Specific Months
+
+            - Week
+
+            - Specific_Weeks
+
+            '
+          type: string
+        billingPeriodAlignment:
+          description: 'Aligns charges within the same subscription if multiple charges begin on different dates.
+
+
+            Possible values:
+
+            - AlignToCharge
+
+            - AlignToSubscriptionStart
+
+            - AlignToTermStart
+
+            '
+          type: string
+        billingTiming:
+          description: "The billing timing for the charge. You can choose to bill for charges in advance or in arrears.\n\nValues:\n- In Advance\n- In Arrears\n\n**Note:** This feature is in Limited Availability. If you wish to have access to the feature, submit a request at [Zuora Global Support](https://support.zuora.com). \n"
+          type: string
+        chargeModelConfigurations:
+          description: This field is for Zuora Internal Use only. See the **pricing** field for the same information as this field.
+          type: object
+        creditOption:
+          description: "**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.\n\nThe way to calculate credit. See [Credit Option](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown/Create_prepayment_charge#Credit_Option) for more information. \n"
+          enum:
+          - TimeBased
+          - ConsumptionBased
+          - FullCreditBack
+          type: string
+        defaultQuantity:
+          description: 'The default quantity of units.  This field is required if you use a per-unit charge model.
+
+            '
+          format: decimal
+          type: string
+        deliverySchedule:
+          $ref: '#/definitions/GETProductRatePlanChargeDeliverySchedule'
+        description:
+          description: 'Usually a brief line item summary of the Rate Plan Charge.
+
+            '
+          type: string
+        discountClass:
+          description: 'The class that the discount belongs to. The discount class defines the order in which discount product rate plan charges are applied.
+
+
+            For more information, see [Manage Discount Classes](https://knowledgecenter.zuora.com/BC_Subscription_Management/Product_Catalog/B_Charge_Models/Manage_Discount_Classes).
+
+            '
+          type: string
+        discountLevel:
+          description: "The level of the discount. \n\nValues:\n- RatePlan\n- Subscription\n- Account\n"
+          type: string
+        drawdownRate:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            The [conversion rate](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown/Create_drawdown_charge#UOM_Conversion) between Usage UOM and Drawdown UOM for a [drawdown charge](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown/Create_drawdown_charge). Must be a positive number (>0).
+
+            '
+          type: number
+        drawdownUom:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            Unit of measurement for a [drawdown charge](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown/Create_drawdown_charge).
+
+            '
+          type: string
+        endDateCondition:
+          description: 'Defines when the charge ends after the charge trigger date. If the subscription ends before the charge end date, the charge ends when the subscription ends. But if the subscription end date is subsequently changed through a Renewal, or Terms and Conditions amendment, the charge will end on the charge end date.
+
+
+            Values:
+
+            - Subscription_End
+
+            - Fixed_Period
+
+            '
+          type: string
+        excludeItemBillingFromRevenueAccounting:
+          description: "The flag to exclude the related invoice items, invoice item adjustments, credit memo items, and debit memo items from revenue accounting.\n\n**Note**: This field is only available if you have the Billing - Revenue Integration feature enabled. \n"
+          type: boolean
+        excludeItemBookingFromRevenueAccounting:
+          description: "The flag to exclude the related rate plan charges and order line items from revenue accounting.\n\n**Note**: This field is only available if you have the Billing - Revenue Integration feature enabled. \n"
+          type: boolean
+        financeInformation:
+          description: 'Container for finance information of a rate plan charge.
+
+            '
+          properties:
+            adjustmentLiabilityAccountingCode:
+              description: "The accounting code for adjustment liability. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled. \n"
+              type: string
+            adjustmentLiabilityAccountingCodeType:
+              description: "The type associated with the adjustment liability accounting code. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled.\n"
+              type: string
+            adjustmentRevenueAccountingCode:
+              description: "The accounting code for adjustment revenue. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled. \n"
+              type: string
+            adjustmentRevenueAccountingCodeType:
+              description: "The type associated with the adjustment revenue accounting code. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled.\n"
+              type: string
+            contractAssetAccountingCode:
+              description: "The accounting code for contract asset. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled. \n"
+              type: string
+            contractAssetAccountingCodeType:
+              description: "The type associated with the contract asset accounting code. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled.\n"
+              type: string
+            contractLiabilityAccountingCode:
+              description: "The accounting code for contract liability. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled. \n"
+              type: string
+            contractLiabilityAccountingCodeType:
+              description: "The type associated with the contract liability accounting code. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled.\n"
+              type: string
+            contractRecognizedRevenueAccountingCode:
+              description: "The accounting code for contract recognized revenue. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled. \n"
+              type: string
+            contractRecognizedRevenueAccountingCodeType:
+              description: "The type associated with the contract recognized revenue accounting code. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled.\n"
+              type: string
+            deferredRevenueAccountingCode:
+              description: "The accounting code for deferred revenue, such as Monthly Recurring Liability. \n"
+              type: string
+            deferredRevenueAccountingCodeType:
+              description: "The type associated with the deferred revenue accounting code, such as Deferred Revenue. \n"
+              type: string
+            recognizedRevenueAccountingCode:
+              description: "The accounting code for recognized revenue, such as Monthly Recurring Charges or Overage Charges. \n"
+              type: string
+            recognizedRevenueAccountingCodeType:
+              description: "The type associated with the recognized revenue accounting code, such as Sales Revenue or Sales Discount. \n"
+              type: string
+            unbilledReceivablesAccountingCode:
+              description: "The accounting code for unbilled receivables. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled. \n"
+              type: string
+            unbilledReceivablesAccountingCodeType:
+              description: "The type associated with the unbilled receivables accounting code. \n\n**Note**: This field is only available if you have the RevPro Integration feature enabled.\n"
+              type: string
+          title: financeInformation
+          type: object
+        formula:
+          description: 'The pricing formula to calculate the actual rating amount for each usage record.
+
+
+            This field is only available for the usage-based charges that use the Multi-Attribute Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+            '
+          type: string
+        id:
+          description: 'Unique product rate-plan charge ID.
+
+            '
+          type: string
+        includedUnits:
+          description: 'Specifies the number of units in the base set of units when the charge model is Overage.
+
+            '
+          format: decimal
+          type: string
+        isAllocationEligible:
+          description: 'This field is used to identify if the charge segment is allocation eligible in revenue recognition.
+
+
+            **Note**: This feature is in the **Early Adopter** phase. If you want to use the feature, submit a request at <a href="https://support.zuora.com/" target="_blank">Zuora Global Support</a>, and we will evaluate whether the feature is suitable for your use cases.
+
+            '
+          type: boolean
+        isPrepaid:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            Indicates whether this charge is a prepayment (topup) charge or a drawdown charge. Values: `true` or `false`.
+
+            '
+          type: boolean
+        isRollover:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            The value is either "True" or "False". It determines whether the rollover fields are needed.
+
+            '
+          type: boolean
+        isStackedDiscount:
+          description: '**Note**: This field is only applicable to the Discount - Percentage charge model.
+
+
+            To use this field, you must set the `X-Zuora-WSDL-Version` request header to 130 or higher. Otherwise, an error occurs.
+
+
+            This field indicates whether the discount is to be calculated as stacked discount. Possible values are as follows:
+
+
+            - `true`: This is a stacked discount, which should be calculated by stacking with other discounts.
+
+
+            - `false`: This is not a stacked discount, which should be calculated in sequence with other discounts.
+
+
+            For more information, see [Stacked discounts](https://knowledgecenter.zuora.com/Zuora_Billing/Products/Product_Catalog/B_Charge_Models/B_Discount_Charge_Models).
+
+            '
+          type: boolean
+        isUnbilled:
+          description: 'This field is used to dictate how to perform the accounting during revenue recognition.
+
+
+            **Note**: This feature is in the **Early Adopter** phase. If you want to use the feature, submit a request at <a href="https://support.zuora.com/" target="_blank">Zuora Global Support</a>, and we will evaluate whether the feature is suitable for your use cases.
+
+            '
+          type: boolean
+        listPriceBase:
+          description: 'The list price base for the product rate plan charge.
+
+
+            This field is only applicable for recurring charges.
+
+            '
+          enum:
+          - Per_Billing_Period
+          - Per_Month
+          - Per_Week
+          - Per_Year
+          - Per_Specific_Months
+          type: string
+        maxQuantity:
+          description: 'Specifies the maximum number of units for this charge. Use this field and the `minQuantity` field to create a range of units allowed in a product rate plan charge.
+
+            '
+          format: decimal
+          type: string
+        minQuantity:
+          description: 'Specifies the minimum number of units for this charge. Use this field and the `maxQuantity` field to create a range of units allowed in a product rate plan charge.
+
+            '
+          format: decimal
+          type: string
+        model:
+          description: "Charge model which determines how charges are calculated. Charge models must be individually activated in Zuora Billing administration. \n\nPossible values are:\n- `FlatFee`\n- `PerUnit`\n- `Overage`\n- `Volume`\n- `Tiered`\n- `TieredWithOverage`\n- `DiscountFixedAmount`\n- `DiscountPercentage`\n- `Delivery` (available only if you have the Delivery Pricing charge model enabled)\n- `MultiAttributePricing` (available only if you have the Multi-Attribute Pricing charge model enabled. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.)\n- `PreratedPerUnit` (available only if you have the Pre-rated Per Unit Pricing charge model enabled. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.)\n- `PreratedPricing` (available only if you have the Pre-rated Pricing charge model enabled. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.)\n- `HighWatermarkVolumePricing` (available only if you have the High Water Mark Volume Pricing charge model enabled. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.)\n- `HighWatermarkTieredPricing` (available only if you have the High Water Mark Tiered Pricing charge model enabled. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.)\n\nThe value of the `pricing` field contains details about these charge models and the value of `pricingSummary` field contains their associated pricing summary values.\n"
+          type: string
+        name:
+          description: 'Name of the product rate-plan charge. (Not required to be unique.)
+
+            '
+          type: string
+        numberOfPeriods:
+          description: 'Value specifies the number of periods used in the smoothing model calculations Used when overage smoothing model is `RollingWindow` or `Rollover`.
+
+            '
+          format: int64
+          type: integer
+        overageCalculationOption:
+          description: 'Value specifies when to calculate overage charges.
+
+
+            Values:
+
+            - EndOfSmoothingPeriod
+
+            - PerBillingPeriod
+
+            '
+          type: string
+        overageUnusedUnitsCreditOption:
+          description: 'Determines whether to credit the customer with unused units of usage.
+
+
+            Values:
+
+            - NoCredit
+
+            - CreditBySpecificRate
+
+            '
+          type: string
+        prepaidOperationType:
+          description: "**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.\n\nThe type of this charge. It is either a prepayment (topup) charge or a drawdown charge. \n"
+          enum:
+          - topup
+          - drawdown
+          type: string
+        prepaidQuantity:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            The number of units included in a [prepayment charge](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown/Create_prepayment_charge). Must be a positive number (>0).
+
+            '
+          type: number
+        prepaidTotalQuantity:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            The total amount of units that end customers can use during a validity period when they subscribe to a [prepayment charge](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown/Create_prepayment_charge).
+
+            '
+          type: number
+        prepaidUom:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            Unit of measurement for a [prepayment charge](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown/Create_prepayment_charge).
+
+            '
+          type: string
+        prepayPeriods:
+          description: "The number of periods to which prepayment is set. \n\n**Note:** This field is only available if you already have the prepayment feature enabled. The prepayment feature is deprecated and available only for backward compatibility. Zuora does not support enabling this feature anymore.\n"
+          format: int64
+          type: integer
+        priceChangeOption:
+          description: 'Applies an automatic price change when a termed subscription is renewed and the following applies:
+
+
+            1. AutomatedPriceChange setting is on
+
+            2. Charge type is not one-time
+
+            3. Charge model is not discount fixed amount
+
+
+            Values:
+
+            - NoChange (default)
+
+            - SpecificPercentageValue
+
+            - UseLatestProductCatalogPricing
+
+            '
+          type: string
+        priceIncreasePercentage:
+          description: 'Specifies the percentage to increase or decrease the price of a termed subscription''s renewal. Use this field if you set the `PriceChangeOption` value to `SpecificPercentageValue`.
+
+
+            1. AutomatedPriceChange setting is on
+
+            2. Charge type is not one-time
+
+            3. Charge model is not discount fixed amount
+
+
+            Values: a decimal between -100 and 100
+
+            '
+          format: decimal
+          type: string
+        pricing:
+          description: "One or more price charge models with attributes that further describe the model. \nSome attributes show as null values when not applicable.\n"
+          items:
+            $ref: '#/definitions/GETProductRatePlanChargePricingType'
+          type: array
+        pricingSummary:
+          description: 'A concise description of the charge model and pricing that is suitable to show to your customers. When the rate plan charge model is `Tiered` and multi-currency is enabled, this field includes an array of string of each currency, and each string of currency includes tier price description separated by comma.
+
+
+            For the following charge models, the value of this field is an empty string:
+
+            - Multi-Attribute Pricing
+
+            - High Water Mark Tiered Pricing
+
+            - High Water Mark Volume Pricing
+
+            - Pre-Rated Per Unit Pricing
+
+            - Pre-Rated Pricing
+
+
+            The charge models are available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+            '
+          items:
+            type: string
+          type: array
+        productChargeDefinitions:
+          description: 'A link to retrieve product charge definitions of this charge.
+
+            '
+          type: string
+        productDiscountApplyDetails:
+          description: "Container for the application details about a discount product rate plan charge. \n\nOnly discount product rate plan charges have values in this field.\n"
+          items:
+            $ref: '#/definitions/GETProductDiscountApplyDetailsType'
+          type: array
+        productRatePlanChargeNumber:
+          description: 'The natural key of the product rate plan charge.
+
+            '
+          type: string
+        ratingGroup:
+          description: "Specifies a rating group based on which usage records are rated.\n\nPossible values:\n\n- `ByBillingPeriod` (default): The rating is based on all the usages in a billing period.\n- `ByUsageStartDate`: The rating is based on all the usages on the same usage start date. \n- `ByUsageRecord`: The rating is based on each usage record.\n- `ByUsageUpload`: The rating is based on all the  usages in a uploaded usage file (`.xls` or `.csv`).\n- `ByGroupId`: The rating is based on all the usages in a custom group.\n\n**Note:** \n- The `ByBillingPeriod` value can be applied for all charge models. \n- The `ByUsageStartDate`, `ByUsageRecord`, and `ByUsageUpload` values can only be applied for per unit, volume pricing, and tiered pricing charge models. \n- The `ByGroupId` value is only available if you have the Active Rating feature enabled.\n- Use this field only for Usage charges. One-Time Charges and Recurring Charges return `NULL`.\n"
+          type: string
+        revRecCode:
+          description: 'Associates this product rate plan charge with a specific revenue recognition code. The value is a valid revenue recognition code.
+
+            '
+          maxLength: 70
+          type: string
+        revRecTriggerCondition:
+          description: 'Specifies when revenue recognition begins.
+
+            '
+          enum:
+          - ContractEffectiveDate
+          - ServiceActivationDate
+          - CustomerAcceptanceDate
+          maxLength: 22
+          type: string
+        revenueRecognitionRuleName:
+          description: 'The name of the revenue recognition rule governing the revenue schedule.
+
+            '
+          type: string
+        rolloverApply:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            This field defines the priority of rollover, which is either first or last.
+
+            '
+          enum:
+          - ApplyFirst
+          - ApplyLast
+          type: string
+        rolloverPeriodLength:
+          default: null
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            The period length of the rollover fund.
+
+            '
+          type: integer
+        rolloverPeriods:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            This field defines the number of rollover periods, it is restricted to 3.
+
+            '
+          type: number
+        smoothingModel:
+          description: 'Specifies the smoothing model for an overage smoothing charge model or an tiered with overage model, which is an advanced type of a usage model that avoids spikes in usage charges. If a customer''s usage spikes in a single period, then an overage smoothing model eases overage charges by considering usage and multiple periods.
+
+
+            One of the following values shows which smoothing model will be applied to the charge when `Overage` or `Tiered with Overage` is used:
+
+
+            - `RollingWindow` considers a number of periods to smooth usage. The rolling window starts and increments forward based on billing frequency. When allowed usage is met, then period resets and a new window begins.
+
+            - `Rollover` considers a fixed number of periods before calculating usage. The net balance at the end of a period is unused usage, which is carried over to the next period''s balance.
+
+            '
+          type: string
+        specificBillingPeriod:
+          description: 'When the billing period is set to `Specific` Months then this positive integer reflects the number of months for billing period charges.
+
+            '
+          format: int64
+          type: integer
+        specificListPriceBase:
+          description: 'The number of months for the list price base of the charge. The value of this field is `null` if you do not set the value of the `listPriceBase` field to `Per_Specific_Months`.
+
+            '
+        taxCode:
+          description: 'Specifies the tax code for taxation rules; used by Zuora Tax.
+
+            '
+          type: string
+        taxMode:
+          description: 'Specifies how to define taxation for the charge; used by Zuora Tax. Possible values are: `TaxExclusive`, `TaxInclusive`.
+
+            '
+          type: string
+        taxable:
+          description: 'Specifies whether the charge is taxable; used by Zuora Tax. Possible values are:`true`, `false`.
+
+            '
+          type: boolean
+        triggerEvent:
+          description: "Specifies when to start billing the customer for the charge.\n\nValues: one of the following:\n- `ContractEffective` is the date when the subscription's contract goes into effect and the charge is ready to be billed.\n- `ServiceActivation` is the date when the services or products for a subscription have been activated and the customers have access.\n- `CustomerAcceptance` is when the customer accepts the services or products for a subscription. \n- `SpecificDate` is the date specified.\n"
+          type: string
+        type:
+          description: 'The type of charge. Possible values are: `OneTime`, `Recurring`, `Usage`.
+
+            '
+          type: string
+        uom:
+          description: 'Describes the Units of Measure (uom) configured in **Settings > Billing** for the productRatePlanCharges.
+
+
+            Values: `Each`, `License`, `Seat`, or `null`
+
+            '
+          type: string
+        upToPeriods:
+          description: 'Specifies the length of the period during which the charge is active. If this period ends before the subscription ends, the charge ends when this period ends.
+
+            If the subscription end date is subsequently changed through a Renewal, or Terms and Conditions amendment, the charge end date will change accordingly up to the original period end.
+
+            '
+          format: int64
+          type: integer
+        upToPeriodsType:
+          description: "The period type used to define when the charge ends.\n\nValues:\n- Billing_Periods\n- Days\n- Weeks\n- Months\n- Years\n  \n"
+          type: string
+        usageRecordRatingOption:
+          description: "Determines how Zuora processes usage records for per-unit usage charges. \n"
+          type: string
+        useDiscountSpecificAccountingCode:
+          description: 'Determines whether to define a new accounting code for the new discount charge.
+
+            Values: `true`, `false`
+
+            '
+          type: boolean
+        useTenantDefaultForPriceChange:
+          description: 'Shows the tenant-level percentage uplift value for an automatic price change to a termed subscription''s renewal. You set the tenant uplift value in the web-based UI: **Settings > Billing > Define Default Subscription Settings**.
+
+
+            Values: `true`, `false`
+
+            '
+          type: boolean
+        validityPeriodType:
+          description: '**Note**: This field is only available if you have the [Prepaid with Drawdown](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown) feature enabled.
+
+
+            The period in which the prepayment units are valid to use as defined in a [prepayment charge](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Prepaid_with_Drawdown/Create_prepayment_charge).
+
+            '
+          enum:
+          - SUBSCRIPTION_TERM
+          - ANNUAL
+          - SEMI_ANNUAL
+          - QUARTER
+          - MONTH
+          type: string
+      type: object
+    - $ref: '#/definitions/ProductRatePlanChargeObjectNSFields'
+    - $ref: '#/definitions/ProductRatePlanChargeObjectCustomFields'
+    title: productRatePlanCharges
+  GETProductRatePlanChargePricingTierType:
+    properties:
+      endingUnit:
+        description: 'Decimal defining end of tier range.
+
+          '
+        format: decimal
+        type: string
+      price:
+        description: 'The decimal value of the tiered charge model. If the charge model is not a tiered type then this price field will be null and the price field directly under the productRatePlanCharges applies.
+
+          '
+        format: decimal
+        type: string
+      priceFormat:
+        description: "Tier price format.\n\nAllowed values:\n- flat fee \n- per unit\n"
+        type: string
+      startingUnit:
+        description: 'Decimal defining start of tier range.
+
+          '
+        format: decimal
+        type: string
+      tier:
+        description: 'Unique number of the tier.
+
+          '
+        format: int64
+        type: integer
+    title: tiers
+    type: object
+  GETProductRatePlanChargePricingType:
+    properties:
+      currency:
+        description: 'Currency used by the charge model. For example: USD or EUR
+
+          '
+        type: string
+      discountAmount:
+        description: 'Value subtracted from price in currency specified. Used only when the charge model is DiscountFixedAmount.
+
+          '
+        format: decimal
+        type: string
+      discountPercentage:
+        description: 'Percent discount applied to the price. Used only when the charge model is DiscountPercentage.
+
+          '
+        format: decimal
+        type: string
+      includedUnits:
+        description: 'Specifies the number of units in the base set of units when the charge model is Overage.
+
+          '
+        format: decimal
+        type: string
+      overagePrice:
+        description: 'Price per unit when base set of units is exceeded. Used only when charge model is Overage or Tiered with Overage.
+
+          '
+        format: decimal
+        type: string
+      price:
+        description: 'The decimal value that applies when the charge model is not tiered
+
+          '
+        format: decimal
+        type: string
+      tiers:
+        description: 'Container for one or many defined tier ranges with distinct pricing.  Applies when model is `Tiered`, `TieredWithOverage`, or `Volume`
+
+          '
+        items:
+          $ref: '#/definitions/GETProductRatePlanChargePricingTierType'
+        type: array
+    title: pricing
+    type: object
+  ProxyModifyProductRatePlan:
+    allOf:
+    - properties:
+        ActiveCurrencies:
+          description: 'A list of 3-letter currency codes representing active currencies for the product rate plan. Use a comma to separate each currency code.
+
+
+            If the request body contains this field, the value of this field must contain the desired list of active currencies. The new list can never have more than four differences from the existing list.
+
+
+            This field cannot be used to modify the status of more than four currencies in a single request. For example, in a single request, you can only activate four currencies, or deactivate four currencies, or activate two and deactivate two. Making more than four changes to currencies always requires more than one call.
+
+
+            When specifying this field in the update request, you must provide the full list of active currencies you want, not just incremental changes. For each active currency update, provide the following currencies in the list:
+
+
+            Current active currencies + at most four changes (additions or deletions)
+
+            '
+          items:
+            type: string
+          type: array
+        Description:
+          description: 'A description of the product rate plan.
+
+            '
+          maxLength: 500
+          type: string
+        EffectiveEndDate:
+          description: 'The date when the product rate plan expires and can''t be subscribed to, in `yyyy-mm-dd` format.
+
+            '
+          format: date
+          maxLength: 29
+          type: string
+        EffectiveStartDate:
+          description: 'The date when the product rate plan becomes available and can be subscribed to, in `yyyy-mm-dd` format.
+
+            '
+          format: date
+          maxLength: 29
+          type: string
+        Grade:
+          description: "The grade that is assigned for the product rate plan. The value of this field must be a positive integer. The greater the value, the higher the grade.\n\nA product rate plan to be added to a Grading catalog group must have one grade. You can specify a grade for a product rate plan in this request or update the product rate plan individually.\n\n**Notes**: \n  - To use this field, you must set the `X-Zuora-WSDL-Version` request header to `116` or later. Otherwise, an error occurs.\n  - This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).\n"
+          type: number
+        Name:
+          description: 'The name of the product rate plan. The name doesn''t have to be unique in a Product Catalog, but the name has to be unique within a product.
+
+            '
+          maxLength: 255
+          type: string
+        ProductId:
+          description: 'The ID of the product that contains the product rate plan.
+
+            '
+          maxLength: 32
+          type: string
+        ProductRatePlanNumber:
+          description: "The natural key of the product rate plan. \n\nFor existing Product Rate Plan objects that are created before this field is introduced, this field will be null. Use this field to specify a value for only these objects. Zuora also provides a tool to help you automatically backfill this field with tenant ID for your existing product catalog. If you want to use this backfill tool, contact [Zuora Global Support](https://support.zuora.com/).\n\n**Note**: This field is only available if you set the `X-Zuora-WSDL-Version` request header to `133` or later.\n"
+          maxLength: 100
+          type: string
+      type: object
+    - $ref: '#/definitions/ProductRatePlanObjectNSFields'
+    - $ref: '#/definitions/ProductRatePlanObjectCustomFields'
+    example:
+      Id: 2c93808457d787030157e02da0d91852
+      Name: ProductRatePlan1476934869186_new
+  GETProductRatePlanType:
+    allOf:
+    - properties:
+        description:
+          description: 'Rate plan description.
+
+            '
+          type: string
+        effectiveEndDate:
+          description: 'Final date the rate plan is active, as `yyyy-mm-dd`. After this date, the rate plan status is `Expired`.
+
+            '
+          format: date
+          type: string
+        effectiveStartDate:
+          description: 'First date the rate plan is active (i.e., available to be subscribed to), as `yyyy-mm-dd`.  Before this date, the status is `NotStarted`.
+
+            '
+          format: date
+          type: string
+        grade:
+          description: 'The grade of the product rate plan.
+
+
+            **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
+
+            '
+          type: number
+        id:
+          description: 'Unique product rate-plan ID.
+
+            '
+          type: string
+        name:
+          description: 'Name of the product rate-plan charge. (Not required to be unique.)
+
+            '
+          type: string
+        productRatePlanCharges:
+          description: 'Field attributes describing the product rate plan charges:
+
+            '
+          items:
+            $ref: '#/definitions/GETProductRatePlanChargeType'
+          type: array
+        productRatePlanNumber:
+          description: "The natural key of the product rate plan.  \n"
+          type: string
+        status:
+          description: 'The status of the product rate plan.
+
+            '
+          enum:
+          - Active
+          - Expired
+          - NotStarted
+          type: string
+      type: object
+    - $ref: '#/definitions/ProductRatePlanObjectNSFields'
+    - $ref: '#/definitions/ProductRatePlanObjectCustomFields'
+    title: productRatePlans
+  ProductRatePlanChargeObjectNSFields:
+    description: 'Container for Product Rate Plan Charge fields provided by the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+      '
+    properties:
+      Class__NS:
+        description: 'Class associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      DeferredRevAccount__NS:
+        description: 'Deferrred revenue account associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      Department__NS:
+        description: 'Department associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      IncludeChildren__NS:
+        description: 'Specifies whether the corresponding item in NetSuite is visible under child subsidiaries. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        enum:
+        - 'Yes'
+        - 'No'
+        type: string
+      IntegrationId__NS:
+        description: 'ID of the corresponding object in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      IntegrationStatus__NS:
+        description: 'Status of the product rate plan charge''s synchronization with NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      ItemType__NS:
+        description: 'Type of item that is created in NetSuite for the product rate plan charge. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        enum:
+        - Inventory
+        - Non Inventory
+        - Service
+        type: string
+      Location__NS:
+        description: 'Location associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      RecognizedRevAccount__NS:
+        description: 'Recognized revenue account associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      RevRecEnd__NS:
+        description: 'End date condition of the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        enum:
+        - Charge Period Start
+        - Rev Rec Trigger Date
+        - Use NetSuite Rev Rec Template
+        type: string
+      RevRecStart__NS:
+        description: 'Start date condition of the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        enum:
+        - Charge Period Start
+        - Rev Rec Trigger Date
+        - Use NetSuite Rev Rec Template
+        type: string
+      RevRecTemplateType__NS:
+        description: 'Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      Subsidiary__NS:
+        description: 'Subsidiary associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+      SyncDate__NS:
+        description: 'Date when the product rate plan charge was synchronized with NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+          '
+        maxLength: 255
+        type: string
+    title: productRatePlanChargeFieldsNS
+    type: object
+  GETProductRatePlansResponse:
+    properties:
+      nextPage:
+        description: 'URL to retrieve the next page of the response if it exists; otherwise absent.
+
+          '
+        format: URL
+        type: string
+      productRatePlans:
+        description: 'Container for one or more products.
+
+          '
+        items:
+          $ref: '#/definitions/GETProductRatePlanType'
+        type: array
+      success:
+        description: 'Returns `true` if the request was processed successfully.
+
+          '
+        type: boolean
+    type: object
+  ProxyCreateOrModifyResponse:
+    properties:
+      Id:
+        description: ''
+        type: string
+      Success:
+        description: ''
+        type: boolean
+    type: object
+  GETProductDiscountApplyDetailsType:
+    properties:
+      appliedProductRatePlanChargeId:
+        description: 'The ID of the product rate plan charge that the discount product rate plan charge applies to.
+
+          '
+        type: string
+      appliedProductRatePlanId:
+        description: 'The ID of the product rate plan that the discount product rate plan charge applies to.
+
+          '
+        type: string
+    title: productDiscountApplyDetails
+    type: object
+  GETProductRatePlanWithExternalIdMultiResponse:
+    items:
+      properties:
+        ExternalIdSourceSystem:
+          description: 'The combination of `externallyManagedPlanId` and `externalIdSourceSystem` is the unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
+
+            '
+          type: string
+        description:
+          description: 'The short description of the product rate plan.
+
+            '
+          type: string
+        effectiveEndDate:
+          description: 'The end date of the product rate plan.
+
+            '
+          format: date
+          type: string
+        effectiveStartDate:
+          description: 'The start date of the product rate plan.
+
+            '
+          format: date
+          type: string
+        externallyManagedPlanIds:
+          description: 'The unique identifier for the product rate plan in a third-party store. This field is used to represent a rate plan created through third-party stores.
+
+            '
+          items:
+            type: string
+          type: array
+        grade:
+          description: 'The grade of the product rate plan.
+
+
+            **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
+
+            '
+          type: number
+        id:
+          description: 'The unique product rate plan ID.
+
+            '
+          type: string
+        name:
+          description: 'The name of the product rate plan.
+
+            '
+          type: string
+        organizationLabels:
+          description: "The organization(s) that the object belongs to. \n\nNote: This field is available only when the Multi-Org feature is enabled.            \n"
+          items:
+            properties:
+              organizationId:
+                description: 'The organization ID.
+
+                  '
+                type: string
+              organizationName:
+                description: 'The organization name.
+
+                  '
+                type: string
+            type: object
+          type: array
+        status:
+          description: "The status of the product rate plan. \n"
+          enum:
+          - Active
+          - Expired
+          - NotStarted
+          type: string
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+    type: array
+  ProxyGetProductRatePlan:
+    allOf:
+    - properties:
+        ActiveCurrencies:
+          description: "A list of 3-letter currency codes representing active currencies for the product rate plan. \n\nThis field cannot be queried in conjunction with any other fields except `id` at the same time. \n"
+          items:
+            type: string
+          type: array
+        CreatedById:
+          description: 'The automatically generated ID of the Zuora user who created the `ProductRatePlan` object.
+
+            '
+          maxLength: 32
+          type: string
+        CreatedDate:
+          description: 'The date when the `ProductRatePlan` object was created.
+
+            '
+          format: date-time
+          maxLength: 29
+          type: string
+        Description:
+          description: 'A description of the product rate plan.
+
+            '
+          maxLength: 500
+          type: string
+        EffectiveEndDate:
+          description: 'The date when the product rate plan expires and can''t be subscribed to, in `yyyy-mm-dd` format.
+
+            '
+          format: date
+          maxLength: 29
+          type: string
+        EffectiveStartDate:
+          description: 'The date when the product rate plan becomes available and can be subscribed to, in `yyyy-mm-dd` format.
+
+            '
+          format: date
+          maxLength: 29
+          type: string
+        Grade:
+          description: "The grade that is assigned for the product rate plan.\n\n**Notes**: \n  - To use this field, you must set the `X-Zuora-WSDL-Version` request header to `116` or later. Otherwise, an error occurs.\n  - This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).\n"
+          type: number
+        Id:
+          description: Object identifier.
+          type: string
+        Name:
+          description: 'The name of the product rate plan. The name doesn''t have to be unique in a Product Catalog, but the name has to be unique within a product.
+
+            '
+          maxLength: 255
+          type: string
+        ProductId:
+          description: 'The ID of the product that contains the product rate plan.
+
+            '
+          maxLength: 32
+          type: string
+        UpdatedById:
+          description: 'The automatically generated ID of the last user to update the object.
+
+            '
+          maxLength: 32
+          type: string
+        UpdatedDate:
+          description: 'The date when the object was last updated.
+
+            '
+          format: date-time
+          maxLength: 29
+          type: string
+      type: object
+    - $ref: '#/definitions/ProductRatePlanObjectNSFields'
+    - $ref: '#/definitions/ProductRatePlanObjectCustomFields'
+  ProxyCreateProductRatePlan:
+    allOf:
+    - properties:
+        ActiveCurrencies:
+          description: 'A list of 3-letter currency codes representing active currencies for the product rate plan. Use a comma to separate each currency code.
+
+
+            When creating a product rate plan, you can use this field to specify default currency and at most four other active currencies.
+
+            '
+          items:
+            type: string
+          type: array
+        Description:
+          description: 'A description of the product rate plan.
+
+            '
+          maxLength: 500
+          type: string
+        EffectiveEndDate:
+          description: 'The date when the product rate plan expires and can''t be subscribed to, in `yyyy-mm-dd` format.
+
+            '
+          format: date
+          maxLength: 29
+          type: string
+        EffectiveStartDate:
+          description: 'The date when the product rate plan becomes available and can be subscribed to, in `yyyy-mm-dd` format.
+
+            '
+          format: date
+          maxLength: 29
+          type: string
+        Grade:
+          description: "The grade that is assigned for the product rate plan. The value of this field must be a positive integer. The greater the value, the higher the grade.\n\nA product rate plan to be added to a Grading catalog group must have one grade. You can specify a grade for a product rate plan in this request or update the product rate plan individually.\n\n**Notes**: \n  - To use this field, you must set the `X-Zuora-WSDL-Version` request header to `116` or later. Otherwise, an error occurs.\n  - This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).\n"
+          type: number
+        Name:
+          description: 'The name of the product rate plan. The name doesn''t have to be unique in a Product Catalog, but the name has to be unique within a product.
+
+            '
+          maxLength: 255
+          type: string
+        ProductId:
+          description: 'The ID of the product that contains the product rate plan.
+
+            '
+          maxLength: 32
+          type: string
+        ProductRatePlanNumber:
+          description: "The natural key of the product rate plan.\n\n**Possible values**:\n\n  - leave null for automatically generated string\n  - an alphanumeric string of 100 characters or fewer\n\n**Note**: This field is only available if you set the `X-Zuora-WSDL-Version` request header to `133` or later.\n"
+          maxLength: 100
+          type: string
+      required:
+      - Name
+      - ProductId
+      type: object
+    - $ref: '#/definitions/ProductRatePlanObjectNSFields'
+    - $ref: '#/definitions/ProductRatePlanObjectCustomFields'
+    example:
+      Description: Test create product rateplan via API
+      EffectiveEndDate: '2066-10-20'
+      EffectiveStartDate: '1966-10-20'
+      Grade: 3
+      Name: ProductRatePlan1476935173957
+      ProductId: 2c93808457d787030157e03246ae5129
+  ProductRatePlanObjectCustomFields:
+    additionalProperties:
+      description: 'Custom fields of the Product Rate Plan object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+        '
+    description: 'Container for custom fields of a Product Rate Plan object.
+
+      '
+    title: productRatePlanFieldsCustom
+    type: object
+  GETProductRatePlanChargeDeliverySchedule:
+    description: 'The delivery schedule information of this charge. Only when this charge is using Delivery Pricing charge model
+
+      '
+    properties:
+      frequency:
+        description: 'The frequency of the delivery. Only supports weekly now
+
+          '
+        enum:
+        - Weekly
+        type: string
+      friday:
+        description: 'The flag to indicate should the delivery happen on Friday
+
+          '
+        type: boolean
+      monday:
+        description: 'The flag to indicate should the delivery happen on Monday
+
+          '
+        type: boolean
+      saturday:
+        description: 'The flag to indicate should the delivery happen on Saturday
+
+          '
+        type: boolean
+      sunday:
+        description: 'The flag to indicate should the delivery happen on Sunday
+
+          '
+        type: boolean
+      thursday:
+        description: 'The flag to indicate should the delivery happen on Thursday
+
+          '
+        type: boolean
+      tuesday:
+        description: 'The flag to indicate should the delivery happen on Tuesday
+
+          '
+        type: boolean
+      wendesday:
+        description: 'The flag to indicate should the delivery happen on Wendesday
+
+          '
+        type: boolean
+    title: deliverySchedule
+    type: object
+  ProxyBadRequestResponse:
+    properties:
+      Errors:
+        items:
+          properties:
+            Code:
+              description: ''
+              type: string
+            Message:
+              description: ''
+              type: string
+          type: object
+        type: array
+      Success:
+        description: ''
+        type: boolean
+    type: object
+parameters:
+  GLOBAL_HEADER_Accept_Encoding:
+    name: Accept-Encoding
+    in: header
+    required: false
+    type: string
+    description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+  GLOBAL_HEADER_Zuora_Org_Ids:
+    name: Zuora-Org-Ids
+    in: header
+    required: false
+    type: string
+    description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+  GLOBAL_HEADER_X_Zuora_WSDL_Version:
+    name: X-Zuora-WSDL-Version
+    in: header
+    required: false
+    type: string
+    default: 79
+    description: 'Zuora WSDL version number.
+
+      '
+  GLOBAL_HEADER_Idempotency_Key:
+    name: Idempotency-Key
+    in: header
+    required: false
+    type: string
+    maxLength: 255
+    description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+  GLOBAL_HEADER_Content_Encoding:
+    name: Content-Encoding
+    in: header
+    required: false
+    type: string
+    description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+      '
+  GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+    name: Zuora-Entity-Ids
+    in: header
+    required: false
+    type: string
+    description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+      '
+  GLOBAL_HEADER_Zuora_Track_Id:
+    name: Zuora-Track-Id
+    in: header
+    required: false
+    type: string
+    maxLength: 64
+    description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+      The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+      '
+  GLOBAL_REQUEST_pageSize:
+    name: pageSize
+    in: query
+    required: false
+    type: integer
+    maximum: 40
+    default: 20
+    description: 'The number of records returned per page in the response.
+
+      '
+  GLOBAL_REQUEST_rejectUnknownFields:
+    name: rejectUnknownFields
+    in: query
+    required: false
+    type: boolean
+    default: false
+    description: "Specifies whether the call fails if the request body contains unknown fields.\nWith `rejectUnknownFields` set to `true`, Zuora returns a 400 response if\nthe request body contains unknown fields. The body of the 400 response is:\n\n```json\n{\n    \"message\": \"Error - unrecognised fields\"\n}\n```\n\nBy default, Zuora ignores unknown fields in the request body.\n"
+  GLOBAL_HEADER_Authorization_OAuth_optional:
+    name: Authorization
+    in: header
+    required: false
+    type: string
+    description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+      '
+  GLOBAL_REQUEST_page:
+    name: page
+    in: query
+    required: false
+    type: integer
+    minimum: 1
+    default: 1
+    description: 'The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.
+
+      '
+x-tagGroups:
+- name: Authentication
+  tags:
+  - OAuth
+- name: Products
+  tags:
+  - Products
+  - Catalog
+  - Catalog Groups
+  - Offers
+  - Price Book Items
+  - Product Rate Plans
+  - Product Rate Plan Definitions
+  - Product Rate Plan Charges
+  - Product Charge Definitions
+  - Product Rate Plan Charge Tiers
+  - Zuora Revenue Integration
+- name: Customer Accounts
+  tags:
+  - Accounts
+  - Contacts
+  - Contact Snapshots
+- name: Orders and Subscriptions
+  tags:
+  - Sign Up
+  - Orders
+  - Order Actions
+  - Order Line Items
+  - Fulfillments
+  - Ramps
+  - Subscriptions
+  - Rate Plans
+- name: Advanced Consumption Billing
+  tags:
+  - Prepaid with Drawdown
+- name: Usage
+  tags:
+  - Usage
+- name: Billing Documents
+  tags:
+  - Delivery Adjustments
+  - Billing Documents
+  - Invoices
+  - Credit Memos
+  - Debit Memos
+  - E-Invoicing
+  - Invoice Schedules
+  - Taxation Items
+  - Sequence Sets
+  - Operations
+- name: Bill Runs
+  tags:
+  - Bill Run
+  - Billing Preview Run
+- name: Payment Methods
+  tags:
+  - Payment Methods
+  - Custom Payment Method Types
+  - Payment Method Updater
+  - Payment Method Snapshots
+  - Payment Method Transaction Logs
+  - Hosted Pages
+  - RSA Signatures
+- name: Payments
+  tags:
+  - Payment Authorization
+  - Payment Gateways
+  - Payment Gateway Reconciliation
+  - Payments
+  - Payment Transaction Logs
+  - Payment Runs
+  - Payment Schedules
+  - Refunds
+- name: Finance
+  tags:
+  - Accounting Codes
+  - Accounting Periods
+  - Summary Journal Entries
+  - Journal Runs
+  - Mass Updater
+- name: Events and Notifications
+  tags:
+  - Notifications
+  - Custom Event Triggers
+  - Custom Scheduled Events
+- name: Custom Objects
+  tags:
+  - Custom Object Definitions
+  - Custom Object Records
+  - Custom Object Jobs
+- name: System Health
+  tags:
+  - API Health
+  - Bill Run Health
+  - Electronic Payments Health
+- name: Workflow
+  tags:
+  - Workflows
+- name: Data Query
+  tags:
+  - Data Queries
+- name: AQuA
+  tags:
+  - Aggregate Queries
+- name: Deployment Manager
+  tags:
+  - Configuration Templates
+- name: Multiple Organizations
+  tags:
+  - Data Labeling
+- name: Order to Revenue
+  tags:
+  - Regenerate
+- name: General-Purpose Operations
+  tags:
+  - Actions
+  - Settings
+  - Files
+  - Imports
+  - Custom Exchange Rates
+  - Attachments
+  - Describe

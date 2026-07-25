@@ -1,0 +1,3485 @@
+swagger: '2.0'
+info:
+  version: '2023-12-15'
+  title: API Reference Accounting Codes Workflows API
+  description: "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n"
+  contact:
+    email: docs@zuora.com
+host: rest.zuora.com
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Workflows
+  description: 'A workflow is a sequence of tasks that are performed based on predefined logic. A workflow improves efficiency and reduces errors by automating a series of complex tasks that otherwise need to be performed manually and repetitively.
+
+
+    For more information, see <a href="https://knowledgecenter.zuora.com/Central_Platform/Workflow" target="_blank">Workflow</a>.
+
+    '
+paths:
+  /workflows:
+    get:
+      summary: List workflows
+      operationId: GET_Workflows
+      description: "Retrieves a list of workflow definitions available in your Zuora tenant.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.   \n"
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: callout_trigger
+        in: query
+        required: false
+        description: 'If set to true, the operation retrieves workflows that have the callout trigger enabled. If set to false, the operation retrieves workflows that have the callout trigger disabled. If not specified, the operation will not use this filter.
+
+          '
+        type: boolean
+      - name: interval
+        in: query
+        required: false
+        description: 'A CRON expession that specifies a schedule (for example, `0 0 * * *`). If specified, the operation retrieves the workflow that is run based on the specified schedule.
+
+          '
+        type: string
+      - name: name
+        in: query
+        required: false
+        description: 'If specified, the operation retrieves the workflow that is in the specified name.
+
+          '
+        type: string
+      - name: ondemand_trigger
+        in: query
+        required: false
+        description: 'If set to true, the operation retrieves workflows that have the ondemand trigger enabled. If set to false, the operation retrieves workflows that have the ondemand trigger disabled. If not specified, the operation will not use this filter.
+
+          '
+        type: boolean
+      - name: scheduled_trigger
+        in: query
+        required: false
+        type: boolean
+        description: 'If set to true, the operation retrieves workflows that have the scheduled trigger enabled. If set to false, the operation retrieves workflows that have the scheduled trigger disabled. If not specfied, the operation will not use this filter.
+
+          '
+      - name: page
+        in: query
+        required: false
+        type: integer
+        default: 1
+        description: 'If you want to retrieve only the workflows on a specific page, you can specify the `page` number in the query.
+
+          '
+      - name: page_length
+        in: query
+        required: false
+        type: integer
+        default: 20
+        description: 'The number of workflows shown in a single call. If the `page` parameter is not specified, the operation will return only the first page of results. If there are multiple pages of results, use it with the `page` parameter to get the results on subsequent pages. The maximum value is 50.
+
+          '
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/GetWorkflowsResponse'
+          examples:
+            application/json:
+              data:
+              - id: 48
+                interval: null
+                calloutTrigger: true
+                createdAt: '2019-05-31T14:52:38.171Z'
+                description: ''
+                name: New test workflow
+                ondemandTrigger: true
+                scheduledTrigger: false
+                timezone: null
+                status: Active
+                updatedAt: '2019-06-03T21:02:26.694Z'
+                active_version:
+                  id: 49
+                  description: ''
+                  version: 0.0.1
+                  type: Workflow::Setup
+                  status: Active
+                latest_inactive_verisons:
+                - id: 50
+                  name: test
+                  description: ''
+                  version: 0.0.2
+                  type: Workflow::Setup
+                  ondemandTrigger: true
+                  calloutTrigger: true
+                  scheduledTrigger: false
+                  interval: ''
+                  timezone: Sydney
+                  createdAt: '2021-09-22T19:30:52.350Z'
+                  updatedAt: '2021-09-22T19:30:52.350Z'
+                  priority: Medium
+                  status: Inactive
+                - id: 51
+                  name: test
+                  description: ''
+                  version: 0.0.3
+                  type: Workflow::Setup
+                  ondemandTrigger: true
+                  calloutTrigger: true
+                  scheduledTrigger: false
+                  interval: ''
+                  timezone: Sydney
+                  createdAt: '2021-09-22T19:30:52.350Z'
+                  updatedAt: '2021-09-22T19:30:52.350Z'
+                  priority: Medium
+                  status: Inactive
+              pagination:
+                page: 1
+                page_length: 1
+                next_page: https://rest.zuora.com/workflows?page=2&page_length=1
+  /workflows/{workflow_id}:
+    get:
+      summary: Retrieve a workflow
+      operationId: GET_Workflow
+      description: 'Retrieves information about a specific workflow by its ID.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow View Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: workflow_id
+        in: path
+        required: true
+        description: 'The unique ID of a workflow definition. For example, 19080.
+
+          '
+        type: string
+      responses:
+        '200':
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/WorkflowDefinition'
+          examples:
+            application/json:
+              id: 2
+              name: test
+              description: ''
+              ondemandTrigger: true
+              calloutTrigger: true
+              scheduledTrigger: false
+              interval: ''
+              timezone: Sydney
+              createdAt: '2021-09-22T19:30:52.350Z'
+              updatedAt: '2021-09-22T19:30:52.350Z'
+              priority: Medium
+              status: Active
+              active_version:
+                id: 49
+                description: ''
+                version: 0.0.1
+                type: Workflow::Setup
+                status: Active
+    delete:
+      summary: Delete a workflow
+      operationId: DELETE_Workflow
+      description: 'Deletes a specific workflow by its ID.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow Manage Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: workflow_id
+        in: path
+        required: true
+        description: 'The unique ID of a workflow definition. For example, 19080.
+
+          '
+        type: string
+      responses:
+        '200':
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/DeleteWorkflowSuccess'
+          examples:
+            application/json:
+              success: true
+              id: 19080
+        '404':
+          description: The workflow for the given id does not exist
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/DeleteWorkflowError'
+          examples:
+            application/json:
+              errors:
+              - 'Invalid ID / Multiple objects returned - SchemaId: 2 InstanceId: 2 ObjectId: 19080'
+    patch:
+      summary: Update a workflow
+      operationId: PATCH_UpdateWorkflow
+      description: 'Updates a specific workflow by its ID, which allows you to [configure the settings of a workflow](https://knowledgecenter.zuora.com/CE_Workflow/Using_Workflow/B_Configure_a_Workflow) via API.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow Manage Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - name: workflow_id
+        in: path
+        required: true
+        description: 'The unique ID of a workflow definition. For example, 19080.
+
+          '
+        type: string
+      - name: request
+        in: body
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: 'The name of the workflow definition
+
+                '
+            description:
+              type: string
+              description: 'The description of the workflow defintion
+
+                '
+            active_workflow_version_id:
+              type: integer
+              description: 'The id of a version. This version will then be set to the active version of the workflow definition.
+
+                '
+            status:
+              type: string
+              description: 'Can be `Active` or `Inactive`. Active workfow definitions run like normal. Inactive workflow definitions cannot be run.
+
+                '
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/WorkflowDefinition'
+          examples:
+            application/json:
+              id: 2
+              name: Bill Customers
+              description: This is my special workflow! It bills everybody
+              ondemandTrigger: true
+              calloutTrigger: true
+              scheduledTrigger: true
+              interval: 0 0 /1 /1 * *
+              timezone: Eastern Time (US & Canada)
+              createdAt: '2021-03-24T19:52:37.254Z'
+              updatedAt: '2021-04-05T18:35:52.781Z'
+              priority: Low
+              status: Inactive
+              active_version:
+                id: 49
+                description: ''
+                version: 0.0.1
+                type: Workflow::Setup
+                status: Active
+        '404':
+          description: The workflow for the given id does not exist
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/DeleteWorkflowError'
+          examples:
+            application/json:
+              errors:
+              - 'Invalid ID / Multiple objects returned - SchemaId: 2 InstanceId: 2 ObjectId: 19080'
+        '422':
+          description: 'Bad Request for one of the following reasons:
+
+            * The name or description fields are not strings.
+
+            * The ondemand_trigger, callout_trigger, or scheduled_trigger fields are not booleans.
+
+            * The timezone does not match one of the valid values in [this spread sheet](https://docs.google.com/spreadsheets/d/1skhepi-q5l9LyaMUPZjU_V9gzTphNMqNyV6ST5mygEo/edit?usp=sharing).
+
+            * The priority is not one of High, Medium, or Low.
+
+            * The status is not one of Active or Inactive.
+
+            * The scheduled_trigger is set to true but a valid timezone and interval were not passed.
+
+            '
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+          examples:
+            application/json:
+              success: false
+              reasons:
+              - fieldName: status
+                title: on is not a valid status. Choose from Active or Inactive
+              - fieldName: interval
+                title: The entered cron interval is not valid, rebuild schedule and submit again.
+  /workflows/workflow_runs/{workflow_run_id}:
+    get:
+      summary: Retrieve a workflow run
+      operationId: GET_Workflow_Run
+      description: 'Retrieves information about a specific workflow run by its ID.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow View Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: workflow_run_id
+        in: path
+        required: true
+        description: 'The unique ID of a workflow run. For example, 19080.
+
+          '
+        type: string
+      responses:
+        '200':
+          description: ''
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/GetWorkflowResponse'
+          examples:
+            application/json:
+              id: 19063
+              name: WF-19027-00000032
+              originalWorkflowId: 19027
+              type: Workflow::Instance
+              status: Finished
+              tasks:
+                total: 4
+                queued: 0
+                processing: 0
+                pending: 0
+                stopped: 0
+                success: 4
+                error: 0
+              runTime: 64.513026
+              cpuTime: '19:01:04'
+              finishedAt: 2019-09-10 19:33:34 UTC
+              createdAt: 2019-09-10 19:32:21 UTC
+              updatedAt: 2019-09-10 19:33:34 UTC
+  /workflows/{workflow_id}/run:
+    post:
+      summary: Run a workflow
+      operationId: POST_Run_Workflow
+      description: "Run a specified workflow. In the request body, you can include parameters that you want to pass to the workflow. For the parameters to be recognized and picked up by tasks in the workflow, you need to define the parameters first.\n\n**Note**: To run a workflow, do not use the following reserved words in the request body of the parameters.\n - `controller`\n - `action`\n - `id`\n - `user_email`\n - `user_token`\n - `format`\n\n### User Access Permission\nYou must be assigned the **Workflow Run Access** permission to run this operation.\n\nTo learn about how to define parameters, see [Configure the settings of a workflow](https://knowledgecenter.zuora.com/CE_Workflow/Using_Workflow/B_Configure_a_Workflow).\n"
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: workflow_id
+        in: path
+        type: integer
+        required: true
+        description: The ID of the workflow definition you want to run.
+      - in: body
+        name: inputparameters
+        description: Include parameters you want to pass to the workflow.
+        schema:
+          type: object
+          example:
+            paymentId: 4028905f5a87c0ff015a889ddfb800c0
+            accountId: 4028905f5a87c0ff015a87d25ae90025
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/WorkflowInstance'
+          examples:
+            application/json:
+              id: 400
+              name: WF-396-00000003
+              originalWorkflowId: 396
+              type: Workflow::Instance
+              status: Queued
+              createdAt: 2019-09-19 18:25:33 UTC
+              updatedAt: 2019-09-19 18:25:33 UTC
+        '400':
+          description: Callout not enabled for the workflow
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                description: The list of errors returned from the workflow
+                items:
+                  $ref: '#/definitions/WorkflowError'
+          examples:
+            application/json:
+              errors:
+              - status: 400
+                code: invalid
+                title: Callout mode is not turned on in this workflow.
+        '409':
+          description: The provided workflow_id references a workflow instance
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request
+
+                headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                description: The list of errors returned from the workflow
+                items:
+                  $ref: '#/definitions/WorkflowError'
+          examples:
+            application/json:
+              errors:
+              - status: 406
+                code: invalid
+                title: Workflow WF-396-00000002 with Id 399 is an instance/run.
+        '406':
+          description: The provided body is missing one or more required parameters
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                description: The list of errors returned from the workflow
+                items:
+                  $ref: '#/definitions/WorkflowError'
+              parameters:
+                description: The request body that was originally provided to the run API.
+          examples:
+            application/json:
+              errors:
+              - status: 406
+                code: invalid
+                title: Required field for Workflow-Message1 does not have a set value. Ensure parameter 'Message' is present.
+              parameters:
+                workflow: {}
+  /workflows/{workflow_id}/export:
+    get:
+      summary: Export a workflow version
+      operationId: GET_WorkflowExport
+      description: '
+
+        Exports a workflow version into a JSON file. This file can be used to create a copy of this workflow version.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow View Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: workflow_id
+        type: integer
+        in: path
+        required: true
+        description: The ID of the workflow definition to export.
+      - name: version
+        in: query
+        required: false
+        description: "Default result is the active version of the workflow definition. Version number and 'latest' can be used to export a specific version of the workflow definition. \n"
+        type: string
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: OK
+          schema:
+            $ref: '#/definitions/ExportWorkflowVersionResponse'
+          examples:
+            application/json:
+              workflow:
+                id: 286
+                name: Call Echo
+                description: ''
+                parameters: {}
+                data: {}
+                original_workflow_id: null
+                type: Workflow::Setup
+                ondemand_trigger: true
+                callout_trigger: true
+                scheduled_trigger: false
+                interval: null
+                timezone: null
+                status: null
+                finished_at: null
+                css:
+                  top: 40px
+                  left: 30px
+                notifications: {}
+                started_at: null
+                call_type: null
+                priority: Medium
+                sync_trigger: false
+                delete_ttl: 60
+                task_summary: {}
+                version: 0.0.1
+              tasks:
+              - id: 849
+                name: Call Echo
+                parameters:
+                  url: http://scooterlabs.com/echo
+                  datas:
+                  - key: ''
+                    value: ''
+                  method: GET
+                  headers:
+                  - key: ''
+                    value: ''
+                  raw_body: ''
+                  body_type: raw
+                  validation:
+                    zuora_call: 'false'
+                    status_codes:
+                    - ''
+                    - '200'
+                  retry_rules:
+                    retry_count: '0'
+                    retry_window: '30'
+                    current_retry_count: '0'
+                  authorization:
+                    type: none
+                  strict_variables: 'true'
+                  validate_response: 'false'
+                  validation_scheme: ''
+                  include_response_code: 'true'
+                action_type: Callout
+                object: null
+                object_id: null
+                call_type: SOAP
+                task_id: null
+                original_task_id: null
+                original_workflow_id: null
+                status: null
+                error: null
+                error_details: null
+                process_id: null
+                css:
+                  top: 160px
+                  left: 470px
+                concurrent_limit: 9999999
+                iterate_row_reference: null
+                error_class: null
+                object_batched_reference: null
+                tags:
+                - ''
+                priority: Medium
+                assignment: []
+              linkages:
+              - source_workflow_id: 286
+                source_task_id: null
+                target_task_id: 849
+                linkage_type: Start
+        '400':
+          description: The input of version is invalid.
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                description: The list of errors returned from the workflow
+                items:
+                  $ref: '#/definitions/WorkflowError'
+          examples:
+            application/json:
+              errors:
+              - status: 400
+                code: invalid
+                title: The input of version '1' is invalid.
+        '404':
+          description: Workflow version is not found.
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                description: The list of errors returned from the workflow
+                items:
+                  $ref: '#/definitions/WorkflowError'
+          examples:
+            application/json:
+              errors:
+              - status: 400
+                code: invalid
+                title: Workflow version '1' is not found.
+  /workflows/import:
+    post:
+      summary: Import a workflow
+      operationId: POST_WorkflowImport
+      description: 'Create a new workflow definition and its first version using the exported JSON document of an existing workflow version.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow Manage Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: workflow_definition_id
+        type: integer
+        in: query
+        required: false
+        description: The unique id of the workflow definition to import a workflow version under.
+      - name: version
+        type: string
+        in: query
+        required: false
+        description: The version number of the new workflow version to import. Must be greater than any existing version numbers.
+      - name: activate
+        type: boolean
+        in: query
+        required: false
+        description: Indicates whether the imported version is an active version. Default to be false.
+      - name: request
+        in: body
+        schema:
+          $ref: '#/definitions/POSTWorkflowDefinitionImportRequest'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: OK
+          schema:
+            $ref: '#/definitions/Workflow'
+          examples:
+            application/json:
+              id: 403
+              name: Call Echo
+              description: ''
+              type: Workflow::Setup
+              version: 0.0.1
+              ondemandTrigger: true
+              calloutTrigger: true
+              scheduledTrigger: false
+              interval: null
+              timezone: null
+              createdAt: '2019-10-03T14:14:39.139Z'
+              updatedAt: '2019-10-03T14:14:39.139Z'
+  /workflows/{workflow_id}/versions/import:
+    post:
+      summary: Import a workflow version
+      operationId: POST_WorkflowVersionsImport
+      description: 'Create a new workflow version under a workflow definition using the exported JSON document of an existing workflow version.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow Manage Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: workflow_id
+        type: integer
+        in: path
+        required: true
+        description: The unique id of the workflow definition to import a workflow version under.
+      - name: version
+        type: string
+        in: query
+        required: true
+        description: The version number of the new workflow version to import. Must be greater than any existing version numbers.
+      - name: activate
+        type: boolean
+        in: query
+        required: false
+        description: Indicates whether the imported version is an active version. Default to be false.
+      - name: request
+        in: body
+        schema:
+          type: object
+          properties:
+            workflow:
+              $ref: '#/definitions/DetailedWorkflow'
+            tasks:
+              type: array
+              items:
+                $ref: '#/definitions/Task'
+            linkages:
+              type: array
+              items:
+                $ref: '#/definitions/Linkage'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: OK
+          schema:
+            $ref: '#/definitions/WorkflowDefinition'
+          examples:
+            application/json:
+              id: 2
+              name: test
+              description: ''
+              ondemandTrigger: true
+              calloutTrigger: true
+              scheduledTrigger: false
+              interval: ''
+              timezone: Sydney
+              createdAt: '2021-09-22T19:30:52.350Z'
+              updatedAt: '2021-09-22T19:30:52.350Z'
+              priority: Medium
+              status: Active
+              active_version:
+                id: 49
+                description: ''
+                version: 0.0.1
+                type: Workflow::Setup
+                status: Active
+  /versions/{version_id}:
+    delete:
+      summary: Delete a workflow version
+      operationId: DELETE_WorkflowVersion
+      description: "Delete a workflow version based on the version id. \n\n### User Access Permission\nYou must be assigned the **Workflow Manage Access** permission to run this operation.\n"
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: version_id
+        type: integer
+        in: path
+        required: true
+        description: The unique id of the workflow version.
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: OK
+          schema:
+            $ref: '#/definitions/DeleteWorkflowSuccess'
+          examples:
+            application/json:
+              success: true
+              id: 113
+        '403':
+          description: Cannot delete the active version of a workflow.
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/DeleteWorkflowError'
+          examples:
+            application/json:
+              errors:
+              - code: invalid
+                status: 403
+                title: Cannot delete the active version of a workflow.
+  /workflows/{workflow_id}/versions:
+    get:
+      summary: List all versions of a workflow definition
+      operationId: GET_WorkflowVersions
+      description: 'Return a list of all workflow versions under a workflow definition
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow View Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: workflow_id
+        type: integer
+        in: path
+        required: true
+        description: The unique id of the workflow definition to import a workflow version under.
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          description: OK
+          schema:
+            $ref: '#/definitions/GetVersionsResponse'
+          examples:
+            application/json:
+              data:
+              - calloutTrigger: true
+                createdAt: '2019-05-31T14:52:38.171Z'
+                description: ''
+                id: 48
+                interval: null
+                version: 0.0.1
+                name: New test workflow
+                ondemandTrigger: true
+                scheduledTrigger: false
+                timezone: null
+                type: Workflow::Setup
+                updatedAt: '2019-06-03T21:02:26.694Z'
+              - calloutTrigger: true
+                createdAt: '2019-05-31T14:52:38.171Z'
+                description: ''
+                id: 49
+                interval: null
+                version: 0.0.2
+                name: New test workflow
+                ondemandTrigger: true
+                scheduledTrigger: false
+                timezone: null
+                type: Workflow::Setup
+                updatedAt: '2019-06-03T21:02:26.694Z'
+  /workflows/tasks:
+    get:
+      summary: List workflow tasks
+      operationId: GET_WorkflowsTasks
+      description: 'Retrieves a list of workflow tasks available in your Zuora tenant.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow View Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: id
+        in: query
+        required: false
+        description: 'If specified, the operation retrieves the task that is with specified id.
+
+          '
+        type: string
+      - name: name
+        in: query
+        required: false
+        description: 'If specified, the operation retrieves tasks that is in the specified name.
+
+          '
+        type: string
+      - name: instance
+        in: query
+        required: false
+        description: 'If set to true, the operation retrieves workflows that have the scheduled trigger enabled. If set to false, the operation retrieves workflows that have the scheduled trigger disabled. If not specfied, the operation will not use this filter.
+
+          '
+        type: boolean
+      - name: action_type
+        in: query
+        required: false
+        description: 'If specified, the operation retrieves tasks that is the specified type.
+
+          '
+        type: string
+      - name: object
+        in: query
+        required: false
+        description: 'If specified, the operation retrieves tasks with the specified object.
+
+          '
+        type: string
+      - name: object_id
+        in: query
+        required: false
+        description: 'If specified, the operation retrieves tasks with the specified object id.
+
+          '
+        type: string
+      - name: call_type
+        in: query
+        required: false
+        description: 'If specified, the operation retrieves tasks with the specified api call type used.
+
+          '
+        type: string
+      - name: workflow_id
+        in: query
+        required: false
+        description: 'If specified, the operation retrieves tasks that for the specified workflow id.
+
+          '
+        type: string
+      - name: tags
+        in: query
+        required: false
+        items:
+          type: string
+        description: 'If specified, the operation retrieves tasks that with the specified filter tags. Use the following syntax to specify multiple tags: `tags[]=tag_value_1&tags[]=tag_value_2`.
+
+
+          **Note:** All the workflow tasks that have any of the specified tags will be listed in the response body.
+
+          '
+        type: array
+      - name: page
+        in: query
+        required: false
+        type: integer
+        default: 1
+        description: 'If you want to retrieve only the workflows on a specific page, you can specify the `page` number in the query.
+
+          '
+      - name: page_length
+        in: query
+        required: false
+        type: integer
+        default: 20
+        description: 'The number of workflow tasks shown in a single call. If the `page` parameter is not specified, the operation will return only the first page of results. If there are multiple pages of results, use it with the `page` parameter to get the results on subsequent pages. The maximum value is 100.
+
+          '
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/TasksResponse'
+          examples:
+            application/json:
+              data:
+              - id: 2771
+                name: If
+                instance: true
+                parameters:
+                  if_clause: "{% if 0 > 1 %}\r\nTrue\r\n{% else %}\r\nFalse\r\n{% endif %}"
+                  strict_variables: 'true'
+                data:
+                  Files:
+                    XML_52881.xml:
+                      name: JSONData_xslt.xml
+                      size: 0.011725425720214844
+                      object_class: Workflow
+                  Tasks:
+                    Previous:
+                      Id: 2770
+                      Status: Error
+                      ErrorClass: WorkflowError::Callout
+                      ErrorReason: Callout response was 500 after 1 tries.
+                  Callout:
+                    URL: https://rest.apisandbox.zuora.com/v1/action/query
+                    RequestBody:
+                      queryString: Select Id From Contact Where LastName = 'Drew' AND FirstName = 'Nancy' AND  WorkEmail = 'nancy@xyz.com'
+                    ResponseBody:
+                      message: 'An unexpected error occurred
+
+                        '
+                    ResponseCode: 500
+                    RequestHeaders:
+                      Content-Type: application/json
+                    ResponseHeaders:
+                      x-n:
+                      - S
+                      date:
+                      - Thu, 19 Sep 2019 12:35:43 GMT
+                      pragma:
+                      - no-cache
+                      server:
+                      - kong/0.9.9
+                      expires:
+                      - Thu, 19 Sep 2019 12:35:43 GMT
+                      connection:
+                      - close
+                      content-type:
+                      - text/plain; charset=UTF-8
+                      cache-control:
+                      - max-age=0, no-cache, no-store
+                  Workflow:
+                    LastRunDate: '2019-09-19'
+                    ExecutionDate: '2019-09-19'
+                    LastRunDateTime: '2019-09-19T12:34:41'
+                    WorkflowRunUser: test-user
+                    ExecutionDateTime: '2019-09-19T12:35:37'
+                action_type: If
+                object: null
+                object_id: null
+                call_type: SOAP
+                workflow_id: 476
+                status: Success
+                start_time: '2019-09-19T12:35:43.857Z'
+                end_time: '2019-09-19T12:35:43.942Z'
+                original_task_id: 2582
+                original_workflow_id: 416
+                error: null
+                error_class: null
+                error_details: null
+                tags: []
+              pagination:
+                page: 1
+                page_length: 1
+                next_page: https://rest.zuora.com/workflows/tasks?page=2&page_length=1
+  /workflows/tasks/{task_id}:
+    get:
+      summary: Retrieve a workflow task
+      operationId: GET_WorkflowsTask
+      description: 'Retrieves a specific workflow task by its ID.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow View Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: task_id
+        in: path
+        required: true
+        description: 'The unique ID of the task.
+
+          '
+        type: string
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/Task'
+          examples:
+            application/json:
+              id: 2771
+              name: If
+              instance: true
+              parameters:
+                if_clause: "{% if 0 > 1 %}\r\nTrue\r\n{% else %}\r\nFalse\r\n{% endif %}"
+                strict_variables: 'true'
+              data:
+                Files:
+                  XML_52881.xml:
+                    name: JSONData_xslt.xml
+                    size: 0.011725425720214844
+                    object_class: Workflow
+                Tasks:
+                  Previous:
+                    Id: 2770
+                    Status: Error
+                    ErrorClass: WorkflowError::Callout
+                    ErrorReason: Callout response was 500 after 1 tries.
+                Callout:
+                  URL: https://rest.apisandbox.zuora.com/v1/action/query
+                  RequestBody:
+                    queryString: Select Id From Contact Where LastName = 'Drew' AND FirstName = 'Nancy' AND  WorkEmail = 'nancy@xyz.com'
+                  ResponseBody:
+                    message: 'An unexpected error occurred
+
+                      '
+                  ResponseCode: 500
+                  RequestHeaders:
+                    Content-Type: application/json
+                  ResponseHeaders:
+                    x-n:
+                    - S
+                    date:
+                    - Thu, 19 Sep 2019 12:35:43 GMT
+                    pragma:
+                    - no-cache
+                    server:
+                    - kong/0.9.9
+                    expires:
+                    - Thu, 19 Sep 2019 12:35:43 GMT
+                    connection:
+                    - close
+                    content-type:
+                    - text/plain; charset=UTF-8
+                    cache-control:
+                    - max-age=0, no-cache, no-store
+                Workflow:
+                  LastRunDate: '2019-09-19'
+                  ExecutionDate: '2019-09-19'
+                  LastRunDateTime: '2019-09-19T12:34:41'
+                  WorkflowRunUser: test-user
+                  ExecutionDateTime: '2019-09-19T12:35:37'
+              action_type: If
+              object: null
+              object_id: null
+              call_type: SOAP
+              workflow_id: 476
+              status: Success
+              start_time: '2019-09-19T12:35:43.857Z'
+              end_time: '2019-09-19T12:35:43.942Z'
+              original_task_id: 2582
+              original_workflow_id: 416
+              error: null
+              error_class: null
+              error_details: null
+              tags: []
+  /workflows/tasks/{task_id}/rerun:
+    post:
+      summary: Rerun a workflow task
+      operationId: POST_WorkflowsTaskRerun
+      description: 'Reruns a specific workflow task by its ID.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow Run Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: task_id
+        in: path
+        required: true
+        description: 'The unique ID of the task.
+
+          '
+        type: string
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/Task'
+          examples:
+            application/json:
+              id: 2771
+              name: If
+              instance: true
+              parameters:
+                if_clause: "{% if 0 > 1 %}\r\nTrue\r\n{% else %}\r\nFalse\r\n{% endif %}"
+                strict_variables: 'true'
+              data:
+                Files:
+                  XML_52881.xml:
+                    name: JSONData_xslt.xml
+                    size: 0.011725425720214844
+                    object_class: Workflow
+                Tasks:
+                  Previous:
+                    Id: 2770
+                    Status: Error
+                    ErrorClass: WorkflowError::Callout
+                    ErrorReason: Callout response was 500 after 1 tries.
+                Callout:
+                  URL: https://rest.apisandbox.zuora.com/v1/action/query
+                  RequestBody:
+                    queryString: Select Id From Contact Where LastName = 'Drew' AND FirstName = 'Nancy' AND  WorkEmail = 'nancy@xyz.com'
+                  ResponseBody:
+                    message: 'An unexpected error occurred
+
+                      '
+                  ResponseCode: 500
+                  RequestHeaders:
+                    Content-Type: application/json
+                  ResponseHeaders:
+                    x-n:
+                    - S
+                    date:
+                    - Thu, 19 Sep 2019 12:35:43 GMT
+                    pragma:
+                    - no-cache
+                    server:
+                    - kong/0.9.9
+                    expires:
+                    - Thu, 19 Sep 2019 12:35:43 GMT
+                    connection:
+                    - close
+                    content-type:
+                    - text/plain; charset=UTF-8
+                    cache-control:
+                    - max-age=0, no-cache, no-store
+                Workflow:
+                  LastRunDate: '2019-09-19'
+                  ExecutionDate: '2019-09-19'
+                  LastRunDateTime: '2019-09-19T12:34:41'
+                  WorkflowRunUser: test-user
+                  ExecutionDateTime: '2019-09-19T12:35:37'
+              action_type: If
+              object: null
+              object_id: null
+              call_type: SOAP
+              workflow_id: 476
+              status: Success
+              start_time: '2019-09-19T12:35:43.857Z'
+              end_time: '2019-09-19T12:35:43.942Z'
+              original_task_id: 2582
+              original_workflow_id: 416
+              error: null
+              error_class: null
+              error_details: null
+              tags: []
+  /workflows/tasks/batch_update:
+    put:
+      summary: Update workflow tasks
+      operationId: PUT_WorkflowsTasksUpdate
+      description: 'Updates a group of workflow tasks.
+
+
+        ### User Access Permission
+
+        You must be assigned the **Workflow Manage Access** permission to run this operation.
+
+        '
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: UpdateRequest
+        in: body
+        schema:
+          $ref: '#/definitions/PutTasksRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/TasksResponse'
+          examples:
+            application/json:
+              data:
+              - id: 2771
+                name: If
+                instance: true
+                parameters:
+                  if_clause: "{% if 0 > 1 %}\r\nTrue\r\n{% else %}\r\nFalse\r\n{% endif %}"
+                  strict_variables: 'true'
+                data:
+                  Files:
+                    XML_52881.xml:
+                      name: JSONData_xslt.xml
+                      size: 0.011725425720214844
+                      object_class: Workflow
+                  Tasks:
+                    Previous:
+                      Id: 2770
+                      Status: Error
+                      ErrorClass: WorkflowError::Callout
+                      ErrorReason: Callout response was 500 after 1 tries.
+                  Callout:
+                    URL: https://rest.apisandbox.zuora.com/v1/action/query
+                    RequestBody:
+                      queryString: Select Id From Contact Where LastName = 'Drew' AND FirstName = 'Nancy' AND  WorkEmail = 'nancy@xyz.com'
+                    ResponseBody:
+                      message: 'An unexpected error occurred
+
+                        '
+                    ResponseCode: 500
+                    RequestHeaders:
+                      Content-Type: application/json
+                    ResponseHeaders:
+                      x-n:
+                      - S
+                      date:
+                      - Thu, 19 Sep 2019 12:35:43 GMT
+                      pragma:
+                      - no-cache
+                      server:
+                      - kong/0.9.9
+                      expires:
+                      - Thu, 19 Sep 2019 12:35:43 GMT
+                      connection:
+                      - close
+                      content-type:
+                      - text/plain; charset=UTF-8
+                      cache-control:
+                      - max-age=0, no-cache, no-store
+                  Workflow:
+                    LastRunDate: '2019-09-19'
+                    ExecutionDate: '2019-09-19'
+                    LastRunDateTime: '2019-09-19T12:34:41'
+                    WorkflowRunUser: test-user
+                    ExecutionDateTime: '2019-09-19T12:35:37'
+                action_type: If
+                object: null
+                object_id: null
+                call_type: SOAP
+                workflow_id: 476
+                status: Success
+                start_time: '2019-09-19T12:35:43.857Z'
+                end_time: '2019-09-19T12:35:43.942Z'
+                original_task_id: 2582
+                original_workflow_id: 416
+                error: null
+                error_class: null
+                error_details: null
+                tags: []
+              pagination:
+                page: null
+                page_length: null
+        '400':
+          description: 'Bad Request for one of the following reasons:
+
+            * Data is missing
+
+            * Data is empty or not an array
+
+            * Data has more than 50 tasks
+
+            '
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/BadRequestResponse'
+          examples:
+            application/json:
+              errors:
+              - status: 400
+                code: Task
+                title: Data not present or not in array.
+        '404':
+          description: One or more tasks are missing the required `id` field
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/BadRequestResponse'
+          examples:
+            application/json:
+              errors:
+              - status: 404
+                code: Task
+                title: Missing ids for tasks.
+  /workflows/metrics.json:
+    get:
+      summary: Retrieve workflow task usage
+      operationId: GET_WorkflowsUsages
+      description: "Gets workflow task usage sorted by day within a specified time frame.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.        \n"
+      tags:
+      - Workflows
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: startDate
+        in: query
+        required: true
+        description: 'The start date of the usage data that you want to get. For example, 2019-01-01.
+
+          '
+        type: string
+        format: date
+      - name: endDate
+        in: query
+        required: true
+        description: 'The end date of the usage data that you want to get. For example, 2019-12-31.
+
+          '
+        type: string
+        format: date
+      - name: metrics
+        in: query
+        required: true
+        description: 'The type of metric that you want to get. Currently, only `taskCount` is supported. `taskCount` is the amount of task runs.
+
+          '
+        type: string
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+          schema:
+            $ref: '#/definitions/UsagesResponse'
+          examples:
+            application/json:
+              metrics:
+              - date: '2019-01-16'
+                values:
+                  taskCount: 1417
+              - date: '2019-08-02'
+                values:
+                  taskCount: 24
+              - date: '2019-05-23'
+                values:
+                  taskCount: 2
+definitions:
+  PutTasksRequest:
+    example:
+      data:
+      - action_type: If
+        call_type: SOAP
+        concurrent_limit: 9999999
+        id: 2771
+        name: If
+        object: null
+        object_id: null
+        status: Success
+        tags: []
+        workflow_id: 476
+    properties:
+      data:
+        description: 'The list of tasks to update.
+
+          '
+        items:
+          $ref: '#/definitions/UpdateTask'
+        maximum: 50
+        minimum: 1
+        type: array
+    type: object
+  DeleteWorkflowSuccess:
+    properties:
+      id:
+        description: The id of the deleted workflow
+        type: string
+      success:
+        description: The indicator for whether the deletion was a success
+        type: boolean
+    type: object
+  UpdateTask:
+    description: 'A task.
+
+      '
+    properties:
+      action_type:
+        description: 'The type of task.
+
+          '
+        type: string
+      call_type:
+        description: 'The type of the API used.
+
+          '
+        type: string
+      concurrent_limit:
+        description: 'The maximum number of this task that can run concurrently.
+
+          '
+        maximum: 9999999
+        minimum: 1
+        type: integer
+      id:
+        description: 'The unique ID of the task.
+
+          '
+        type: integer
+      name:
+        description: 'The name of the task.
+
+          '
+        type: string
+      object:
+        description: 'The selected object for the task.
+
+          '
+        type: string
+      object_id:
+        description: 'The ID of the selected object of the task.
+
+          '
+        type: string
+      status:
+        description: 'The status of the task instance.
+
+          '
+        enum:
+        - Queued
+        - Processing
+        - Pending
+        - Success
+        - Stopped
+        - Error
+        type: string
+      tags:
+        description: 'The array of filter tags.
+
+          '
+        items:
+          type: string
+        type: array
+      workflow_id:
+        description: 'The ID of the workflow the task belongs to.
+
+          '
+        type: integer
+    required:
+    - id
+    title: task
+    type: object
+  ExportWorkflowVersionResponse:
+    properties:
+      linkages:
+        items:
+          $ref: '#/definitions/Linkage'
+        type: array
+      tasks:
+        items:
+          $ref: '#/definitions/Task'
+        type: array
+      workflow:
+        $ref: '#/definitions/Workflow'
+        type: object
+    type: object
+  WorkflowDefinition:
+    description: 'A workflow.
+
+      '
+    properties:
+      active_version:
+        description: "Information of the active version. \n"
+        properties:
+          description:
+            description: 'The description of the active version.
+
+              '
+            type: string
+          id:
+            description: 'The unique ID of the active version.
+
+              '
+            type: integer
+          status:
+            description: 'The status of the active version.
+
+              '
+            type: string
+          type:
+            description: 'The type of the active version. Currently the only valid value is ''Workflow::Setup''.
+
+              '
+            enum:
+            - Workflow::Setup
+            - Workflow::Instance
+            type: string
+          version:
+            description: 'The version number of the active version.
+
+              '
+            type: string
+        type: object
+      calloutTrigger:
+        description: 'Indicates whether the callout trigger is enabled for the retrieved workflow.
+
+          '
+        type: boolean
+      createdAt:
+        description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+      description:
+        description: 'The description of the workflow definition.
+
+          '
+        type: string
+      id:
+        description: 'The unique ID of the workflow definition.
+
+          '
+        type: integer
+      interval:
+        description: 'The schedule of the workflow, in a CRON expression. Returns null if the schedued trigger is disabled.
+
+          '
+        type: string
+      name:
+        description: 'The name of the workflow definition.
+
+          '
+        type: string
+      ondemandTrigger:
+        description: 'Indicates whether the ondemand trigger is enabled for the workflow.
+
+          '
+        type: boolean
+      scheduledTrigger:
+        description: 'Indicates whether the scheduled trigger is enabled for the workflow.
+
+          '
+        type: boolean
+      status:
+        description: 'The status of the workflow definition.
+
+          '
+        type: string
+      timezone:
+        description: 'The timezone that is configured for the scheduler of the workflow. Returns null if the scheduled trigger is disabled.
+
+          '
+        type: string
+      updatedAt:
+        description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+    title: a workflow definition with version information
+    type: object
+  UsagesResponse:
+    properties:
+      metrics:
+        description: 'The list of tasks retrieved.
+
+          '
+        items:
+          $ref: '#/definitions/Usage'
+        type: array
+    type: object
+  WorkflowDefinitionAndVersions:
+    description: 'A workflow.
+
+      '
+    properties:
+      active_version:
+        description: "Information of the active version. \n"
+        properties:
+          description:
+            description: 'The description of the active version.
+
+              '
+            type: string
+          id:
+            description: 'The unique ID of the active version.
+
+              '
+            type: integer
+          status:
+            description: 'The status of the active version.
+
+              '
+            type: string
+          type:
+            description: 'The type of the active version. Currently the only valid value is ''Workflow::Setup''.
+
+              '
+            enum:
+            - Workflow::Setup
+            - Workflow::Instance
+            type: string
+          version:
+            description: 'The version number of the active version.
+
+              '
+            type: string
+        type: object
+      calloutTrigger:
+        description: 'Indicates whether the callout trigger is enabled for the retrieved workflow.
+
+          '
+        type: boolean
+      createdAt:
+        description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+      description:
+        description: 'The description of the workflow definition.
+
+          '
+        type: string
+      id:
+        description: 'The unique ID of the workflow definition.
+
+          '
+        type: integer
+      interval:
+        description: 'The schedule of the workflow, in a CRON expression. Returns null if the schedued trigger is disabled.
+
+          '
+        type: string
+      latest_inactive_verisons:
+        description: "The list of inactive workflow versions retrieved. Maximum number of versions retrieved is 10.  \n"
+        items:
+          $ref: '#/definitions/Workflow'
+        type: array
+      name:
+        description: 'The name of the workflow definition.
+
+          '
+        type: string
+      ondemandTrigger:
+        description: 'Indicates whether the ondemand trigger is enabled for the workflow.
+
+          '
+        type: boolean
+      scheduledTrigger:
+        description: 'Indicates whether the scheduled trigger is enabled for the workflow.
+
+          '
+        type: boolean
+      status:
+        description: 'The status of the workflow definition.
+
+          '
+        type: string
+      timezone:
+        description: 'The timezone that is configured for the scheduler of the workflow. Returns null if the scheduled trigger is disabled.
+
+          '
+        type: string
+      updatedAt:
+        description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+    title: a workflow definition with version information
+    type: object
+  GetVersionsResponse:
+    properties:
+      data:
+        description: "The list of workflow versions retrieved. \n"
+        items:
+          $ref: '#/definitions/Workflow'
+        type: array
+    type: object
+  GetWorkflowResponse:
+    properties:
+      cpuTime:
+        description: 'The overall CPU time for the execution of the workflow.
+
+          '
+        format: time
+        type: string
+      createdAt:
+        description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format..
+
+          '
+        format: datetime
+        type: string
+      finishedAt:
+        description: 'The date and time when the execution of the workflow completes, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+      id:
+        description: 'The unique ID of the workflow.
+
+          '
+        type: integer
+      messages:
+        description: "Messages from tasks. \n\n**Note:** This field is only returned in Production.\n"
+        type: object
+      name:
+        description: 'The unique run number of the workflow.
+
+          '
+        type: string
+      originalWorkflowId:
+        description: 'The ID of the workflow setup.
+
+          '
+        type: string
+      runTime:
+        description: 'The execution time of the workflow including the waiting time, in seconds.
+
+          '
+        format: double
+        type: number
+      status:
+        description: "The status of the workflow:\n  - Queued: The workflow is in queue for being processed.\n  - Processing: The workflow is in process.\n  - Stopping: The workflow is being stopped through Zuora UI.\n  - Stopped: The workflow is stopped through Zuora UI.\n  - Finished: The workflow is finished. When a workflow is finished, it might have tasks pending for retry or delay. Pending tasks do not block the onfinish branch of the workflow, but they block the oncomplete branch of the iterate. \n"
+        enum:
+        - Queued
+        - Processing
+        - Stopping
+        - Stopped
+        - Finished
+        type: string
+      tasks:
+        description: 'An object containing task counts.
+
+          '
+        properties:
+          error:
+            description: 'The number of tasks in **Error** state.
+
+              '
+            type: integer
+          pending:
+            description: 'The number of tasks in **Pending** state.
+
+              '
+            type: integer
+          processing:
+            description: 'The number of tasks in **Processing** state.
+
+              '
+            type: integer
+          queued:
+            description: 'The number of tasks in **Queued** state.
+
+              '
+            type: integer
+          stopped:
+            description: 'The number of tasks in **Stopped** state.
+
+              '
+            type: integer
+          success:
+            description: 'The number of tasks in **Success** state.
+
+              '
+            type: integer
+          total:
+            description: 'The total number of tasks.
+
+              '
+            type: integer
+        type: object
+      type:
+        description: "The type of the current workflow. Possible values:\n  - `Workflow::Setup`: The workflow is a setup and is used for creating workflow instances.\n  - `Workflow::Instance`: The workflow is an execution that has data.\n"
+        type: string
+      updatedAt:
+        description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+    type: object
+  ValidationErrors:
+    properties:
+      reasons:
+        description: The list of reasons that the request was unsuccessful
+        items:
+          $ref: '#/definitions/ValidationReasons'
+        title: validation reasons
+        type: array
+      success:
+        description: Returns `false` if the request was not successful.
+        type: boolean
+    type: object
+  Task:
+    description: 'A task.
+
+      '
+    properties:
+      action_type:
+        description: 'The type of the task.
+
+          '
+        enum:
+        - Approval
+        - Attachment
+        - Billing::BillRun
+        - Billing::CurrencyConversion
+        - Billing::CustomInvoice
+        - Callout
+        - Cancel
+        - Create
+        - CustomObject::Create
+        - CustomObject::Delete
+        - CustomObject::Query
+        - CustomObject::Update
+        - Data::BillingPreviewRun
+        - Data::Link
+        - Delay
+        - Delete
+        - Download::SFTP
+        - Email
+        - Export
+        - File::CustomPDF::CustomDocument
+        - If
+        - InvoiceGenerate
+        - Iterate
+        - Logic::CSVTranslator
+        - Logic::Case
+        - Logic::CustomCode
+        - Logic::JSONTransform
+        - Logic::Lambda
+        - Logic::ResponseFormatter
+        - Logic::XMLTransform
+        - NewProduct
+        - Notifications::GoogleCloudPrint
+        - Notifications::PhoneCall
+        - Notifications::SMS
+        - Payment::GatewayReconciliation
+        - Payment::PaymentRun
+        - Query
+        - RemoveProduct
+        - Reporting::ReportData
+        - Reporting::RunReport
+        - Resume
+        - Suspend
+        - UI::Page
+        - UI::Stop
+        - Update
+        - Upload::FTP
+        - Upload::SFTP
+        - WriteOff
+        type: string
+      call_type:
+        description: 'The type of API used.
+
+          '
+        type: string
+      concurrent_limit:
+        description: the number of concurrent tasks that are allowed to run simultaneously
+        type: integer
+      data:
+        description: 'The data payload for the task.
+
+          '
+        type: object
+      end_time:
+        description: 'If **Instance** is **true**, the end time of the task instance.
+
+          '
+        type: string
+      error:
+        description: 'If **Instance** is **true** and **status** is **Error**, the error reason of the task instance failure.
+
+          '
+        type: string
+      error_class:
+        description: 'If **Instance** is **true** and **status** is **Error**, the error class of the task instance failure.
+
+          '
+        type: string
+      error_details:
+        description: 'If **Instance** is **true** and **status** is **Error**, the error details of the task instance failure.
+
+          '
+        type: string
+      id:
+        description: 'The unique ID of the task.
+
+          '
+        type: integer
+      instance:
+        description: 'Indicates whether this task belongs to an instance of a workflow.
+
+          '
+        type: boolean
+      name:
+        description: 'The name of the task.
+
+          '
+        type: string
+      object:
+        description: 'The selected object for the task.
+
+          '
+        type: string
+      object_id:
+        description: 'The id of the selected object of the task.
+
+          '
+        type: string
+      original_task_id:
+        description: 'If **Instance** is **true**, the ID of the original task in the original workflow.
+
+          '
+        type: integer
+      original_workflow_id:
+        description: 'If **Instance** is **true**, the ID of the original workflow.
+
+          '
+        type: integer
+      parameters:
+        description: 'The configuration of the task.
+
+          '
+        type: object
+      start_time:
+        description: 'If **Instance** is **true**, the start time of the task instance.
+
+          '
+        type: string
+      status:
+        description: 'If **Instance** is **true**, the status of the task instance.
+
+          '
+        enum:
+        - Queued
+        - Processing
+        - Pending
+        - Success
+        - Stopped
+        - Error
+        type: string
+      tags:
+        description: 'The array of filter tags.
+
+          '
+        items:
+          type: string
+        type: array
+      task_id:
+        description: the id of this task's parent task. Will be null if this is the first task of the workflow
+        type: integer
+      workflow_id:
+        description: 'The ID of the workflow that the task belongs to.
+
+          '
+        type: integer
+    type: object
+  POSTWorkflowDefinitionImportRequest:
+    properties:
+      linkages:
+        items:
+          $ref: '#/definitions/Linkage'
+        type: array
+      tasks:
+        items:
+          $ref: '#/definitions/Task'
+        type: array
+      workflow:
+        $ref: '#/definitions/Workflow'
+        type: object
+    type: object
+  BadRequestResponse:
+    properties:
+      Errors:
+        items:
+          properties:
+            code:
+              description: The error code.
+              type: string
+            status:
+              description: The status of the response.
+              type: string
+            title:
+              description: The reason for the error.
+              type: string
+          type: object
+        type: array
+    type: object
+  DetailedWorkflow:
+    description: 'A workflow.
+
+      '
+    properties:
+      call_type:
+        description: 'The call type of the active workflow version.
+
+          '
+        type: string
+      calloutTrigger:
+        description: 'Indicates whether the callout trigger is enabled for the retrieved workflow.
+
+          '
+        type: boolean
+      createdAt:
+        description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+      description:
+        description: 'The description of the workflow.
+
+          '
+        type: string
+      finished_at:
+        description: 'The date and time when the instance of the workflow version finished at.
+
+          '
+        format: datetime
+        type: string
+      id:
+        description: 'The unique ID of the workflow.
+
+          '
+        type: integer
+      interval:
+        description: 'The schedule of the workflow, in a CRON expression. Returns null if the schedued trigger is disabled.
+
+          '
+        type: string
+      name:
+        description: 'The name of the workflow.
+
+          '
+        type: string
+      ondemandTrigger:
+        description: 'Indicates whether the ondemand trigger is enabled for the workflow.
+
+          '
+        type: boolean
+      original_workflow_id:
+        description: 'The unique ID of the original workflow version.
+
+          '
+        type: integer
+      priority:
+        description: "The priority of the active workflow version. \n"
+        type: string
+      scheduledTrigger:
+        description: 'Indicates whether the scheduled trigger is enabled for the workflow.
+
+          '
+        type: boolean
+      started_at:
+        description: 'The date and time when the instance of the workflow version started at.
+
+          '
+        format: datetime
+        type: string
+      status:
+        description: 'The status of the active workflow version.
+
+          '
+        type: integer
+      sync_trigger:
+        description: 'Indicates whether the workflow version is enabled for the sync mode.
+
+          '
+        type: boolean
+      timezone:
+        description: 'The timezone that is configured for the scheduler of the workflow. Returns null if the scheduled trigger is disabled.
+
+          '
+        type: string
+      type:
+        description: 'The type of the workflow. Currently the only valid value is ''Workflow::Setup''.
+
+          '
+        enum:
+        - Workflow::Setup
+        - Workflow::Instance
+        type: string
+      updatedAt:
+        description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+      version:
+        description: "The version number of the active workflow version.            \n"
+        type: string
+    title: detailed workflow
+    type: object
+  Linkage:
+    description: Used to represent the relationship between workflow tasks
+    properties:
+      linkage_type:
+        enum:
+        - Start
+        - Success
+        - Failure
+        - Iterate
+        - 'True'
+        - 'False'
+        - Approve
+        - Reject
+        type: string
+      source_task_id:
+        description: the task that spawned the target task
+        type: integer
+      source_workflow_id:
+        description: the workflow the target task is associated with
+        type: integer
+      target_task_id:
+        description: the task that the source task is linked to.
+        type: integer
+    type: object
+  DeleteWorkflowError:
+    properties:
+      Errors:
+        description: The error messages
+        items:
+          type: string
+        type: array
+    type: object
+  GetWorkflowsResponse:
+    properties:
+      data:
+        description: "The list of workflows retrieved. \n"
+        items:
+          $ref: '#/definitions/WorkflowDefinitionAndVersions'
+        type: array
+      pagination:
+        description: 'An object containing pagination information for the list of workflows returned by the api
+
+          '
+        properties:
+          next_page:
+            description: 'A string containing the URL where the next page of data can be retrieved.
+
+              '
+            type: string
+          page:
+            description: 'An integer denoting the current page number.
+
+              '
+            type: integer
+          page_length:
+            description: 'An integer denoting the number of workflows in this response. The maximum value is 50.
+
+              '
+            type: integer
+        type: object
+    type: object
+  WorkflowInstance:
+    description: A instance workflow object.
+    properties:
+      createdAt:
+        description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+      id:
+        description: 'The unique ID of the workflow.
+
+          '
+        type: integer
+      name:
+        description: 'The run number of this workflow instance
+
+          '
+        type: string
+      originalWorkflowId:
+        description: 'The identifier of the workflow template that is used to create this instance.
+
+          '
+        type: integer
+      status:
+        description: "Describes the current state of this workflow instance:\n  - Queued: The workflow is in queue for being processed.\n  - Processing: The workflow is in process.\n"
+        enum:
+        - Queued
+        - Processing
+        type: string
+      updatedAt:
+        description: 'The date and time the last time when the workflow is updated, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+    type: object
+  WorkflowError:
+    properties:
+      code:
+        description: A short error code describing the error
+        enum:
+        - invalid
+        type: string
+      status:
+        description: The http status code for this error
+        type: integer
+      title:
+        description: A human readable description describing the error
+        type: string
+    type: object
+  Usage:
+    description: 'The task usage of a particular day.
+
+      '
+    properties:
+      date:
+        description: 'The date when the usage record is created.
+
+          '
+        type: string
+      values:
+        properties:
+          taskCount:
+            description: 'The amount of task runs that have been used.
+
+              '
+            type: integer
+        type: object
+    type: object
+  ValidationReasons:
+    properties:
+      fieldName:
+        description: The name of the invalid field
+        type: string
+      title:
+        description: A description why that field is invalid
+        type: string
+    type: object
+  TasksResponse:
+    properties:
+      data:
+        description: 'The list of tasks retrieved.
+
+          '
+        items:
+          $ref: '#/definitions/Task'
+        type: array
+      pagination:
+        description: 'An object containing pagination information for the list of tasks returned by the API.
+
+          '
+        properties:
+          next_page:
+            description: 'A string containing the URL where the next page of data can be retrieved.
+
+              '
+            type: string
+          page:
+            description: 'An integer denoting the current page number.
+
+              '
+            type: integer
+          page_length:
+            description: 'An integer denoting the number of tasks in this response. The maximum value is 100.
+
+              '
+            type: integer
+        type: object
+    type: object
+  Workflow:
+    description: 'A workflow.
+
+      '
+    properties:
+      calloutTrigger:
+        description: 'Indicates whether the callout trigger is enabled for the retrieved workflow.
+
+          '
+        type: boolean
+      createdAt:
+        description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+      description:
+        description: 'The description of the workflow.
+
+          '
+        type: string
+      id:
+        description: 'The unique ID of the workflow.
+
+          '
+        type: integer
+      interval:
+        description: 'The schedule of the workflow, in a CRON expression. Returns null if the schedued trigger is disabled.
+
+          '
+        type: string
+      name:
+        description: 'The name of the workflow.
+
+          '
+        type: string
+      ondemandTrigger:
+        description: 'Indicates whether the ondemand trigger is enabled for the workflow.
+
+          '
+        type: boolean
+      scheduledTrigger:
+        description: 'Indicates whether the scheduled trigger is enabled for the workflow.
+
+          '
+        type: boolean
+      timezone:
+        description: 'The timezone that is configured for the scheduler of the workflow. Returns null if the scheduled trigger is disabled.
+
+          '
+        type: string
+      type:
+        description: 'The type of the workflow. Currently the only valid value is ''Workflow::Setup''.
+
+          '
+        enum:
+        - Workflow::Setup
+        - Workflow::Instance
+        type: string
+      updatedAt:
+        description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
+
+          '
+        format: datetime
+        type: string
+      version:
+        description: "The version number of the workflow. \n"
+        type: string
+    title: workflow
+    type: object
+parameters:
+  GLOBAL_HEADER_Accept_Encoding:
+    name: Accept-Encoding
+    in: header
+    required: false
+    type: string
+    description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+  GLOBAL_HEADER_Zuora_Org_Ids:
+    name: Zuora-Org-Ids
+    in: header
+    required: false
+    type: string
+    description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+  GLOBAL_HEADER_Idempotency_Key:
+    name: Idempotency-Key
+    in: header
+    required: false
+    type: string
+    maxLength: 255
+    description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+  GLOBAL_HEADER_Content_Encoding:
+    name: Content-Encoding
+    in: header
+    required: false
+    type: string
+    description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+      '
+  GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+    name: Zuora-Entity-Ids
+    in: header
+    required: false
+    type: string
+    description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+      '
+  GLOBAL_HEADER_Zuora_Track_Id:
+    name: Zuora-Track-Id
+    in: header
+    required: false
+    type: string
+    maxLength: 64
+    description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+      The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+      '
+  GLOBAL_HEADER_Authorization_OAuth:
+    name: Authorization
+    in: header
+    required: true
+    type: string
+    description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+      '
+x-tagGroups:
+- name: Authentication
+  tags:
+  - OAuth
+- name: Products
+  tags:
+  - Products
+  - Catalog
+  - Catalog Groups
+  - Offers
+  - Price Book Items
+  - Product Rate Plans
+  - Product Rate Plan Definitions
+  - Product Rate Plan Charges
+  - Product Charge Definitions
+  - Product Rate Plan Charge Tiers
+  - Zuora Revenue Integration
+- name: Customer Accounts
+  tags:
+  - Accounts
+  - Contacts
+  - Contact Snapshots
+- name: Orders and Subscriptions
+  tags:
+  - Sign Up
+  - Orders
+  - Order Actions
+  - Order Line Items
+  - Fulfillments
+  - Ramps
+  - Subscriptions
+  - Rate Plans
+- name: Advanced Consumption Billing
+  tags:
+  - Prepaid with Drawdown
+- name: Usage
+  tags:
+  - Usage
+- name: Billing Documents
+  tags:
+  - Delivery Adjustments
+  - Billing Documents
+  - Invoices
+  - Credit Memos
+  - Debit Memos
+  - E-Invoicing
+  - Invoice Schedules
+  - Taxation Items
+  - Sequence Sets
+  - Operations
+- name: Bill Runs
+  tags:
+  - Bill Run
+  - Billing Preview Run
+- name: Payment Methods
+  tags:
+  - Payment Methods
+  - Custom Payment Method Types
+  - Payment Method Updater
+  - Payment Method Snapshots
+  - Payment Method Transaction Logs
+  - Hosted Pages
+  - RSA Signatures
+- name: Payments
+  tags:
+  - Payment Authorization
+  - Payment Gateways
+  - Payment Gateway Reconciliation
+  - Payments
+  - Payment Transaction Logs
+  - Payment Runs
+  - Payment Schedules
+  - Refunds
+- name: Finance
+  tags:
+  - Accounting Codes
+  - Accounting Periods
+  - Summary Journal Entries
+  - Journal Runs
+  - Mass Updater
+- name: Events and Notifications
+  tags:
+  - Notifications
+  - Custom Event Triggers
+  - Custom Scheduled Events
+- name: Custom Objects
+  tags:
+  - Custom Object Definitions
+  - Custom Object Records
+  - Custom Object Jobs
+- name: System Health
+  tags:
+  - API Health
+  - Bill Run Health
+  - Electronic Payments Health
+- name: Workflow
+  tags:
+  - Workflows
+- name: Data Query
+  tags:
+  - Data Queries
+- name: AQuA
+  tags:
+  - Aggregate Queries
+- name: Deployment Manager
+  tags:
+  - Configuration Templates
+- name: Multiple Organizations
+  tags:
+  - Data Labeling
+- name: Order to Revenue
+  tags:
+  - Regenerate
+- name: General-Purpose Operations
+  tags:
+  - Actions
+  - Settings
+  - Files
+  - Imports
+  - Custom Exchange Rates
+  - Attachments
+  - Describe

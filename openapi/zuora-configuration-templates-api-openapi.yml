@@ -1,0 +1,3175 @@
+swagger: '2.0'
+info:
+  version: '2023-12-15'
+  title: API Reference Accounting Codes Configuration Templates API
+  description: "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n"
+  contact:
+    email: docs@zuora.com
+host: rest.zuora.com
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Configuration Templates
+  description: "Configuration Templates in Zuora Deployment Manager enable you to configure your tenants in minutes by importing a templated metadata configuration file. This feature eliminates the need for long manual configuration processes that would have previously taken hours. You will be able to access a comprehensive repository of industry-specific templates. It will be easier for you to deploy and release. \n"
+paths:
+  /deployment-manager/deployment_templates:
+    post:
+      summary: Create a deployment template
+      operationId: POST_DeploymentTemplate
+      description: "Creates templates based on user preference.\nThere are 2 ways to select components.\n  - Selecting the whole component.\n  - Advanced Options -> which helps user to select specific components to be migrated.\n\nIt takes the enviroment details from the logged in user automatically, while creating the template.\n"
+      tags:
+      - Configuration Templates
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: request
+        required: true
+        in: body
+        description: CreateTemplateRequestContent JSON object which contains the details to create a template.
+        schema:
+          $ref: '#/definitions/CreateTemplateRequestContent'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          examples:
+            application/json:
+              id: 210656b3-0d89-4bc6-92b9-634653e729af
+              name: Test_Template
+              description: ''
+              status: Inprogress
+              errors: '-'
+              active: true
+              tenantName: Data Connect
+              entityName: Global
+              environment: US-API-Sandbox-Staging
+              createdBy: Daco user
+              createdOn: '2022-09-14T16:06:43.155Z'
+              content: null
+          description: Successfully created the template.
+          schema:
+            $ref: '#/definitions/TemplateDetailResponse'
+        '201':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          description: 'created.
+
+            The request has been fulfilled and resulted in a new resource being created. The newly created resource can be referenced by the URL(s) returned in the entity of the response, with the most specific URL for the resource given by a Location header field.
+
+            '
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+    get:
+      summary: List all templates
+      operationId: GET_Templates
+      description: 'Retrieves all the templates and their details which are created already.
+
+        '
+      tags:
+      - Configuration Templates
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          examples:
+            application/json:
+              templates:
+              - id: e8ed70e9-5d31-41c3-8b20-981a5b3e9972
+                name: Testing Tax
+                description: ''
+                status: DONE
+                errors: '-'
+                active: true
+                tenantName: Data Connect
+                entityName: Global
+                environment: US-API-Sandbox-Staging
+                createdBy: Daco user
+                createdOn: '2022-08-22T14:06:53.659Z'
+                content: null
+              - id: 24ba307c-cd94-4b9f-b849-c2d08f028c53
+                name: tempExample3975161566467657
+                description: ''
+                status: DONE
+                errors: '-'
+                active: true
+                tenantName: Data Connect
+                entityName: Global
+                environment: US-API-Sandbox-Staging
+                createdBy: Daco user
+                createdOn: '2022-08-22T14:06:53.659Z'
+                content: null
+          description: Successfully received all templates throught Template Response Object.
+          schema:
+            $ref: '#/definitions/TemplateResponse'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+  /deployment-manager/deployment_templates/{id}:
+    get:
+      summary: List all details of a template
+      operationId: GET_DeploymentTemplateDetail
+      description: 'Returns the detailed information of a specific template by passing its template ID.
+
+        '
+      tags:
+      - Configuration Templates
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: id
+        in: path
+        description: The ID of the template that needs to be retrieved.
+        required: true
+        type: string
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          examples:
+            application/json:
+              id: e8ed70e9-5d31-41c3-8b20-981a5b3e9972
+              name: Testing Tax
+              description: ''
+              status: DONE
+              errors: '-'
+              active: true
+              tenantName: Data Connect
+              entityName: Global
+              environment: US-API-Sandbox-Staging
+              createdBy: Daco user
+              createdOn: '2022-08-22T14:06:53.659Z'
+              content:
+                settings:
+                - segregationKeys:
+                  - Administration
+                  - ManageDataAccessControl
+                  - Finance
+                  - Billing
+                  - ManageMultiEntity
+                  - Payments
+                  - Taxation
+                  - BillingDocumentConfiguration
+                  originalPayload: null
+                  response:
+                  - id: 301e73b7-420c-4770-9c37-3d966c1e2690
+                    key: AccountingRules
+                    segregationKey: Finance
+                    componentType: Settings
+                    url: /accounting-rules
+                    method: GET
+                    payload:
+                      allowBlankAccountingCodes: true
+                      allowCreationInClosedPeriod: true
+                      allowUsageInClosedPeriod: false
+                      allowRevenueScheduleNegativeAmounts: false
+                    result: DONE
+                    error: null
+                    templateId: e8ed70e9-5d31-41c3-8b20-981a5b3e9972
+                  errors: []
+                productCatalog: []
+                notifications: []
+                workflows: []
+                customFields: []
+                dataAccessControl: []
+                customObjects: []
+          description: Successfully received the template.
+          schema:
+            $ref: '#/definitions/TemplateDetailResponse'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+    delete:
+      summary: Delete a template
+      operationId: DELETE_DeploymentTemplate
+      description: 'Deletes a specific template by passing the ID.
+
+        '
+      tags:
+      - Configuration Templates
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: id
+        in: path
+        description: The ID of the template that needs to be deleted.
+        required: true
+        type: string
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          description: Successfully deleted the template.
+        '204':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          description: No Content
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '404':
+          description: Id is invalid
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+  /deployment-manager/deployment_artifacts:
+    get:
+      summary: Download a template
+      operationId: GET_DownloadDeploymentTemplate
+      description: 'Download a template for migration in the Deployment manager from the source tenant to the target tenant.
+
+        '
+      tags:
+      - Configuration Templates
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: deployment_template_id
+        in: query
+        description: Id which template needs to be downloaded.
+        required: true
+        type: string
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          examples:
+            application/json: {}
+          description: Successfully downloaded the template.
+          schema:
+            $ref: '#/definitions/JsonNode'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '404':
+          description: Id is invalid
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+  /deployment-manager/deployment_artifacts/retrieve-settings:
+    get:
+      summary: List all details of source components
+      operationId: GET_SourceComponentDetails
+      description: 'When the advanced option is clicked, get the details/metadata of the components, such as settings, notifications, workflow, etc.
+
+        '
+      tags:
+      - Configuration Templates
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          examples:
+            application/json:
+              customFields:
+              - segregationKeys:
+                - Account
+                - Invoice
+                - InvoiceItem
+                - AccountingCode
+                - ProductRatePlanCharge
+                - ProductFeature
+                - Product
+                - JournalEntry
+                - RatePlan
+                - Amendment
+                - DebitTaxationItem
+                - Subscription
+                - Order
+                - Usage
+                - ProductRatePlan
+                - AccountingPeriod
+                - CreditMemoItem
+                - RevenueSchedule
+                - RatePlanCharge
+                - Contact
+                - OrderAction
+                - Payment
+                - CreditBalanceAdjustment
+                - Refund
+                - DebitMemo
+                originalPayload:
+                  definitions:
+                    Account:
+                      type: Account
+                      schema:
+                        type: object
+                        properties:
+                          idx_date_1__c:
+                            format: date
+                            label: idx_date_1
+                            type: string
+                            description: test
+                            createdDate: '2022-08-18T12:38:13.000Z'
+                            updatedDate: '2022-08-18T12:38:13.000Z'
+                          non_idx_text_1__c:
+                            maxLength: 50
+                            label: non_idx_text_1
+                            type: string
+                            description: non_idx_text_1
+                            default: non_idx_text_1
+                            createdDate: '2022-08-18T12:38:14.000Z'
+                            updatedDate: '2022-08-18T12:38:14.000Z'
+                          Last_Token_Transaction_Date__c:
+                            maxLength: 255
+                            label: Last_Token_Transaction_Date
+                            type: string
+                            description: ''
+                            createdDate: '2022-08-22T19:30:10.000Z'
+                            updatedDate: '2022-08-22T19:30:10.000Z'
+                          CollectionsAgent__c:
+                            maxLength: 255
+                            label: Collections Agent
+                            type: string
+                            description: ''
+                            default: abc
+                            createdDate: '2022-08-22T18:16:38.000Z'
+                            updatedDate: '2022-08-22T18:16:38.000Z'
+                          InCollections__c:
+                            maxLength: 25
+                            label: <details/open/ontoggle=confirm(cookie)>
+                            type: string
+                            description: ''
+                            createdDate: '2022-08-18T12:38:04.000Z'
+                            updatedDate: '2022-08-18T12:38:04.000Z'
+                        indexed:
+                        - Last_Token_Transaction_Date__c
+                        - idx_date_1__c
+                        readOnlyOnUI:
+                        - idx_date_1__c
+                        - non_idx_text_1__c
+                        additionalProperties: false
+                    AccountingCode:
+                      type: AccountingCode
+                      schema:
+                        type: object
+                        properties:
+                          AccountingCodeCustomText__c:
+                            maxLength: 64
+                            label: AccountingCodeCustomText
+                            type: string
+                            default: custom text
+                            createdDate: '2022-02-01T08:41:03.000Z'
+                            updatedDate: '2022-02-01T08:41:03.000Z'
+                          AccountingCodeCustomDate__c:
+                            format: date
+                            label: AccountingCodeCustomDate
+                            type: string
+                            createdDate: '2022-02-08T07:20:15.000Z'
+                            updatedDate: '2022-02-08T07:20:15.000Z'
+                          AccountingCodeCustomPickList__c:
+                            enum:
+                            - Alpha
+                            - Beta
+                            - Omega
+                            label: AccountingCodeCustomPickList
+                            type: string
+                            default: Alpha
+                            createdDate: '2022-02-08T07:20:18.000Z'
+                            updatedDate: '2022-02-08T07:20:18.000Z'
+                        additionalProperties: false
+                  count: 2
+                response:
+                - id: a8a0ff9f-3297-45a5-a523-4f5d5f4f393a
+                  key: idx_date_1
+                  segregationKey: Account
+                  componentType: CustomFields
+                  url: '-'
+                  method: GET
+                  payload:
+                    label: idx_date_1
+                    description: test
+                    format: date
+                    API_name: idx_date_1__c
+                    UIReadOnly: true
+                    indexed: true
+                  result: DONE
+                  error: '-'
+                  templateId: null
+                errors: []
+              customObjects:
+              - segregationKeys:
+                - Available Custom Objects
+                originalPayload: {}
+                response:
+                - id: 456335f2-711d-4e73-b8ec-3309e78b403a
+                  key: zzzzzzzzzz
+                  segregationKey: Available Custom Objects
+                  componentType: CustomObjects
+                  url: /zzzzzzzzzz
+                  method: GET
+                  payload:
+                    label: zzzzzzzzzz
+                    api_name: zzzzzzzzzz
+                    description: ' '
+                    enableRecordMigration: 'false'
+                    customFields:
+                    - description: ' '
+                      type: boolean
+                      api_name: isFilterable__c
+                      field_name: isFilterable
+                      required: 'false'
+                      filterable: 'true'
+                    - description: ' '
+                      type: string
+                      api_name: picklist__c
+                      field_name: picklist
+                      required: 'false'
+                      filterable: 'false'
+                    - description: ' '
+                      type: string
+                      api_name: zzz__c
+                      field_name: zzz
+                      required: 'false'
+                      filterable: 'false'
+                  result: DONE
+                  error: '-'
+                  templateId: null
+                errors: []
+              dataAccessControl:
+              - errors: []
+                originalPayload: {}
+                response:
+                - componentType: dataAccessControl
+                  error: '-'
+                  id: 456335f2-711d-4e73-b8ec-3309e78b403a
+                  key: zzzzzzzzzz
+                  method: GET
+                  payload: {}
+                  result: DONE
+                  segregationKey: Available dataAccessControl
+                  templateId: null
+                  url: /zzzzzzzzzz
+                segregationKeys:
+                - Available dataAccessControl
+              notifications:
+              - segregationKeys:
+                - Communication profile
+                - Email Templates
+                originalPayload:
+                  2c92c8fb7ddc795b017dde4350c949a0:
+                  - id: 2c92c8fb7ddc795b017dde437a0949a6
+                    profileId: 2c92c8fb7ddc795b017dde4350c949a0
+                    eventId: 2c92c8f9631ea3850163271f7fa02da0
+                    eventName: New Invoice Posted
+                    name: Invoice Posted within a Bill Run of Auto-Post
+                    description: Trigger the notification when invoices are posted within a bill run and the bill run has auto-post. This is to support existing email notification behavior from within a bill run.
+                    active: false
+                    hidden: false
+                    param1: BILLRUN
+                    param4: Not include invoice PDF
+                    emailOption: true
+                    emailTemplate: 2c92c8f9631ea3850163271f80152de2
+                    emailTemplateName: Invoice Posted Default Email Template
+                    calloutOption: false
+                    contentType: APPLICATION_JSON
+                    calloutRetriable: false
+                    calloutAuth: false
+                    calloutOauth2: false
+                    calloutPreemptiveAuth: false
+                    useCustomRequestBody: false
+                response:
+                - id: f5ee9c26-8420-4f92-9463-1983d1268281
+                  key: B2C Customers
+                  segregationKey: Communication profile
+                  componentType: Notifications
+                  url: settings/communication-profiles/2c92c8fb7ddc795b017dde4350c949a0
+                  method: GET
+                  payload:
+                    id: 2c92c8fb7ddc795b017dde4350c949a0
+                    name: B2C Customers
+                    locale: default
+                    description: ''
+                    isDefault: false
+                  result: DONE
+                  error: '-'
+                  templateId: null
+                errors: []
+              productCatalog:
+              - errors: []
+                originalPayload: {}
+                response:
+                - componentType: productCatalog
+                  error: '-'
+                  id: 456335f2-711d-4e73-b8ec-3309e78b403a
+                  key: zzzzzzzzzz
+                  method: GET
+                  payload: {}
+                  result: DONE
+                  segregationKey: Available productCatalog
+                  templateId: null
+                  url: /zzzzzzzzzz
+                segregationKeys:
+                - Available productCatalog
+              settings:
+              - segregationKeys:
+                - Finance
+                - Billing
+                - Administration
+                - ManageMultiEntity
+                - Payments
+                - Taxation
+                - BillingDocumentConfiguration
+                - ManageDataAccessControl
+                originalPayload: {}
+                response:
+                - id: bfcb76d9-3fb8-4a15-8d13-fe0b805b5ee6
+                  key: AccountingPeriods
+                  segregationKey: Finance
+                  componentType: Settings
+                  url: v1/accounting-periods
+                  method: GET
+                  payload: {}
+                  result: FAILED
+                  error: '{"success":false,"reasons":[{"message":"Failed to get user info","code":"90000011"}]}
+
+                    '
+                  templateId: null
+                - id: 6a27d0d3-3c4c-408f-b160-04510014ebf1
+                  key: AccountingRules
+                  segregationKey: Finance
+                  componentType: Settings
+                  url: /accounting-rules
+                  method: GET
+                  payload:
+                    allowBlankAccountingCodes: true
+                    allowCreationInClosedPeriod: true
+                    allowUsageInClosedPeriod: false
+                    allowRevenueScheduleNegativeAmounts: false
+                  result: DONE
+                  error: null
+                  templateId: null
+                errors: []
+              workflows:
+              - segregationKeys:
+                - Payment to Provision
+                - Negative Invoices to Positive Account Credit Balance Limit 1
+                - Automated Dunning | 2nd Attempt Failed
+                - Subscription Price Uplift -- JSON Transform
+                originalPayload: {}
+                response:
+                - id: df74980b-ff25-4684-a950-7e0c25810a72
+                  key: Resume Subscriptions for Accounts with Zero Balance Limit 1_0.0.13
+                  segregationKey: Resume Subscriptions for Accounts with Zero Balance Limit 1
+                  componentType: WorkFlows
+                  url: '1'
+                  method: GET
+                  payload:
+                    id: 1
+                    name: Resume Subscriptions for Accounts with Zero Balance Limit 1
+                    description: ''
+                    status: Active
+                    ondemandTrigger: true
+                    calloutTrigger: true
+                    scheduledTrigger: false
+                    interval: null
+                    timezone: null
+                    createdAt: '2022-08-21T10:51:22.613-07:00'
+                    updatedAt: '2022-08-21T10:51:22.613-07:00'
+                    priority: Medium
+                    active_version:
+                      id: 2483
+                      name: Resume Subscriptions for Accounts with Zero Balance Limit 1
+                      definitionId: 1
+                      description: ''
+                      type: Workflow::Setup
+                      version: 0.0.13
+                      ondemandTrigger: true
+                      calloutTrigger: true
+                      scheduledTrigger: false
+                      interval: null
+                      timezone: null
+                      createdAt: '2022-08-21T10:51:22.613-07:00'
+                      updatedAt: '2022-08-21T10:51:22.613-07:00'
+                      priority: Medium
+                      status: Active
+                      created_by:
+                        work_email: rkumar@zuora.com
+                        created_at: '2021-11-22T19:06:54.279-08:00'
+                        updated_at: '2022-09-06T05:16:20.455-07:00'
+                      updated_by:
+                        work_email: N/A
+                        created_at: N/A
+                        updated_at: N/A
+                    latest_inactive_versions:
+                    - id: 689
+                      name: Resume Subscriptions for Accounts with Zero Balance Limit 1
+                      definitionId: 1
+                      description: ''
+                      type: Workflow::Setup
+                      version: 0.0.10
+                      ondemandTrigger: true
+                      calloutTrigger: true
+                      scheduledTrigger: false
+                      interval: null
+                      timezone: null
+                      createdAt: '2022-05-10T05:21:37.192-07:00'
+                      updatedAt: '2022-05-10T05:21:37.192-07:00'
+                      priority: Medium
+                      status: Inactive
+                      created_by:
+                        work_email: rkumar@zuora.com
+                        created_at: '2021-11-22T19:06:54.279-08:00'
+                        updated_at: '2022-09-06T05:16:20.455-07:00'
+                      updated_by:
+                        work_email: N/A
+                        created_at: N/A
+                        updated_at: N/A
+                  result: DONE
+                  error: '-'
+                  templateId: null
+                errors: []
+          description: Successfully retrieved the template metadata.
+          schema:
+            $ref: '#/definitions/SettingSourceComponentResponse'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '404':
+          description: Id is invalid
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+  /deployment-manager/deployment_artifacts/compare:
+    post:
+      summary: Compare settings between a source tenant and a target tenant
+      operationId: POST_CompareTemplate
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      description: 'To Compare the configurations from the template downloaded and used in deployment manager for migration which is available in source and target tenant.
+
+        '
+      tags:
+      - Configuration Templates
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: tenant
+        in: query
+        description: Customers need to specify tenant ID.
+        required: true
+        type: string
+      - name: template
+        in: formData
+        description: Template contains the config metadata and target tenant information.
+        required: false
+        type: file
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          examples:
+            application/json:
+              customFields:
+              - segregationKeys:
+                - Account
+                - Invoice
+                - InvoiceItem
+                - AccountingCode
+                - ProductRatePlanCharge
+                - ProductFeature
+                - Product
+                - JournalEntry
+                - RatePlan
+                - Amendment
+                - DebitTaxationItem
+                - Subscription
+                - Order
+                - Usage
+                - ProductRatePlan
+                - AccountingPeriod
+                - CreditMemoItem
+                - RevenueSchedule
+                - RatePlanCharge
+                - Contact
+                - OrderAction
+                - Payment
+                - CreditBalanceAdjustment
+                - Refund
+                - DebitMemo
+                originalPayload:
+                  definitions:
+                    Account:
+                      type: Account
+                      schema:
+                        type: object
+                        properties:
+                          idx_date_1__c:
+                            format: date
+                            label: idx_date_1
+                            type: string
+                            description: test
+                            createdDate: '2022-08-18T12:38:13.000Z'
+                            updatedDate: '2022-08-18T12:38:13.000Z'
+                          non_idx_text_1__c:
+                            maxLength: 50
+                            label: non_idx_text_1
+                            type: string
+                            description: non_idx_text_1
+                            default: non_idx_text_1
+                            createdDate: '2022-08-18T12:38:14.000Z'
+                            updatedDate: '2022-08-18T12:38:14.000Z'
+                          Last_Token_Transaction_Date__c:
+                            maxLength: 255
+                            label: Last_Token_Transaction_Date
+                            type: string
+                            description: ''
+                            createdDate: '2022-08-22T19:30:10.000Z'
+                            updatedDate: '2022-08-22T19:30:10.000Z'
+                          CollectionsAgent__c:
+                            maxLength: 255
+                            label: Collections Agent
+                            type: string
+                            description: ''
+                            default: abc
+                            createdDate: '2022-08-22T18:16:38.000Z'
+                            updatedDate: '2022-08-22T18:16:38.000Z'
+                          InCollections__c:
+                            maxLength: 25
+                            label: <details/open/ontoggle=confirm(cookie)>
+                            type: string
+                            description: ''
+                            createdDate: '2022-08-18T12:38:04.000Z'
+                            updatedDate: '2022-08-18T12:38:04.000Z'
+                        indexed:
+                        - Last_Token_Transaction_Date__c
+                        - idx_date_1__c
+                        readOnlyOnUI:
+                        - idx_date_1__c
+                        - non_idx_text_1__c
+                        additionalProperties: false
+                    AccountingCode:
+                      type: AccountingCode
+                      schema:
+                        type: object
+                        properties:
+                          AccountingCodeCustomText__c:
+                            maxLength: 64
+                            label: AccountingCodeCustomText
+                            type: string
+                            default: custom text
+                            createdDate: '2022-02-01T08:41:03.000Z'
+                            updatedDate: '2022-02-01T08:41:03.000Z'
+                          AccountingCodeCustomDate__c:
+                            format: date
+                            label: AccountingCodeCustomDate
+                            type: string
+                            createdDate: '2022-02-08T07:20:15.000Z'
+                            updatedDate: '2022-02-08T07:20:15.000Z'
+                          AccountingCodeCustomPickList__c:
+                            enum:
+                            - Alpha
+                            - Beta
+                            - Omega
+                            label: AccountingCodeCustomPickList
+                            type: string
+                            default: Alpha
+                            createdDate: '2022-02-08T07:20:18.000Z'
+                            updatedDate: '2022-02-08T07:20:18.000Z'
+                        additionalProperties: false
+                  count: 2
+                response:
+                - id: a8a0ff9f-3297-45a5-a523-4f5d5f4f393a
+                  key: idx_date_1
+                  segregationKey: Account
+                  componentType: CustomFields
+                  url: '-'
+                  method: GET
+                  payload:
+                    label: idx_date_1
+                    description: test
+                    format: date
+                    API_name: idx_date_1__c
+                    UIReadOnly: true
+                    indexed: true
+                  result: DONE
+                  error: '-'
+                  templateId: null
+                errors: []
+              customObjects:
+              - segregationKeys:
+                - Available Custom Objects
+                originalPayload: {}
+                response:
+                - id: 456335f2-711d-4e73-b8ec-3309e78b403a
+                  key: zzzzzzzzzz
+                  segregationKey: Available Custom Objects
+                  componentType: CustomObjects
+                  url: /zzzzzzzzzz
+                  method: GET
+                  payload:
+                    label: zzzzzzzzzz
+                    api_name: zzzzzzzzzz
+                    description: ' '
+                    enableRecordMigration: 'false'
+                    customFields:
+                    - description: ' '
+                      type: boolean
+                      api_name: isFilterable__c
+                      field_name: isFilterable
+                      required: 'false'
+                      filterable: 'true'
+                    - description: ' '
+                      type: string
+                      api_name: picklist__c
+                      field_name: picklist
+                      required: 'false'
+                      filterable: 'false'
+                    - description: ' '
+                      type: string
+                      api_name: zzz__c
+                      field_name: zzz
+                      required: 'false'
+                      filterable: 'false'
+                  result: DONE
+                  error: '-'
+                  templateId: null
+                errors: []
+              dataAccessControl:
+              - errors: []
+                originalPayload: {}
+                response:
+                - componentType: dataAccessControl
+                  error: '-'
+                  id: 456335f2-711d-4e73-b8ec-3309e78b403a
+                  key: zzzzzzzzzz
+                  method: GET
+                  payload: {}
+                  result: DONE
+                  segregationKey: Available dataAccessControl
+                  templateId: null
+                  url: /zzzzzzzzzz
+                segregationKeys:
+                - Available dataAccessControl
+              notifications:
+              - segregationKeys:
+                - Communication profile
+                - Email Templates
+                originalPayload:
+                  2c92c8fb7ddc795b017dde4350c949a0:
+                  - id: 2c92c8fb7ddc795b017dde437a0949a6
+                    profileId: 2c92c8fb7ddc795b017dde4350c949a0
+                    eventId: 2c92c8f9631ea3850163271f7fa02da0
+                    eventName: New Invoice Posted
+                    name: Invoice Posted within a Bill Run of Auto-Post
+                    description: Trigger the notification when invoices are posted within a bill run and the bill run has auto-post. This is to support existing email notification behavior from within a bill run.
+                    active: false
+                    hidden: false
+                    param1: BILLRUN
+                    param4: Not include invoice PDF
+                    emailOption: true
+                    emailTemplate: 2c92c8f9631ea3850163271f80152de2
+                    emailTemplateName: Invoice Posted Default Email Template
+                    calloutOption: false
+                    contentType: APPLICATION_JSON
+                    calloutRetriable: false
+                    calloutAuth: false
+                    calloutOauth2: false
+                    calloutPreemptiveAuth: false
+                    useCustomRequestBody: false
+                response:
+                - id: f5ee9c26-8420-4f92-9463-1983d1268281
+                  key: B2C Customers
+                  segregationKey: Communication profile
+                  componentType: Notifications
+                  url: settings/communication-profiles/2c92c8fb7ddc795b017dde4350c949a0
+                  method: GET
+                  payload:
+                    id: 2c92c8fb7ddc795b017dde4350c949a0
+                    name: B2C Customers
+                    locale: default
+                    description: ''
+                    isDefault: false
+                  result: DONE
+                  error: '-'
+                  templateId: null
+                errors: []
+              productCatalog:
+              - errors: []
+                originalPayload: {}
+                response:
+                - componentType: productCatalog
+                  error: '-'
+                  id: 456335f2-711d-4e73-b8ec-3309e78b403a
+                  key: zzzzzzzzzz
+                  method: GET
+                  payload: {}
+                  result: DONE
+                  segregationKey: Available productCatalog
+                  templateId: null
+                  url: /zzzzzzzzzz
+                segregationKeys:
+                - Available productCatalog
+              settings:
+              - segregationKeys:
+                - Finance
+                - Billing
+                - Administration
+                - ManageMultiEntity
+                - Payments
+                - Taxation
+                - BillingDocumentConfiguration
+                - ManageDataAccessControl
+                originalPayload: {}
+                response:
+                - id: bfcb76d9-3fb8-4a15-8d13-fe0b805b5ee6
+                  key: AccountingPeriods
+                  segregationKey: Finance
+                  componentType: Settings
+                  url: v1/accounting-periods
+                  method: GET
+                  payload: {}
+                  result: FAILED
+                  error: '{"success":false,"reasons":[{"message":"Failed to get user info","code":"90000011"}]}
+
+                    '
+                  templateId: null
+                - id: 6a27d0d3-3c4c-408f-b160-04510014ebf1
+                  key: AccountingRules
+                  segregationKey: Finance
+                  componentType: Settings
+                  url: /accounting-rules
+                  method: GET
+                  payload:
+                    allowBlankAccountingCodes: true
+                    allowCreationInClosedPeriod: true
+                    allowUsageInClosedPeriod: false
+                    allowRevenueScheduleNegativeAmounts: false
+                  result: DONE
+                  error: null
+                  templateId: null
+                errors: []
+              workflows:
+              - segregationKeys:
+                - Payment to Provision
+                - Negative Invoices to Positive Account Credit Balance Limit 1
+                - Automated Dunning | 2nd Attempt Failed
+                - Subscription Price Uplift -- JSON Transform
+                originalPayload: {}
+                response:
+                - id: df74980b-ff25-4684-a950-7e0c25810a72
+                  key: Resume Subscriptions for Accounts with Zero Balance Limit 1_0.0.13
+                  segregationKey: Resume Subscriptions for Accounts with Zero Balance Limit 1
+                  componentType: WorkFlows
+                  url: '1'
+                  method: GET
+                  payload:
+                    id: 1
+                    name: Resume Subscriptions for Accounts with Zero Balance Limit 1
+                    description: ''
+                    status: Active
+                    ondemandTrigger: true
+                    calloutTrigger: true
+                    scheduledTrigger: false
+                    interval: null
+                    timezone: null
+                    createdAt: '2022-08-21T10:51:22.613-07:00'
+                    updatedAt: '2022-08-21T10:51:22.613-07:00'
+                    priority: Medium
+                    active_version:
+                      id: 2483
+                      name: Resume Subscriptions for Accounts with Zero Balance Limit 1
+                      definitionId: 1
+                      description: ''
+                      type: Workflow::Setup
+                      version: 0.0.13
+                      ondemandTrigger: true
+                      calloutTrigger: true
+                      scheduledTrigger: false
+                      interval: null
+                      timezone: null
+                      createdAt: '2022-08-21T10:51:22.613-07:00'
+                      updatedAt: '2022-08-21T10:51:22.613-07:00'
+                      priority: Medium
+                      status: Active
+                      created_by:
+                        work_email: rkumar@zuora.com
+                        created_at: '2021-11-22T19:06:54.279-08:00'
+                        updated_at: '2022-09-06T05:16:20.455-07:00'
+                      updated_by:
+                        work_email: N/A
+                        created_at: N/A
+                        updated_at: N/A
+                    latest_inactive_versions:
+                    - id: 689
+                      name: Resume Subscriptions for Accounts with Zero Balance Limit 1
+                      definitionId: 1
+                      description: ''
+                      type: Workflow::Setup
+                      version: 0.0.10
+                      ondemandTrigger: true
+                      calloutTrigger: true
+                      scheduledTrigger: false
+                      interval: null
+                      timezone: null
+                      createdAt: '2022-05-10T05:21:37.192-07:00'
+                      updatedAt: '2022-05-10T05:21:37.192-07:00'
+                      priority: Medium
+                      status: Inactive
+                      created_by:
+                        work_email: rkumar@zuora.com
+                        created_at: '2021-11-22T19:06:54.279-08:00'
+                        updated_at: '2022-09-06T05:16:20.455-07:00'
+                      updated_by:
+                        work_email: N/A
+                        created_at: N/A
+                        updated_at: N/A
+                  result: DONE
+                  error: '-'
+                  templateId: null
+                errors: []
+          description: OK
+          schema:
+            $ref: '#/definitions/CompareSchemaInfoResponse'
+        '201':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          description: 'created.
+
+            The request has been fulfilled and resulted in a new resource being created. The newly created resource can be referenced by the URL(s) returned in the entity of the response, with the most specific URL for the resource given by a Location header field.
+
+            '
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+  /deployment-manager/deployment_artifacts/deploy:
+    post:
+      summary: Migrate settings from source tenant to target tenant
+      operationId: POST_MigrateTenantSettings
+      description: 'To migrate the selected configuration of a tenant in Deployment Manager migration while using template from the compare screen.
+
+        '
+      tags:
+      - Configuration Templates
+      parameters:
+      - $ref: '#/parameters/GLOBAL_HEADER_Idempotency_Key'
+      - $ref: '#/parameters/GLOBAL_HEADER_Accept_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Content_Encoding'
+      - $ref: '#/parameters/GLOBAL_HEADER_Authorization_OAuth'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Entity_Ids_Single'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Org_Ids'
+      - $ref: '#/parameters/GLOBAL_HEADER_Zuora_Track_Id'
+      - name: tenant
+        in: query
+        description: Customers need to specify tenant ID in query parameter.
+        required: true
+        type: string
+      - in: body
+        name: request
+        description: Request Details.
+        required: true
+        schema:
+          $ref: '#/definitions/TemplateMigrationClientRequest'
+      responses:
+        '200':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          examples:
+            application/json:
+              emailIds: daco@zuora.com
+              environment: US-API-Sandbox-Staging
+              id: aa7b4ffa-f30c-4f42-b240-9534f634e14f
+              migratedBy: Daco user
+              migrationDescription: Migration from/to Sandbox
+              migrationEnd: '2020-11-01 18:00:00'
+              migrationName: Job A
+              migrationStart: '2020-11-01 18:00:00'
+              response: []
+              sourceTenantDescription: Jren-Stage
+              sourceTenantName: Payment Gateway Test Tenant
+              status: DONE
+              type: Tenant
+          description: Successfully migrated from source to target.
+          schema:
+            $ref: '#/definitions/MigrationClientResponse'
+        '201':
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.
+
+                '
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+          description: 'created.
+
+            The request has been fulfilled and resulted in a new resource being created. The newly created resource can be referenced by the URL(s) returned in the entity of the response, with the most specific URL for the resource given by a Location header field.
+
+            '
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ConfigTemplateErrorResponse'
+          headers:
+            Content-Encoding:
+              type: string
+              description: "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n"
+            RateLimit-Limit:
+              type: string
+              description: 'The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Remaining:
+              type: number
+              description: 'The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            RateLimit-Reset:
+              type: number
+              description: 'The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.
+
+                '
+            Zuora-Request-Id:
+              type: string
+              minLength: 36
+              maxLength: 36
+              description: 'The Zuora internal identifier of the API call. You cannot control the value of this header.
+
+                '
+            Zuora-Track-Id:
+              type: string
+              maxLength: 64
+              description: 'A custom identifier for tracing the API call. Zuora would return the same tracing identifier if you specified it in the request headers. Otherwise, Zuora does not set this header.
+
+                '
+definitions:
+  MigrationClientResponse:
+    description: Response after migration is added.
+    properties:
+      emailIds:
+        description: 'List of Emails with comma separator '
+        type: string
+      environment:
+        description: Environment information
+        type: string
+      id:
+        description: Variable to hold the job ID.
+        type: string
+      migratedBy:
+        description: User responsible for migration.
+        example: Jane Cooper
+        type: string
+      migrationDescription:
+        description: Description of the migration.
+        example: Migration from/to Sandbox
+        type: string
+      migrationEnd:
+        description: Timestamp when migration ended.
+        example: '2020-11-01 18:00:00'
+        type: string
+      migrationName:
+        description: Name of the migration.
+        example: Job A
+        type: string
+      migrationStart:
+        description: Timestamp when migration started.
+        example: '2020-11-01 18:00:00'
+        type: string
+      response:
+        items:
+          $ref: '#/definitions/MigrationComponentContent'
+        type: array
+      sourceTenantDescription:
+        description: Source Tenant Description.
+        example: Duno
+        type: string
+      sourceTenantName:
+        description: Source Tenant Name.
+        example: Duno
+        type: string
+      status:
+        description: Status of the Migration Job.
+        example: IN PROGRESS
+        type: string
+      type:
+        type: string
+    required:
+    - id
+    - migratedBy
+    - migrationDescription
+    - migrationEnd
+    - migrationName
+    - migrationStart
+    - sourceTenantDescription
+    - sourceTenantName
+    - status
+    title: MigrationClientResponse
+    type: object
+  CompareSchemaKeyValue:
+    description: When a comparison is made between a source and target tenant, it sends a response to the user interface.
+    properties:
+      difference:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        description: Returns the different components list.
+        type: object
+      response:
+        description: Provides the total reponse of the components.
+        items:
+          $ref: '#/definitions/MigrationComponentContent'
+        type: array
+      segregationKeys:
+        description: Provides separation of components.
+        items:
+          type: string
+        type: array
+    title: CompareSchemaKeyValue
+    type: object
+  ConfigTemplateErrorResponse:
+    example:
+      reasons:
+      - code: ObjectNotFound
+        message: Configuration Templates does not exist.
+    properties:
+      reasons:
+        items:
+          properties:
+            code:
+              description: 'The error code of response.
+
+                '
+              type: string
+            message:
+              description: A detailed description of the error response.
+              type: string
+          type: object
+        type: array
+    type: object
+  JsonNode:
+    description: Json node object contains metadata.
+    title: JsonNode
+    type: object
+  ConfigurationTemplateContent:
+    description: It contains information about template schemas with segregation keys.
+    properties:
+      componentType:
+        description: Type of Component.
+        type: string
+      error:
+        description: Error Information.
+        type: string
+      id:
+        description: Id of Each component.
+        type: string
+      key:
+        description: Key value of fields inside component.
+        type: string
+      method:
+        description: Http method which is used to retrieve the particular component.
+        type: string
+      payload:
+        $ref: '#/definitions/JsonNode'
+      result:
+        description: Contains the response of details fetched regarding selected component.
+        type: string
+      segregationKey:
+        description: Gives the difference between components and sub components.
+        type: string
+      templateId:
+        description: Id of the Template.
+        type: string
+      url:
+        description: Metadata is retrieved from this URL.
+        type: string
+    title: ConfigurationTemplateContent
+    type: object
+  CreateTemplateRequestContent:
+    description: 'CreateTemplateRequestContent object contains information for creating template.
+
+      '
+    properties:
+      content:
+        $ref: '#/definitions/SettingSourceComponentResponse'
+      customFields:
+        description: Selected custom fields component or not.
+        type: boolean
+      customObjects:
+        description: Selected custom objects component or not.
+        type: boolean
+      description:
+        description: Creates template description.
+        type: string
+      name:
+        description: Name of the Template.
+        type: string
+      notifications:
+        description: Selected Notification component or not.
+        type: boolean
+      selectedComponents:
+        description: ConfigurationTemplateContent object contains the selected meta data information.
+        items:
+          $ref: '#/definitions/ConfigurationTemplateContent'
+        type: array
+      settings:
+        description: Selected Settings component or not.
+        type: boolean
+      templateTenant:
+        description: ID of the template tenant.
+        example: 80b3f8cd-5801-4ed7-bee7-ad1569916c2f
+        type: string
+      workflows:
+        description: Selected Workflow component or not.
+        type: boolean
+    required:
+    - description
+    - name
+    - templateTenant
+    title: CreateTemplateRequestContent
+    type: object
+  CompareSchemaInfoResponse:
+    description: When Tenant's Compare API returns a result, this object is used to send the response to UI.
+    properties:
+      customFields:
+        items:
+          $ref: '#/definitions/CompareSchemaKeyValue'
+        type: array
+      customObjects:
+        items:
+          $ref: '#/definitions/CompareSchemaKeyValue'
+        type: array
+      dataAccessControl:
+        items:
+          $ref: '#/definitions/CompareSchemaKeyValue'
+        type: array
+      metaData:
+        $ref: '#/definitions/JsonNode'
+      notifications:
+        items:
+          $ref: '#/definitions/CompareSchemaKeyValue'
+        type: array
+      productCatalog:
+        items:
+          $ref: '#/definitions/CompareSchemaKeyValue'
+        type: array
+      settings:
+        items:
+          $ref: '#/definitions/CompareSchemaKeyValue'
+        type: array
+      workflows:
+        items:
+          $ref: '#/definitions/CompareSchemaKeyValue'
+        type: array
+    title: CompareSchemaInfoResponse
+    type: object
+  SettingSourceComponentResponse:
+    description: Provides details about the different components that need to be compared and deployed.
+    properties:
+      customFields:
+        items:
+          $ref: '#/definitions/SettingComponentKeyValue'
+        type: array
+      customObjects:
+        items:
+          $ref: '#/definitions/SettingComponentKeyValue'
+        type: array
+      dataAccessControl:
+        items:
+          $ref: '#/definitions/SettingComponentKeyValue'
+        type: array
+      notifications:
+        items:
+          $ref: '#/definitions/SettingComponentKeyValue'
+        type: array
+      productCatalog:
+        items:
+          $ref: '#/definitions/SettingComponentKeyValue'
+        type: array
+      settings:
+        items:
+          $ref: '#/definitions/SettingComponentKeyValue'
+        type: array
+      workflows:
+        items:
+          $ref: '#/definitions/SettingComponentKeyValue'
+        type: array
+    title: SettingSourceComponentResponse
+    type: object
+  SettingComponentKeyValue:
+    description: Provides details about the individual components that need to be compared and deployed.
+    properties:
+      errors:
+        items:
+          type: string
+        type: array
+      originalPayload:
+        $ref: '#/definitions/JsonNode'
+      response:
+        items:
+          $ref: '#/definitions/ConfigurationTemplateContent'
+        type: array
+      segregationKeys:
+        items:
+          type: string
+        type: array
+    title: SettingComponentKeyValue
+    type: object
+  TemplateDetailResponse:
+    description: Contains all template details.
+    properties:
+      active:
+        description: Whether or not the template is active.
+        type: boolean
+      content:
+        $ref: '#/definitions/SettingSourceComponentResponse'
+      createdBy:
+        description: Information about the user who created it.
+        type: string
+      createdOn:
+        description: When it is created.
+        type: string
+      description:
+        description: Template description which contains the information about the created template.
+        type: string
+      entityName:
+        description: Name of the Entity
+        type: string
+      environment:
+        description: Details of the environment in which the template was created.
+        type: string
+      errors:
+        description: Error information.
+        type: string
+      id:
+        description: Id of the template.
+        type: string
+      name:
+        description: Name of the template.
+        type: string
+      status:
+        description: The status of the template creation, such as whether it is in progress, completed, or failed.
+        type: string
+      tenantName:
+        description: Tenant's name for whom the template is created.
+        type: string
+    title: TemplateDetailResponse
+    type: object
+  TemplateResponse:
+    description: It contains a collection of all the templates that have been created.
+    properties:
+      templates:
+        description: Contains list of template details.
+        items:
+          $ref: '#/definitions/TemplateDetailResponse'
+        type: array
+    title: TemplateResponse
+    type: object
+  TemplateMigrationClientRequest:
+    description: 'Request to add a new Template migration.
+
+      TemplateMigrationClientRequest object contains request details of target tenant, source tenant, and template information needed for migration.
+
+      '
+    properties:
+      comments:
+        type: string
+      description:
+        description: Description of the migration.
+        example: Migration from/to Sandbox
+        type: string
+      emailIds:
+        description: List of Emails with comma separator.
+        example: abcd@zuora.com,xyz@zuora.com
+        type: string
+      entityUuid:
+        description: Entity UUID
+        example: 11111
+        type: string
+      metaData:
+        $ref: '#/definitions/JsonNode'
+        description: Meta data information of the source templates.
+        example: ST 4
+      name:
+        description: Name of the migration.
+        example: Job A
+        type: string
+      request:
+        description: List of settings need to be migrated.
+        example: ST 4
+        items:
+          $ref: '#/definitions/MigrationComponentContent'
+        type: array
+      sendEmail:
+        description: Flag determines whether or not to send an email.
+        example: true
+        type: boolean
+    required:
+    - description
+    - entityUuid
+    - name
+    - sendEmail
+    title: TemplateMigrationClientRequest
+    type: object
+  MigrationComponentContent:
+    description: When a comparison is made between a source and target tenant, it sends a response to the user interface.
+    properties:
+      attribute:
+        type: string
+      componentType:
+        description: Type of selected components to be migrated.
+        type: string
+      currentTargetResponse:
+        $ref: '#/definitions/JsonNode'
+        description: Current Target Response to be migrated.
+      description:
+        type: string
+      disabled:
+        type: string
+      errorMessage:
+        description: Error information.
+        type: string
+      httpMethods:
+        type: string
+      id:
+        type: string
+      key:
+        type: string
+      migratedOn:
+        description: It is the time when migration is triggered.
+        format: date-time
+        type: string
+      migrationId:
+        description: Migration ID. It is generated at the time of triggering deployment.
+        type: string
+      pathPattern:
+        description: PathPattern of component.
+        type: string
+      previousTargetResponse:
+        $ref: '#/definitions/JsonNode'
+        description: It caches the previous target response, which can be helpful if you want to revert the migration.
+      result:
+        description: Returns the result details of Components.
+        type: string
+      segregationKey:
+        description: Displays the differences between components.
+        type: string
+      sourceResponse:
+        $ref: '#/definitions/JsonNode'
+      status:
+        description: Returns the status of each component.
+        type: string
+      updateStatus:
+        description: Updated Status.
+        type: string
+    title: MigrationComponentContent
+    type: object
+parameters:
+  GLOBAL_HEADER_Accept_Encoding:
+    name: Accept-Encoding
+    in: header
+    required: false
+    type: string
+    description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+  GLOBAL_HEADER_Zuora_Org_Ids:
+    name: Zuora-Org-Ids
+    in: header
+    required: false
+    type: string
+    description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+  GLOBAL_HEADER_Idempotency_Key:
+    name: Idempotency-Key
+    in: header
+    required: false
+    type: string
+    maxLength: 255
+    description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+  GLOBAL_HEADER_Content_Encoding:
+    name: Content-Encoding
+    in: header
+    required: false
+    type: string
+    description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+      '
+  GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+    name: Zuora-Entity-Ids
+    in: header
+    required: false
+    type: string
+    description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+      '
+  GLOBAL_HEADER_Zuora_Track_Id:
+    name: Zuora-Track-Id
+    in: header
+    required: false
+    type: string
+    maxLength: 64
+    description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+      The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+      '
+  GLOBAL_HEADER_Authorization_OAuth:
+    name: Authorization
+    in: header
+    required: true
+    type: string
+    description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+      '
+x-tagGroups:
+- name: Authentication
+  tags:
+  - OAuth
+- name: Products
+  tags:
+  - Products
+  - Catalog
+  - Catalog Groups
+  - Offers
+  - Price Book Items
+  - Product Rate Plans
+  - Product Rate Plan Definitions
+  - Product Rate Plan Charges
+  - Product Charge Definitions
+  - Product Rate Plan Charge Tiers
+  - Zuora Revenue Integration
+- name: Customer Accounts
+  tags:
+  - Accounts
+  - Contacts
+  - Contact Snapshots
+- name: Orders and Subscriptions
+  tags:
+  - Sign Up
+  - Orders
+  - Order Actions
+  - Order Line Items
+  - Fulfillments
+  - Ramps
+  - Subscriptions
+  - Rate Plans
+- name: Advanced Consumption Billing
+  tags:
+  - Prepaid with Drawdown
+- name: Usage
+  tags:
+  - Usage
+- name: Billing Documents
+  tags:
+  - Delivery Adjustments
+  - Billing Documents
+  - Invoices
+  - Credit Memos
+  - Debit Memos
+  - E-Invoicing
+  - Invoice Schedules
+  - Taxation Items
+  - Sequence Sets
+  - Operations
+- name: Bill Runs
+  tags:
+  - Bill Run
+  - Billing Preview Run
+- name: Payment Methods
+  tags:
+  - Payment Methods
+  - Custom Payment Method Types
+  - Payment Method Updater
+  - Payment Method Snapshots
+  - Payment Method Transaction Logs
+  - Hosted Pages
+  - RSA Signatures
+- name: Payments
+  tags:
+  - Payment Authorization
+  - Payment Gateways
+  - Payment Gateway Reconciliation
+  - Payments
+  - Payment Transaction Logs
+  - Payment Runs
+  - Payment Schedules
+  - Refunds
+- name: Finance
+  tags:
+  - Accounting Codes
+  - Accounting Periods
+  - Summary Journal Entries
+  - Journal Runs
+  - Mass Updater
+- name: Events and Notifications
+  tags:
+  - Notifications
+  - Custom Event Triggers
+  - Custom Scheduled Events
+- name: Custom Objects
+  tags:
+  - Custom Object Definitions
+  - Custom Object Records
+  - Custom Object Jobs
+- name: System Health
+  tags:
+  - API Health
+  - Bill Run Health
+  - Electronic Payments Health
+- name: Workflow
+  tags:
+  - Workflows
+- name: Data Query
+  tags:
+  - Data Queries
+- name: AQuA
+  tags:
+  - Aggregate Queries
+- name: Deployment Manager
+  tags:
+  - Configuration Templates
+- name: Multiple Organizations
+  tags:
+  - Data Labeling
+- name: Order to Revenue
+  tags:
+  - Regenerate
+- name: General-Purpose Operations
+  tags:
+  - Actions
+  - Settings
+  - Files
+  - Imports
+  - Custom Exchange Rates
+  - Attachments
+  - Describe
