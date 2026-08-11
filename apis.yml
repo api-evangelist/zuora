@@ -1183,6 +1183,16 @@ apis:
   - type: OpenAPI
     url: openapi/zuora-zuora-revenue-integration-api-openapi.yml
 common:
+  - type: Support
+    url: https://support.zuora.com/
+  - type: SDKs
+    url: https://developer.zuora.com/docs/guides/libraries/
+  - type: ChangeLog
+    url: https://docs.zuora.com/en/release-notes
+  - type: GettingStarted
+    url: https://developer.zuora.com/quickstart-guides/integration-tutorials/
+  - type: OpenIDConnect
+    url: https://www.zuora.com/.well-known/oauth-authorization-server
   - type: AgenticAccess
     url: agentic-access/zuora-agentic-access.yml
   - type: DomainSecurity
