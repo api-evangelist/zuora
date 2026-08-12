@@ -5,6 +5,17 @@ description: >-
   subscriptions, processing payments, and extending Zuora's capabilities. The platform offers v1 and Quickstart APIs
   with comprehensive coverage of billing, payments, and platform features.
 type: Index
+deliveryModel:
+  model: library
+  open_source: false
+  commercial: false
+  callable_host: false
+  label: Library · distributed through package registries, no callable service
+  confidence: low
+  source:
+  - openapi
+  generated: '2026-08-11'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: unknown
