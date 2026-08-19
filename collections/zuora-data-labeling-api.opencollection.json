@@ -1,0 +1,96 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Data Labeling API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Data Labeling",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Submit a data labeling job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/multi-organizations/data-labeling-job",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Submits a data labeling job.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a data labeling job",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/multi-organizations/data-labeling-job/:job-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "job-id",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the data labeling job.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a data labeling job. You can use this operation to track the status of the data labeling job.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

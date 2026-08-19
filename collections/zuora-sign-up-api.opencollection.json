@@ -1,0 +1,63 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Sign Up API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sign Up",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Sign up",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/sign-up",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This call performs many actions. You can use this operation to implement the standard requirements for signing up a customer, such as validating the uniqueness of an account and limiting the number of subscriptions per account. Also, you can use this operation to create a subscription, generate an invoice, and collect payment for a new or existing customer. \n\n**Note:** You need to have the [Orders](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders) or [Orders Harmonization](ht"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

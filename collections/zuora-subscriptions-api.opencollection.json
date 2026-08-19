@@ -1,0 +1,638 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Subscriptions API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Subscriptions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Preview a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/subscriptions/preview",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "The REST API reference describes how to create a new subscription in preview mode. This call does not require a valid customer account. It can be used to show potential new customers a preview of a subscription with complete details and charges before creating an account, or to let existing customers preview a subscription with all charges before committing.\n\n### Notes\n- The response of the Preview Subscription call is based on the REST API minor version you set in the request header. The respon"
+        },
+        {
+          "info": {
+            "name": "Create a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/subscriptions",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to create a new subscription for an existing customer account.\n\n### Notes\n\nIf you have the Invoice Settlement feature enabled, it is best practice to set the `zuora-version` parameter to `211.0` or later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). Otherwise, an error occurs.\n\nIf `invoiceCollect` is `true`, the call will not return `success` = `true` unless the subscription, invoice, and payment are all successful.\n"
+        },
+        {
+          "info": {
+            "name": "List subscriptions by account key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/subscriptions/accounts/:account-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "account-key",
+                "value": "",
+                "type": "path",
+                "description": "\nPossible values are:\n* an account number\n* an account ID\n"
+              },
+              {
+                "name": "charge-detail",
+                "value": "",
+                "type": "query",
+                "description": "The segmented rate plan charges.\n\nWhen an amendment results in a change to a charge, Zuora creates a segmented rate plan charge. Use this field to track segment charges.\n\nPossible values are:\n\n* __last-segment__: (Default) The last rate plan charge on the subscription. The last rate plan charge is the last one in the order of time on the subscription rather than the most recent changed charge on the subscription.\n * __current-segment__: The segmented charge that is active on today’s date (effectiveStartDate <= today’s date < effectiveEndDate).\n \n * __all-segments__: All the segmented charges. The `chargeSegments` field is returned in the response. The `chargeSegments` field contains an array of the charge information for all the charge segments.\n\n * __specific-segment&as-of-date=date__: The segmented charge that is active on a date you specified (effectiveStartDate <= specific date < effectiveEndDate). The format of the date is yyyy-mm-dd.\n"
+              },
+              {
+                "name": "exclude-rate-plans-with-no-charges",
+                "value": "",
+                "type": "query",
+                "description": "If the `exclude-rate-plans-with-no-charges` is `true`, only the active charges and rate plans will be in the response. The default value is `false`.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves all subscriptions associated with the specified account. Zuora only returns the latest version of the subscriptions.\n\nSubscription data is returned in reverse chronological order based on `updatedDate`. Note that the rate plans inside the subscriptions are not sorted specifically and are returned in a random order.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription by key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscription-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription-key",
+                "value": "",
+                "type": "path",
+                "description": "Possible values are:\n  * a subscription number\n  * a subscription ID\n"
+              },
+              {
+                "name": "charge-detail",
+                "value": "",
+                "type": "query",
+                "description": "\nThe segmented rate plan charges. When an amendment results in a change to a charge, Zuora creates a segmented rate plan charge. Use this field to track segment charges.\n\nPossible values are:\n\n * __last-segment__: (Default) The last rate plan charge on the subscription. The last rate plan charge is the last one in the order of time on the subscription rather than the most recent changed charge on the subscription.\n * __current-segment__: The segmented charge that is active on today’s date (effectiveStartDate <= today’s date < effectiveEndDate).\n \n * __all-segments__: All the segmented charges. The `chargeSegments` field is returned in the response. The `chargeSegments` field contains an array of the charge information for all the charge segments.\n\n * __specific-segment&as-of-date=date__: The segmented charge that is active on a date you specified ((specific date = effectiveStartDate) OR (effectiveStartDate < specific date < effectiveEndDate)). The format of the date is yyyy-mm-dd.\n"
+              },
+              {
+                "name": "exclude-rate-plans-with-no-charges",
+                "value": "",
+                "type": "query",
+                "description": "If the `exclude-rate-plans-with-no-charges` is `true`, only the active charges and rate plans will be in the response. The default value is `false`.\n"
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to retrieve detailed information about a specified subscription in the latest version.\n"
+        },
+        {
+          "info": {
+            "name": "Update a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscription-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription-key",
+                "value": "",
+                "type": "path",
+                "description": "\nSubscription number or ID. \nID can be the latest version or any history version of ID. \n* To make sure you update the last version of the subscription, use one of the following operations to retrieve the last version of ID:\n  * [List subscriptions by account key](/api-references/api/operation/GET_SubscriptionsByAccount)\n  * [Retrieve a subscription by key](/api-references/api/operation/GET_SubscriptionsByKey) by using the subscription number as the subscription-key\n* If you want to use any history version of ID, the `STABLE_ID_PUBLIC_API` permission must be enabled. Submit a request at [Zuora Global Support](http://support.zuora.com/) to enable the permission. To retrieve a history version of ID, use the [Retrieve a subscription by key and version](/api-references/api/operation/GET_SubscriptionsByKeyAndVersion) operation.\n"
+              }
+            ]
+          },
+          "docs": "Use this call to make the following kinds of changes to a subscription:\n  * Add a note\n  * Change the renewal term or auto-renewal flag\n  * Change the term length or change between evergreen and termed\n  * Add a new product rate plan\n  * Remove an existing subscription rate plan\n  * Change the quantity or price of an existing subscription rate plan\n  * Change rate plans - to replace the existing rate plans in a subscription with other rate plans. Changing rate plans is currently not supported fo"
+        },
+        {
+          "info": {
+            "name": "Retrieve a subscription by key and version",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscription-key/versions/:version",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription-key",
+                "value": "",
+                "type": "path",
+                "description": "Subscription number. For example, A-S00000135.\n"
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "Subscription version. For example, 1.\n"
+              },
+              {
+                "name": "charge-detail",
+                "value": "",
+                "type": "query",
+                "description": "\nThe segmented rate plan charges. When an amendment results in a change to a charge, Zuora creates a segmented rate plan charge. Use this field to track segment charges.\n\nPossible values are:\n\n * __last-segment__: (Default) The last rate plan charge on the subscription. The last rate plan charge is the last one in the order of time on the subscription rather than the most recent changed charge on the subscription.\n * __current-segment__: The segmented charge that is active on today’s date (effectiveStartDate <= today’s date < effectiveEndDate).\n \n * __all-segments__: All the segmented charges. The `chargeSegments` field is returned in the response. The `chargeSegments` field contains an array of the charge information for all the charge segments.\n\n * __specific-segment&as-of-date=date__: The segmented charge that is active on a date you specified (effectiveStartDate <= specific date < effectiveEndDate). The format of the date is yyyy-mm-dd.\n"
+              },
+              {
+                "name": "exclude-rate-plans-with-no-charges",
+                "value": "",
+                "type": "query",
+                "description": "If the `exclude-rate-plans-with-no-charges` is `true`, only the active charges and rate plans will be in the response. The default value is `false`.\n"
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to retrieve detailed information about a specified subscription in a specified version. When you create a subscription amendment, you create a new version of the subscription. You can use this method to retrieve information about a subscription in any version.\n"
+        },
+        {
+          "info": {
+            "name": "Renew a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscription-key/renew",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription-key",
+                "value": "",
+                "type": "path",
+                "description": "Subscription number or ID"
+              }
+            ]
+          },
+          "docs": "Renews a termed subscription using existing renewal terms. \nWhen you renew a subscription, the current subscription term is extended by creating a new term.  \nIf any charge in your subscription has the billing period set as `SubscriptionTerm`， a new charge segment is generated for the new term.\n\n\n**Note**: If you have the Invoice Settlement feature enabled, it is best practice to set the `zuora-version` parameter to `211.0` or later [available versions](/api-references/api/overview/#section/API-"
+        },
+        {
+          "info": {
+            "name": "Cancel a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscription-key/cancel",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription-key",
+                "value": "",
+                "type": "path",
+                "description": "Subscription number or ID. Subscription status must be `Active`."
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to cancel an active subscription.\n\n**Note**: If you have the Invoice Settlement feature enabled, it is best practice to set the `zuora-version` parameter to `211.0` or later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). Otherwise, an error occurs.\n"
+        },
+        {
+          "info": {
+            "name": "Resume a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscription-key/resume",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription-key",
+                "value": "",
+                "type": "path",
+                "description": "Subscription number or ID. Subscription status must be Suspended."
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to resume a suspended subscription.  \n\n**Note**: If you have the Invoice Settlement feature enabled, it is best practice to set the `zuora-version` parameter to `211.0` or later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). Otherwise, an error occurs.\n"
+        },
+        {
+          "info": {
+            "name": "Suspend a subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscription-key/suspend",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription-key",
+                "value": "",
+                "type": "path",
+                "description": "Subscription number or ID. Subscription status must be Active."
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to suspend an active subscription. \n\n**Note**: If you have the Invoice Settlement feature enabled, it is best practice to set the `zuora-version` parameter to `211.0` or later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). Otherwise, an error occurs.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a subscription by number",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscription-key/delete",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscription-key",
+                "value": "",
+                "type": "path",
+                "description": "Subscription number"
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to delete a subscription of the specified subscription number.\n"
+        },
+        {
+          "info": {
+            "name": "Update subscription custom fields of a subscription version",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/subscriptions/:subscriptionNumber/versions/:version/customFields",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscriptionNumber",
+                "value": "",
+                "type": "path",
+                "description": "The subscription number to be updated."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "The subscription version to be updated."
+              }
+            ]
+          },
+          "docs": "Updates the custom fields of a specified subscription version.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,295 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Summary Journal Entries API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Summary Journal Entries",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a summary journal entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/journal-entries",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to manually create a summary journal entry. Request and response field descriptions and sample code are provided.\n### Requirements\n1.The sum of debits must equal the sum of credits in the summary journal entry.\n\n2.The following applies only if you use foreign currency conversion:\n  * If you have configured Aggregate transactions with different currencies during a Journal Run to \"Yes\", the value of the **currency** field must be the same as your tenant's home"
+        },
+        {
+          "info": {
+            "name": "List all summary journal entries in a journal run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/journal-entries/journal-runs/:jr-number",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "jr-number",
+                "value": "",
+                "type": "path",
+                "description": "Journal run number."
+              }
+            ]
+          },
+          "docs": "\nThis REST API reference describes how to retrieve information about all summary journal entries in a journal run.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a summary journal entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/journal-entries/:je-number",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "je-number",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to get information about a summary journal entry by its journal entry number.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a summary journal entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/journal-entries/:je-number",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "je-number",
+                "value": "",
+                "type": "path",
+                "description": "Journal entry number in the format JE-00000001."
+              }
+            ]
+          },
+          "docs": "This reference describes how to delete a summary journal entry using the REST API.\n\nYou must have the \"Delete Cancelled Journal Entry\" user permission enabled to delete summary journal entries.\n\nA summary journal entry must be canceled before it can be deleted.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel a summary journal entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/journal-entries/:je-number/cancel",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "je-number",
+                "value": "",
+                "type": "path",
+                "description": "Journal entry number in the format JE-00000001."
+              }
+            ]
+          },
+          "docs": "\nThis reference describes how to cancel a summary journal entry using the REST API.\n    \nYou must have the \"Cancel Journal Entry\" user permission enabled to cancel summary journal entries.\n    \nA summary journal entry cannot be canceled if its Transferred to Accounting status is \"Yes\" or \"Processing\".\n"
+        },
+        {
+          "info": {
+            "name": "Update a summary journal entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/journal-entries/:je-number/basic-information",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "je-number",
+                "value": "",
+                "type": "path",
+                "description": "Journal entry number in the format JE-00000001."
+              }
+            ]
+          },
+          "docs": "\nThis REST API reference describes how to update the basic information of a summary journal entry. Request and response field descriptions and sample code are provided.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

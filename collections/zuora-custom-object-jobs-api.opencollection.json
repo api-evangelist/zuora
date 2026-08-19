@@ -1,0 +1,332 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Custom Object Jobs API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom Object Jobs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all custom object bulk jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/objects/jobs",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "The `cursor` points to the last job of the previous result set. The cursor job is not included in this query result. The call returns the first page if `cursor` is not provided and `pageSize` is valid."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "The status of bulk jobs to be retrieved."
+              }
+            ]
+          },
+          "docs": "Lists all custom object bulk jobs submitted by your tenant.\n"
+        },
+        {
+          "info": {
+            "name": "Submit a custom object bulk job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/objects/jobs",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Submits a bulk job request for a bulk operation on the specified custom object records. A succcessful call returns a newly created bulk job. The job ID can be used to poll the job status or upload the CSV file if it is a `create` or `update` job.\n\n### Limits\nThis custom object bulk jobs have the following limits:\n* The concurrent bulk job limit per tenant is 5. Bulk jobs in `accepted`, `pending`, or `in_progress` status are counted towards the concurrent bulk job limit.\n* The bulk job execuation"
+        },
+        {
+          "info": {
+            "name": "Retrieve a custom object bulk job",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/objects/jobs/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the custom object bulk job to be retrieved."
+              }
+            ]
+          },
+          "docs": "Retrieves the custom object bulk job details by job ID.\n\nOnly the users that have the \"View Custom Objects\" permission can retrieve custom object bulk jobs. See [Platform Permissions](https://knowledgecenter.zuora.com/Billing/Tenant_Management/A_Administrator_Settings/User_Roles/h_Platform_Roles#Platform_Permissions) for more information.\n"
+        },
+        {
+          "info": {
+            "name": "Upload a file for a custom object bulk job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/objects/jobs/:id/files",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the custom object bulk job that the file is uploaded to."
+              }
+            ]
+          },
+          "docs": "Uploads a `.csv` file for a custom object bulk job to create or update custom object records. The job must be in `pending` status. Only one file is allowed per job. Each file supports only one type of operation, with an `id` column required for update operations. The job will start once the upload is finished.\n\nOnly the users that have the \"Edit Custom Objects\" permission can upload files to custom object bulk jobs. See [Platform Permissions](https://knowledgecenter.zuora.com/Billing/Tenant_Mana"
+        },
+        {
+          "info": {
+            "name": "List all errors for a custom object bulk job",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/objects/jobs/:id/errors",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the custom object bulk job that you retrieve errors for."
+              }
+            ]
+          },
+          "docs": "Lists all errors for a custom object bulk job.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel a custom object bulk job",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/objects/jobs/:id/cancel",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the custom object bulk job that you want to cancel."
+              }
+            ]
+          },
+          "docs": "Cancel a custom object bulk job. Note that you can cancel a custom object bulk job only if the job status is `accepted` or `pending`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

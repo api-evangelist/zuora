@@ -1,0 +1,361 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Usage API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Upload a usage file",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/usage",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to post or import usage data for one or more accounts in the CSV format. There are no path or query parameters. The data is uploaded using the HTTP multipart/form-data POST method and applied to the user's tenant. \n\n### How this REST API Call Works\nThe content of the uploaded usage file must follow the format used by the UI import tool. It must be a comma-separated (CSV) file with a corresponding .csv extension. The length of the file name must not exceed 50"
+        },
+        {
+          "info": {
+            "name": "Retrieve a usage record",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/usage/accounts/:account-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "account-key",
+                "value": "",
+                "type": "path",
+                "description": "Account number or account ID."
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to retrieve usage details for an account. Usage data is returned in reverse chronological order.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve usage rate detail for an invoice item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/invoices/invoice-item/:invoice-item-id/usage-rate-detail",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "invoice-item-id",
+                "value": "",
+                "type": "path",
+                "description": "Invoice item ID. For example, `402880e57f725d85017f7267c4ad002b`. Available through Data Source export."
+              }
+            ]
+          },
+          "docs": "Use this REST API operation to retrieve the usage rate detail for an invoice item to understand how the total amount is calculated. The information is the same as the Rate Detail presented on [PDF invoices](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/IA_Invoices/Create_a_custom_invoice_template/DD_Display_Usage_Charge_Breakdown#How_UsageSummary.RateDetail_is_displayed_on_invoices).  \n\n**Notes and limitations:**\n- Do not support the Overage Charge Model, Tiered with Overage Cha"
+        },
+        {
+          "info": {
+            "name": "CRUD: Create a usage record",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/object/usage",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Zuora-WSDL-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "rejectUnknownFields",
+                "value": "",
+                "type": "query",
+                "description": "Specifies whether the call fails if the request body contains unknown fields.\nWith `rejectUnknownFields` set to `true`, Zuora returns a 400 response if\nthe request body contains unknown fields. The body of the 400 response is:\n\n```json\n{\n    \"message\": \"Error - unrecognised fields\"\n}\n```\n\nBy default, Zuora ignores unknown fields in the request body.\n"
+              }
+            ]
+          },
+          "docs": "CRUD: Create a usage record"
+        },
+        {
+          "info": {
+            "name": "CRUD: Retrieve a usage record",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/object/usage/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Object fields to return"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Object id"
+              }
+            ]
+          },
+          "docs": "CRUD: Retrieve a usage record"
+        },
+        {
+          "info": {
+            "name": "CRUD: Update a usage record",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/object/usage/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "rejectUnknownFields",
+                "value": "",
+                "type": "query",
+                "description": "Specifies whether the call fails if the request body contains unknown fields.\nWith `rejectUnknownFields` set to `true`, Zuora returns a 400 response if\nthe request body contains unknown fields. The body of the 400 response is:\n\n```json\n{\n    \"message\": \"Error - unrecognised fields\"\n}\n```\n\nBy default, Zuora ignores unknown fields in the request body.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Object id"
+              }
+            ]
+          },
+          "docs": "CRUD: Update a usage record"
+        },
+        {
+          "info": {
+            "name": "CRUD: Delete a usage record",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/object/usage/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Object id"
+              }
+            ]
+          },
+          "docs": "CRUD: Delete a usage record"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

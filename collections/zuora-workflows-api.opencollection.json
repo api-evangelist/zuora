@@ -1,0 +1,848 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Workflows API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workflows",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List workflows",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/workflows",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "callout_trigger",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the operation retrieves workflows that have the callout trigger enabled. If set to false, the operation retrieves workflows that have the callout trigger disabled. If not specified, the operation will not use this filter.\n"
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "A CRON expession that specifies a schedule (for example, `0 0 * * *`). If specified, the operation retrieves the workflow that is run based on the specified schedule.\n"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves the workflow that is in the specified name.\n"
+              },
+              {
+                "name": "ondemand_trigger",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the operation retrieves workflows that have the ondemand trigger enabled. If set to false, the operation retrieves workflows that have the ondemand trigger disabled. If not specified, the operation will not use this filter.\n"
+              },
+              {
+                "name": "scheduled_trigger",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the operation retrieves workflows that have the scheduled trigger enabled. If set to false, the operation retrieves workflows that have the scheduled trigger disabled. If not specfied, the operation will not use this filter.\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "If you want to retrieve only the workflows on a specific page, you can specify the `page` number in the query.\n"
+              },
+              {
+                "name": "page_length",
+                "value": "",
+                "type": "query",
+                "description": "The number of workflows shown in a single call. If the `page` parameter is not specified, the operation will return only the first page of results. If there are multiple pages of results, use it with the `page` parameter to get the results on subsequent pages. The maximum value is 50.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of workflow definitions available in your Zuora tenant.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.   \n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/workflows/:workflow_id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a workflow definition. For example, 19080.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves information about a specific workflow by its ID.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Update a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/workflows/:workflow_id",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a workflow definition. For example, 19080.\n"
+              }
+            ]
+          },
+          "docs": "Updates a specific workflow by its ID, which allows you to [configure the settings of a workflow](https://knowledgecenter.zuora.com/CE_Workflow/Using_Workflow/B_Configure_a_Workflow) via API.\n\n### User Access Permission\nYou must be assigned the **Workflow Manage Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/workflows/:workflow_id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a workflow definition. For example, 19080.\n"
+              }
+            ]
+          },
+          "docs": "Deletes a specific workflow by its ID.\n\n### User Access Permission\nYou must be assigned the **Workflow Manage Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a workflow run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/workflows/workflow_runs/:workflow_run_id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_run_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a workflow run. For example, 19080.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves information about a specific workflow run by its ID.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Run a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/workflows/:workflow_id/run",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the workflow definition you want to run."
+              }
+            ]
+          },
+          "docs": "Run a specified workflow. In the request body, you can include parameters that you want to pass to the workflow. For the parameters to be recognized and picked up by tasks in the workflow, you need to define the parameters first.\n\n**Note**: To run a workflow, do not use the following reserved words in the request body of the parameters.\n - `controller`\n - `action`\n - `id`\n - `user_email`\n - `user_token`\n - `format`\n\n### User Access Permission\nYou must be assigned the **Workflow Run Access** perm"
+        },
+        {
+          "info": {
+            "name": "Export a workflow version",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/workflows/:workflow_id/export",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the workflow definition to export."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "Default result is the active version of the workflow definition. Version number and 'latest' can be used to export a specific version of the workflow definition. \n"
+              }
+            ]
+          },
+          "docs": "\nExports a workflow version into a JSON file. This file can be used to create a copy of this workflow version.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Import a workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/workflows/import",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_definition_id",
+                "value": "",
+                "type": "query",
+                "description": "The unique id of the workflow definition to import a workflow version under."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "The version number of the new workflow version to import. Must be greater than any existing version numbers."
+              },
+              {
+                "name": "activate",
+                "value": "",
+                "type": "query",
+                "description": "Indicates whether the imported version is an active version. Default to be false."
+              }
+            ]
+          },
+          "docs": "Create a new workflow definition and its first version using the exported JSON document of an existing workflow version.\n\n### User Access Permission\nYou must be assigned the **Workflow Manage Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Import a workflow version",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/workflows/:workflow_id/versions/import",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique id of the workflow definition to import a workflow version under."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "The version number of the new workflow version to import. Must be greater than any existing version numbers."
+              },
+              {
+                "name": "activate",
+                "value": "",
+                "type": "query",
+                "description": "Indicates whether the imported version is an active version. Default to be false."
+              }
+            ]
+          },
+          "docs": "Create a new workflow version under a workflow definition using the exported JSON document of an existing workflow version.\n\n### User Access Permission\nYou must be assigned the **Workflow Manage Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a workflow version",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/versions/:version_id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "version_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique id of the workflow version."
+              }
+            ]
+          },
+          "docs": "Delete a workflow version based on the version id. \n\n### User Access Permission\nYou must be assigned the **Workflow Manage Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "List all versions of a workflow definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/workflows/:workflow_id/versions",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique id of the workflow definition to import a workflow version under."
+              }
+            ]
+          },
+          "docs": "Return a list of all workflow versions under a workflow definition\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "List workflow tasks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/workflows/tasks",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves the task that is with specified id.\n"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves tasks that is in the specified name.\n"
+              },
+              {
+                "name": "instance",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the operation retrieves workflows that have the scheduled trigger enabled. If set to false, the operation retrieves workflows that have the scheduled trigger disabled. If not specfied, the operation will not use this filter.\n"
+              },
+              {
+                "name": "action_type",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves tasks that is the specified type.\n"
+              },
+              {
+                "name": "object",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves tasks with the specified object.\n"
+              },
+              {
+                "name": "object_id",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves tasks with the specified object id.\n"
+              },
+              {
+                "name": "call_type",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves tasks with the specified api call type used.\n"
+              },
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves tasks that for the specified workflow id.\n"
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query",
+                "description": "If specified, the operation retrieves tasks that with the specified filter tags. Use the following syntax to specify multiple tags: `tags[]=tag_value_1&tags[]=tag_value_2`.\n\n**Note:** All the workflow tasks that have any of the specified tags will be listed in the response body.\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "If you want to retrieve only the workflows on a specific page, you can specify the `page` number in the query.\n"
+              },
+              {
+                "name": "page_length",
+                "value": "",
+                "type": "query",
+                "description": "The number of workflow tasks shown in a single call. If the `page` parameter is not specified, the operation will return only the first page of results. If there are multiple pages of results, use it with the `page` parameter to get the results on subsequent pages. The maximum value is 100.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of workflow tasks available in your Zuora tenant.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a workflow task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/workflows/tasks/:task_id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of the task.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a specific workflow task by its ID.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Rerun a workflow task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/workflows/tasks/:task_id/rerun",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of the task.\n"
+              }
+            ]
+          },
+          "docs": "Reruns a specific workflow task by its ID.\n\n### User Access Permission\nYou must be assigned the **Workflow Run Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Update workflow tasks",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/workflows/tasks/batch_update",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Updates a group of workflow tasks.\n\n### User Access Permission\nYou must be assigned the **Workflow Manage Access** permission to run this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve workflow task usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/workflows/metrics.json",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "The start date of the usage data that you want to get. For example, 2019-01-01.\n"
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "The end date of the usage data that you want to get. For example, 2019-12-31.\n"
+              },
+              {
+                "name": "metrics",
+                "value": "",
+                "type": "query",
+                "description": "The type of metric that you want to get. Currently, only `taskCount` is supported. `taskCount` is the amount of task runs.\n"
+              }
+            ]
+          },
+          "docs": "Gets workflow task usage sorted by day within a specified time frame.\n\n### User Access Permission\nYou must be assigned the **Workflow View Access** permission to run this operation.        \n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,245 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Custom Payment Method Types API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom Payment Method Types",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a draft custom payment method type",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/open-payment-method-types",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates a draft version of a custom payment method type. Revision number 1 is assigned to this version. You can update your draft version through the [Update a custom payment method type](/api-references/api/operation/PUT_UpdateOpenPaymentMethodType/) operation. You must publish your draft version through the [Publish a custom payment method type](/api-references/api/operation/PUT_PublishOpenPaymentMethodType/) operation before your custom payment method type goes live.\n"
+        },
+        {
+          "info": {
+            "name": "Publish a custom payment method type",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/open-payment-method-types/publish/:paymentMethodTypeName",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentMethodTypeName",
+                "value": "",
+                "type": "path",
+                "description": "The API name of the custom payment method type, such as `AmazonPay__c_12368`.\n"
+              }
+            ]
+          },
+          "docs": "Publish the latest draft revision of a specific custom payment method type.\n"
+        },
+        {
+          "info": {
+            "name": "Update a custom payment method type",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/open-payment-method-types/:paymentMethodTypeName",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentMethodTypeName",
+                "value": "",
+                "type": "path",
+                "description": "The API name of the custom payment method type, such as `AmazonPay__c_12368`.\n"
+              }
+            ]
+          },
+          "docs": "Update the latest draft version of your custom payment method type. If the latest draft version has been published, the revision number is increased by 1 after the draft version is updated. You must publish your latest revision again through the [Publish a custom payment method type](/api-references/api/operation/PUT_PublishOpenPaymentMethodType/) operation before your updated custom payment method type goes live.\n\n**Note:** In the request body, you need to provide all the fields that define thi"
+        },
+        {
+          "info": {
+            "name": "Retrieve a specific draft revision of a custom payment method type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/open-payment-method-types/:paymentMethodTypeName/draft/:revisionNumber",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentMethodTypeName",
+                "value": "",
+                "type": "path",
+                "description": "The API name of the custom payment method type, such as `AmazonPay__c_12368`.\n"
+              },
+              {
+                "name": "revisionNumber",
+                "value": "",
+                "type": "path",
+                "description": "The revision number of the draft revision to be retrieved.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a specific draft revision of a custom payment method type.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a published custom payment method type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/open-payment-method-types/:paymentMethodTypeName/published",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentMethodTypeName",
+                "value": "",
+                "type": "path",
+                "description": "The API name of the custom payment method type, such as `AmazonPay__c_12368`.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a published custom payment method type.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

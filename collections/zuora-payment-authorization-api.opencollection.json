@@ -1,0 +1,116 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Payment Authorization API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payment Authorization",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id/authorize",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of the payment method where the authorization is created.\n"
+              }
+            ]
+          },
+          "docs": "Enables you to authorize the availability of funds for a transaction but delay the capture of funds until a later time. Subsequently, use [Create a payment](/api-references/api/operation/POST_CreatePayment) or [Create an order](/api-references/api/operation/POST_Order/) to capture the authorized funds, or use [Cancel authorization](/api-references/api/operation/POST_CancelAuthorization) to cancel the authorization. \n\nFor gateway integrations that support this operation, see <a href=\"https://know"
+        },
+        {
+          "info": {
+            "name": "Cancel authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id/voidAuthorize",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of the payment method where the authorization is cancelled.\n"
+              }
+            ]
+          },
+          "docs": "Allows you to cancel an authorization. For gateway integrations that support this operation, see <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Operations/DB_Delayed_Capture\" target=\"_blank\">Delayed Capture</a>.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

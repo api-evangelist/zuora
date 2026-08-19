@@ -1,0 +1,345 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Invoice Schedules API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Invoice Schedules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an invoice schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/invoice-schedules",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates an invoice schedule.\n\n### Limitations\n\nThis API operation has the following limitations:\n* You can create at most 50 invoice schedule items in one request.\n* You can associate at most 10 orders with an invoice schedule in one request.\n* You can associate at most 300 subscriptions with an invoice schedule in one request, including those contained in orders and separate subscriptions.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve an invoice schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/invoice-schedules/:scheduleKey",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "scheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the invoice schedule to be retrieved. For example, 2c92c8955bd63cc1015bd7c151af02ab or IS-0000001.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves detailed information about an invoice schedule.\n"
+        },
+        {
+          "info": {
+            "name": "Update an invoice schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/invoice-schedules/:scheduleKey",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "scheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the invoice schedule to be updated. For example, 2c92c8955bd63cc1015bd7c151af02ab or IS-0000001.\n"
+              }
+            ]
+          },
+          "docs": "Updates a pending invoice schedule.\n\nYou can use this API operation to update invoice schedules in the following aspects:\n- Update notes and pending invoice schedule items\n- Update orders associated with invoice schedules\n- Remove or add invoice schedule items\n\nFor more samples, see [Edit invoice schedules](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Billing_Schedule/Billing_Schedule_tutorials/Edit_invoice_schedules).\n\n### Restrictions and limitations \n\nWhen updating invoice s"
+        },
+        {
+          "info": {
+            "name": "Delete an invoice schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/invoice-schedules/:scheduleKey",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "scheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the invoice schedule to be deleted. For example, 2c92c8955bd63cc1015bd7c151af02ab or IS-0000001.\n"
+              }
+            ]
+          },
+          "docs": "Deletes an invoice schedule in Pending status. The status of the invoice schedule to be deleted must be `Pending`.\n"
+        },
+        {
+          "info": {
+            "name": "Pause an invoice schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/invoice-schedules/:scheduleKey/pause",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "scheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the schedule to be paused. For example, 2c92c8955bd63cc1015bd7c151af02ab or IS-0000001.\n"
+              }
+            ]
+          },
+          "docs": "Pauses an invoice schedule immediately.\n\nAfter one invoice schedule is paused, it cannot be automatically executed by Zuora Scheduler or by the [Execute an invoice schedule](/api-references/api/operation/POST_ExecuteInvoiceSchedule/) API operation.\n\nIf you want to run a paused invoice schedule, you can create a bill run with the target date greater than the next run date of the invoice schedule.\n"
+        },
+        {
+          "info": {
+            "name": "Resume an invoice schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/invoice-schedules/:scheduleKey/resume",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "scheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the schedule to be resumed. For example, 2c92c8955bd63cc1015bd7c151af02ab or IS-0000001.\n"
+              }
+            ]
+          },
+          "docs": "Resumes an invoice schedule in Paused status immediately.\n\nAfter an invoice schedule is resumed, it can continue to be automatically executed by Zuora Scheduler or by the [Execute an invoice schedule](/api-references/api/operation/POST_ExecuteInvoiceSchedule/) API operation.\n"
+        },
+        {
+          "info": {
+            "name": "Execute an invoice schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/invoice-schedules/:scheduleKey/execute",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "scheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the schedule to be executed. For example, 2c92c8955bd63cc1015bd7c151af02ab or IS-0000001.\n"
+              }
+            ]
+          },
+          "docs": "Executes an invoice schedule immediately.\n\nDuring the execution, a bill run is created and generates an invoice or a credit memo asynchronously.\n\nWhen you use this API operation to execute an invoice schedule item, you have the flexibility to decide whether to specify a specific item ID.\n\n- If you specify the unique ID of an invoice schedule item to be executed in the request, the corresponding invoice schedule item is executed.\n- If you do not specify the ID of any invoice schedule item in the "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

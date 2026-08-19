@@ -1,0 +1,425 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Custom Object Records API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom Object Records",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List records for a custom object",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/objects/records/default/:object",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "object",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the custom object's API name as object. It is case-sensitive."
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "The query string to filter the records of a custom object. See the [Query syntax of custom object records](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Data_Model/Custom_object_records/Query_syntax_of_custom_object_records) for more information.\n\nNote that the `q` parameter only applies to filterable fields.\n"
+              },
+              {
+                "name": "ids",
+                "value": "",
+                "type": "query",
+                "description": "UUIDs of the records to be queried. Each UUID must be a string of 36 characters. For example:\n\n`GET /objects/records/default/passenger?ids=258d65b2-7bc6-4142-88bc-5184931af493&ids=82ecc9f7-b192-4f88-a4a3-4b2af6c750a1`\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "The `cursor` points to the last record of the previous result set. The cursor record is not included in the query result. The call returns the first page if `cursor` is not provided and `pageSize` is valid."
+              }
+            ]
+          },
+          "docs": "Lists all object records of the given type. You can also use the `q` query parameter to filter the output records.\n\n\n### Custom Objects read consistency\n\nCustom Objects support eventually consistency. When you read custom object records, the response might not reflect the result of a recently completed operation and might include some stale data. The operations include creating, updating, and deleting custom object records.  If you repeat your read request after a short time, the response should"
+        },
+        {
+          "info": {
+            "name": "Create custom object records",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/objects/records/default/:object",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "object",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the custom object's API name as object. It is case-sensitive."
+              }
+            ]
+          },
+          "docs": "Creates custom object records with the given type. \n\nUpon creating records of a custom object type, the 200 response contains a list of records that have been successfully processed and stored.\n\n\n### Limitations \n\nThis call has the following limitations:\n* The maximum number of records that you can create by one call is 1,000.\n* The storage of empty strings in records is not supported.\n* Null values must be formatted as the following example: \n  ```\n  {\n    \"records\": [\n      {\n        \"fieldNam"
+        },
+        {
+          "info": {
+            "name": "Retrieve a custom object record",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/objects/records/default/:object/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "object",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the custom object's API name as object. It is case-sensitive."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Id identifier in uuid form"
+              }
+            ]
+          },
+          "docs": "Retrieves a record of a given type by ID.\n"
+        },
+        {
+          "info": {
+            "name": "Update a custom object record",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/objects/records/default/:object/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "object",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the custom object's API name as object. It is case-sensitive."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Id identifier in uuid form"
+              }
+            ]
+          },
+          "docs": "Updates a record of the given type and ID.\n\n### Limitations \n\n* The storage of empty strings in records is not supported.\n* Null values must be formatted as the following example: \n  ```\n  {\n    \"records\": [\n      {\n        \"fieldName__c\": null\n      }\n    ]\n  }\n  ```\n"
+        },
+        {
+          "info": {
+            "name": "Partially update a custom object record",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/objects/records/default/:object/:id",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "object",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the custom object's API name as object. It is case-sensitive."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Id identifier in uuid form"
+              }
+            ]
+          },
+          "docs": "Updates one or many fields of a custom object record. Patch update uses JSON Merge Patch as specified in [RFC 7386](https://tools.ietf.org/html/rfc7386).\n\n### Limitations \n\n* The storage of empty strings in records is not supported.\n* Null values must be formatted as the following example: \n  ```\n  {\n    \"records\": [\n      {\n        \"fieldName__c\": null\n      }\n    ]\n  }\n  ```\n"
+        },
+        {
+          "info": {
+            "name": "Delete a custom object record",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/objects/records/default/:object/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "object",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the custom object's API name as object. It is case-sensitive."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Id identifier in uuid form"
+              }
+            ]
+          },
+          "docs": "Deletes a custom object record of the given type and ID.\n\nNote that 200 response will be returned under either of the following conditions:\n* The record is identified and successfully deleted\n* The record could not be found\n\nNote that the record is deleted immediately and, therefore, will not be retained upon successful deletion.\n"
+        },
+        {
+          "info": {
+            "name": "Update or delete custom object records",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/objects/batch/default/:object",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "object",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the custom object's API name as object. It is case-sensitive."
+              }
+            ]
+          },
+          "docs": "Makes a batch update or delete of custom object records.\n### Limitations \n\nThis call has the following limitations:\n* The maximum number of records that you can update by one call is 1,000.\n* The maximum number of records that you can delete by one call is 1,000.\n* The storage of empty strings in records is not supported.\n* Null values must be formatted as the following example: \n  ```\n  {\n      \"action\": {\n          \"type\": \"update\",\n          \"records\": {\n              \"64edb2a5-2796-4e95-9559"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

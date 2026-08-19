@@ -1,0 +1,277 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Attachments API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Attachments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an attachment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/attachments",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "Description of the attachment document.\n"
+              },
+              {
+                "name": "associatedObjectType",
+                "value": "",
+                "type": "query",
+                "description": "The type of the object to add attachements for. \n"
+              },
+              {
+                "name": "associatedObjectKey",
+                "value": "",
+                "type": "query",
+                "description": "For the Subscription type, specify the Subscription Number. An attachment is tied to the Subscription Number and thus viewable with every subscription version.\n\nFor Account, Credit Memo, and Debit Memo, specify the corresponding ID or number. For Invoice, specify the corresponding ID.\n"
+              }
+            ]
+          },
+          "docs": "Use the Add Attachment REST request with a multipart/form-data to attach a document file to an Account, a Subscription, an Invoice, a Credit Memo, or a Debit Memo.\n\nYou can only use this operation if you have a Billing role that includes the Manage Attachments permission.\nFor more information, see [Billing roles](https://knowledgecenter.zuora.com/Billing/Tenant_Management/A_Administrator_Settings/User_Roles/d_Billing_Roles).\nTo change your Billing role, contact your Zuora platform administrator."
+        },
+        {
+          "info": {
+            "name": "List attachments by object type and key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/attachments/:object-type/:object-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "object-type",
+                "value": "",
+                "type": "path",
+                "description": "The type of the object to list attachements for.\n"
+              },
+              {
+                "name": "object-key",
+                "value": "",
+                "type": "path",
+                "description": "ID of the object to list attachements for.\n - If `object-type` is `account`, specify an account ID or number.\n - If `object-type` is `invoice`, specify an invoice ID.\n - If `object-type` is `subscription`, specify a subscription number.\n - If `object-type` is `creditmemo`, specify a credit memo ID or number.\n - If `object-type` is `debitmemo`, specify a debit memo ID or number.\n"
+              }
+            ]
+          },
+          "docs": "Use the View Attachment REST request to get a list of attachments on an account, an invoice, a subscription, a credit memo, or a debit memo.\n\nYou can only use this operation if you have a Billing role that includes the Manage Attachments permission.\nFor more information, see [Billing roles](https://knowledgecenter.zuora.com/Billing/Tenant_Management/A_Administrator_Settings/User_Roles/d_Billing_Roles).\nTo change your Billing role, contact your Zuora platform administrator.\n\n**Note**: The Credit "
+        },
+        {
+          "info": {
+            "name": "Retrieve an attachment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/attachments/:attachment-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "attachment-id",
+                "value": "",
+                "type": "path",
+                "description": "Id of the attachment you want to view."
+              }
+            ]
+          },
+          "docs": "Use the View Attachment REST request to retrieve information about an attachment document.\n\nYou can only use this operation if you have a Billing role that includes the Manage Attachments permission.\nFor more information, see [Billing roles](https://knowledgecenter.zuora.com/Billing/Tenant_Management/A_Administrator_Settings/User_Roles/d_Billing_Roles).\nTo change your Billing role, contact your Zuora platform administrator.\n"
+        },
+        {
+          "info": {
+            "name": "Update an attachment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/attachments/:attachment-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "attachment-id",
+                "value": "",
+                "type": "path",
+                "description": "Id of the attachment to be updated."
+              }
+            ]
+          },
+          "docs": "Use the Edit Attachment REST request to make changes to the descriptive fields of an attachment, such as the description and the file name. You cannot change the actual content of the attached file in Zuora. If you need to change the actual content, you need to delete the attachment and add the updated file as a new attachment.\n\nYou can only use this operation if you have a Billing role that includes the Manage Attachments permission.\nFor more information, see [Billing roles](https://knowledgece"
+        },
+        {
+          "info": {
+            "name": "Delete an attachment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/attachments/:attachment-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "attachment-id",
+                "value": "",
+                "type": "path",
+                "description": "Id of the attachment to be deleted."
+              }
+            ]
+          },
+          "docs": "Use the Delete Attachment REST request to delete an attachment from a Zuora object.\n\nYou can only use this operation if you have a Billing role that includes the Manage Attachments permission and the Delete Attachments permission.\nFor more information, see [Billing roles](https://knowledgecenter.zuora.com/Billing/Tenant_Management/A_Administrator_Settings/User_Roles/d_Billing_Roles).\nTo change your Billing role, contact your Zuora platform administrator.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

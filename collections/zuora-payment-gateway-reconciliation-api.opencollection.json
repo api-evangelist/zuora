@@ -1,0 +1,214 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Payment Gateway Reconciliation API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payment Gateway Reconciliation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Settle a payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/gateway-settlement/payments/:payment-key/settle",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-key",
+                "value": "",
+                "type": "path",
+                "description": "The payment number starting with \"P-\" or the unique payment ID."
+              }
+            ]
+          },
+          "docs": "If the <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Operations/DA_Electronic_Payment_Processing#Asynchronous_payment_flow\" target=\"_blank\">Asynchronous Payment Statuses</a> feature is not enabled, this API operation sets the Gateway State field of the payment to `Settled` and returns the Payment object as response.\n\nIf the Asynchronous Payment Statuses feature is enabled, for ACH and Bank Transfer payments, this API operation sets the Payment Status field to `Processed` and "
+        },
+        {
+          "info": {
+            "name": "Reject a payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/gateway-settlement/payments/:payment-key/reject",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-key",
+                "value": "",
+                "type": "path",
+                "description": "The payment number starting with \"P-\" or the unique payment ID."
+              }
+            ]
+          },
+          "docs": "If the <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Operations/DA_Electronic_Payment_Processing#Asynchronous_payment_flow\" target=\"_blank\">Asynchronous Payment Statuses</a> feature is not enabled, this API operation sets the Gateway State field of the payment to `FailedToSettle`, creates a refund for the payment amount, and returns the Refund object as response.\n\nIf the Asynchronous Payment Statuses feature is enabled, for ACH and Bank Transfer payments, this API operation s"
+        },
+        {
+          "info": {
+            "name": "Reverse a payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/gateway-settlement/payments/:payment-key/chargeback",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-key",
+                "value": "",
+                "type": "path",
+                "description": "The payment number starting with \"P-\" or the unique payment ID."
+              }
+            ]
+          },
+          "docs": "If the <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Operations/DA_Electronic_Payment_Processing#Asynchronous_payment_flow\" target=\"_blank\">Asynchronous Payment Statuses</a> feature is not enabled, this API operation sets the Gateway State field of the payment to `Settled`, creates a refund for the amount specified in the request, and returns the Refund object as response.\n\nIf the Asynchronous Payment Statuses feature is enabled, for ACH and Bank Transfer payments that are re"
+        },
+        {
+          "info": {
+            "name": "Reconcile a refund",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/refunds/:refund-key/reconcile",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "refund-key",
+                "value": "",
+                "type": "path",
+                "description": "The refund number starting with “R-” or the unique refund ID."
+              }
+            ]
+          },
+          "docs": "Reconciles a refund when receiving the gateway reconciliation request or event.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

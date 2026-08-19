@@ -1,0 +1,351 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Accounts API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/accounts",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates a customer account with a payment method, a bill-to contact, and an optional sold-to contact. Request and response field descriptions and sample code are provided. Use this operation to optionally create a subscription, invoice for that subscription, and collect payment through the default payment method. The transaction is atomic; if any part fails for any reason, the entire transaction is rolled back.\n\nThis operation is CORS Enabled, so you can use client-side Javascript to invoke the "
+        },
+        {
+          "info": {
+            "name": "Retrieve an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounts/:account-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account-key",
+                "value": "",
+                "type": "path",
+                "description": "Account number or account ID."
+              }
+            ]
+          },
+          "docs": "Retrieves basic information about a customer account.\n\nThis operation is a quick retrieval that doesn't include the account's subscriptions, invoices, payments, or usage details. Use Get account summary to get more detailed information about an account.\n"
+        },
+        {
+          "info": {
+            "name": "Update an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/accounts/:account-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account-key",
+                "value": "",
+                "type": "path",
+                "description": "Account number or account ID."
+              }
+            ]
+          },
+          "docs": "Updates a customer account by specifying the account-key.\n\n### Notes\n1. Only the fields to be changed should be specified.  Any field that is not included in the request body will not be changed.\n2. If an empty field is submitted with this operation, the corresponding field in the account is emptied.\n3. Email addresses: If no email addresses are specified, no change is made to the email addresses or to the email delivery preference. If either the **personalEmail** or **workEmail** of **billToCon"
+        },
+        {
+          "info": {
+            "name": "Delete an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/accounts/:account-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account-key",
+                "value": "",
+                "type": "path",
+                "description": "Account number or account ID."
+              }
+            ]
+          },
+          "docs": "Deletes a specific account asynchronously. \n\n**Notes and Limitations:** \n- For account deletion, the system will start a backend job to remove all transactions under the accounts and change the status of the accounts to 'Cancelled'. This backend job is asynchronous and will take some time, depending on the job size.  \n- An account cannot be deleted when the account is either the invoice owner or the subscription owner of a subscription and the subscription's invoice owner and subscription owner "
+        },
+        {
+          "info": {
+            "name": "Retrieve an account summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounts/:account-key/summary",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account-key",
+                "value": "",
+                "type": "path",
+                "description": "Account number or account ID."
+              },
+              {
+                "name": "excludeUsage",
+                "value": "",
+                "type": "query",
+                "description": "Indicate whether to exclude usage information in the response. The default value is `false`."
+              }
+            ]
+          },
+          "docs": "Retrieves detailed information about the specified customer account.\n\nThe response includes the account information and a summary of the account’s subscriptions, invoices, payments, and usages.\n\n### Notes\nReturns only the six most recent subscriptions based on the subscription updatedDate. Within those subscriptions, there may be many rate plans and many rate plan charges. These items are subject to the maximum limit on the array size. \n"
+        },
+        {
+          "info": {
+            "name": "List payment methods of an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounts/:account-key/payment-methods",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account-key",
+                "value": "",
+                "type": "path",
+                "description": "Account number or account ID."
+              },
+              {
+                "name": "isDefaultOnly",
+                "value": "",
+                "type": "query",
+                "description": "Indicates whether to only retrieve the default payment method of the account. The default value is `false`. If this parameter is set to `true`, only the default payment method is retrieved."
+              },
+              {
+                "name": "isActiveOnly",
+                "value": "",
+                "type": "query",
+                "description": "Indicates whether to only retrieve the active payment methods of the account. The default value is `false`. If this parameter is set to `true`, only the active payment methods are retrieved."
+              }
+            ]
+          },
+          "docs": "Retrieves the payment methods of the specified customer account.\n\n**Note:** This operation also supports retrieving custom payment methods created through the [Open Payment Method](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) service.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve the default payment method of an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounts/:account-key/payment-methods/default",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account-key",
+                "value": "",
+                "type": "path",
+                "description": "Account number or account ID."
+              }
+            ]
+          },
+          "docs": "Retrieves the default payment method of the specified customer account.\n\n**Note:** This operation also supports retrieving the custom payment method created through the [Open Payment Method](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) service.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

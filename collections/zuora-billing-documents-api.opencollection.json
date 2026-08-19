@@ -1,0 +1,234 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Billing Documents API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Billing Documents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Generate billing documents by account ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/accounts/:key/billing-documents/generate",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The ID or number of the customer account that billing documents are generated for. For example, 8a8082e65b27f6c3015ba3e326b26419 or AC0000001.\n"
+              }
+            ]
+          },
+          "docs": "Generates draft or posted billing documents for a specified account. You can also generate billing documents for specified subscriptions of a specified account. The billing documents contain invoices and credit memos. To generate credit memos, you must have the Invoice Settlement feature enabled.\n\n**Note**: You cannot generate billing documents for cancelled or suspended subscriptions.\n"
+        },
+        {
+          "info": {
+            "name": "List billing documents for an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/billing-documents",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the customer account that the billing documents are associated with.\n\n**Note**: When retrieving information about all billing documents associated with an account, you must specify either `accountId` or `accountNumber` in the query parameters.\n"
+              },
+              {
+                "name": "accountNumber",
+                "value": "",
+                "type": "query",
+                "description": "The number of the customer account that the billing documents are associated with.\n\n**Note**: When retrieving information about all billing documents associated with an account, you must specify either `accountId` or `accountNumber` in the query parameters.\n"
+              },
+              {
+                "name": "documentDate",
+                "value": "",
+                "type": "query",
+                "description": "The date of the billing document. It represents the invoice date for invoices, credit memo date for credit memos, and debit memo date for debit memos.\n"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "The status of the billing document.\n"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "This parameter restricts the order of the data returned in the response. You can use this parameter to supply a dimension you want to sort on.\n\nIf you do not specify any sortable field, the response data is sorted by the `documentDate` field in descending order.\n\nA sortable field uses the following form: \n\n*operator* *field_name*\n\nYou can use at most two sortable fields in one URL path. Use a comma to separate sortable fields. For example:  *operator* *field_name*, *operator* *field_name*  \n\n*operator* is used to mark the order of sequencing. The operator is optional. If you only specify the sortable field without any operator, the response data is sorted in descending order by this field.  \n\n  - The `-` operator indicates an ascending order.\n  - The `+` operator indicates a descending order.\n\n*field_name* indicates the name of a sortable field. The supported sortable fields of this operation are as below:\n\n  - documentDate\n  - documentType\n  \nExamples:\n- /billing-documents?accountId=4028905f5e4feb38015e50af9aa002d1\n  &sort=+documentDate,-documentType\n- /billing-documents?accountId=4028905f5e4feb38015e50af9aa002d1\n  &status=Posted&sort=+documentDate&page=2&pageSize=15\n"
+              }
+            ]
+          },
+          "docs": "Retrieves the information about all billing documents associated with a specified account. The billing documents contain invoices, credit memos, and debit memos.\n\nTo retrieve information about credit memos and debit memos, you must have the Invoice Settlement feature enabled. \n\nYou can use query parameters to restrict the data returned in the response.\n\nExamples:\n- /billing-documents?accountId=4028905f5e4feb38015e50af9aa002d1&sort=+documentDate\n- /billing-documents?accountId=4028905f5e4feb38015e"
+        },
+        {
+          "info": {
+            "name": "Create a job to hard delete billing document files",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/accounts/billing-documents/files/deletion-jobs",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates an asynchronous job to permanently delete all billing document PDF files for specific accounts. \n\nAfter the deletion job is completed, all billing document PDF files are permanently deleted. To retrieve the status of a deletion job, call [Retrieve a job of hard deleting billing document files](/api-references/api/operation/GET_BillingDocumentFilesDeletionJob).\n\n**Note**: This operation can be used only if you have the Billing user permission \"Hard Delete Billing Document Files\" enabled. "
+        },
+        {
+          "info": {
+            "name": "Retrieve a job of hard deleting billing document files",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounts/billing-documents/files/deletion-jobs/:jobId",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a billing document file deletion job. For example, 2c92c8f83dc4f752013dc72c24ee016c."
+              }
+            ]
+          },
+          "docs": "Retrieves information about an asynchronous job of permanently deleting all billing document PDF files for specific accounts.\n\n**Note**: This operation can be used only if you have the Billing user permission \"Hard Delete Billing Document Files\" enabled. \n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

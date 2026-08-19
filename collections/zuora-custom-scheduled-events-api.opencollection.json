@@ -1,0 +1,269 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Custom Scheduled Events API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom Scheduled Events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all scheduled events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/events/scheduled-events",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "eventTypeName",
+                "value": "",
+                "type": "query",
+                "description": "The name of the scheduled event. Should be specified in the pattern: ^[A-Za-z]{1,}[\\\\w\\\\-]*$"
+              },
+              {
+                "name": "apiObject",
+                "value": "",
+                "type": "query",
+                "description": "The base object that the scheduled event is defined upon. Should be specified in the pattern: ^[A-Z][\\\\w\\\\-]*$"
+              },
+              {
+                "name": "apiField",
+                "value": "",
+                "type": "query",
+                "description": "The base field of the base object in the `apiObject` field. Should be specified in the pattern: ^[A-Z][\\\\w\\\\-]*$"
+              },
+              {
+                "name": "active",
+                "value": "",
+                "type": "query",
+                "description": "Indicate whether the scheduled event is active or inactive."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "The first index of the query result. Default to 0 if absent, and the minimum is 0."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of data records to be returned. Default to 10 if absent."
+              }
+            ]
+          },
+          "docs": "List all scheduled events"
+        },
+        {
+          "info": {
+            "name": "Create a scheduled event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/events/scheduled-events",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "To create a custom scheduled event, you must specify the base object, the base field and the scheduled time.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a scheduled event by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/events/scheduled-events/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the scheduled event."
+              }
+            ]
+          },
+          "docs": "Retrieve a scheduled event by ID"
+        },
+        {
+          "info": {
+            "name": "Update a scheduled event by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/events/scheduled-events/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the scheduled event."
+              }
+            ]
+          },
+          "docs": "Update a scheduled event by ID"
+        },
+        {
+          "info": {
+            "name": "Delete a scheduled event by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/events/scheduled-events/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the scheduled event."
+              }
+            ]
+          },
+          "docs": "Delete a scheduled event by ID"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

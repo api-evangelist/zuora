@@ -1,0 +1,212 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Regenerate API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Regenerate",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Regenerate booking transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/uno-regenerate/booking-transaction",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "reMigrate",
+                "value": "",
+                "type": "query",
+                "description": "Indicates if existing data in the database will be overridden. \n"
+              }
+            ]
+          },
+          "docs": "Use this operation to generate booking transactions. This call is useful in the following two use cases:\n* During customer onboarding, there is a common scenario when customers perform data backfill or data fixes. To synchronize these changes from Billing to Revenue, use this API operation to regenerate booking transaction objects.\n* Customers choose to experiment with their use cases in the Sandbox environment before implementing them in the Production environment. During this experimentation p"
+        },
+        {
+          "info": {
+            "name": "Regenerate billing transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/uno-regenerate/billing-transaction",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "reMigrate",
+                "value": "",
+                "type": "query",
+                "description": "Indicates if existing data in the database will be overridden. \n"
+              }
+            ]
+          },
+          "docs": "Use this operation to generate billing transactions. This call is useful in the following two use cases: \n* During customer onboarding, there is a common scenario when customers perform data backfill or data fixes. To synchronize these changes from Billing to Revenue, use this API operation to regenerate billing transaction objects.\n* Customers choose to experiment with their use cases in the Sandbox environment before implementing them in the Production environment. During this experimentation "
+        },
+        {
+          "info": {
+            "name": "Regenerate revenue recognition events transactions for Delivery Schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/rev-rec-events",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscriptionNumber",
+                "value": "",
+                "type": "query",
+                "description": "The subcription number.\n"
+              },
+              {
+                "name": "mode",
+                "value": "",
+                "type": "query",
+                "description": "The generation mode."
+              }
+            ]
+          },
+          "docs": "Use this operation to generate Delivery Schedule based revenue recognition events transactions.\n"
+        },
+        {
+          "info": {
+            "name": "Regenerate revenue recognition events transactions for Daily Consumption",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/rev-rec-events/daily-consumption",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Use this operation to generate Daily Consumption based revenue recognition events transactions when the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/Bill_for_usage_or_prepaid_products/Advanced_Consumption_Billing/Prepaid_with_Drawdown\" target=\"_blank\">Prepaid with Drawdown</a> feature is enabled.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

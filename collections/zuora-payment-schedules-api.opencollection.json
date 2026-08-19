@@ -1,0 +1,722 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Payment Schedules API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payment Schedules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List payment schedules by customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/payment-schedules",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lastProcessedItems",
+                "value": "",
+                "type": "query",
+                "description": "Number of the most recent processed payment schedules dispalyed in the response body.\n"
+              },
+              {
+                "name": "nextPendingItems",
+                "value": "",
+                "type": "query",
+                "description": "Number of next pending payment schedule items displayed in the response body.\n"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the customer account. If neither `accountId` nor `accountNumber` is specified, all payment schedules will be returned. \n"
+              },
+              {
+                "name": "accountNumber",
+                "value": "",
+                "type": "query",
+                "description": "The number of the customer account. If neither `accountId` nor `accountNumber` is specified, all payment schedules will be returned. \n"
+              }
+            ]
+          },
+          "docs": "Retrieves payment schedules of a customer account.\n\n**Note:**\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manage and access this feature through the self-service interface, see [Manage Features](https://knowledgecenter.zuora.com/Zuora_Payments/Payments_Settings/Manage_Features) in the Knowledge Center.\n- This operation is only available if you have [Invoice"
+        },
+        {
+          "info": {
+            "name": "Create a payment schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-schedules",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates a payment schedule. You can create either recurring payment schedules or custom payment schedules.\n\n**Note:**\n- This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled.\n- You can choose to use payment schedules to process payments associated with billing documents or unapplied payments. If Standalone Payment is enabled, you can also use payment schedules to process standalone payments.\n- "
+        },
+        {
+          "info": {
+            "name": "Create multiple payment schedules at once",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-schedules/batch",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates multiple payment schedules at once. You can create both recurring payment schedules and custom payment schedules in one request. The maximum number of payment schedules that can be created by a single request is 50. The maximum number of payment schedule items that each payment schedule can contain is 1000, i.e., you must specify less than 1000 items for a custom payment schedule, and the `occurrences` field must be less than 1000 for a recurring payment schedule.\n\n**Note:**\n- The Paymen"
+        },
+        {
+          "info": {
+            "name": "Retrieve a payment schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/payment-schedules/:paymentScheduleKey",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "nextPendingItems",
+                "value": "",
+                "type": "query",
+                "description": "Number of next pending payment schedule items displayed in the response body.\n"
+              },
+              {
+                "name": "lastProcessedItems",
+                "value": "",
+                "type": "query",
+                "description": "Number of the most recent processed payment schedule items dispalyed in the response body.\n"
+              },
+              {
+                "name": "paymentScheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or `PS-00000007`.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a payment schedule by payment schedule key.\n\n**Note:**\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manage and access this feature through the self-service interface, see [Manage Features](https://knowledgecenter.zuora.com/Zuora_Payments/Payments_Settings/Manage_Features) in the Knowledge Center.\n- This operation is only available if you have [Invo"
+        },
+        {
+          "info": {
+            "name": "Update a payment schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-schedules/:paymentScheduleKey",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentScheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or `PS-00000007`.\n"
+              }
+            ]
+          },
+          "docs": "Updates a payment schedule. For custom payment schedules, only the custom fields on the payment schedules can be udpated. Use the [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/) operation to update payment schedule items of custom payment schedule.\n\nNote the following rules for the `periodStartDate`, `period`, and `occurrences`:\n\n- If `periodStartDate` is specified, all pending payment schedule items will be rescheduled using this new `periodStartDate`. I"
+        },
+        {
+          "info": {
+            "name": "Preview the result of payment schedule updates",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-schedules/:paymentScheduleKey/preview",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentScheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or `PS-00000007`.\n"
+              }
+            ]
+          },
+          "docs": "Preview the result of a payment schedule update. This operation only provides a preview. No changes will be made to the database. For custom payment schedules, only the custom fields on the payment schedules can be udpated. Use the [Update a payment schedule item](/v1-api-reference/api/PUT_PaymentScheduleItem) operation to update payment schedule items of custom payment schedule.\n\nNote the following rules for the `periodStartDate`, `period`, and `occurrences`:\n\n- If `periodStartDate` is specifie"
+        },
+        {
+          "info": {
+            "name": "Cancel a payment schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-schedules/:paymentScheduleKey/cancel",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentScheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or `PS-00000007`.\n"
+              }
+            ]
+          },
+          "docs": "Cancels a payment schedule.\n\n**Note:**\n- All pending payment schedule items will be canceled, effective from `cancelDate`. \n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manage and access this feature through the self-service interface, see [Manage Features](https://knowledgecenter.zuora.com/Zuora_Payments/Payments_Settings/Manage_Features) in the Knowledge C"
+        },
+        {
+          "info": {
+            "name": "Add payment schedule items to a custom payment schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-schedules/:paymentScheduleKey/items",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "paymentScheduleKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a payment schedule. For example, `8a90857b822459cd018224dcb9eb13be`, or `PS-00000007`.\n"
+              }
+            ]
+          },
+          "docs": "Adds payment schedule items to a custom payment schedule. You cannot use this operation to add payment schedule items to recurring payment schedules.\n\n**Note:**\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manage and access this feature through the self-service interface, see [Manage Features](https://knowledgecenter.zuora.com/Zuora_Payments/Payments_Setting"
+        },
+        {
+          "info": {
+            "name": "Retrieve payment schedule statistic of a date",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/payment-schedules/statistics/:yyyy-mm-dd",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "yyyy-mm-dd",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the date of the payment schedule statistic you want to view. \n"
+              }
+            ]
+          },
+          "docs": "Retrieves the payment schedule statistic of a specific date.\n\n**Note:**\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manage and access this feature through the self-service interface, see [Manage Features](https://knowledgecenter.zuora.com/Zuora_Payments/Payments_Settings/Manage_Features) in the Knowledge Center.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a payment schedule item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/payment-schedule-items/:item-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "item-id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a payment schedule item.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a payment schedule item by ID.\n\n**Note:**\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manage and access this feature through the self-service interface, see [Manage Features](https://knowledgecenter.zuora.com/Zuora_Payments/Payments_Settings/Manage_Features) in the Knowledge Center.\n- This operation is only available if you have [Invoice Settlemen"
+        },
+        {
+          "info": {
+            "name": "Update a payment schedule item",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-schedule-items/:item-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "item-id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a payment schedule item.\n"
+              }
+            ]
+          },
+          "docs": "Updates a payment schedule item by ID.\n\n**Note:**\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manag](https://knowledgecenter.zuora.com/Zuora_Payments/Payments_Settings/Manage_Features).\n- This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled.\n- To link a s"
+        },
+        {
+          "info": {
+            "name": "Cancel a payment schedule item",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-schedule-items/:item-id/cancel",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "item-id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a payment schedule item.     \n"
+              }
+            ]
+          },
+          "docs": "Cancels a payment schedule item by ID.\n\n**Note:**\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manage and access this feature through the self-service interface, see [Manage Features](https://knowledgecenter.zuora.com/Zuora_Payments/Payments_Settings/Manage_Features) in the Knowledge Center.\n- This operation is only available if you have [Invoice Settlement]"
+        },
+        {
+          "info": {
+            "name": "Skip a payment schedule item",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-schedule-items/:item-id/skip",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "item-id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a payment schedule item.   \n"
+              }
+            ]
+          },
+          "docs": "Skips a payment schedule item by ID. The skipped payment schedule item will turn to the `canceled` status, and a new item will be scheduled on the next recurring date after the last existing scheduled date.\n\n**Note:**\n- Only payment schedule items in recurring payment schedules can be skipped, and the item must be in the `pending` status.\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it a"
+        },
+        {
+          "info": {
+            "name": "Retry failed payment schedule items",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-schedule-items/retry-payment",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retries failed payment schedule items. The payment method and payment gateway of the failed payment can be updated to new values before the retry.\n\nNote that you can retry a payment schedule item only when the payment schedule item is either in the `Error` or `Pending` status.\n\n**Note:**\n- The Payment Schedules feature is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. To manage and access this fea"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

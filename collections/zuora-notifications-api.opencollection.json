@@ -1,0 +1,894 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Notifications API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Notifications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List notification definitions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications/notification-definitions",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "The first index of the query result."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of results the query should return."
+              },
+              {
+                "name": "profileId",
+                "value": "",
+                "type": "query",
+                "description": "Id of the profile."
+              },
+              {
+                "name": "eventTypeName",
+                "value": "",
+                "type": "query",
+                "description": "The name of the event."
+              },
+              {
+                "name": "emailTemplateId",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the email template."
+              }
+            ]
+          },
+          "docs": "Queries notification definitions with the specified filters.\n\n**Note**: This operation is only applicable to notifications for custom events and custom scheduled events. You can use the Settings API to list all notifications under a particular communication profile including notificatiions for standard events. For more information, see [Get all notifications under a particular communication profile](https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/BB_C_Settings_API/Settings_API_tutor"
+        },
+        {
+          "info": {
+            "name": "Create a notification definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/notifications/notification-definitions",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates a notification definition. If a filter rule is specified, it will be evaluated to\nsee if the notification definition is qualified to handle the incoming events \nduring runtime. If the notification is qualified, it will send the email and\ninvoke the callout if it has an email template or a callout. \n\n**Note**: This operation is only applicable to notifications for custom events and custom scheduled events.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a notification definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications/notification-definitions/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the notification definition."
+              }
+            ]
+          },
+          "docs": "Queries the notification definition of the given ID.\n\n**Note**: This operation is only applicable to notifications for custom events and custom scheduled events. You can use the Settings API to retrieve notifications for standard events. For more information, see [Get a notification definition](https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/BB_C_Settings_API/Settings_API_tutorials/Get_a_notification_definition).\n"
+        },
+        {
+          "info": {
+            "name": "Update a notification definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/notifications/notification-definitions/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the notification definition to be updated."
+              }
+            ]
+          },
+          "docs": "Updates a notification definition.\n\n**Note**: This operation is only applicable to notifications for custom events and custom scheduled events. You can use the Settings API to update notifications for standard events. For more information, see [Update a notification definition](https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/BB_C_Settings_API/Settings_API_tutorials/Update_a_notification_definition).\n"
+        },
+        {
+          "info": {
+            "name": "Delete a notification definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/notifications/notification-definitions/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the notification definition to be deleted."
+              }
+            ]
+          },
+          "docs": "Deletes a notification definition.\n\n**Note**: This operation is only applicable to notifications for custom events and custom scheduled events. You can use the Settings API to delete notifications for standard events. For more information, see [Delete a notification definition](https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/BB_C_Settings_API/Settings_API_tutorials/Delete_a_notification_definition).\n"
+        },
+        {
+          "info": {
+            "name": "List email templates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications/email-templates",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "The first index of the query result."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of results the query should return."
+              },
+              {
+                "name": "eventCategory",
+                "value": "",
+                "type": "query",
+                "description": "The event category code for standard events."
+              },
+              {
+                "name": "eventTypeName",
+                "value": "",
+                "type": "query",
+                "description": "The name of the custom event or custom scheduled event."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "The name of the email template."
+              }
+            ]
+          },
+          "docs": "Queries email templates. This operation supports querying email templates for all event types.\n"
+        },
+        {
+          "info": {
+            "name": "Create an email template",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/notifications/email-templates",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates an email template. \n\nThis operation supports creating the email template for all event types.\n\n- If you specify the `eventCategory` field, the email template is created based on a standard event. See [Standard Event Categories](https://knowledgecenter.zuora.com/Central_Platform/Notifications/A_Standard_Events/Standard_Event_Category_Code_for_Notification_Histories_API) for all standard event category codes.\n- If you specify the `eventTypeName` field, the email template is created based o"
+        },
+        {
+          "info": {
+            "name": "Create or update email templates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/notifications/email-templates/import",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates email templates for standard or custom events if you do not specify email template IDs, or updates existing email templates if you specify valid email template IDs.\n\nFor each email template when you are creating email templates, whether the template is created for a standard event, a custom event, or a custom scheduled event is dependent on whether you specify the `eventCategory` or `eventTypeName` field.\n\n- If you specify the `eventCategory` field, the email template is created based on"
+        },
+        {
+          "info": {
+            "name": "Retrieve an email template",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications/email-templates/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the email template."
+              }
+            ]
+          },
+          "docs": "Queries the email template based on the specified ID. This operation supports retrieving the email template for all event types.\n"
+        },
+        {
+          "info": {
+            "name": "Update an email template",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/notifications/email-templates/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the email template to be updated."
+              }
+            ]
+          },
+          "docs": "Updates an email template. This operation supports updating the email template for all event types.\n"
+        },
+        {
+          "info": {
+            "name": "Delete an email template",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/notifications/email-templates/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the email template to be deleted."
+              }
+            ]
+          },
+          "docs": "Deletes an email template. This operation supports deleting an email template for all event types.\n"
+        },
+        {
+          "info": {
+            "name": "Delete notification histories for an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/notifications/history",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the account whose notification histories are to be deleted."
+              }
+            ]
+          },
+          "docs": "Delete all notification histories for the given account. All email and callout notifications for this account will be deleted upon successful operation.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a notification history deletion task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications/history/tasks/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the notification history deletion task. You can get the deletion task ID from the 202 response body of the [Delete notification histories for an account](/api-references/api/operation/DELETE_Delete_Notification_History_For_Account) operation.\n"
+              }
+            ]
+          },
+          "docs": "Get the notification history deletion task by ID.\n"
+        },
+        {
+          "info": {
+            "name": "Resend email notifications",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/notifications/email-histories/resend",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Resends email notifications if your customers did not receive previous email notifications.\n\nDetails about the status codes and response contents of this operation are as follows:\n\n| Scenario                               | Status code     | Response content                                            |\n|----------------------------------------|-----------------|-------------------------------------------------------------|\n| Success for all notifications          | 202 Accepted    | (blank)     "
+        },
+        {
+          "info": {
+            "name": "Resend callout notifications",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/notifications/callout-histories/resend",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Resends callout notifications if your customers did not receive previous callout notifications.\n\nDetails about the status codes and response contents of this operation are as follows:\n\n| Scenario                               | Status code     | Response content                                            |\n|----------------------------------------|-----------------|-------------------------------------------------------------|\n| Success for all notifications          | 202 Accepted    | (blank) "
+        },
+        {
+          "info": {
+            "name": "List callout notification histories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/notification-history/callout",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "The final date and time of records to be returned. Defaults to now. Use format yyyy-MM-ddTHH:mm:ss."
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "The initial date and time of records to be returned. Defaults to (end time - 1 day). Use format yyyy-MM-ddTHH:mm:ss."
+              },
+              {
+                "name": "objectId",
+                "value": "",
+                "type": "query",
+                "description": "The ID of an object that triggered a callout notification. \n"
+              },
+              {
+                "name": "failedOnly",
+                "value": "",
+                "type": "query",
+                "description": "If `true`, only return failed records. If `false`, return all records in the given date range. The default value is `true`.\n"
+              },
+              {
+                "name": "eventCategory",
+                "value": "",
+                "type": "query",
+                "description": "Category of records to be returned by event category.\n\nThe following formats are supported:\n* `{Event Type Namespace}:{Event Type Name}` if the Custom Events feature is enabled in your tenant. For example: `user.notification:NewSubscriptionCreated`.\n* Numeric code of the event category if the Custom Events feature is not enabled in your tenant. For example, `1210`. See [Event Category Code](https://knowledgecenter.zuora.com/DC_Developers/AA_REST_API/Event_Categories_for_Notification_Histories) for more information.\n"
+              },
+              {
+                "name": "includeResponseContent",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Describes how to get a notification history for callouts.\n"
+        },
+        {
+          "info": {
+            "name": "List email notification histories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/notification-history/email",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "query",
+                "description": "ID of an account. By specifying this query parameter, you can filter email notification histories by account."
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "The end date and time of records to be returned. Defaults to now. Use format yyyy-MM-ddTHH:mm:ss. The maximum date range (endTime - startTime) is three days."
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "The initial date and time of records to be returned. Defaults to (end time - 1 day). Use format yyyy-MM-ddTHH:mm:ss. The maximum date range (endTime - startTime) is three days."
+              },
+              {
+                "name": "objectId",
+                "value": "",
+                "type": "query",
+                "description": "The Id of an object that triggered an email notification.\n"
+              },
+              {
+                "name": "failedOnly",
+                "value": "",
+                "type": "query",
+                "description": "If `true`, only returns failed records. When `false`, returns all records in the given date range. Defaults to `true` when not specified.\n"
+              },
+              {
+                "name": "eventCategory",
+                "value": "",
+                "type": "query",
+                "description": "Category of records to be returned by event category.\n\nThe following formats are supported:\n* `{Event Type Namespace}:{Event Type Name}` if the Custom Events feature is enabled in your tenant. For example: `user.notification:NewSubscriptionCreated`.\n* Numeric code of the event category if the Custom Events feature is not enabled in your tenant. For example, `1210`. See [Event Category Code](https://knowledgecenter.zuora.com/DC_Developers/AA_REST_API/Event_Categories_for_Notification_Histories) for more information.\n"
+              }
+            ]
+          },
+          "docs": "Describes how to get a notification history for notification emails.\n\n\n### Notes\nRequest parameters and their values may be appended with a \"?\" following the HTTPS GET request.  Additional request parameter are separated by \"&\". \n\nFor example:\n\n`GET https://rest.zuora.com/v1/notification-history/email?startTime=2015-01-12T00:00:00&endTime=2015-01-15T00:00:00&failedOnly=false&eventCategory=1000&pageSize=1`\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

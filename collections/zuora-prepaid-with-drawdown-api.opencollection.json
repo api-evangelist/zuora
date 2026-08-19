@@ -1,0 +1,100 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Prepaid with Drawdown API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Prepaid with Drawdown",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Trigger fund rollover",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/ppdd/rollover",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Prepaid with Drawdown Rollover enables you to transfer the accumulative carryover of your customers’ prepaid balance funds to the following validity period when using Prepaid with Drawdown. This REST API reference describes how to manually trigger fund rollover from source validity period to destination validity period. There are no path or query parameters.\n\n**Note**: This API will not work if rollover is enabled in the associated prepayment charge. If you want to trigger rollover automatically"
+        },
+        {
+          "info": {
+            "name": "Reverse fund rollover",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/ppdd/reverse-rollover",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to manually reverse fund rollover from source validity period to destination validity period. There are no path or query parameters.\n\n**Note**: This API will not work if the associated prepayment charge has rollover enabled.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

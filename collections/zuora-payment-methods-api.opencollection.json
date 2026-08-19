@@ -1,0 +1,707 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Payment Methods API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payment Methods",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-methods",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "You can use this operation to create either a payment method associated with a specific customer account, or an orphan payment method that is not associated with any customer account. The orphan payment method must be associated with a customer account within 10 days. Otherwise, it will be deleted.\n\nThis operation supports the payment methods listed below.\n        \n### Credit Card\nThe following request body fields are applicable to this payment method:\n* `cardHolderInfo` (`cardHolderName` requir"
+        },
+        {
+          "info": {
+            "name": "Create an Apple Pay payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-methods/decryption",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "The decryption API endpoint can conditionally perform 4 tasks in one atomic call:\n  * Decrypt Apple Pay Payment token\n  * Create Credit Card Payment Method in Zuora with decrypted Apple Pay information\n  * Create a stored credential profile within the Apple Pay payment method\n  * Process Payment on a specified Invoice (optional)\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "Unique ID of the payment method to update."
+              }
+            ]
+          },
+          "docs": "This operation allows you to get the detailed information about a payment method.\n\n**Note:** This operation also supports retrieving the custom payment method created through the [Open Payment Method](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) service.\n"
+        },
+        {
+          "info": {
+            "name": "Update a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "Unique ID of the payment method to update."
+              }
+            ]
+          },
+          "docs": "This operation allows you to update an existing payment method. \n\nThe following request body fields can be updated for any payment method types except for Credit Card Reference Transaction:\n* `authGateway`\n* `gatewayOptions`\n* `accountHolderInfo`\n* `ipAddress`\n* Custom fields\n\nThe following request body fields can be updated only for the Credit Card payment method:\n* `expirationMonth` \n* `expirationYear`\n* `securityCode`\n\nThe following request body field can be updated for the Credit Card, Credi"
+        },
+        {
+          "info": {
+            "name": "Delete a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of a payment method. (Since this ID is unique, and linked to a customer account in the system, no customer identifier is needed.)"
+              }
+            ]
+          },
+          "docs": "Deletes a credit card payment method.\n\nIf the specified payment method is the account's default payment\nmethod, the request will fail.  In that case, you must first designate a\ndifferent payment method for that customer to be the default.\n"
+        },
+        {
+          "info": {
+            "name": "Verify a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id/verify",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment method to be verified.\n"
+              }
+            ]
+          },
+          "docs": "Sends an authorization request to the corresponding payment gateway to verify the payment method, even though no changes are made for the payment method. Supported payment methods are Credit Cards and Paypal.\n\nZuora now supports performing a standalone zero dollar verification or one dollar authorization for credit cards. It also supports a billing agreement status check on PayPal payment methods.\n\nIf a payment method is created by Hosted Payment Pages and is not assigned to any billing account,"
+        },
+        {
+          "info": {
+            "name": "Scrub a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id/scrub",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the payment method where you want to scrub the sensitive data.\n"
+              }
+            ]
+          },
+          "docs": "\nThis operation enables you to replace all sensitive data in a payment method, related payment method snapshot table, and four related log tables with dummy values that will be stored in Zuora databases. \n\nThis operation will scrub the sensitive data and soft-delete the specified payment method at the same time. \n\nIf you want to delete or anonymize personal data in Zuora, you must scrub the payment method before anonymizing the associated account and contact. See [Delete or anonymize personal da"
+        },
+        {
+          "info": {
+            "name": "List stored credential profiles of a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id/profiles",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of a payment method.\n"
+              },
+              {
+                "name": "includeAll",
+                "value": "",
+                "type": "query",
+                "description": "Specifies whether to retrieve all the stored credential profiles within the payment method.\n\nBy default, Zuora returns only the stored credential profiles with `Agreed` or `Active` status. If you set this parameter to `true`, Zuora returns all the stored credential profiles.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves the stored credential profiles within a payment method.\n"
+        },
+        {
+          "info": {
+            "name": "Create a stored credential profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id/profiles",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of a payment method.\n"
+              }
+            ]
+          },
+          "docs": "Creates a stored credential profile within a payment method.\n\nThe stored credential profile represents a consent agreement that you have established with a customer. When you use the payment method in a transaction, Zuora may include information from the stored credential profile to inform the payment processor that the transaction is related to your pre-existing consent agreement with the customer.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel a stored credential profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id/profiles/:profile-number/cancel",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of a payment method.\n"
+              },
+              {
+                "name": "profile-number",
+                "value": "",
+                "type": "path",
+                "description": "Number that identifies a stored credential profile within the payment method.\n"
+              }
+            ]
+          },
+          "docs": "Cancels a stored credential profile within a payment method.\n\nCancelling the stored credential profile indicates that the stored credentials are no longer valid, per a customer request. You cannot reactivate the stored credential profile after you have cancelled it.\n"
+        },
+        {
+          "info": {
+            "name": "Expire a stored credential profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/payment-methods/:payment-method-id/profiles/:profile-number/expire",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment-method-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of a payment method.\n"
+              },
+              {
+                "name": "profile-number",
+                "value": "",
+                "type": "path",
+                "description": "Number that identifies a stored credential profile within the payment method.\n"
+              }
+            ]
+          },
+          "docs": "Expires a stored credential profile within a payment method.\n\nExpiring the stored credential profile indicates that the stored credentials are no longer valid, per an expiration policy in the stored credential transaction framework. You cannot reactivate the stored credential profile after you have expired it.\n"
+        },
+        {
+          "info": {
+            "name": "List registered Apple Pay domains",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/payment-methods/apple-pay/domains",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "domainName",
+                "value": "",
+                "type": "query",
+                "description": "Specifies a domain name such as `zuora.com` and the registered domains containing the specified domain name will be returned. \n\nFor example, `test1.zuora.com` and `test2.zuora.com` are two registered domains, but `zuora.com` is not registered. If you specify `zuora.com` in this query field, the data of `test1.zuora.com` and `test2.zuora.com` will be returned.\n"
+              }
+            ]
+          },
+          "docs": "Use this operation to retrieve details of your domains that are already registered with Apple for Apple Pay button integration implemented through Zuora's JavaScript SDK.\n\nYou can use `domainName` as the query parameter to restrict domains returned in the response. Specify a domain name and the registered domains containing the specified domain name will be returned.\n\nFor more information about Zuora's JavaScript SDK for Apple Pay integration, see <a href=\"https://knowledgecenter.zuora.com/Zuora"
+        },
+        {
+          "info": {
+            "name": "Register an Apple Pay domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/payment-methods/apple-pay/domains",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Before adding Apple Pay to your checkout flow by integrating with the JavaScript SDK provided by Zuora, your domains that will show the Apple Pay button must be registered with Apple. Use this operation to register a domain. \n\nFor more information about Zuora's JavaScript SDK for Apple Pay integration, see <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0\" target=\"_blank\">"
+        },
+        {
+          "info": {
+            "name": "Unregister an Apple Pay domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/payment-methods/apple-pay/domains/:id",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the domain, such as `402881a38924ff1001892502da090021`."
+              }
+            ]
+          },
+          "docs": "Use this operation to unregister a domain with Apple for Apple Pay button integration implemented through Zuora's JavaScript SDK.\n\nFor more information about Zuora's JavaScript SDK for Apple Pay integration, see <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0\" target=\"_blank\">Set up Apple Pay through the JavaScript SDK approach</a>.\n"
+        },
+        {
+          "info": {
+            "name": "Create a payment session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/web-payments/sessions",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "When implementing Apple Pay integration by using Zuora's JavaScript SDK, use this operation to create a payment session on your server side. The response of this API operation contains a token for the payment session data. Send the token back to your client side to use in the subsequent implementation step. For more information, see [Set up Apple Pay through the JavaScript SDK approach](https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

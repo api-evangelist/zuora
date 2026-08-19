@@ -1,0 +1,273 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Product Rate Plan Charges API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Product Rate Plan Charges",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a product rate plan charge",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/product-rate-plan-charges/:product-rate-plan-charge-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "product-rate-plan-charge-key",
+                "value": "",
+                "type": "path",
+                "description": "The unique number or ID of the product rate plan charge to be retrieved.\n"
+              },
+              {
+                "name": "show-charge-definitions",
+                "value": "",
+                "type": "query",
+                "description": "Specifies whether to include the product charge definitions of this charge in the response.\n\n**Note**: This parameter is applicable only if the Attribute-based Pricing feature is enabled. The Attribute-based Pricing feature in the **Early Adopter** phase. \nWe are actively soliciting feedback from a small set of early adopters. If you are interested, please reach out to your CSM.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves basic information about a product rate plan charge.\n"
+        },
+        {
+          "info": {
+            "name": "CRUD: Create a product rate plan charge",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/object/product-rate-plan-charge",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Zuora-WSDL-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "rejectUnknownFields",
+                "value": "",
+                "type": "query",
+                "description": "Specifies whether the call fails if the request body contains unknown fields.\nWith `rejectUnknownFields` set to `true`, Zuora returns a 400 response if\nthe request body contains unknown fields. The body of the 400 response is:\n\n```json\n{\n    \"message\": \"Error - unrecognised fields\"\n}\n```\n\nBy default, Zuora ignores unknown fields in the request body.\n"
+              }
+            ]
+          },
+          "docs": "Creates a product rate plan charge for a specified rate plan charge. \n\nProduct rate plan charges can be of three types, one-time fees, recurring fees, and usage fees. \n"
+        },
+        {
+          "info": {
+            "name": "CRUD: Retrieve a product rate plan charge",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/object/product-rate-plan-charge/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Zuora-WSDL-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Object fields to return"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a product rate plan charge to be retrieved. For example, 2c93808457d787030157e031fcd34e19.\n"
+              }
+            ]
+          },
+          "docs": "CRUD: Retrieve a product rate plan charge"
+        },
+        {
+          "info": {
+            "name": "CRUD: Update a product rate plan charge",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/object/product-rate-plan-charge/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "X-Zuora-WSDL-Version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "rejectUnknownFields",
+                "value": "",
+                "type": "query",
+                "description": "Specifies whether the call fails if the request body contains unknown fields.\nWith `rejectUnknownFields` set to `true`, Zuora returns a 400 response if\nthe request body contains unknown fields. The body of the 400 response is:\n\n```json\n{\n    \"message\": \"Error - unrecognised fields\"\n}\n```\n\nBy default, Zuora ignores unknown fields in the request body.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of the product rate plan charge to be updated. For example, 2c93808457d787030157e031fcd34e19.\n"
+              }
+            ]
+          },
+          "docs": "Updates the information about a product rate plan charge.\n"
+        },
+        {
+          "info": {
+            "name": "CRUD: Delete a product rate plan charge",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/object/product-rate-plan-charge/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of the product rate plan charge to be deleted. For example, 2c93808457d787030157e031fcd34e19.\n"
+              }
+            ]
+          },
+          "docs": "Deletes a product rate plan charge.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

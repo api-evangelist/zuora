@@ -1,0 +1,335 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounting Codes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all accounting codes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounting-codes",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              }
+            ]
+          },
+          "docs": "This reference describes how to query all accounting codes in your chart of accounts through the REST API."
+        },
+        {
+          "info": {
+            "name": "Create an accounting code",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/accounting-codes",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This reference describes how to create a new accounting code through the REST API. \nThe accounting code will be active as soon as it has been created.\n\n### Prerequisites\n  If you have Zuora Finance enabled on your tenant, you must have the  Configure Accounting Codes permission. \n"
+        },
+        {
+          "info": {
+            "name": "Activate an accounting code",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/accounting-codes/:ac-id/activate",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ac-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the accounting code you want to activate."
+              }
+            ]
+          },
+          "docs": "This reference describes how to activate an accounting code through the REST API.\n\nPrerequisites\n-------------\nIf you have Zuora Finance enabled on your tenant, you must have the Manage Accounting Code permission. \n"
+        },
+        {
+          "info": {
+            "name": "Deactivate an accounting code",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/accounting-codes/:ac-id/deactivate",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ac-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the accounting code you want to deactivate."
+              }
+            ]
+          },
+          "docs": "This reference describes how to deactivate an accounting code through the REST API.\n\n### Prerequisites\nIf you have Zuora Finance enabled on your tenant, you must have the Manage Accounting Code permission.\n### Limitations\nYou can only deactivate accounting codes that are not associated with any transactions. \nYou cannot disable accounting codes of type AccountsReceivable.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve an accounting code",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/accounting-codes/:ac-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ac-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the accounting code you want to query."
+              }
+            ]
+          },
+          "docs": "This reference describes how to query an accounting code through the REST API."
+        },
+        {
+          "info": {
+            "name": "Update an accounting code",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/accounting-codes/:ac-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ac-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the accounting code you want to update."
+              }
+            ]
+          },
+          "docs": "This reference describes how to update an existing accounting code through the REST API.\n### Prerequisites\n  If you have Zuora Finance enabled on your tenant, you must have the  Manage Accounting Code permission. \n### Limitations\nYou can only update accounting codes that are not already associated with any transactions.\n"
+        },
+        {
+          "info": {
+            "name": "Delete an accounting code",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/accounting-codes/:ac-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "ac-id",
+                "value": "",
+                "type": "path",
+                "description": "ID of the accounting code you want to delete."
+              }
+            ]
+          },
+          "docs": "This reference describes how to delete an accounting code through the REST API.\n### Prerequisites\nIf you have Zuora Finance enabled on your tenant, then you must have the Delete Unused Accounting Code permission.\n### Limitations\nYou can only delete accounting codes that have never been associated with any transactions. An accounting code must be deactivated before you can delete it.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

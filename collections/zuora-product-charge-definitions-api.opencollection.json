@@ -1,0 +1,307 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Product Charge Definitions API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Product Charge Definitions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List product charge definitions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/product-charge-definitions",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "charge",
+                "value": "",
+                "type": "query",
+                "description": "The unique number or ID of the charge for which the product charge definitions are to be retrieved.\n"
+              },
+              {
+                "name": "rateplan",
+                "value": "",
+                "type": "query",
+                "description": "The unique number or ID of the product rate plan for which the product charge definitions are to be retrieved.\n"
+              },
+              {
+                "name": "hide-inherited-values",
+                "value": "",
+                "type": "query",
+                "description": "The flag that controls whether the response will merge the default charge definition fields for those fields that are not overridden.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves basic information about the product charge definitions. \n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter** phase. \n"
+        },
+        {
+          "info": {
+            "name": "Create a product charge definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/product-charge-definitions",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates a product charge definition for a charge. You can create as many product charge definitions as needed for one charge.\n\nIn the request, you must specify the unique ID or number of the charge for which this charge definition is to be created. \nThe ID or number of a product rate plan is optional.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pri"
+        },
+        {
+          "info": {
+            "name": "Create product charge definitions",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/product-charge-definitions/bulk",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Bulk creates product charge definitions for a charge. You can create up to 1000 product charge definitions at a given time for a specific charge.\n\nIn the request, you must specify the unique ID or number of the charge for which this charge definition is to be created. \nThe ID or number of a product rate plan is optional.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of"
+        },
+        {
+          "info": {
+            "name": "Update product charge definitions",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/product-charge-definitions/bulk",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Bulk updates multiple product charge definitions.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter** phase. \n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a product charge definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/product-charge-definitions/:product-charge-definition-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "product-charge-definition-key",
+                "value": "",
+                "type": "path",
+                "description": "The unique number or ID of the product charge definition to be retrieved.\n"
+              },
+              {
+                "name": "hide-inherited-values",
+                "value": "",
+                "type": "query",
+                "description": "The flag that controls whether the response will merge the default charge definition fields for those fields that are not overridden.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves basic information about a product charge definition.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter** phase. \n"
+        },
+        {
+          "info": {
+            "name": "Update a product charge definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/product-charge-definitions/:product-charge-definition-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "product-charge-definition-key",
+                "value": "",
+                "type": "path",
+                "description": "The unique number or ID of the product charge definition to be updated.\n"
+              }
+            ]
+          },
+          "docs": "Update a product charge definition.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter** phase. \n"
+        },
+        {
+          "info": {
+            "name": "Delete a product charge definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/product-charge-definitions/:product-charge-definition-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "product-charge-definition-key",
+                "value": "",
+                "type": "path",
+                "description": "The unique number or ID of the product charge definition to be deleted.\n"
+              }
+            ]
+          },
+          "docs": "Deletes a product charge definition.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter** phase. \n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

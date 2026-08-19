@@ -1,0 +1,100 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Settings API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Settings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/settings/listing",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get a list of all available settings in your tenant. \n\nThe response message is by default in JSON format. If you want to receive all the available settings in csv format, include `Accept` in the header parameters and set it to `application/csv`.\n            \nSee a [200 response sample in JSON format](/settings-api/ListAllSettingsResponseSample.json) that lists all available settings. \n\nSee a [200 response sample in CSV format](/settings-api/ListAllSettingsResponseSample.csv) that lists all avail"
+        },
+        {
+          "info": {
+            "name": "Submit settings requests",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/settings/batch-requests",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Submit a batch of settings requests by this single API operation.\n\nBy default, one batch settings request can contain a maximum of 100 single operation requests, including: \n* All the single requests in the process batch settings request.\n* All the children requests of the single requests.\n\nThis maximum value is configurable.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

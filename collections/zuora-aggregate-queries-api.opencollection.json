@@ -1,0 +1,200 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Aggregate Queries API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Aggregate Queries",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Submit an aggregate query job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/batch-query/",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Submits an AQuA job that contains an aggregated list of ZOQL and Export ZOQL queries.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve an aggregate query job",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/batch-query/jobs/:jobid",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "jobid",
+                "value": "",
+                "type": "path",
+                "description": "Internal identifier of the query job.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves an aggregate query using the Job ID.\n\nNote that the completed AQuA jobs that were created 180 days ago are deleted permanently from Zuora, so you cannot query these jobs through API or AQuA job finder.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel a running aggregate query job",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/batch-query/jobs/:jobid",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "jobid",
+                "value": "",
+                "type": "path",
+                "description": "Internal identifier of the query job.\n"
+              }
+            ]
+          },
+          "docs": "Cancels the current AQuA job, only if the job is not complete. If the job is complete, an error is thrown.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve the last completed aggregate query job",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/batch-query/jobs/partner/:partner/project/:project",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "partner",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a data integration partner. \n"
+              },
+              {
+                "name": "project",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a data integration project for a particular partner.\n"
+              }
+            ]
+          },
+          "docs": "Returns the details of the last completed job.\n\nThe completed AQuA jobs that were created 180 days ago are deleted permanently from Zuora, so you cannot query these jobs through API or AQuA job finder.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

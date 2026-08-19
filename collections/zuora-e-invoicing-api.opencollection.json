@@ -1,0 +1,677 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes E-Invoicing API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "E-Invoicing",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List e-invoicing service providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/einvoice/service-providers",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Lists information about e-invoicing service providers.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "Create an e-invoicing service provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/einvoice/service-providers",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates an e-invoicing service provider.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve an e-invoicing service provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/einvoice/service-providers/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the e-invoicing service provider that you want to retrieve information about.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves information about an e-invoicing service privider.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "Update an e-invoicing service provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/einvoice/service-providers/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the e-invoicing service provider that you want to update.\n"
+              }
+            ]
+          },
+          "docs": "Updates information about an e-invoicing service privider.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "Delete an e-invoicing service provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/einvoice/service-providers/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the e-invoicing service provider that you want to \n"
+              }
+            ]
+          },
+          "docs": "Deletes an e-invoicing service privider.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "List e-invoicing business regions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/einvoice/business-regions",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Lists information about e-invoicing business regions.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "Create an e-invoicing business region",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/einvoice/business-regions",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates an e-invoicing business region.\n\nYou must create business regions to store the business detail information as a seller. If you have multiple GSTINs for different states, you can create multiple business region objects for India.\n\nThe business region objects can be looked up according to the country and state, and its related fields can be mapped accordingly within the e-invoice file template.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuo"
+        },
+        {
+          "info": {
+            "name": "Retrieve an e-invoicing business region",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/einvoice/business-regions/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unqiue ID or number of the e-invoicing business region that you want to retrieve information about.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves information about an e-invoicing business region.\n\nYou can search for an e-invoicing business region by key. The key can be the unique ID or number of an e-invoicing business region.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "Update an e-invoicing business region",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/einvoice/business-regions/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unqiue ID or number of the e-invoicing business region that you want to update.\n"
+              }
+            ]
+          },
+          "docs": "Updates an e-invoicing business region by key. The key can be the unique ID or number of an e-invoicing business region.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled. \n"
+        },
+        {
+          "info": {
+            "name": "Delete an e-invoicing business region",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/einvoice/business-regions/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unqiue ID or number of the e-invoicing business region that you want to delete.\n"
+              }
+            ]
+          },
+          "docs": "Deletes an e-invoicing business region by key. The key can be the unique ID or number of an e-invoicing business region.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "List e-invoice file templates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/einvoice/templates",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "The short name of a country or region where you must comply with e-invoicing requirements. For example, `IN` for India. For the full list of country names and codes, see <a href=\"https://knowledgecenter.zuora.com/Quick_References/Country%2C_State%2C_and_Province_Codes/A_Country_Names_and_Their_ISO_Codes\" target=\"_blank\">ISO Standard Country Codes</a>.\n"
+              },
+              {
+                "name": "documentType",
+                "value": "",
+                "type": "query",
+                "description": "The type of billing documents for which the e-invoice file template is intended.\n"
+              },
+              {
+                "name": "provider",
+                "value": "",
+                "type": "query",
+                "description": "The name of the e-invoicing service provider that assists in generating e-invoice files. \n"
+              }
+            ]
+          },
+          "docs": "Lists information about e-invoice file templates.\n\nYou can query e-invoice file templates by conditions. For example, if your service provider is Sovos, you can use the following example URL to retrieve information about a list of e-invoice file templates for invoices in India:\n`/v1/einvoice/templates?country=IN&documentType=Invoice&provider=Sovos`\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\""
+        },
+        {
+          "info": {
+            "name": "Create an e-invoice file template",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/einvoice/templates",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates an e-invoice file templates for your billing documents, including invoices, credit memos, and debit memos. \n\nZuora provides default e-invoice file templates, so you can just customize them as needed. For example, some country specific fields like HSN (Harmonized System of Nomenclature) might be stored on product rate plan charges.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_"
+        },
+        {
+          "info": {
+            "name": "Retrieve an e-invoice file template",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/einvoice/templates/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unique number or ID of the e-invoice file template that you want to retrieve information about.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves information about an e-invoice file template.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "Update an e-invoice file template",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/einvoice/templates/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unique number or ID of the e-invoice file template that you want to update.\n"
+              }
+            ]
+          },
+          "docs": "Updates information about an e-invoice file template.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        },
+        {
+          "info": {
+            "name": "Delete an e-invoice file template",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/einvoice/templates/:key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the e-invoice file template that you want to delete.\n"
+              }
+            ]
+          },
+          "docs": "Deletes an e-invoice file template by key. The key can be the unique ID or number of an e-invoice file template.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

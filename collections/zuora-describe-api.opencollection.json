@@ -1,0 +1,69 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Describe API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Describe",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Describe an object",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/describe/:object",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "object",
+                "value": "",
+                "type": "path",
+                "description": "API name of an object in your Zuora tenant. For example, `InvoiceItem`. See [Zuora Object Model](/rest-api/general-concepts/object-model/) for the list of valid object names.\n\nDepending on the features enabled in your Zuora tenant, you may not be able to list the fields of some objects.\n"
+              },
+              {
+                "name": "showCurrencyConversionInformation",
+                "value": "",
+                "type": "query",
+                "description": "Set the value to `yes` to get additional currency conversion information in the result.\n**Notes:** \n- When **Automatically include additional Currency Conversion information** in currency conversion settings is checked, you can pass `yes` to get additional fields in the result. See [Configure Foreign Currency Conversion](https://knowledgecenter.zuora.com/Zuora_Payments/Zuora_Finance/D_Finance_Settings/F_Foreign_Currency_Conversion#:~:text=Automatically%20include%20additional%20Currency%20Conversion%20information%20in%20data%20source%20exports%3A%C2%A0Select%20this%20check%20box%20if%20you%20want%20to%20access%20foreign%20currency%20conversion%20data%20through%20data%20source%20exports.) to check the **Automatically include additional Currency Conversion information**.\n- By default if you need additional Currency Conversion information, submit a request at <a href=\"https://support.zuora.com/hc/en-us\" target=\"_blank\">Zuora Global Support</a>. Set this parameter value to `no` to not include the additional currency conversion information in the result.\n"
+              }
+            ]
+          },
+          "docs": "Provides a reference listing of each object that is available in your Zuora tenant.\n\nThe information returned by this call is useful if you are using [CRUD: Create Export](/api-references/api/operation/Object_POSTExport) or the [AQuA API](https://knowledgecenter.zuora.com/DC_Developers/T_Aggregate_Query_API) to create a data source export. See [Export ZOQL](https://knowledgecenter.zuora.com/DC_Developers/M_Export_ZOQL) for more information.\n\n### Response\nThe response contains an XML document tha"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

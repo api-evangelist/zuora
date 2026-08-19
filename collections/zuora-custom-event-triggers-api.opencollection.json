@@ -1,0 +1,260 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Custom Event Triggers API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom Event Triggers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List event triggers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/events/event-triggers",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "baseObject",
+                "value": "",
+                "type": "query",
+                "description": "The Zuora object that trigger condition is defined upon. The format of the value in this field depends on the base object type:\n- Standard object: object name, which should follow the pattern ^[A-Z][\\w\\-]*$. For example, `Invoice`.\n- Custom object: `default__<custom_object_api_name>`. For example, `default__vehicle`.\n"
+              },
+              {
+                "name": "eventTypeName",
+                "value": "",
+                "type": "query",
+                "description": "The event type name. Should be specified in the pattern: ^[A-Za-z]{1,}[\\w\\-]*$"
+              },
+              {
+                "name": "active",
+                "value": "",
+                "type": "query",
+                "description": "The status of the event trigger."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "The first index of the query result. Default to 0 if absent, and the minimum is 0."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of data records to be returned. Default to 10 if absent."
+              }
+            ]
+          },
+          "docs": "List event triggers"
+        },
+        {
+          "info": {
+            "name": "Create an event trigger",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/events/event-triggers",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "When you create an event trigger, you must specify the base object and define the trigger condition.\n\n### Specify the base object\nUse `baseObject` field to specify which object to define a trigger on. You can define an event trigger on any of the following objects:\n\n  * Account\n  * AccountingCode\n  * AccountingPeriod\n  * Amendment\n  * BillingRun\n  * Contact\n  * CreditBalanceAdjustment\n  * CreditMemo\n  * CreditMemoApplication\n  * CreditMemoApplicationItem\n  * CreditMemoItem\n  * DebitMemo\n  * Debi"
+        },
+        {
+          "info": {
+            "name": "Retrieve an event trigger",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/events/event-triggers/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve an event trigger"
+        },
+        {
+          "info": {
+            "name": "Update an event trigger",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/events/event-triggers/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update an event trigger"
+        },
+        {
+          "info": {
+            "name": "Delete an event trigger",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/events/event-triggers/:id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete an event trigger"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

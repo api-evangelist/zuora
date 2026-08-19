@@ -1,0 +1,1502 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Credit Memos API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Credit Memos",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List credit memos",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/creditmemos",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `accountId` field.\n"
+              },
+              {
+                "name": "accountNumber",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `accountNumber` field.\n"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `amount` field. \n"
+              },
+              {
+                "name": "appliedAmount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `appliedAmount` field. \n"
+              },
+              {
+                "name": "autoApplyUponPosting",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `autoApplyUponPosting` field. \n"
+              },
+              {
+                "name": "createdById",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `createdById` field. \n"
+              },
+              {
+                "name": "createdDate",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `createdDate` field. \n"
+              },
+              {
+                "name": "creditMemoDate",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `creditMemoDate` field. \n"
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `currency` field. \n"
+              },
+              {
+                "name": "excludeFromAutoApplyRules",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `excludeFromAutoApplyRules` field. \n"
+              },
+              {
+                "name": "number",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `number` field. \n"
+              },
+              {
+                "name": "referredInvoiceId",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `referredInvoiceId` field. \n"
+              },
+              {
+                "name": "refundAmount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `refundAmount` field. \n"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `status` field. \n"
+              },
+              {
+                "name": "targetDate",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `targetDate` field. \n"
+              },
+              {
+                "name": "taxAmount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `taxAmount` field. \n"
+              },
+              {
+                "name": "totalTaxExemptAmount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `totalTaxExemptAmount` field.\n"
+              },
+              {
+                "name": "transferredToAccounting",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `transferredToAccounting` field. \n"
+              },
+              {
+                "name": "unappliedAmount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `unappliedAmount` field. \n"
+              },
+              {
+                "name": "updatedById",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `updatedById` field. \n"
+              },
+              {
+                "name": "updatedDate",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `updatedDate` field.\n"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "This parameter restricts the order of the data returned in the response. You can use this parameter to supply a dimension you want to sort on.\n\nA sortable field uses the following form: \n\n*operator* *field_name*\n\nYou can use at most two sortable fields in one URL path. Use a comma to separate sortable fields. For example:  *operator* *field_name*, *operator* *field_name*  \n\n*operator* is used to mark the order of sequencing. The operator is optional. If you only specify the sortable field without any operator, the response data is sorted in descending order by this field.\n\n  - The `-` operator indicates an ascending order.\n  - The `+` operator indicates a descending order.\n\nBy default, the response data is displayed in descending order by credit memo number.\n\n*field_name* indicates the name of a sortable field. The supported sortable fields of this operation are as below:\n\n  - accountId\n  - amount\n  - appliedAmount\n  - createdById\n  - createdDate\n  - creditMemoDate\n  - number\n  - referredInvoiceId\n  - refundAmount\n  - status\n  - targetDate\n  - taxAmount\n  - totalTaxExemptAmount\n  - transferredToAccounting\n  - unappliedAmount\n  - updatedDate\n\n  \nExamples:\n\n- /v1/creditmemos?sort=+number\n\n- /v1/creditmemos?status=Processed&sort=-number,+amount\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Create a credit memo from a charge",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/creditmemos",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Create credit memos",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/creditmemos/bulk",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Update credit memos",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/bulk",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Create a credit memo from an invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/invoices/:invoiceKey/creditmemos",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "invoiceKey",
+                "value": "",
+                "type": "path",
+                "description": "The ID or number of an invoice that you want to create a credit memo from. For example, 2c93808457d787030157e030d10f3f64 or INV00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Retrieve a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Update a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Delete a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Apply a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/apply",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Cancel a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/cancel",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Email a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/emails",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The ID or number of a posted credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Upload a file for a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/files",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The ID or number of the credit memo that you want to upload a PDF file for. For example, 402890555a7e9791015a879f064a0054 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "List credit memo items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/items",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `amount` field. \n"
+              },
+              {
+                "name": "appliedAmount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `appliedAmount` field.\n"
+              },
+              {
+                "name": "createdById",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `createdById` field. \n"
+              },
+              {
+                "name": "createdDate",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `createdDate` field. \n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `id` field. \n"
+              },
+              {
+                "name": "refundAmount",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `refundAmount` field. \n"
+              },
+              {
+                "name": "serviceEndDate",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `serviceEndDate` field. \n"
+              },
+              {
+                "name": "serviceStartDate",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `serviceStartDate` field. \n"
+              },
+              {
+                "name": "sku",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `sku` field. \n"
+              },
+              {
+                "name": "skuName",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `skuName` field. \n"
+              },
+              {
+                "name": "sourceItemId",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `sourceItemId` field. \n"
+              },
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `subscriptionId` field.\n"
+              },
+              {
+                "name": "updatedById",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `updatedById` field. \n"
+              },
+              {
+                "name": "updatedDate",
+                "value": "",
+                "type": "query",
+                "description": "This parameter filters the response based on the `updatedDate` field.\n"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "This parameter restricts the order of the data returned in the response. You can use this parameter to supply a dimension you want to sort on.\n\nA sortable field uses the following form: \n\n*operator* *field_name*\n\nYou can use at most two sortable fields in one URL path. Use a comma to separate sortable fields. For example:  *operator* *field_name*, *operator* *field_name*  \n\n*operator* is used to mark the order of sequencing. The operator is optional. If you only specify the sortable field without any operator, the response data is sorted in descending order by this field.\n\n  - The `-` operator indicates an ascending order.\n  - The `+` operator indicates a descending order.\n\nBy default, the response data is displayed in descending order by updated date.\n\n*field_name* indicates the name of a sortable field. The supported sortable fields of this operation are as below:\n\n  - amount\n  - appliedAmount\n  - createdById\n  - createdDate\n  - id\n  - refundAmount\n  - serviceEndDate\n  - serviceStartDate\n  - sku\n  - skuName\n  - sourceItemId\n  - subscriptionId\n  - updatedById\n  - updatedDate\n  \nExamples:\n\n- /v1/creditmemos/402890245c7ca371015c7cb40ac30015/items?sort=createdDate\n\n- /v1/creditmemos/402890245c7ca371015c7cb40ac30015/items?amount=100&sort=createdDate\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Retrieve a credit memo item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/items/:cmitemid",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "zuora-version",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cmitemid",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a credit memo item. You can get the credit memo item ID from the response of [List credit memo items](/api-references/api/operation/GET_CreditMemoItems).\n"
+              },
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "List all taxation items of a credit memo item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoId/items/:cmitemid/taxation-items",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "cmitemid",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a credit memo item. You can get the credit memo item ID from the response of [List credit memo items](/api-references/api/operation/GET_CreditMemoItems).\n"
+              },
+              {
+                "name": "creditMemoId",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "List all parts of a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/parts",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.\n"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of records returned per page in the response.\n"
+              },
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Retrieve a credit memo part",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/parts/:partid",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "partid",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a specific credit memo part. You can get the credit memo part ID from the response of [List all parts of a credit memo](/api-references/api/operation/GET_CreditMemoParts).\n"
+              },
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Generate a credit memo PDF file",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/pdfs",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of the credit memo that you want to create a PDF file for. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Post a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/post",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Refund a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/refunds",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The ID or number of the credit memo. For example, 2c92c8955bd63cc1015bd7c151af02ab or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Reverse a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/reverse",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The ID or number of the credit memo. For example, 2c92c8955bd63cc1015bd7c151af02ab or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Create taxation items for a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/taxationitems",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Unapply a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/unapply",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Unpost a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/unpost",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID or number of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172 or CM00000001.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Write off a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoId/write-off",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoId",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a credit memo. For example, 8a8082e65b27f6c3015ba45ff82c7172.\n"
+              }
+            ]
+          },
+          "docs": "**Note:** This operation is only available if you have [Invoice Settlement](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement) enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billin"
+        },
+        {
+          "info": {
+            "name": "Generate an e-invoice file for a credit memo",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/creditmemos/:creditMemoKey/einvoice/generate",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "creditMemoKey",
+                "value": "",
+                "type": "path",
+                "description": "The ID or number of the credit memo. For example, 2c92c8955bd63cc1015bd7c151af02ab or CM-0000001.\n"
+              }
+            ]
+          },
+          "docs": "Generates an e-invoice file for a credit memo.\n\n**Note**: This operation is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/E-Invoicing\" target=\"_blank\">E-Invoicing</a> feature in **Early Adopter** phase enabled.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

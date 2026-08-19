@@ -1,0 +1,194 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Journal Runs API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Journal Runs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a journal run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/journal-runs",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to create a journal run. Request and response field descriptions and sample code are provided.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a journal run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/journal-runs/:jr-number",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "jr-number",
+                "value": "",
+                "type": "path",
+                "description": "Journal run number. Must be a valid journal run number in the format `JR-00000001`.\n"
+              }
+            ]
+          },
+          "docs": "This REST API reference describes how to get information about a journal run. Request and response field descriptions and sample code are provided.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a journal run",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/journal-runs/:jr-number",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "jr-number",
+                "value": "",
+                "type": "path",
+                "description": "Journal run number. Must be a valid journal run number in the format `JR-00000001`.\n"
+              }
+            ]
+          },
+          "docs": "This reference describes how to delete a journal run using the REST API.\n                      \n You can only delete journal runs that have already been canceled.\n                      \n You must have the \"Delete Cancelled Journal Run\" Zuora Finance user permission enabled to delete journal runs.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel a journal run",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/journal-runs/:jr-number/cancel",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "jr-number",
+                "value": "",
+                "type": "path",
+                "description": "Journal run number. Must be a valid journal run number in the format JR-00000001. \nYou can only cancel a journal run whose status is \"Pending\", \"Error\", or \"Completed\".\n"
+              }
+            ]
+          },
+          "docs": "This reference describes how to cancel a journal run using the REST API.\n          \nThe summary journal entries in the journal run are canceled asynchronously. See the \"Example\" section below for details.\n          \nYou must have the \"Cancel Journal Run\" Zuora Finance user permission enabled to cancel journal runs.\n\n### Notes\nWhen you cancel a journal run, the summary journal entries associated with that journal run are canceled asynchronously. A response of `{ \"success\": true }` means only that"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

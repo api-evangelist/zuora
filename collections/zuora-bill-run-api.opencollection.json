@@ -1,0 +1,288 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Bill Run API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Bill Run",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a bill run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/bill-runs",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates an ad-hoc bill run or a scheduled bill run.\n  - Support to create ad-hoc or scheduled bill runs by batch\n  - Support to create ad-hoc or scheduled bill runs for a single account (all subscriptions under this account)\n  - Support to create a bill run by subscription (50 or less subscriptions under the same account)\n\nTo use this operation, you must have the <a href=\"https://knowledgecenter.zuora.com/Billing/Tenant_Management/A_Administrator_Settings/User_Roles/d_Billing_Roles\" target=\"_bla"
+        },
+        {
+          "info": {
+            "name": "Post a bill run",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/bill-runs/:billRunId/post",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "billRunId",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a bill run.\n"
+              }
+            ]
+          },
+          "docs": "Posts a bill run asynchronously. To post a bill run, the current bill run must be in `Completed` status.\n\nWhen a bill run is being posted, its status is changed to `PostInProgress`. After all invoices for this bill run are posted, its status is changed to `Posted`.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a bill run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/bill-runs/:billRunId",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "billRunId",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a bill run.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves the information about a specific bill run.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a bill run",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/bill-runs/:billRunId",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "billRunId",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a bill run.\n"
+              }
+            ]
+          },
+          "docs": "Deletes a bill run. You can only delete bill runs in `Canceled` or `Error` status. \n"
+        },
+        {
+          "info": {
+            "name": "Cancel a bill run",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/v1/bill-runs/:billRunId/cancel",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "billRunId",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of a bill run.\n"
+              }
+            ]
+          },
+          "docs": "Cancels a bill run in Draft status.\n\nWhen cancelling a scheduled bill run, keep the following information in mind:\n- If you set `cancelOnce` to `true`, only the current bill run is cancelled. The other future scheduled bill runs will be automatically executed based on the schedule.\n- If you set `cancelOnce` to `false`, all future recurring bill runs are cancelled.\n"
+        },
+        {
+          "info": {
+            "name": "Email billing documents generated from a bill run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/bill-runs/:billRunKey/emails",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "billRunKey",
+                "value": "",
+                "type": "path",
+                "description": "The ID or number of the bill run. For example, 2c92c8f95d0c886e015d11287a8f0f8b or BR-00000001.\n"
+              }
+            ]
+          },
+          "docs": "Manually emails all the billing documents that are generated from a specified bill run to your customers. \n\n\nBill runs can generate invoices and credit memos based on your [invoice and credit memo generation rule](https://knowledgecenter.zuora.com/CB_Billing/Invoice_Settlement/Credit_and_Debit_Memos/Rules_for_Generating_Invoices_and_Credit_Memos). Credit memos are only available if you have the Invoice Settlement feature enabled.\n\n\nUsing this API operation, the billing documents are sent to the "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

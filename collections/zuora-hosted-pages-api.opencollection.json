@@ -1,0 +1,63 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Hosted Pages API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Hosted Pages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List hosted pages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/hostedpages",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "versionNumber",
+                "value": "",
+                "type": "query",
+                "description": "Version of the Payment Pages for which you want to retrieve the configuration information. Specify 2 for Payment Pages 2.0.\n"
+              }
+            ]
+          },
+          "docs": "Returns the Payment Pages configuration metadata,\nspecifically, page ID, page version, payment method type.\n\nThe following are the version-specific and general REST requests for Payment Pages:\n\n* The request for Payment Pages 2.0 configuration information: `GET <BaseURL>/hostedpages?version=2`\n* The request for all versions of Payment Pages configuration information: `GET <BaseURL>/hostedpages`\n\n### Notes\nIf you do not have the corresponding tenant setting enabled, such as specifying the request"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

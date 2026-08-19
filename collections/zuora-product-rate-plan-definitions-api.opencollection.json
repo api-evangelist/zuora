@@ -1,0 +1,184 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Product Rate Plan Definitions API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Product Rate Plan Definitions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List product rate plan definitions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/product-rateplan-definitions",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "charge",
+                "value": "",
+                "type": "query",
+                "description": "The unique number or ID of the charge for which the product rate plan definitions are to be retrieved.\n"
+              },
+              {
+                "name": "rateplan",
+                "value": "",
+                "type": "query",
+                "description": "The unique number or ID of the product rate plan for which the product rate plan definitions are to be retrieved.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves basic information about the product rate plan definitions for a product rate plan. \n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter** phase. \n"
+        },
+        {
+          "info": {
+            "name": "Create a product rate plan definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/v1/product-rateplan-definitions",
+            "headers": [
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Creates a product rate plan definition to use a charge in a product rate plan.\n\nIn the request, you must specify either the unique ID or number of both the charge and the product rate plan to add the specified charge to a specific rate plan.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter*"
+        },
+        {
+          "info": {
+            "name": "Retrieve a product rate plan definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/product-rateplan-definitions/:product-rateplan-definition-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "product-rateplan-definition-key",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of the product rate plan definition to be retrieved.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves basic information about a product rate plan definition.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter** phase. \n"
+        },
+        {
+          "info": {
+            "name": "Delete a product rate plan definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/v1/product-rateplan-definitions/:product-rateplan-definition-key",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "product-rateplan-definition-key",
+                "value": "",
+                "type": "path",
+                "description": "The unique ID of the product rate plan definition to be deleted.\n"
+              }
+            ]
+          },
+          "docs": "Deletes a product rate plan definition.\n\n**Note**: This operation requires the [Attribute-based Pricing](https://knowledgecenter.zuora.com/Zuora_Billing/Build_products_and_prices/Attribute_based_pricing/AA_Overview_of_Attribute-based_Pricing) feature to be enabled, which is in the **Early Adopter** phase. \n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

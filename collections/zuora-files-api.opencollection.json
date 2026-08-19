@@ -1,0 +1,63 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Files API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Files",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v1/files/:file-id",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "file-id",
+                "value": "",
+                "type": "path",
+                "description": "The Zuora ID of the file to retrieve.\n"
+              }
+            ]
+          },
+          "docs": "Retrieve files such as export results, invoices, and accounting period reports.\n\nThe response content type depends on the type of file that you retrieve.\nFor example, if you retrieve an invoice PDF, the value of the `Content-Type`\nheader in the response is `application/pdf;charset=UTF-8`.\n\nOther content types include:\n\n- `text/csv` for CSV files\n- `application/msword` for Microsoft Word files\n- `application/vnd.ms-excel` and `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`\n  f"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

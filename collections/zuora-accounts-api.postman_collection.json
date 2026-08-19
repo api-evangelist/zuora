@@ -1,0 +1,1459 @@
+{
+  "item": [
+    {
+      "id": "4339522d-9bb1-4876-891d-8806439d9949",
+      "name": "Accounts",
+      "description": {
+        "content": "Some operations in this section are similar to each other, but are provided for different use scenarios. You should choose the one that best suits your needs.\n\nFor example, the [Create account](/v1-api-reference/api/accounts/post_account) operation is used to create an account with a credit card payment method, a bill-to contact, and optionally an sold-to contact or an associated subscription. If you want to create an account without creating any associated objects such as subscriptions, use [CRUD: Create Account](/api-references/api/operation/Object_POSTAccount) instead.\n\nIf you want to create an account and the associated subscription at the same time without providing credit card information, use the [Subscribe](/api-references/api/operation/Action_POSTsubscribe) action.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5b092173-3ee4-4d6c-9417-21b5b1898793",
+          "name": "Create an account",
+          "request": {
+            "name": "Create an account",
+            "description": {
+              "content": "Creates a customer account with a payment method, a bill-to contact, and an optional sold-to contact. Request and response field descriptions and sample code are provided. Use this operation to optionally create a subscription, invoice for that subscription, and collect payment through the default payment method. The transaction is atomic; if any part fails for any reason, the entire transaction is rolled back.\n\nThis operation is CORS Enabled, so you can use client-side Javascript to invoke the call. \n\n### Notes\n1. The account is created in active status.  \n2. If the `autoPay` field is set to `true` in the request, you must provide one of the `paymentMethod`, `creditCard`, or `hpmCreditCardPaymentMethodId` field, but not multiple. The one provided becomes the default payment method for this account. If the credit card information is declined or cannot be verified, no account is created.\n3. Customer accounts created with this call are automatically be set to Auto Pay.\n4. If the `invoiceDeliveryPrefsEmail` field is not specified in the request, the account's email delivery preference is always automatically set to  `false`, no matter whether the  `workEmail`  or  `personalEmail`  field is specified.\n\n### Defaults for customerAcceptanceDate and serviceActivationDate\nDefault values for **customerAcceptanceDate** and **serviceActivationDate** are set as follows.\n\n|        | serviceActivationDate(SA) specified          | serviceActivationDate (SA) NOT specified  |\n| ------------- |:-------------:| -----:|\n| customerAcceptanceDate (CA) specified      | SA uses value in the request call; CA uses value in the request call| CA uses value in the request call;SA uses CE as default |\n| customerAcceptanceDate (CA) NOT specified      | SA uses value in the request call; CA uses SA as default |   SA and CA use CE as default |\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n",
+                "key": "Idempotency-Key",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                "key": "Accept-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                "key": "Content-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                "key": "Zuora-Track-Id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                "key": "Zuora-Entity-Ids",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                "key": "Zuora-Org-Ids",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "The minor version of the Zuora REST API. \n\nYou only need to set this parameter if you use the following fields:\n* invoice\n* collect\n* runBilling\n* targetDate\n",
+                "key": "zuora-version",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"billToContact\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"address1\": \"<string>\",\n    \"address2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"county\": \"<string>\",\n    \"fax\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"nickname\": \"<string>\",\n    \"otherPhone\": \"<string>\",\n    \"otherPhoneType\": \"<string>\",\n    \"personalEmail\": \"<string>\",\n    \"state\": \"<string>\",\n    \"taxRegion\": \"<string>\",\n    \"workEmail\": \"<string>\",\n    \"workPhone\": \"<string>\",\n    \"zipCode\": \"<string>\"\n  },\n  \"accountNumber\": \"<string>\",\n  \"additionalEmailAddresses\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"applicationOrder\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"applyCredit\": \"<boolean>\",\n  \"applyCreditBalance\": \"<boolean>\",\n  \"autoPay\": \"<boolean>\",\n  \"batch\": \"<string>\",\n  \"billCycleDay\": \"<long>\",\n  \"collect\": true,\n  \"communicationProfileId\": \"<string>\",\n  \"creditCard\": {\n    \"cardHolderInfo\": {\n      \"addressLine1\": \"<string>\",\n      \"cardHolderName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipCode\": \"<string>\",\n      \"addressLine2\": \"<string>\",\n      \"email\": \"<string>\",\n      \"phone\": \"<string>\"\n    },\n    \"cardNumber\": \"<string>\",\n    \"cardType\": \"<string>\",\n    \"expirationMonth\": \"<string>\",\n    \"expirationYear\": \"<string>\",\n    \"securityCode\": \"<string>\"\n  },\n  \"creditMemoReasonCode\": \"<string>\",\n  \"creditMemoTemplateId\": \"<string>\",\n  \"crmId\": \"<string>\",\n  \"debitMemoTemplateId\": \"<string>\",\n  \"documentDate\": \"<date>\",\n  \"einvoiceProfile\": {\n    \"businessName\": \"<string>\",\n    \"businessNumber\": \"<string>\",\n    \"businessNumberSchemeId\": \"<string>\",\n    \"enabled\": \"<boolean>\",\n    \"endpointId\": \"<string>\",\n    \"endpointSchemeId\": \"<string>\",\n    \"taxRegisterNumber\": \"<string>\"\n  },\n  \"hpmCreditCardPaymentMethodId\": \"<string>\",\n  \"invoice\": true,\n  \"invoiceCollect\": \"<boolean>\",\n  \"invoiceDeliveryPrefsEmail\": false,\n  \"invoiceDeliveryPrefsPrint\": false,\n  \"invoiceTargetDate\": \"<date>\",\n  \"invoiceTemplateId\": \"<string>\",\n  \"notes\": \"<string>\",\n  \"organizationLabel\": \"<string>\",\n  \"parentId\": \"<string>\",\n  \"partnerAccount\": false,\n  \"paymentGateway\": \"<string>\",\n  \"paymentMethod\": {\n    \"type\": \"<string>\",\n    \"BAID\": \"<string>\",\n    \"email\": \"<string>\",\n    \"preapprovalKey\": \"<string>\",\n    \"cardHolderInfo\": {\n      \"cardHolderName\": \"<string>\",\n      \"addressLine1\": \"<string>\",\n      \"addressLine2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"email\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipCode\": \"<string>\"\n    },\n    \"cardNumber\": \"<string>\",\n    \"cardType\": \"<string>\",\n    \"checkDuplicated\": \"<boolean>\",\n    \"expirationMonth\": \"<integer>\",\n    \"expirationYear\": \"<integer>\",\n    \"mitConsentAgreementRef\": \"<string>\",\n    \"mitConsentAgreementSrc\": \"<string>\",\n    \"mitNetworkTransactionId\": \"<string>\",\n    \"mitProfileAction\": \"<string>\",\n    \"mitProfileAgreedOn\": \"<date>\",\n    \"mitProfileType\": \"<string>\",\n    \"screeningAmount\": \"<decimal>\",\n    \"securityCode\": \"<string>\",\n    \"addressLine1\": \"<string>\",\n    \"addressLine2\": \"<string>\",\n    \"bankABACode\": \"<string>\",\n    \"bankAccountName\": \"<string>\",\n    \"bankAccountNumber\": \"<string>\",\n    \"bankAccountType\": \"<string>\",\n    \"bankName\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"state\": \"<string>\",\n    \"zipCode\": \"<string>\",\n    \"accountKey\": \"<string>\",\n    \"authGateway\": \"<string>\",\n    \"ipAddress\": \"<string>\",\n    \"makeDefault\": false,\n    \"IBAN\": \"<string>\",\n    \"accountHolderInfo\": {\n      \"accountHolderName\": \"<string>\",\n      \"addressLine1\": \"<string>\",\n      \"addressLine2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"email\": \"<string>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipCode\": \"<string>\"\n    },\n    \"accountMaskNumber\": \"<string>\",\n    \"accountNumber\": \"<string>\",\n    \"bankCode\": \"<string>\",\n    \"branchCode\": \"<string>\",\n    \"businessIdentificationCode\": \"<string>\",\n    \"currencyCode\": \"<string>\",\n    \"identityNumber\": \"<string>\",\n    \"tokenize\": false,\n    \"tokens\": {\n      \"gatewayType\": \"<string>\",\n      \"secondTokenId\": \"<string>\",\n      \"thirdTokenId\": \"<string>\",\n      \"tokenId\": \"<string>\"\n    },\n    \"creditCardMaskNumber\": \"<string>\",\n    \"secondTokenId\": \"<string>\",\n    \"tokenId\": \"<string>\",\n    \"applePaymentData\": \"<string>\",\n    \"googlePaymentToken\": \"<string>\"\n  },\n  \"paymentTerm\": \"<string>\",\n  \"profileNumber\": \"<string>\",\n  \"runBilling\": true,\n  \"salesRep\": \"<string>\",\n  \"sequenceSetId\": \"<string>\",\n  \"soldToContact\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"address1\": \"<string>\",\n    \"address2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"county\": \"<string>\",\n    \"fax\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"nickname\": \"<string>\",\n    \"otherPhone\": \"<string>\",\n    \"otherPhoneType\": \"<string>\",\n    \"personalEmail\": \"<string>\",\n    \"state\": \"<string>\",\n    \"taxRegion\": \"<string>\",\n    \"workEmail\": \"<string>\",\n    \"workPhone\": \"<string>\",\n    \"zipCode\": \"<string>\"\n  },\n  \"soldToSameAsBillTo\": \"<boolean>\",\n  \"subscription\": {\n    \"contractEffectiveDate\": \"<date>\",\n    \"termType\": \"<string>\",\n    \"autoRenew\": \"<boolean>\",\n    \"customerAcceptanceDate\": \"<date>\",\n    \"initialTerm\": \"<long>\",\n    \"invoiceOwnerAccountKey\": \"<string>\",\n    \"invoiceSeparately\": \"<boolean>\",\n    \"notes\": \"<string>\",\n    \"renewalTerm\": \"<long>\",\n    \"serviceActivationDate\": \"<date>\",\n    \"subscribeToRatePlans\": [\n      {\n        \"chargeOverrides\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"externalCatalogPlanId\": \"<string>\",\n        \"externalIdSourceSystem\": \"<string>\",\n        \"externallyManagedPlanId\": \"<string>\",\n        \"productRatePlanId\": \"<string>\",\n        \"productRatePlanNumber\": \"<string>\"\n      },\n      {\n        \"chargeOverrides\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"externalCatalogPlanId\": \"<string>\",\n        \"externalIdSourceSystem\": \"<string>\",\n        \"externallyManagedPlanId\": \"<string>\",\n        \"productRatePlanId\": \"<string>\",\n        \"productRatePlanNumber\": \"<string>\"\n      }\n    ],\n    \"subscriptionNumber\": \"<string>\",\n    \"termStartDate\": \"<date>\",\n    \"CpqBundleJsonId__QT\": \"<string>\",\n    \"OpportunityCloseDate__QT\": \"<date>\",\n    \"OpportunityName__QT\": \"<string>\",\n    \"QuoteBusinessType__QT\": \"<string>\",\n    \"QuoteNumber__QT\": \"<string>\",\n    \"QuoteType__QT\": \"<string>\",\n    \"IntegrationId__NS\": \"<string>\",\n    \"IntegrationStatus__NS\": \"<string>\",\n    \"Project__NS\": \"<string>\",\n    \"SalesOrder__NS\": \"<string>\",\n    \"SyncDate__NS\": \"<string>\"\n  },\n  \"tagging\": \"<string>\",\n  \"targetDate\": \"<date>\",\n  \"taxInfo\": {\n    \"VATId\": \"<string>\",\n    \"companyCode\": \"<string>\",\n    \"exemptCertificateId\": \"<string>\",\n    \"exemptCertificateType\": \"<string>\",\n    \"exemptDescription\": \"<string>\",\n    \"exemptEffectiveDate\": \"<date>\",\n    \"exemptEntityUseCode\": \"<string>\",\n    \"exemptExpirationDate\": \"<date>\",\n    \"exemptIssuingJurisdiction\": \"<string>\",\n    \"exemptStatus\": \"<string>\"\n  },\n  \"Class__NS\": \"<string>\",\n  \"CustomerType__NS\": \"<string>\",\n  \"Department__NS\": \"<string>\",\n  \"IntegrationId__NS\": \"<string>\",\n  \"IntegrationStatus__NS\": \"<string>\",\n  \"Location__NS\": \"<string>\",\n  \"Subsidiary__NS\": \"<string>\",\n  \"SyncDate__NS\": \"<string>\",\n  \"SynctoNetSuite__NS\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8cc0be61-50cd-4670-b312-45b9d168ad29",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n",
+                    "key": "Idempotency-Key",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                    "key": "Accept-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                    "key": "Content-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).\n",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                    "key": "Zuora-Track-Id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                    "key": "Zuora-Entity-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                    "key": "Zuora-Org-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The minor version of the Zuora REST API. \n\nYou only need to set this parameter if you use the following fields:\n* invoice\n* collect\n* runBilling\n* targetDate\n",
+                    "key": "zuora-version",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"billToContact\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"address1\": \"<string>\",\n    \"address2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"county\": \"<string>\",\n    \"fax\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"nickname\": \"<string>\",\n    \"otherPhone\": \"<string>\",\n    \"otherPhoneType\": \"<string>\",\n    \"personalEmail\": \"<string>\",\n    \"state\": \"<string>\",\n    \"taxRegion\": \"<string>\",\n    \"workEmail\": \"<string>\",\n    \"workPhone\": \"<string>\",\n    \"zipCode\": \"<string>\"\n  },\n  \"accountNumber\": \"<string>\",\n  \"additionalEmailAddresses\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"applicationOrder\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"applyCredit\": \"<boolean>\",\n  \"applyCreditBalance\": \"<boolean>\",\n  \"autoPay\": \"<boolean>\",\n  \"batch\": \"<string>\",\n  \"billCycleDay\": \"<long>\",\n  \"collect\": true,\n  \"communicationProfileId\": \"<string>\",\n  \"creditCard\": {\n    \"cardHolderInfo\": {\n      \"addressLine1\": \"<string>\",\n      \"cardHolderName\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipCode\": \"<string>\",\n      \"addressLine2\": \"<string>\",\n      \"email\": \"<string>\",\n      \"phone\": \"<string>\"\n    },\n    \"cardNumber\": \"<string>\",\n    \"cardType\": \"<string>\",\n    \"expirationMonth\": \"<string>\",\n    \"expirationYear\": \"<string>\",\n    \"securityCode\": \"<string>\"\n  },\n  \"creditMemoReasonCode\": \"<string>\",\n  \"creditMemoTemplateId\": \"<string>\",\n  \"crmId\": \"<string>\",\n  \"debitMemoTemplateId\": \"<string>\",\n  \"documentDate\": \"<date>\",\n  \"einvoiceProfile\": {\n    \"businessName\": \"<string>\",\n    \"businessNumber\": \"<string>\",\n    \"businessNumberSchemeId\": \"<string>\",\n    \"enabled\": \"<boolean>\",\n    \"endpointId\": \"<string>\",\n    \"endpointSchemeId\": \"<string>\",\n    \"taxRegisterNumber\": \"<string>\"\n  },\n  \"hpmCreditCardPaymentMethodId\": \"<string>\",\n  \"invoice\": true,\n  \"invoiceCollect\": \"<boolean>\",\n  \"invoiceDeliveryPrefsEmail\": false,\n  \"invoiceDeliveryPrefsPrint\": false,\n  \"invoiceTargetDate\": \"<date>\",\n  \"invoiceTemplateId\": \"<string>\",\n  \"notes\": \"<string>\",\n  \"organizationLabel\": \"<string>\",\n  \"parentId\": \"<string>\",\n  \"partnerAccount\": false,\n  \"paymentGateway\": \"<string>\",\n  \"paymentMethod\": {\n    \"type\": \"<string>\",\n    \"BAID\": \"<string>\",\n    \"email\": \"<string>\",\n    \"preapprovalKey\": \"<string>\",\n    \"cardHolderInfo\": {\n      \"cardHolderName\": \"<string>\",\n      \"addressLine1\": \"<string>\",\n      \"addressLine2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"email\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipCode\": \"<string>\"\n    },\n    \"cardNumber\": \"<string>\",\n    \"cardType\": \"<string>\",\n    \"checkDuplicated\": \"<boolean>\",\n    \"expirationMonth\": \"<integer>\",\n    \"expirationYear\": \"<integer>\",\n    \"mitConsentAgreementRef\": \"<string>\",\n    \"mitConsentAgreementSrc\": \"<string>\",\n    \"mitNetworkTransactionId\": \"<string>\",\n    \"mitProfileAction\": \"<string>\",\n    \"mitProfileAgreedOn\": \"<date>\",\n    \"mitProfileType\": \"<string>\",\n    \"screeningAmount\": \"<decimal>\",\n    \"securityCode\": \"<string>\",\n    \"addressLine1\": \"<string>\",\n    \"addressLine2\": \"<string>\",\n    \"bankABACode\": \"<string>\",\n    \"bankAccountName\": \"<string>\",\n    \"bankAccountNumber\": \"<string>\",\n    \"bankAccountType\": \"<string>\",\n    \"bankName\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"phone\": \"<string>\",\n    \"state\": \"<string>\",\n    \"zipCode\": \"<string>\",\n    \"accountKey\": \"<string>\",\n    \"authGateway\": \"<string>\",\n    \"ipAddress\": \"<string>\",\n    \"makeDefault\": false,\n    \"IBAN\": \"<string>\",\n    \"accountHolderInfo\": {\n      \"accountHolderName\": \"<string>\",\n      \"addressLine1\": \"<string>\",\n      \"addressLine2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"email\": \"<string>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipCode\": \"<string>\"\n    },\n    \"accountMaskNumber\": \"<string>\",\n    \"accountNumber\": \"<string>\",\n    \"bankCode\": \"<string>\",\n    \"branchCode\": \"<string>\",\n    \"businessIdentificationCode\": \"<string>\",\n    \"currencyCode\": \"<string>\",\n    \"identityNumber\": \"<string>\",\n    \"tokenize\": false,\n    \"tokens\": {\n      \"gatewayType\": \"<string>\",\n      \"secondTokenId\": \"<string>\",\n      \"thirdTokenId\": \"<string>\",\n      \"tokenId\": \"<string>\"\n    },\n    \"creditCardMaskNumber\": \"<string>\",\n    \"secondTokenId\": \"<string>\",\n    \"tokenId\": \"<string>\",\n    \"applePaymentData\": \"<string>\",\n    \"googlePaymentToken\": \"<string>\"\n  },\n  \"paymentTerm\": \"<string>\",\n  \"profileNumber\": \"<string>\",\n  \"runBilling\": true,\n  \"salesRep\": \"<string>\",\n  \"sequenceSetId\": \"<string>\",\n  \"soldToContact\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"address1\": \"<string>\",\n    \"address2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"county\": \"<string>\",\n    \"fax\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"nickname\": \"<string>\",\n    \"otherPhone\": \"<string>\",\n    \"otherPhoneType\": \"<string>\",\n    \"personalEmail\": \"<string>\",\n    \"state\": \"<string>\",\n    \"taxRegion\": \"<string>\",\n    \"workEmail\": \"<string>\",\n    \"workPhone\": \"<string>\",\n    \"zipCode\": \"<string>\"\n  },\n  \"soldToSameAsBillTo\": \"<boolean>\",\n  \"subscription\": {\n    \"contractEffectiveDate\": \"<date>\",\n    \"termType\": \"<string>\",\n    \"autoRenew\": \"<boolean>\",\n    \"customerAcceptanceDate\": \"<date>\",\n    \"initialTerm\": \"<long>\",\n    \"invoiceOwnerAccountKey\": \"<string>\",\n    \"invoiceSeparately\": \"<boolean>\",\n    \"notes\": \"<string>\",\n    \"renewalTerm\": \"<long>\",\n    \"serviceActivationDate\": \"<date>\",\n    \"subscribeToRatePlans\": [\n      {\n        \"chargeOverrides\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"externalCatalogPlanId\": \"<string>\",\n        \"externalIdSourceSystem\": \"<string>\",\n        \"externallyManagedPlanId\": \"<string>\",\n        \"productRatePlanId\": \"<string>\",\n        \"productRatePlanNumber\": \"<string>\"\n      },\n      {\n        \"chargeOverrides\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"externalCatalogPlanId\": \"<string>\",\n        \"externalIdSourceSystem\": \"<string>\",\n        \"externallyManagedPlanId\": \"<string>\",\n        \"productRatePlanId\": \"<string>\",\n        \"productRatePlanNumber\": \"<string>\"\n      }\n    ],\n    \"subscriptionNumber\": \"<string>\",\n    \"termStartDate\": \"<date>\",\n    \"CpqBundleJsonId__QT\": \"<string>\",\n    \"OpportunityCloseDate__QT\": \"<date>\",\n    \"OpportunityName__QT\": \"<string>\",\n    \"QuoteBusinessType__QT\": \"<string>\",\n    \"QuoteNumber__QT\": \"<string>\",\n    \"QuoteType__QT\": \"<string>\",\n    \"IntegrationId__NS\": \"<string>\",\n    \"IntegrationStatus__NS\": \"<string>\",\n    \"Project__NS\": \"<string>\",\n    \"SalesOrder__NS\": \"<string>\",\n    \"SyncDate__NS\": \"<string>\"\n  },\n  \"tagging\": \"<string>\",\n  \"targetDate\": \"<date>\",\n  \"taxInfo\": {\n    \"VATId\": \"<string>\",\n    \"companyCode\": \"<string>\",\n    \"exemptCertificateId\": \"<string>\",\n    \"exemptCertificateType\": \"<string>\",\n    \"exemptDescription\": \"<string>\",\n    \"exemptEffectiveDate\": \"<date>\",\n    \"exemptEntityUseCode\": \"<string>\",\n    \"exemptExpirationDate\": \"<date>\",\n    \"exemptIssuingJurisdiction\": \"<string>\",\n    \"exemptStatus\": \"<string>\"\n  },\n  \"Class__NS\": \"<string>\",\n  \"CustomerType__NS\": \"<string>\",\n  \"Department__NS\": \"<string>\",\n  \"IntegrationId__NS\": \"<string>\",\n  \"IntegrationStatus__NS\": \"<string>\",\n  \"Location__NS\": \"<string>\",\n  \"Subsidiary__NS\": \"<string>\",\n  \"SyncDate__NS\": \"<string>\",\n  \"SynctoNetSuite__NS\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n",
+                  "key": "Content-Encoding",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Limit",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Remaining",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Reset",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The Zuora internal identifier of the API call. You cannot control the value of this header.\n",
+                  "key": "Zuora-Request-Id",
+                  "value": "stringstringstringstringstringstring"
+                },
+                {
+                  "disabled": false,
+                  "description": "A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.\n",
+                  "key": "Zuora-Track-Id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"accountId\": \"402892c74c9193cd014c96bbe7c101f9\",\n  \"accountNumber\": \"A00000004\",\n  \"billToContactId\": \"2c92c8fb68a28d180168a7ccedba1c4c\",\n  \"soldToContactId\": \"2c92c8fb68a28d180168a7ccedc61c4e\",\n  \"paymentMethodId\": \"402892c74c9193cd014c96bbe7d901fd\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "babb3402-3707-473c-81d1-c3dbf07e162d",
+          "name": "Retrieve an account",
+          "request": {
+            "name": "Retrieve an account",
+            "description": {
+              "content": "Retrieves basic information about a customer account.\n\nThis operation is a quick retrieval that doesn't include the account's subscriptions, invoices, payments, or usage details. Use Get account summary to get more detailed information about an account.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "accounts",
+                ":account-key"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "account-key",
+                  "description": "(Required) Account number or account ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                "key": "Accept-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                "key": "Content-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                "key": "Zuora-Track-Id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                "key": "Zuora-Entity-Ids",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                "key": "Zuora-Org-Ids",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "66ca1a68-eb09-4b87-a38c-a0d2852c2b5c",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "accounts",
+                    ":account-key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "account-key",
+                      "description": "(Required) Account number or account ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                    "key": "Accept-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                    "key": "Content-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).\n",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                    "key": "Zuora-Track-Id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                    "key": "Zuora-Entity-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                    "key": "Zuora-Org-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n",
+                  "key": "Content-Encoding",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Limit",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Remaining",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Reset",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The Zuora internal identifier of the API call. You cannot control the value of this header.\n",
+                  "key": "Zuora-Request-Id",
+                  "value": "stringstringstringstringstringstring"
+                },
+                {
+                  "disabled": false,
+                  "description": "A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.\n",
+                  "key": "Zuora-Track-Id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"basicInfo\": {\n    \"id\": \"402892c74c9193cd014c91d35b0a0132\",\n    \"name\": \"Test\",\n    \"accountNumber\": \"A00000001\",\n    \"notes\": \"\",\n    \"status\": \"Active\",\n    \"crmId\": \"\",\n    \"batch\": \"Batch1\",\n    \"invoiceTemplateId\": null,\n    \"communicationProfileId\": \"303d186840e611df817c002185d714e1\",\n    \"profileNumber\": \"CP-00000012\",\n    \"salesRep\": \"\",\n    \"sequenceSetId\": null,\n    \"partnerAccount\": false\n  },\n  \"billingAndPayment\": {\n    \"autoPay\": true,\n    \"billCycleDay\": 1,\n    \"currency\": \"USD\",\n    \"defaultPaymentMethodId\": \"2c93808457d787030157e03220ec4fad\",\n    \"paymentTerm\": \"Net 30\",\n    \"paymentGateway\": \"TestGateway\",\n    \"invoiceDeliveryPrefsPrint\": false,\n    \"invoiceDeliveryPrefsEmail\": true,\n    \"additionalEmailAddresses\": [\n      \"contact1@example.com\",\n      \"contact2@example.com\"\n    ]\n  },\n  \"metrics\": {\n    \"balance\": 0,\n    \"totalInvoiceBalance\": 0,\n    \"creditBalance\": 0,\n    \"contractedMrr\": -900\n  },\n  \"metricsData\": [\n    {\n      \"currency\": \"USD\",\n      \"balance\": 0,\n      \"totalInvoiceBalance\": 0,\n      \"totalDebitMemoBalance\": 0,\n      \"unappliedPaymentAmount\": 0,\n      \"unappliedCreditMemoAmount\": 0,\n      \"contractedMrr\": -900,\n      \"reservedPaymentAmount\": 900\n    },\n    {\n      \"currency\": \"EUR\",\n      \"balance\": 0,\n      \"totalInvoiceBalance\": 0,\n      \"totalDebitMemoBalance\": 0,\n      \"unappliedPaymentAmount\": 0,\n      \"unappliedCreditMemoAmount\": 0,\n      \"contractedMrr\": -900,\n      \"reservedPaymentAmount\": -900\n    }\n  ],\n  \"billToContact\": {\n    \"address1\": \"\",\n    \"address2\": \"\",\n    \"city\": \"\",\n    \"country\": null,\n    \"county\": null,\n    \"fax\": \"\",\n    \"firstName\": \"Test\",\n    \"homePhone\": \"\",\n    \"id\": \"2c9081a03c6d7b51013c6d7e46c80a17\",\n    \"lastName\": \"Test\",\n    \"mobilePhone\": \"\",\n    \"nickname\": \"\",\n    \"otherPhone\": \"\",\n    \"otherPhoneType\": null,\n    \"personalEmail\": \"\",\n    \"state\": \"\",\n    \"taxRegion\": null,\n    \"workEmail\": \"contact@example.com\",\n    \"workPhone\": \"\",\n    \"zipCode\": \"\"\n  },\n  \"soldToContact\": {\n    \"address1\": \"\",\n    \"address2\": \"\",\n    \"city\": \"\",\n    \"country\": null,\n    \"county\": null,\n    \"fax\": \"\",\n    \"firstName\": \"Test\",\n    \"homePhone\": \"\",\n    \"id\": \"2c9081a03c6d7b51013c6d7e46cf0a18\",\n    \"lastName\": \"Test\",\n    \"mobilePhone\": \"\",\n    \"nickname\": \"\",\n    \"otherPhone\": \"\",\n    \"otherPhoneType\": null,\n    \"personalEmail\": \"\",\n    \"state\": \"\",\n    \"taxRegion\": null,\n    \"workEmail\": \"contact@example.com\",\n    \"workPhone\": \"\",\n    \"zipCode\": \"\"\n  },\n  \"einvoiceProfile\": {\n    \"enabled\": \"true\",\n    \"businessName\": \"legal business name\",\n    \"businessNumber\": \"20002039\",\n    \"businessNumberSchemeId\": 88,\n    \"taxRegisterNumber\": \"TAX393999\",\n    \"endpointId\": 8992,\n    \"endpointSchemeId\": 88\n  },\n  \"success\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d3ab2e8d-8b7d-495a-bcea-ffbb139737b7",
+          "name": "Update an account",
+          "request": {
+            "name": "Update an account",
+            "description": {
+              "content": "Updates a customer account by specifying the account-key.\n\n### Notes\n1. Only the fields to be changed should be specified.  Any field that is not included in the request body will not be changed.\n2. If an empty field is submitted with this operation, the corresponding field in the account is emptied.\n3. Email addresses: If no email addresses are specified, no change is made to the email addresses or to the email delivery preference. If either the **personalEmail** or **workEmail** of **billToContact** is specified (or both), the system updates the corresponding email address(es) and the email delivery preference is set to `true`. (In that case, emails go to the **workEmail** address, if it exists, or else the **personalEmail**.) On the other hand, if as a result of this call both of the email addresses for the account are empty, the email delivery preference is set to `false`.\n4. The bill-to and sold-to contacts are separate data entities. If you select the **Same as Bill To Contact** check box during account creation, both the Bill To and Sold To contacts are updated upon updating either one because they point to the same contact record. In this case, if you want to update only one of them, you have to first create another contact and update the Bill To or Sold To contact of the customer account to be the newly created one.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "accounts",
+                ":account-key"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "account-key",
+                  "description": "(Required) Account number or account ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                "key": "Accept-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                "key": "Content-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                "key": "Zuora-Track-Id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                "key": "Zuora-Entity-Ids",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                "key": "Zuora-Org-Ids",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"additionalEmailAddresses\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"autoPay\": \"<boolean>\",\n  \"batch\": \"<string>\",\n  \"billCycleDay\": \"<integer>\",\n  \"billToContact\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"address1\": \"<string>\",\n    \"address2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"county\": \"<string>\",\n    \"fax\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"nickname\": \"<string>\",\n    \"otherPhone\": \"<string>\",\n    \"otherPhoneType\": \"<string>\",\n    \"personalEmail\": \"<string>\",\n    \"state\": \"<string>\",\n    \"taxRegion\": \"<string>\",\n    \"workEmail\": \"<string>\",\n    \"workPhone\": \"<string>\",\n    \"zipCode\": \"<string>\"\n  },\n  \"communicationProfileId\": \"<string>\",\n  \"creditMemoTemplateId\": \"<string>\",\n  \"crmId\": \"<string>\",\n  \"customerServiceRepName\": \"<string>\",\n  \"debitMemoTemplateId\": \"<string>\",\n  \"defaultPaymentMethodId\": \"<string>\",\n  \"einvoiceProfile\": {\n    \"businessName\": \"<string>\",\n    \"businessNumber\": \"<string>\",\n    \"businessNumberSchemeId\": \"<string>\",\n    \"enabled\": \"<boolean>\",\n    \"endpointId\": \"<string>\",\n    \"endpointSchemeId\": \"<string>\",\n    \"taxRegisterNumber\": \"<string>\"\n  },\n  \"invoiceDeliveryPrefsEmail\": \"<boolean>\",\n  \"invoiceDeliveryPrefsPrint\": \"<boolean>\",\n  \"invoiceTemplateId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"notes\": \"<string>\",\n  \"parentId\": \"<string>\",\n  \"partnerAccount\": false,\n  \"paymentGateway\": \"<string>\",\n  \"paymentTerm\": \"<string>\",\n  \"profileNumber\": \"<string>\",\n  \"purchaseOrderNumber\": \"<string>\",\n  \"salesRep\": \"<string>\",\n  \"sequenceSetId\": \"<string>\",\n  \"soldToContact\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"address1\": \"<string>\",\n    \"address2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"county\": \"<string>\",\n    \"fax\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"nickname\": \"<string>\",\n    \"otherPhone\": \"<string>\",\n    \"otherPhoneType\": \"<string>\",\n    \"personalEmail\": \"<string>\",\n    \"state\": \"<string>\",\n    \"taxRegion\": \"<string>\",\n    \"workEmail\": \"<string>\",\n    \"workPhone\": \"<string>\",\n    \"zipCode\": \"<string>\"\n  },\n  \"tagging\": \"<string>\",\n  \"taxInfo\": {\n    \"VATId\": \"<string>\",\n    \"companyCode\": \"<string>\",\n    \"exemptCertificateId\": \"<string>\",\n    \"exemptCertificateType\": \"<string>\",\n    \"exemptDescription\": \"<string>\",\n    \"exemptEffectiveDate\": \"<date>\",\n    \"exemptEntityUseCode\": \"<string>\",\n    \"exemptExpirationDate\": \"<date>\",\n    \"exemptIssuingJurisdiction\": \"<string>\",\n    \"exemptStatus\": \"<string>\"\n  },\n  \"Class__NS\": \"<string>\",\n  \"CustomerType__NS\": \"<string>\",\n  \"Department__NS\": \"<string>\",\n  \"IntegrationId__NS\": \"<string>\",\n  \"IntegrationStatus__NS\": \"<string>\",\n  \"Location__NS\": \"<string>\",\n  \"Subsidiary__NS\": \"<string>\",\n  \"SyncDate__NS\": \"<string>\",\n  \"SynctoNetSuite__NS\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d48c47f7-e0bf-49fb-a6dd-b30856d0e2d0",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "accounts",
+                    ":account-key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "account-key",
+                      "description": "(Required) Account number or account ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                    "key": "Accept-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                    "key": "Content-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).\n",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                    "key": "Zuora-Track-Id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                    "key": "Zuora-Entity-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                    "key": "Zuora-Org-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"additionalEmailAddresses\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"autoPay\": \"<boolean>\",\n  \"batch\": \"<string>\",\n  \"billCycleDay\": \"<integer>\",\n  \"billToContact\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"address1\": \"<string>\",\n    \"address2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"county\": \"<string>\",\n    \"fax\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"nickname\": \"<string>\",\n    \"otherPhone\": \"<string>\",\n    \"otherPhoneType\": \"<string>\",\n    \"personalEmail\": \"<string>\",\n    \"state\": \"<string>\",\n    \"taxRegion\": \"<string>\",\n    \"workEmail\": \"<string>\",\n    \"workPhone\": \"<string>\",\n    \"zipCode\": \"<string>\"\n  },\n  \"communicationProfileId\": \"<string>\",\n  \"creditMemoTemplateId\": \"<string>\",\n  \"crmId\": \"<string>\",\n  \"customerServiceRepName\": \"<string>\",\n  \"debitMemoTemplateId\": \"<string>\",\n  \"defaultPaymentMethodId\": \"<string>\",\n  \"einvoiceProfile\": {\n    \"businessName\": \"<string>\",\n    \"businessNumber\": \"<string>\",\n    \"businessNumberSchemeId\": \"<string>\",\n    \"enabled\": \"<boolean>\",\n    \"endpointId\": \"<string>\",\n    \"endpointSchemeId\": \"<string>\",\n    \"taxRegisterNumber\": \"<string>\"\n  },\n  \"invoiceDeliveryPrefsEmail\": \"<boolean>\",\n  \"invoiceDeliveryPrefsPrint\": \"<boolean>\",\n  \"invoiceTemplateId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"notes\": \"<string>\",\n  \"parentId\": \"<string>\",\n  \"partnerAccount\": false,\n  \"paymentGateway\": \"<string>\",\n  \"paymentTerm\": \"<string>\",\n  \"profileNumber\": \"<string>\",\n  \"purchaseOrderNumber\": \"<string>\",\n  \"salesRep\": \"<string>\",\n  \"sequenceSetId\": \"<string>\",\n  \"soldToContact\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"address1\": \"<string>\",\n    \"address2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"country\": \"<string>\",\n    \"county\": \"<string>\",\n    \"fax\": \"<string>\",\n    \"homePhone\": \"<string>\",\n    \"mobilePhone\": \"<string>\",\n    \"nickname\": \"<string>\",\n    \"otherPhone\": \"<string>\",\n    \"otherPhoneType\": \"<string>\",\n    \"personalEmail\": \"<string>\",\n    \"state\": \"<string>\",\n    \"taxRegion\": \"<string>\",\n    \"workEmail\": \"<string>\",\n    \"workPhone\": \"<string>\",\n    \"zipCode\": \"<string>\"\n  },\n  \"tagging\": \"<string>\",\n  \"taxInfo\": {\n    \"VATId\": \"<string>\",\n    \"companyCode\": \"<string>\",\n    \"exemptCertificateId\": \"<string>\",\n    \"exemptCertificateType\": \"<string>\",\n    \"exemptDescription\": \"<string>\",\n    \"exemptEffectiveDate\": \"<date>\",\n    \"exemptEntityUseCode\": \"<string>\",\n    \"exemptExpirationDate\": \"<date>\",\n    \"exemptIssuingJurisdiction\": \"<string>\",\n    \"exemptStatus\": \"<string>\"\n  },\n  \"Class__NS\": \"<string>\",\n  \"CustomerType__NS\": \"<string>\",\n  \"Department__NS\": \"<string>\",\n  \"IntegrationId__NS\": \"<string>\",\n  \"IntegrationStatus__NS\": \"<string>\",\n  \"Location__NS\": \"<string>\",\n  \"Subsidiary__NS\": \"<string>\",\n  \"SyncDate__NS\": \"<string>\",\n  \"SynctoNetSuite__NS\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n",
+                  "key": "Content-Encoding",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Limit",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Remaining",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Reset",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The Zuora internal identifier of the API call. You cannot control the value of this header.\n",
+                  "key": "Zuora-Request-Id",
+                  "value": "stringstringstringstringstringstring"
+                },
+                {
+                  "disabled": false,
+                  "description": "A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.\n",
+                  "key": "Zuora-Track-Id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ba5964ba-d4a1-411e-bfe7-1c35bc4b1aab",
+          "name": "Delete an account",
+          "request": {
+            "name": "Delete an account",
+            "description": {
+              "content": "Deletes a specific account asynchronously. \n\n**Notes and Limitations:** \n- For account deletion, the system will start a backend job to remove all transactions under the accounts and change the status of the accounts to 'Cancelled'. This backend job is asynchronous and will take some time, depending on the job size.  \n- An account cannot be deleted when the account is either the invoice owner or the subscription owner of a subscription and the subscription's invoice owner and subscription owner are two different accounts. An exception to this limitation is if the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Invoicing/Billing_Settings/Define_Default_Subscription_and_Order_Settings#Enable_Force_Deletion_for_Account.3F\" target=\"_blank\">Enable Force Deletion for Account?</a> setting is set to `Yes`, you can force delete an account that is the subscription owner of a subscription while the invoice owner is a different account. Force deleting this account deletes all its subscriptions, but the relevant invoices will not be impacted.\n- An account cannot be deleted if this account has ever been involved in an Owner Transfer amendment or order action, either as the current owner or as the previous owner. \n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "accounts",
+                ":account-key"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "account-key",
+                  "description": "(Required) Account number or account ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                "key": "Accept-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                "key": "Content-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                "key": "Zuora-Track-Id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                "key": "Zuora-Entity-Ids",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                "key": "Zuora-Org-Ids",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "31c150aa-5118-4278-b914-ae2f5b0b6b81",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "accounts",
+                    ":account-key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "account-key",
+                      "description": "(Required) Account number or account ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                    "key": "Accept-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                    "key": "Content-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).\n",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                    "key": "Zuora-Track-Id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                    "key": "Zuora-Entity-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                    "key": "Zuora-Org-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n",
+                  "key": "Content-Encoding",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Limit",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Remaining",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Reset",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The Zuora internal identifier of the API call. You cannot control the value of this header.\n",
+                  "key": "Zuora-Request-Id",
+                  "value": "stringstringstringstringstringstring"
+                },
+                {
+                  "disabled": false,
+                  "description": "A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.\n",
+                  "key": "Zuora-Track-Id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"40288ae9600808280160081dc9c13f15\",\n  \"jobId\": \"40288ae9600808280160081db1533506\",\n  \"jobStatus\": \"Pending\",\n  \"success\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "951c58f0-771a-4cc8-b4da-5d1088b93389",
+          "name": "Retrieve an account summary",
+          "request": {
+            "name": "Retrieve an account summary",
+            "description": {
+              "content": "Retrieves detailed information about the specified customer account.\n\nThe response includes the account information and a summary of the account’s subscriptions, invoices, payments, and usages.\n\n### Notes\nReturns only the six most recent subscriptions based on the subscription updatedDate. Within those subscriptions, there may be many rate plans and many rate plan charges. These items are subject to the maximum limit on the array size. \n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "accounts",
+                ":account-key",
+                "summary"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "excludeUsage",
+                  "value": "<boolean>",
+                  "description": "Indicate whether to exclude usage information in the response. The default value is `false`."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "account-key",
+                  "description": "(Required) Account number or account ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                "key": "Accept-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                "key": "Content-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                "key": "Zuora-Track-Id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                "key": "Zuora-Entity-Ids",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                "key": "Zuora-Org-Ids",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1b19ba13-2ea0-4a6a-802b-dac5e52c500c",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "accounts",
+                    ":account-key",
+                    "summary"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "excludeUsage",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "account-key",
+                      "description": "(Required) Account number or account ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                    "key": "Accept-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                    "key": "Content-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).\n",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                    "key": "Zuora-Track-Id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                    "key": "Zuora-Entity-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                    "key": "Zuora-Org-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n",
+                  "key": "Content-Encoding",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Limit",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Remaining",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Reset",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The Zuora internal identifier of the API call. You cannot control the value of this header.\n",
+                  "key": "Zuora-Request-Id",
+                  "value": "stringstringstringstringstringstring"
+                },
+                {
+                  "disabled": false,
+                  "description": "A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.\n",
+                  "key": "Zuora-Track-Id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payments\": [\n    {\n      \"paidInvoices\": [\n        {\n          \"invoiceNumber\": \"INV00000159\",\n          \"appliedPaymentAmount\": 5,\n          \"invoiceId\": \"2c92a09539190dbe0139190f42780012\"\n        },\n        {\n          \"invoiceNumber\": \"INV00000323\",\n          \"appliedPaymentAmount\": 139722.1,\n          \"invoiceId\": \"2c92a0953a3fa95d013a407c10a60100\"\n        },\n        {\n          \"invoiceNumber\": \"INV00000160\",\n          \"appliedPaymentAmount\": 10521,\n          \"invoiceId\": \"2c92a09739190dc60139194bcf1b0098\"\n        }\n      ],\n      \"paymentNumber\": \"P-00000075\",\n      \"status\": \"Processed\",\n      \"effectiveDate\": \"2013-03-27\",\n      \"id\": \"2c92c8f83dabf9cf013daf3bfa0305a6\",\n      \"paymentType\": \"Electronic\"\n    },\n    {\n      \"paidInvoices\": [\n        {\n          \"invoiceNumber\": \"INV00000159\",\n          \"appliedPaymentAmount\": 5,\n          \"invoiceId\": \"2c92a09539190dbe0139190f42780012\"\n        }\n      ],\n      \"paymentNumber\": \"P-00000056\",\n      \"status\": \"Processed\",\n      \"effectiveDate\": \"2012-08-11\",\n      \"id\": \"2c92a0f9391832b101391922ad5f049d\",\n      \"paymentType\": \"Electronic\"\n    }\n  ],\n  \"invoices\": [\n    {\n      \"amount\": 139722.1,\n      \"status\": \"Posted\",\n      \"invoiceNumber\": \"INV00000323\",\n      \"invoiceDate\": \"2013-02-11\",\n      \"balance\": 0,\n      \"id\": \"2c92a0953a3fa95d013a407c10a60100\",\n      \"dueDate\": \"2013-02-11\"\n    },\n    {\n      \"amount\": 10521,\n      \"status\": \"Posted\",\n      \"invoiceNumber\": \"INV00000160\",\n      \"invoiceDate\": \"2012-08-11\",\n      \"balance\": 0,\n      \"id\": \"2c92a09739190dc60139194bcf1b0098\",\n      \"dueDate\": \"2012-08-11\"\n    },\n    {\n      \"amount\": 10,\n      \"status\": \"Posted\",\n      \"invoiceNumber\": \"INV00000159\",\n      \"invoiceDate\": \"2012-08-11\",\n      \"balance\": 0,\n      \"id\": \"2c92a09539190dbe0139190f42780012\",\n      \"dueDate\": \"2012-08-11\"\n    }\n  ],\n  \"usage\": [\n    {\n      \"unitOfMeasure\": \"UOM\",\n      \"quantity\": 10,\n      \"startDate\": \"2012-02\"\n    },\n    {\n      \"unitOfMeasure\": \"UOM\",\n      \"quantity\": 10,\n      \"startDate\": \"2012-01\"\n    }\n  ],\n  \"basicInfo\": {\n    \"defaultPaymentMethod\": {\n      \"creditCardNumber\": \"************1111\",\n      \"paymentMethodType\": \"CreditCard\",\n      \"creditCardExpirationMonth\": 10,\n      \"creditCardExpirationYear\": 2020,\n      \"creditCardType\": \"Visa\",\n      \"id\": \"2c92c8f83dabf9cf013daef12dd303b0\"\n    },\n    \"autoPay\": true,\n    \"status\": \"Active\",\n    \"lastInvoiceDate\": \"2013-02-11\",\n    \"lastPaymentAmount\": 150248.1,\n    \"billCycleDay\": 1,\n    \"invoiceDeliveryPrefsPrint\": false,\n    \"invoiceDeliveryPrefsEmail\": true,\n    \"additionalEmailAddresses\": [\n      \"contact1@example.com\",\n      \"contact2@example.com\"\n    ],\n    \"name\": \"subscribeCallYan_1\",\n    \"balance\": 0,\n    \"accountNumber\": \"A00001115\",\n    \"id\": \"2c92a0f9391832b10139183e277a0042\",\n    \"currency\": \"USD\",\n    \"lastPaymentDate\": \"2013-03-27\",\n    \"partnerAccount\": false\n  },\n  \"soldToContact\": {\n    \"fax\": \"\",\n    \"taxRegion\": \"\",\n    \"country\": \"United States\",\n    \"zipCode\": \"95135\",\n    \"county\": \"\",\n    \"lastName\": \"Cho\",\n    \"workEmail\": \"contact@example.com\",\n    \"state\": \"California\",\n    \"address2\": \"\",\n    \"address1\": \"278 Bridgeton Circle\",\n    \"firstName\": \"Bill\",\n    \"id\": \"2c92a0f9391832b10139183e27940043\",\n    \"workPhone\": \"5555551212\",\n    \"city\": \"San Jose\"\n  },\n  \"success\": true,\n  \"subscriptions\": [\n    {\n      \"termEndDate\": \"2014-02-01\",\n      \"termStartDate\": \"2013-02-01\",\n      \"status\": \"Active\",\n      \"initialTerm\": 12,\n      \"autoRenew\": true,\n      \"subscriptionNumber\": \"A-S00001081\",\n      \"subscriptionStartDate\": \"2013-02-01\",\n      \"id\": \"2c92c8f83dc4f752013dc72c24ee016d\",\n      \"ratePlans\": [\n        {\n          \"productName\": \"Recurring Charge\",\n          \"ratePlanName\": \"QSF_Tier\"\n        }\n      ],\n      \"termType\": \"TERMED\",\n      \"renewalTerm\": 3\n    },\n    {\n      \"termEndDate\": \"2014-02-01\",\n      \"termStartDate\": \"2013-02-01\",\n      \"status\": \"Active\",\n      \"initialTerm\": 12,\n      \"autoRenew\": true,\n      \"subscriptionNumber\": \"A-S00001080\",\n      \"subscriptionStartDate\": \"2013-02-01\",\n      \"id\": \"2c92c8f83dc4f752013dc72bb85c0127\",\n      \"ratePlans\": [\n        {\n          \"productName\": \"Recurring Charge\",\n          \"ratePlanName\": \"QSF_Tier\"\n        }\n      ],\n      \"termType\": \"TERMED\",\n      \"renewalTerm\": 3\n    },\n    {\n      \"termEndDate\": \"2014-04-01\",\n      \"termStartDate\": \"2013-12-01\",\n      \"status\": \"Cancelled\",\n      \"initialTerm\": 10,\n      \"autoRenew\": false,\n      \"subscriptionNumber\": \"A-S00001079\",\n      \"subscriptionStartDate\": \"2013-02-01\",\n      \"id\": \"2c92c8f83dc4f752013dc723fdab00d4\",\n      \"ratePlans\": [\n        {\n          \"productName\": \"Recurring Charge\",\n          \"ratePlanName\": \"QSF_Tier\"\n        }\n      ],\n      \"termType\": \"TERMED\",\n      \"renewalTerm\": 4\n    },\n    {\n      \"termEndDate\": \"2012-02-11\",\n      \"termStartDate\": \"2011-02-11\",\n      \"status\": \"Active\",\n      \"initialTerm\": 12,\n      \"autoRenew\": false,\n      \"subscriptionNumber\": \"A-S00001076\",\n      \"subscriptionStartDate\": \"2011-02-11\",\n      \"id\": \"2c92c8f83db0b4b4013db4717ad000ec\",\n      \"ratePlans\": [\n        {\n          \"productName\": \"Recurring Charge\",\n          \"ratePlanName\": \"Month_PerUnit\"\n        },\n        {\n          \"productName\": \"Recurring Charge\",\n          \"ratePlanName\": \"Month_PerUnit\"\n        }\n      ],\n      \"termType\": \"TERMED\",\n      \"renewalTerm\": 3\n    },\n    {\n      \"termEndDate\": \"2012-02-11\",\n      \"termStartDate\": \"2011-02-11\",\n      \"status\": \"Active\",\n      \"initialTerm\": 12,\n      \"autoRenew\": false,\n      \"subscriptionNumber\": \"A-S00001075\",\n      \"subscriptionStartDate\": \"2011-02-11\",\n      \"id\": \"2c92c8f83db0b4b4013db3ab6a4d00bc\",\n      \"ratePlans\": [\n        {\n          \"productName\": \"Recurring Charge\",\n          \"ratePlanName\": \"Month_PerUnit\"\n        },\n        {\n          \"productName\": \"Recurring Charge\",\n          \"ratePlanName\": \"Month_PerUnit\"\n        }\n      ],\n      \"termType\": \"TERMED\",\n      \"renewalTerm\": 3\n    },\n    {\n      \"termEndDate\": \"2012-02-11\",\n      \"termStartDate\": \"2011-02-11\",\n      \"status\": \"Active\",\n      \"initialTerm\": 12,\n      \"autoRenew\": false,\n      \"subscriptionNumber\": \"A-S00001074\",\n      \"subscriptionStartDate\": \"2011-02-11\",\n      \"id\": \"2c92c8f83db0b4b4013db3aa9fbd0090\",\n      \"ratePlans\": [\n        {\n          \"productName\": \"Recurring Charge\",\n          \"ratePlanName\": \"Month_PerUnit\"\n        }\n      ],\n      \"termType\": \"TERMED\",\n      \"renewalTerm\": 3\n    }\n  ],\n  \"billToContact\": {\n    \"fax\": \"\",\n    \"taxRegion\": \"\",\n    \"country\": \"United States\",\n    \"zipCode\": \"95135\",\n    \"county\": \"\",\n    \"lastName\": \"Zou\",\n    \"workEmail\": \"contact@example.com\",\n    \"state\": \"California\",\n    \"address2\": \"\",\n    \"address1\": \"1400 Bridge Pkwy\",\n    \"firstName\": \"Cheng\",\n    \"id\": \"2c92a0f9391832b10139183e27940043\",\n    \"workPhone\": \"5555551212\",\n    \"city\": \"San Jose\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2573d017-fdcb-4b92-98cd-2e2058cb664c",
+          "name": "List payment methods of an account",
+          "request": {
+            "name": "List payment methods of an account",
+            "description": {
+              "content": "Retrieves the payment methods of the specified customer account.\n\n**Note:** This operation also supports retrieving custom payment methods created through the [Open Payment Method](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) service.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "accounts",
+                ":account-key",
+                "payment-methods"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "isDefaultOnly",
+                  "value": "<boolean>",
+                  "description": "Indicates whether to only retrieve the default payment method of the account. The default value is `false`. If this parameter is set to `true`, only the default payment method is retrieved."
+                },
+                {
+                  "disabled": false,
+                  "key": "isActiveOnly",
+                  "value": "<boolean>",
+                  "description": "Indicates whether to only retrieve the active payment methods of the account. The default value is `false`. If this parameter is set to `true`, only the active payment methods are retrieved."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "account-key",
+                  "description": "(Required) Account number or account ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                "key": "Accept-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                "key": "Content-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                "key": "Zuora-Track-Id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                "key": "Zuora-Entity-Ids",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                "key": "Zuora-Org-Ids",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a281a4e8-2307-4f85-a6e3-dbbfae349b17",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "accounts",
+                    ":account-key",
+                    "payment-methods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "isDefaultOnly",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "isActiveOnly",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "account-key",
+                      "description": "(Required) Account number or account ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                    "key": "Accept-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                    "key": "Content-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).\n",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                    "key": "Zuora-Track-Id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                    "key": "Zuora-Entity-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                    "key": "Zuora-Org-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n",
+                  "key": "Content-Encoding",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Limit",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Remaining",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Reset",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The Zuora internal identifier of the API call. You cannot control the value of this header.\n",
+                  "key": "Zuora-Request-Id",
+                  "value": "stringstringstringstringstringstring"
+                },
+                {
+                  "disabled": false,
+                  "description": "A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.\n",
+                  "key": "Zuora-Track-Id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"defaultPaymentMethodId\": \"4028839f7d26a155017d26af16ef0001\",\n  \"paymentGateway\": null,\n  \"creditcard\": [\n    {\n      \"cardNumber\": \"************1111\",\n      \"expirationMonth\": 11,\n      \"expirationYear\": 2027,\n      \"creditCardType\": \"Visa\",\n      \"accountHolderInfo\": {\n        \"accountHolderName\": \"John Smith\",\n        \"phone\": \"86123456789\",\n        \"email\": \"example@google.com\",\n        \"addressLine1\": \"ABC\",\n        \"addressLine2\": \"EFT\",\n        \"zipCode\": \"123456\",\n        \"city\": \"Example City\",\n        \"country\": \"United States\",\n        \"state\": \"Example State\"\n      },\n      \"mandateInfo\": {\n        \"mitProfileAction\": null,\n        \"mitProfileType\": null,\n        \"mitConsentAgreementSrc\": null,\n        \"mitConsentAgreementRef\": null,\n        \"mitTransactionId\": null,\n        \"mitProfileAgreedOn\": null\n      },\n      \"id\": \"4028839f7d26a155017d26af16ef0001\",\n      \"type\": \"CreditCard\",\n      \"isDefault\": true,\n      \"accountKey\": \"4028839f7ca29000017ca29c1ce8003f\",\n      \"status\": \"Active\",\n      \"lastTransaction\": \"Approved\",\n      \"useDefaultRetryRule\": true,\n      \"bankIdentificationNumber\": \"411111\",\n      \"deviceSessionId\": null,\n      \"existingMandate\": null,\n      \"ipAddress\": null,\n      \"lastFailedSaleTransactionDate\": null,\n      \"lastTransactionDateTime\": \"2021-11-15 18:59:08\",\n      \"lastTransactionStatus\": \"Approved\",\n      \"maxConsecutivePaymentFailures\": null,\n      \"numConsecutiveFailures\": 0,\n      \"paymentRetryWindow\": null,\n      \"totalNumberOfProcessedPayments\": 0,\n      \"totalNumberOfErrorPayments\": 0,\n      \"createdDate\": \"2021-11-15 18:59:08\",\n      \"updatedDate\": \"2021-11-15 18:59:08\",\n      \"createdBy\": \"402881e522cf4f9b0122cf5d82860002\",\n      \"updatedBy\": \"402881e522cf4f9b0122cf5d82860002\",\n      \"AA_PICKLIST__c\": null\n    }\n  ],\n  \"debitcard\": [\n    {\n      \"cardNumber\": \"************8888\",\n      \"expirationMonth\": 11,\n      \"expirationYear\": 2021,\n      \"creditCardType\": \"Electron\",\n      \"accountHolderInfo\": {\n        \"accountHolderName\": \"John Smith\",\n        \"phone\": \"\",\n        \"email\": \"smith@example.com\",\n        \"addressLine1\": \"1051 E Hillsdale Blvd\",\n        \"addressLine2\": \"\",\n        \"zipCode\": \"45101\",\n        \"city\": \"Tynan\",\n        \"country\": \"United States\",\n        \"state\": \"California\"\n      },\n      \"mandateInfo\": {\n        \"mitProfileAction\": null,\n        \"mitProfileType\": null,\n        \"mitConsentAgreementSrc\": null,\n        \"mitConsentAgreementRef\": null,\n        \"mitTransactionId\": null,\n        \"mitProfileAgreedOn\": null\n      },\n      \"id\": \"4028839f7cd92a6b017cda4defd00006\",\n      \"type\": \"CreditCard\",\n      \"isDefault\": false,\n      \"accountKey\": \"4028839f7ca29000017ca29c1ce8003f\",\n      \"status\": \"Active\",\n      \"lastTransaction\": \"Approved\",\n      \"useDefaultRetryRule\": true,\n      \"bankIdentificationNumber\": \"588888\",\n      \"deviceSessionId\": null,\n      \"existingMandate\": null,\n      \"ipAddress\": null,\n      \"lastFailedSaleTransactionDate\": null,\n      \"lastTransactionDateTime\": \"2021-11-01 00:01:53\",\n      \"lastTransactionStatus\": \"Approved\",\n      \"maxConsecutivePaymentFailures\": null,\n      \"numConsecutiveFailures\": 0,\n      \"paymentRetryWindow\": null,\n      \"totalNumberOfProcessedPayments\": 0,\n      \"totalNumberOfErrorPayments\": 0,\n      \"createdDate\": \"2021-11-01 00:01:52\",\n      \"updatedDate\": \"2021-11-01 00:01:52\",\n      \"createdBy\": \"402881e522cf4f9b0122cf5d82860002\",\n      \"updatedBy\": \"402881e522cf4f9b0122cf5d82860002\",\n      \"AA_PICKLIST__c\": null\n    }\n  ],\n  \"creditcardreferencetransaction\": [\n    {\n      \"tokenId\": \"ABCE\",\n      \"secondTokenId\": \"FGDSDF\",\n      \"id\": \"4028839f7ce8c530017ce9725e2c0003\",\n      \"type\": \"CreditCardReferenceTransaction\",\n      \"isDefault\": false,\n      \"accountKey\": \"4028839f7ca29000017ca29c1ce8003f\",\n      \"status\": \"Active\",\n      \"lastTransaction\": \"Approved\",\n      \"useDefaultRetryRule\": true,\n      \"bankIdentificationNumber\": null,\n      \"deviceSessionId\": null,\n      \"existingMandate\": null,\n      \"ipAddress\": null,\n      \"lastFailedSaleTransactionDate\": null,\n      \"lastTransactionDateTime\": \"2021-11-03 22:35:59\",\n      \"lastTransactionStatus\": \"Approved\",\n      \"maxConsecutivePaymentFailures\": null,\n      \"numConsecutiveFailures\": 0,\n      \"paymentRetryWindow\": null,\n      \"totalNumberOfProcessedPayments\": 0,\n      \"totalNumberOfErrorPayments\": 0,\n      \"createdDate\": \"2021-11-03 22:35:59\",\n      \"updatedDate\": \"2021-11-03 22:35:59\",\n      \"createdBy\": \"402881e522cf4f9b0122cf5d82860002\",\n      \"updatedBy\": \"402881e522cf4f9b0122cf5d82860002\",\n      \"AA_PICKLIST__c\": null,\n      \"cardNumber\": null,\n      \"expirationMonth\": 11,\n      \"expirationYear\": 2021,\n      \"creditCardType\": \"Visa\",\n      \"accountHolderInfo\": {\n        \"accountHolderName\": \"\",\n        \"phone\": null,\n        \"email\": \"\",\n        \"addressLine1\": \"\",\n        \"addressLine2\": \"\",\n        \"zipCode\": \"\",\n        \"city\": \"\",\n        \"country\": null,\n        \"state\": \"\"\n      },\n      \"mandateInfo\": {\n        \"mitProfileAction\": null,\n        \"mitProfileType\": null,\n        \"mitConsentAgreementSrc\": null,\n        \"mitConsentAgreementRef\": null,\n        \"mitTransactionId\": null,\n        \"mitProfileAgreedOn\": null\n      }\n    }\n  ],\n  \"ach\": [\n    {\n      \"bankABACode\": \"110000000\",\n      \"bankAccountNumber\": \"********6789\",\n      \"bankAccountType\": \"Checking\",\n      \"bankName\": \"Chase\",\n      \"bankAccountName\": \"Test\",\n      \"accountHolderInfo\": {\n        \"accountHolderName\": null,\n        \"phone\": \"2554444\",\n        \"email\": \"test@test.com\",\n        \"addressLine1\": \"DSDFD\",\n        \"addressLine2\": \"\",\n        \"zipCode\": \"123456\",\n        \"city\": \"Example City\",\n        \"country\": \"United States\",\n        \"state\": \"Example State\"\n      },\n      \"mandateInfo\": {\n        \"mandateId\": null,\n        \"mandateReceivedStatus\": null,\n        \"existingMandateStatus\": null,\n        \"mandateCreationDate\": null,\n        \"mandateUpdateDate\": null,\n        \"mandateStatus\": null,\n        \"mandateReason\": null\n      },\n      \"id\": \"4028839f7cc14262017cc1bca9eb0008\",\n      \"type\": \"ACH\",\n      \"isDefault\": false,\n      \"accountKey\": \"4028839f7ca29000017ca29c1ce8003f\",\n      \"status\": \"Active\",\n      \"lastTransaction\": \"Approved\",\n      \"useDefaultRetryRule\": true,\n      \"bankIdentificationNumber\": null,\n      \"deviceSessionId\": null,\n      \"existingMandate\": null,\n      \"ipAddress\": null,\n      \"lastFailedSaleTransactionDate\": null,\n      \"lastTransactionDateTime\": \"2021-10-27 05:32:19\",\n      \"lastTransactionStatus\": \"Approved\",\n      \"maxConsecutivePaymentFailures\": null,\n      \"numConsecutiveFailures\": 0,\n      \"paymentRetryWindow\": null,\n      \"totalNumberOfProcessedPayments\": 0,\n      \"totalNumberOfErrorPayments\": 0,\n      \"createdDate\": \"2021-10-27 05:32:19\",\n      \"updatedDate\": \"2021-11-10 00:50:12\",\n      \"createdBy\": \"402881e522cf4f9b0122cf5d82860002\",\n      \"updatedBy\": \"402881e522cf4f9b0122cf5d82860002\",\n      \"AA_PICKLIST__c\": null\n    }\n  ],\n  \"success\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "630bf932-02a7-4145-8e8d-0fb36d19c3d9",
+          "name": "Retrieve the default payment method of an account",
+          "request": {
+            "name": "Retrieve the default payment method of an account",
+            "description": {
+              "content": "Retrieves the default payment method of the specified customer account.\n\n**Note:** This operation also supports retrieving the custom payment method created through the [Open Payment Method](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) service.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "accounts",
+                ":account-key",
+                "payment-methods",
+                "default"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "account-key",
+                  "description": "(Required) Account number or account ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                "key": "Accept-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                "key": "Content-Encoding",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                "key": "Zuora-Track-Id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                "key": "Zuora-Entity-Ids",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                "key": "Zuora-Org-Ids",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "af9106a7-2f21-451f-92a9-aa1ddc717a33",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "accounts",
+                    ":account-key",
+                    "payment-methods",
+                    "default"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "account-key",
+                      "description": "(Required) Account number or account ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n",
+                    "key": "Accept-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.\n",
+                    "key": "Content-Encoding",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).\n",
+                    "key": "Authorization",
+                    "value": "string"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.\n\nThe value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`\"`), and quote (`'`).\n",
+                    "key": "Zuora-Track-Id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.\n",
+                    "key": "Zuora-Entity-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n",
+                    "key": "Zuora-Org-Ids",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "This header is returned if you specify the `Accept-Encoding: gzip` request header and the response contains over 1000 bytes of data.\n\nNote that only the following MIME types support gzipped responses:\n  - `application/json`\n  - `application/xml`\n  - `text/html`\n  - `text/csv`\n  - `text/plain`\n",
+                  "key": "Content-Encoding",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The request limit quota for the time window closest to exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Limit",
+                  "value": "string"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of requests remaining in the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Remaining",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The number of seconds until the quota resets for the time window closest to quota exhaustion. See [rate limits](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Policies/Concurrent_Request_Limits#Rate_limits) for more information.\n",
+                  "key": "RateLimit-Reset",
+                  "value": "4646.2815588175"
+                },
+                {
+                  "disabled": false,
+                  "description": "The Zuora internal identifier of the API call. You cannot control the value of this header.\n",
+                  "key": "Zuora-Request-Id",
+                  "value": "stringstringstringstringstringstring"
+                },
+                {
+                  "disabled": false,
+                  "description": "A custom identifier for tracing the API call. If you specified a tracing identifier in the request headers, Zuora returns the same tracing identifier. Otherwise, Zuora does not set this header.\n",
+                  "key": "Zuora-Track-Id",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"cardNumber\": \"************1111\",\n  \"expirationMonth\": 11,\n  \"expirationYear\": 2027,\n  \"creditCardType\": \"Visa\",\n  \"accountHolderInfo\": {\n    \"accountHolderName\": \"John Smith\",\n    \"phone\": \"86123456789\",\n    \"email\": \"example@google.com\",\n    \"addressLine1\": \"ABC\",\n    \"addressLine2\": \"EFT\",\n    \"zipCode\": \"844000\",\n    \"city\": \"Example City\",\n    \"country\": \"United States\",\n    \"state\": \"Example State\"\n  },\n  \"mandateInfo\": {\n    \"mitProfileAction\": null,\n    \"mitProfileType\": null,\n    \"mitConsentAgreementSrc\": null,\n    \"mitConsentAgreementRef\": null,\n    \"mitTransactionId\": null,\n    \"mitProfileAgreedOn\": null\n  },\n  \"id\": \"4028839f7d26a155017d26af16ef0001\",\n  \"type\": \"CreditCard\",\n  \"isDefault\": true,\n  \"accountKey\": \"4028839f7ca29000017ca29c1ce8003f\",\n  \"status\": \"Active\",\n  \"lastTransaction\": \"Approved\",\n  \"useDefaultRetryRule\": true,\n  \"bankIdentificationNumber\": \"411111\",\n  \"deviceSessionId\": null,\n  \"existingMandate\": null,\n  \"ipAddress\": null,\n  \"lastFailedSaleTransactionDate\": null,\n  \"lastTransactionDateTime\": \"2021-11-15 18:59:08\",\n  \"lastTransactionStatus\": \"Approved\",\n  \"maxConsecutivePaymentFailures\": null,\n  \"numConsecutiveFailures\": 0,\n  \"paymentRetryWindow\": null,\n  \"totalNumberOfProcessedPayments\": 0,\n  \"totalNumberOfErrorPayments\": 0,\n  \"createdDate\": \"2021-11-15 18:59:08\",\n  \"updatedDate\": \"2021-11-15 18:59:08\",\n  \"createdBy\": \"402881e522cf4f9b0122cf5d82860002\",\n  \"updatedBy\": \"402881e522cf4f9b0122cf5d82860002\",\n  \"AA_PICKLIST__c\": null,\n  \"success\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://rest.zuora.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "e604d05e-28b8-45a1-8a11-304b48527a40",
+    "name": "API Reference Accounting Codes Accounts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n\n# Introduction\n\nWelcome to the REST API reference for the Zuora Billing, Payments, and Central Platform!\n\nTo learn about the common use cases of Zuora REST APIs, check out the [REST API Tutorials](/rest-api/api-guides/overview/).\n\nIn addition to Zuora API Reference, we also provide API references for other Zuora products:\n\n  * [Revenue API Reference](/api-references/revenue/overview/)\n  * [Collections API Reference](/api-references/collections/overview/)\n    \nThe Zuora REST API provides a broad set of operations and resources that:\n\n  * Enable Web Storefront integration from your website.\n  * Support self-service subscriber sign-ups and account management.\n  * Process revenue schedules through custom revenue rule models.\n  * Enable manipulation of most objects in the Zuora Billing Object Model.\n\nWant to share your opinion on how our API works for you? <a href=\"https://community.zuora.com/t5/Developers/API-Feedback-Form/gpm-p/21399\" target=\"_blank\">Tell us how you feel </a>about using our API and what we can do to make it better.\n\nSome of our older APIs are no longer recommended but still available, not affecting any existing integration. To find related API documentation, see [Older API Reference](/api-references/older-api/overview/).\n\n\n## Access to the API\n\nIf you have a Zuora tenant, you can access the Zuora REST API via one of the following endpoints:\n\n| Tenant              | Base URL for REST Endpoints |\n|-------------------------|-------------------------|\n|US Cloud 1 Production | https://rest.na.zuora.com  |\n|US Cloud 1 API Sandbox |  https://rest.sandbox.na.zuora.com |\n|US Cloud 2 Production | https://rest.zuora.com |\n|US Cloud 2 API Sandbox | https://rest.apisandbox.zuora.com|\n|US Central Sandbox | https://rest.test.zuora.com |  \n|US Performance Test | https://rest.pt1.zuora.com |\n|US Production Copy | Submit a request at <a href=\"http://support.zuora.com/\" target=\"_blank\">Zuora Global Support</a> to enable the Zuora REST API in your tenant and obtain the base URL for REST endpoints. See [REST endpoint base URL of Production Copy (Service) Environment for existing and new customers](https://community.zuora.com/t5/API/REST-endpoint-base-URL-of-Production-Copy-Service-Environment/td-p/29611) for more information. |\n|EU Production | https://rest.eu.zuora.com |\n|EU API Sandbox | https://rest.sandbox.eu.zuora.com |\n|EU Central Sandbox | https://rest.test.eu.zuora.com |\n\nThe Production endpoint provides access to your live user data. Sandbox tenants are a good place to test code without affecting real-world data. If you would like Zuora to provision a Sandbox tenant for you, contact your Zuora representative for assistance.\n\n\nIf you do not have a Zuora tenant, go to <a href=\"https://www.zuora.com/resource/zuora-test-drive\" target=\"_blank\">https://www.zuora.com/resource/zuora-test-drive</a> and sign up for a Production Test Drive tenant. The tenant comes with seed data, including a sample product catalog.\n\n\n# Error Handling\n\nIf a request to Zuora Billing REST API with an endpoint starting with `/v1` (except [Actions](/v1-api-reference/api/Actions) and CRUD operations) fails, the response will contain an eight-digit error code with a corresponding error message to indicate the details of the error.\n\nThe following code snippet is a sample error response that contains an error code and message pair:\n\n```\n {\n   \"success\": false,\n   \"processId\": \"CBCFED6580B4E076\",\n   \"reasons\":  [\n     {\n      \"code\": 53100320,\n      \"message\": \"'termType' value should be one of: TERMED, EVERGREEN\"\n     }\n    ]\n }\n```\nThe `success` field indicates whether the API request has succeeded. The `processId` field is a Zuora internal ID that you can provide to Zuora Global Support for troubleshooting purposes.\n\nThe `reasons` field contains the actual error code and message pair. The error code begins with `5` or `6` means that you encountered a certain issue that is specific to a REST API resource in Zuora Billing, Payments, and Central Platform. For example, `53100320` indicates that an invalid value is specified for the `termType` field of the `subscription` object.\n\nThe error code beginning with `9` usually indicates that an authentication-related issue occurred, and it can also indicate other unexpected errors depending on different cases. For example, `90000011` indicates that an invalid credential is provided in the request header. \n\nWhen troubleshooting the error, you can divide the error code into two components: REST API resource code and error category code. See the following Zuora error code sample:\n\n<a href=\"/ images/ZuoraErrorCode.jpeg\" target=\"_blank\"><img src=\"/ images/ZuoraErrorCode.jpeg\" alt=\"Zuora Error Code Sample\"></a>\n\n\n**Note:** Zuora determines resource codes based on the request payload. Therefore, if GET and DELETE requests that do not contain payloads fail, you will get `500000` as the resource code, which indicates an unknown object and an unknown field. \nThe error category code of these requests is valid and follows the rules described in the [Error Category Codes](/api-references/api/overview/#section/Error-Handling/Error-Category-Codes) section. \nIn such case, you can refer to the returned error message to troubleshoot.\n\n\n## REST API Resource Codes\n\nThe 6-digit resource code indicates the REST API resource, typically a field of a Zuora object, on which the issue occurs. In the preceding example, `531003` refers to the `termType` field of the `subscription` object. \n\nThe value range for all REST API resource codes is from `500000` to `679999`. See <a href=\"https://knowledgecenter.zuora.com/Central_Platform/API/AA_REST_API/Resource_Codes\" target=\"_blank\">Resource Codes</a> in the Knowledge Center for a full list of resource codes.\n\n## Error Category Codes\n\nThe 2-digit error category code identifies the type of error, for example, resource not found or missing required field. \n\nThe following table describes all error categories and the corresponding resolution:\n\n| Code    | Error category              | Description    | Resolution    |\n|:--------|:--------|:--------|:--------|\n| 10      | Permission or access denied | The request cannot be processed because a certain tenant or user permission is missing. | Check the missing tenant or user permission in the response message and contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> for enablement. |\n| 11      | Authentication failed       | Authentication fails due to invalid API authentication credentials. | Ensure that a valid API credential is specified. |\n| 20      | Invalid format or value     | The request cannot be processed due to an invalid field format or value. | Check the invalid field in the error message, and ensure that the format and value of all fields you passed in are valid. |\n| 21      | Unknown field in request    | The request cannot be processed because an unknown field exists in the request body. | Check the unknown field name in the response message, and ensure that you do not include any unknown field in the request body. |\n| 22      | Missing required field      | The request cannot be processed because a required field in the request body is missing. | Check the missing field name in the response message, and ensure that you include all required fields in the request body. |\n| 23      | Missing required parameter  | The request cannot be processed because a required query parameter is missing. | Check the missing parameter name in the response message, and ensure that you include the parameter in the query. |\n| 30      | Rule restriction            | The request cannot be processed due to the violation of a Zuora business rule. | Check the response message and ensure that the API request meets the specified business rules. |\n| 40      | Not found                   | The specified resource cannot be found. | Check the response message and ensure that the specified resource exists in your Zuora tenant. |\n| 45      | Unsupported request         | The requested endpoint does not support the specified HTTP method. | Check your request and ensure that the endpoint and method matches. |\n| 50      | Locking contention          | This request cannot be processed because the objects this request is trying to modify are being modified by another API request, UI operation, or batch job process. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance.</p> |\n| 60      | Internal error              | The server encounters an internal error. | Contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. |\n| 61      | Temporary error             | A temporary error occurs during request processing, for example, a database communication error. | <p>Resubmit the request first to have another try.</p> <p>If this error still occurs, contact <a href=\"https://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> with the returned `Zuora-Request-Id` value in the response header for assistance. </p>|\n| 70      | Request exceeded limit      | The total number of concurrent requests exceeds the limit allowed by the system. | <p>Resubmit the request after the number of seconds specified by the `Retry-After` value in the response header.</p> <p>Check [Concurrent request limits](/rest-api/general-concepts/rate-concurrency-limits/) for details about Zuora’s concurrent request limit policy.</p> |\n| 90      | Malformed request           | The request cannot be processed due to JSON syntax errors. | Check the syntax error in the JSON request body and ensure that the request is in the correct JSON format. |\n| 99      | Integration error           | The server encounters an error when communicating with an external system, for example, payment gateway, tax engine provider. | Check the response message and take action accordingly. |\n\n\n# API Versions\n\nThe Zuora REST API are version controlled. Versioning ensures that Zuora REST API changes are backward compatible. Zuora uses a major and minor version nomenclature to manage changes. By specifying a version in a REST request, you can get expected responses regardless of future changes to the API.\n\n## Major Version\n\nThe major version number of the REST API appears in the REST URL. In this API reference, only the **v1** major version is available. For example, `POST https://rest.zuora.com/v1/subscriptions`.\n\n## Minor Version\n\nZuora uses minor versions for the REST API to control small changes. For example, a field in a REST method is deprecated and a new field is used to replace it. \n\nSome fields in the REST methods are supported as of minor versions. If a field is not noted with a minor version, this field is available for all minor versions. If a field is noted with a minor version, this field is in version control. You must specify the supported minor version in the request header to process without an error. \n\nIf a field is in version control, it is either with a minimum minor version or a maximum minor version, or both of them. You can only use this field with the minor version between the minimum and the maximum minor versions. For example, the `invoiceCollect` field in the POST Subscription method is in version control and its maximum minor version is 189.0. You can only use this field with the minor version 189.0 or earlier.\n\nIf you specify a version number in the request header that is not supported, Zuora will use the minimum minor version of the REST API. In our REST API documentation, if a field or feature requires a minor version number, we note that in the field description.\n\nYou only need to specify the version number when you use the fields require a minor version. To specify the minor version, set the `zuora-version` parameter to the minor version number in the request header for the request call. For example, the `collect` field is in 196.0 minor version. If you want to use this field for the POST Subscription method, set the  `zuora-version` parameter to `196.0` in the request header. The `zuora-version` parameter is case sensitive.\n\nFor all the REST API fields, by default, if the minor version is not specified in the request header, Zuora will use the minimum minor version of the REST API to avoid breaking your integration. \n\n### Minor Version History\n\nThe supported minor versions are not consecutive. \nYou can use the following versions to override the default version (`186.0`):\n  - 187.0\n  - 188.0\n  - 189.0\n  - 196.0\n  - 206.0\n  - 207.0\n  - 211.0\n  - 214.0\n  - 215.0\n  - 216.0\n  - 223.0\n  - 224.0\n  - 230.0\n  - 239.0\n  - 256.0\n  - 257.0\n  - 309.0\n  - 314.0\n  - 315.0\n  - 329.0\n  - 330.0\n  - 336.0\n  - 337.0\n  - 338.0\n  - 341.0\n\nIf you set the `zuora-version` header to a version excluded from the preceding list, the corresponding API request is processed as you use the default version, `186.0`.\n\nThe following table lists the supported versions and the fields that have a Zuora REST API minor version.\n\n| Fields         | Minor Version      | REST Methods    | Description |\n|:--------|:--------|:--------|:--------|\n| invoiceCollect | 189.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice and collects a payment for a subscription. |\n| collect        | 196.0 and later    | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Collects an automatic payment for a subscription. |\n| invoice | 196.0 and 207.0| [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice for a subscription. |\n| invoiceTargetDate | 206.0 and earlier  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 207.0 and earlier  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 207.0 and later | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\") |Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| targetDate | 211.0 and later | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Date through which charges are calculated on the invoice, as `yyyy-mm-dd`. |\n| includeExisting DraftInvoiceItems | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| includeExisting DraftDocItems | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | Specifies whether to include draft invoice items in subscription previews. Specify it to be `true` (default) to include draft invoice items in the preview result. Specify it to be `false` to excludes draft invoice items in the preview result. |\n| previewType | 206.0 and earlier| [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `InvoiceItem`(default), `ChargeMetrics`, and `InvoiceItemChargeMetrics`. |\n| previewType | 207.0 and later  | [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") | The type of preview you will receive. The possible values are `LegalDoc`(default), `ChargeMetrics`, and `LegalDocChargeMetrics`. |\n| runBilling  | 211.0 and later  | [Create Subscription](/v1-api-reference/api/subscriptions/post_subscription \"Create Subscription\"); [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\"); [Renew Subscription](/v1-api-reference/api/subscriptions/put_renewsubscription \"Renew Subscription\"); [Cancel Subscription](/v1-api-reference/api/subscriptions/put_cancelsubscription \"Cancel Subscription\"); [Suspend Subscription](/v1-api-reference/api/subscriptions/put_suspendsubscription/ \"Suspend Subscription\"); [Resume Subscription](/v1-api-reference/api/subscriptions/put_resumesubscription/ \"Resume Subscription\"); [Create Account](/v1-api-reference/api/accounts/post_account \"Create Account\")|Generates an invoice or credit memo for a subscription. **Note:** Credit memos are only available if you have the Invoice Settlement feature enabled. |\n| invoiceDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice being generated, as `yyyy-mm-dd`. |\n| invoiceTargetDate | 214.0 and earlier  | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice is generated, as `yyyy-mm-dd`. |\n| documentDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date that should appear on the invoice and credit memo being generated, as `yyyy-mm-dd`. |\n| targetDate | 215.0 and later | [Invoice and Collect](/api-references/api/operation/POST_TransactionInvoicePayment \"Invoice and Collect\") |Date through which to calculate charges on this account if an invoice or a credit memo is generated, as `yyyy-mm-dd`. |\n| memoItemAmount | 223.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| amount | 224.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | Amount of the memo item. |\n| subscriptionNumbers | 222.4 and earlier | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers of the subscriptions in an order. |\n| subscriptions | 223.0 and later | [Create order](/api-references/api/operation/POST_Order \"Create order\") | Container for the subscription numbers and statuses in an order. |\n| creditTaxItems | 238.0 and earlier | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\") | Container for the taxation items of the credit memo item. |\n| taxItems | 238.0 and earlier | [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the debit memo item. |\n| taxationItems | 239.0 and later | [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Container for the taxation items of the memo item. |\n| chargeId | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| productRatePlanChargeId | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\") | ID of the product rate plan charge that the memo is created from. |\n| comment | 256.0 and earlier | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Comments about the product rate plan charge, invoice item, or memo item. |\n| description | 257.0 and later | [Create credit memo from charge](/api-references/api/operation/POST_CreditMemoFromPrpc \"Create credit memo from charge\"); [Create debit memo from charge](/api-references/api/operation/POST_DebitMemoFromPrpc \"Create debit memo from charge\"); [Create credit memo from invoice](/api-references/api/operation/POST_CreditMemoFromInvoice \"Create credit memo from invoice\"); [Create debit memo from invoice](/api-references/api/operation/POST_DebitMemoFromInvoice \"Create debit memo from invoice\"); [Get credit memo items](/api-references/api/operation/GET_CreditMemoItems \"Get credit memo items\"); [Get credit memo item](/api-references/api/operation/GET_CreditMemoItem \"Get credit memo item\"); [Get debit memo items](/api-references/api/operation/GET_DebitMemoItems \"Get debit memo items\"); [Get debit memo item](/api-references/api/operation/GET_DebitMemoItem \"Get debit memo item\") | Description of the the product rate plan charge, invoice item, or memo item. |\n| taxationItems | 309.0 and later | [Preview an order](/api-references/api/operation/POST_PreviewOrder \"Preview an order\") | List of taxation items for an invoice item or a credit memo item. |\n| batch | 309.0 and earlier | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |      \n| batches | 314.0 and later | [Create a billing preview run](/api-references/api/operation/POST_BillingPreviewRun \"Create a billing preview run\") | The customer batches to include in the billing preview run. |\n| taxationItems | 315.0 and later | [Preview a subscription](/api-references/api/operation/POST_PreviewSubscription \"Preview a subscription\"); [Update a subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update a subscription\")| List of taxation items for an invoice item or a credit memo item. |\n| billingDocument | 330.0 and later | [Create a payment schedule](/api-references/api/operation/POST_PaymentSchedule \"Create a payment schedule\"); [Create multiple payment schedules at once](/api-references/api/operation/POST_PaymentSchedules \"Create multiple payment schedules at once\")| The billing document with which the payment schedule item is associated. |\n| paymentId | 336.0 and earlier | [Add payment schedule items to a custom payment schedule](/api-references/api/operation/POST_AddItemsToCustomPaymentSchedule/ \"Add payment schedule items to a custom payment schedule\"); [Update a payment schedule](/api-references/api/operation/PUT_PaymentSchedule/ \"Update a payment schedule\"); [Update a payment schedule item](/api-references/api/operation/PUT_PaymentScheduleItem/ \"Update a payment schedule item\"); [Preview the result of payment schedule update](/api-references/api/operation/PUT_PaymentScheduleUpdatePreview/ \"Preview the result of payment schedule update\"); [Retrieve a payment schedule](/api-references/api/operation/GET_PaymentSchedule/ \"Retrieve a payment schedule\"); [Retrieve a payment schedule item](/api-references/api/operation/GET_PaymentScheduleItem/ \"Retrieve a payment schedule item\"); [List payment schedules by customer account](/api-references/api/operation/GET_PaymentSchedules/ \"List payment schedules by customer account\"); [Cancel a payment schedule](/api-references/api/operation/PUT_CancelPaymentSchedule/ \"Cancel a payment schedule\"); [Cancel a payment schedule item](/api-references/api/operation/PUT_CancelPaymentScheduleItem/ \"Cancel a payment schedule item\");[Skip a payment schedule item](/api-references/api/operation/PUT_SkipPaymentScheduleItem/ \"Skip a payment schedule item\");[Retry failed payment schedule items](/api-references/api/operation/POST_RetryPaymentScheduleItem/ \"Retry failed payment schedule items\") | ID of the payment to be linked to the payment schedule item.\n\n\n#### Version 207.0 and Later\n\nThe response structure of the [Preview Subscription](/api-references/api/operation/POST_PreviewSubscription) and [Update Subscription](/v1-api-reference/api/subscriptions/put_subscription \"Update Subscription\") methods are changed. The following invoice related response fields are moved to the invoice container:\n\n  * amount\n  * amountWithoutTax\n  * taxAmount\n  * invoiceItems\n  * targetDate\n  * chargeMetrics\n\n\n# API Names for Zuora Objects\n\nFor information about the Zuora business object model, see [Zuora Business Object Model](/rest-api/general-concepts/object-model/).\n\nYou can use the [Describe](/api-references/api/operation/GET_Describe) operation to list the fields of each Zuora object that is available in your tenant. When you call the operation, you must specify the API name of the Zuora object.\n\nThe following table provides the API name of each Zuora object:\n\n| Object                                        | API Name                                   |\n|-----------------------------------------------|--------------------------------------------|\n| Account                                       | `Account`                                  |\n| Accounting Code                               | `AccountingCode`                           |\n| Accounting Period                             | `AccountingPeriod`                         |\n| Amendment                                     | `Amendment`                                |\n| Application Group                             | `ApplicationGroup`                         |\n| Billing Run                                   | <p>`BillingRun` - API name used  in the [Describe](/api-references/api/operation/GET_Describe) operation, Export ZOQL queries, and Data Query.</p> <p>`BillRun` - API name used in the [Actions](/v1-api-reference/api/Actions). See the CRUD oprations of [Bill Run](/v1-api-reference/api/Bill-Run) for more information about the `BillRun` object. `BillingRun` and `BillRun` have different fields. |                     \n| Billing Preview Run                           | `BillingPreviewRun`                        |                     \n| Configuration Templates                       | `ConfigurationTemplates`                   |\n| Contact                                       | `Contact`                                  |\n| Contact Snapshot                              | `ContactSnapshot`                          |\n| Credit Balance Adjustment                     | `CreditBalanceAdjustment`                  |\n| Credit Memo                                   | `CreditMemo`                               |\n| Credit Memo Application                       | `CreditMemoApplication`                    |\n| Credit Memo Application Item                  | `CreditMemoApplicationItem`                |\n| Credit Memo Item                              | `CreditMemoItem`                           |\n| Credit Memo Part                              | `CreditMemoPart`                           |\n| Credit Memo Part Item                         | `CreditMemoPartItem`                       |\n| Credit Taxation Item                          | `CreditTaxationItem`                       |\n| Custom Exchange Rate                          | `FXCustomRate`                             |\n| Debit Memo                                    | `DebitMemo`                                |\n| Debit Memo Item                               | `DebitMemoItem`                            |\n| Debit Taxation Item                           | `DebitTaxationItem`                        |\n| Discount Applied Metrics                      | `DiscountAppliedMetrics`                   |\n| Entity                                        | `Tenant`                                   |\n| Fulfillment                                   | `Fulfillment`                              |\n| Feature                                       | `Feature`                                  |\n| Gateway Reconciliation Event                  | `PaymentGatewayReconciliationEventLog`     |\n| Gateway Reconciliation Job                    | `PaymentReconciliationJob`                 |\n| Gateway Reconciliation Log                    | `PaymentReconciliationLog`                 |\n| Invoice                                       | `Invoice`                                  |\n| Invoice Adjustment                            | `InvoiceAdjustment`                        |\n| Invoice Item                                  | `InvoiceItem`                              |\n| Invoice Item Adjustment                       | `InvoiceItemAdjustment`                    |\n| Invoice Payment                               | `InvoicePayment`                           |\n| Invoice Schedule                              | `InvoiceSchedule`                          |\n| Invoice Schedule Item                         | `InvoiceScheduleItem`                      |\n| Journal Entry                                 | `JournalEntry`                             |\n| Journal Entry Item                            | `JournalEntryItem`                         |\n| Journal Run                                   | `JournalRun`                               |\n| Notification History - Callout                | `CalloutHistory`                           |\n| Notification History - Email                  | `EmailHistory`                             |\n| Offer                                         | `Offer`                                    |\n| Order                                         | `Order`                                    |\n| Order Action                                  | `OrderAction`                              |\n| Order ELP                                     | `OrderElp`                                 |\n| Order Line Items                              | `OrderLineItems`                           |    \n| Order Item                                    | `OrderItem`                                |\n| Order MRR                                     | `OrderMrr`                                 |\n| Order Quantity                                | `OrderQuantity`                            |\n| Order TCB                                     | `OrderTcb`                                 |\n| Order TCV                                     | `OrderTcv`                                 |\n| Payment                                       | `Payment`                                  |\n| Payment Application                           | `PaymentApplication`                       |\n| Payment Application Item                      | `PaymentApplicationItem`                   |\n| Payment Method                                | `PaymentMethod`                            |\n| Payment Method Snapshot                       | `PaymentMethodSnapshot`                    |\n| Payment Method Transaction Log                | `PaymentMethodTransactionLog`              |\n| Payment Method Update                        | `UpdaterDetail`                             |\n| Payment Part                                  | `PaymentPart`                              |\n| Payment Part Item                             | `PaymentPartItem`                          |\n| Payment Run                                   | `PaymentRun`                               |\n| Payment Transaction Log                       | `PaymentTransactionLog`                    |\n| Price Book Item                               | `PriceBookItem`                            |\n| Processed Usage                               | `ProcessedUsage`                           |\n| Product                                       | `Product`                                  |\n| Product Charge Definition                     | `ProductChargeDefinition`                  |    \n| Product Feature                               | `ProductFeature`                           |\n| Product Rate Plan                             | `ProductRatePlan`                          |\n| Product Rate Plan Definition                  | `ProductRatePlanDefinition`                |    \n| Product Rate Plan Charge                      | `ProductRatePlanCharge`                    |\n| Product Rate Plan Charge Tier                 | `ProductRatePlanChargeTier`                |\n| Rate Plan                                     | `RatePlan`                                 |\n| Rate Plan Charge                              | `RatePlanCharge`                           |\n| Rate Plan Charge Tier                         | `RatePlanChargeTier`                       |\n| Refund                                        | `Refund`                                   |\n| Refund Application                            | `RefundApplication`                        |\n| Refund Application Item                       | `RefundApplicationItem`                    |\n| Refund Invoice Payment                        | `RefundInvoicePayment`                     |\n| Refund Part                                   | `RefundPart`                               |\n| Refund Part Item                              | `RefundPartItem`                           |\n| Refund Transaction Log                        | `RefundTransactionLog`                     |\n| Revenue Charge Summary                        | `RevenueChargeSummary`                     |\n| Revenue Charge Summary Item                   | `RevenueChargeSummaryItem`                 |\n| Revenue Event                                 | `RevenueEvent`                             |\n| Revenue Event Credit Memo Item                | `RevenueEventCreditMemoItem`               |\n| Revenue Event Debit Memo Item                 | `RevenueEventDebitMemoItem`                |\n| Revenue Event Invoice Item                    | `RevenueEventInvoiceItem`                  |\n| Revenue Event Invoice Item Adjustment         | `RevenueEventInvoiceItemAdjustment`        |\n| Revenue Event Item                            | `RevenueEventItem`                         |\n| Revenue Event Item Credit Memo Item           | `RevenueEventItemCreditMemoItem`           |\n| Revenue Event Item Debit Memo Item            | `RevenueEventItemDebitMemoItem`            |\n| Revenue Event Item Invoice Item               | `RevenueEventItemInvoiceItem`              |\n| Revenue Event Item Invoice Item Adjustment    | `RevenueEventItemInvoiceItemAdjustment`    |\n| Revenue Event Type                            | `RevenueEventType`                         |\n| Revenue Schedule                              | `RevenueSchedule`                          |\n| Revenue Schedule Credit Memo Item             | `RevenueScheduleCreditMemoItem`            |\n| Revenue Schedule Debit Memo Item              | `RevenueScheduleDebitMemoItem`             |\n| Revenue Schedule Invoice Item                 | `RevenueScheduleInvoiceItem`               |\n| Revenue Schedule Invoice Item Adjustment      | `RevenueScheduleInvoiceItemAdjustment`     |\n| Revenue Schedule Item                         | `RevenueScheduleItem`                      |\n| Revenue Schedule Item Credit Memo Item        | `RevenueScheduleItemCreditMemoItem`        |\n| Revenue Schedule Item Debit Memo Item         | `RevenueScheduleItemDebitMemoItem`         |\n| Revenue Schedule Item Invoice Item            | `RevenueScheduleItemInvoiceItem`           |\n| Revenue Schedule Item Invoice Item Adjustment | `RevenueScheduleItemInvoiceItemAdjustment` |\n| Subscription                                  | `Subscription`                             |\n| Subscription Product Feature                  | `SubscriptionProductFeature`               |\n| Taxable Item Snapshot                         | `TaxableItemSnapshot`                      |\n| Taxation Item                                 | `TaxationItem`                             |\n| Updater Batch                                 | `UpdaterBatch`                             |\n| Usage                                         | `Usage`                                    |\n\n\nContact Support:\n Email: docs@zuora.com",
+      "type": "text/plain"
+    }
+  }
+}

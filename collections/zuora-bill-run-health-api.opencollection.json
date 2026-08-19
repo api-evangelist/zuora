@@ -1,0 +1,69 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "API Reference Accounting Codes Bill Run Health API",
+    "version": "2023-12-15"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Bill Run Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List billing document volume summary records",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/system-health/billing-documents/volume-summary",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Authorization",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Entity-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Org-Ids",
+                "value": ""
+              },
+              {
+                "name": "Zuora-Track-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start time of the volume summary.\n\nFormat: `yyyy-MM-dd'T'HH:mmZ` Example: `2022-09-22T09:07+0800`.\n"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End time of the volume summary.\n\nFormat: `yyyy-MM-dd'T'HH:mmZ` Example: `2022-09-22T09:07+0800`.\n"
+              }
+            ]
+          },
+          "docs": "Returns a summary of billing documents generated within a specified time range, including invoices and credit memos, and the total number of accounts that failed to process.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
