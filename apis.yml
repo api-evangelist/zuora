@@ -35,6 +35,11 @@ tags:
   - Billing
   - Finance
   - Payments
+  - Subscription
+tags_raw:
+  - Billing
+  - Finance
+  - Payments
   - Subscriptions
 created: '2025-02-17'
 modified: '2026-05-19'
@@ -49,6 +54,10 @@ apis:
     integrate Zuora with external applications.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - Billing
+  - Payments
+  - Subscription
+  tags_raw:
   - Billing
   - Payments
   - Subscriptions
@@ -101,6 +110,8 @@ apis:
     credit card information, use the [Subscribe](/api-references/api/operation/Action_POSTsubscribe) action.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
@@ -539,6 +550,8 @@ apis:
     accounting period reports, and so on.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - File
+  tags_raw:
   - Files
   properties:
   - type: OpenAPI
@@ -650,6 +663,8 @@ apis:
       * [Get all Notifications under a particular Communication Profile](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Get_all_Notifications_under_a_particular_Communication_Profile)
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - Notification
+  tags_raw:
   - Notifications
   properties:
   - type: OpenAPI
@@ -662,6 +677,8 @@ apis:
     \ for more information."
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - Authentication
+  tags_raw:
   - OAuth
   properties:
   - type: OpenAPI
@@ -686,7 +703,8 @@ apis:
     Use operations to generate invoices and credit memos, collect payments for posted invoices, and generate
     previews of future invoice items for customer accounts.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
-  tags:
+  tags: []
+  tags_raw:
   - Operations
   properties:
   - type: OpenAPI
@@ -724,6 +742,8 @@ apis:
     _blank\">Orders</a>."
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
@@ -985,6 +1005,8 @@ apis:
     your first product, you create your product catalog.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
@@ -1117,6 +1139,8 @@ apis:
     target="_blank">Subscriptions</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - Subscription
+  tags_raw:
   - Subscriptions
   properties:
   - type: OpenAPI
