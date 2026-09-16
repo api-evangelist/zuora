@@ -47,9 +47,10 @@ specificationVersion: '0.23'
 apis:
 - aid: zuora:v1-api
   name: Zuora V1 API
-  description: The Zuora v1 REST API provides complete coverage of Zuora Billing, Payments, and Platform
-    features. It enables developers to automate billing operations, manage subscriptions, process payments,
-    and integrate Zuora with external applications.
+  description: >-
+    The Zuora v1 REST API provides complete coverage of Zuora Billing, Payments, and Platform features.
+    It enables developers to automate billing operations, manage subscriptions, process payments, and
+    integrate Zuora with external applications.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Billing
@@ -92,8 +93,9 @@ apis:
     url: openapi/zuora-accounting-periods-api-openapi.yml
 - aid: zuora:zuora-accounts-api
   name: Zuora Accounts API
-  description: 'Some operations in this section are similar to each other, but are provided for different
-    use scenarios. You should choose the one that best suits your needs.
+  description: >-
+    Some operations in this section are similar to each other, but are provided for different use scenarios.
+    You should choose the one that best suits your needs.
 
 
     For example, the [Create account](/v1-api-reference/api/accounts/post_account) operation is used to
@@ -104,7 +106,7 @@ apis:
 
 
     If you want to create an account and the associated subscription at the same time without providing
-    credit card information, use the [Subscribe](/api-references/api/operation/Action_POSTsubscribe) action.'
+    credit card information, use the [Subscribe](/api-references/api/operation/Action_POSTsubscribe) action.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Account
@@ -115,10 +117,11 @@ apis:
     url: openapi/zuora-accounts-api-openapi.yml
 - aid: zuora:zuora-actions-api
   name: Zuora Actions API
-  description: 'Actions are operations that are batch in nature. For example, the "create", "update",
-    "delete", and other operations allow changes to up-to 50 objects at a time. The "query" operation
-    will return up-to 2000 result records back at a time, before requiring additional pages of data to
-    be returned via a subsequent "queryMore" operation.
+  description: >-
+    Actions are operations that are batch in nature. For example, the "create", "update", "delete", and
+    other operations allow changes to up-to 50 objects at a time. The "query" operation will return up-to
+    2000 result records back at a time, before requiring additional pages of data to be returned via a
+    subsequent "queryMore" operation.
 
 
     The default WSDL version for Actions is 79. If you want to change the WSDL version, set the `X-Zuora-WSDL-Version`
@@ -127,7 +130,7 @@ apis:
 
 
     **Note**: Actions do not support the Invoice Settlement feature. This feature includes Unapplied Payments,
-    Credit and Debit Memo, and Invoice Item Settlement. Actions also do not support the Orders feature.'
+    Credit and Debit Memo, and Invoice Item Settlement. Actions also do not support the Orders feature.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Actions
@@ -158,9 +161,10 @@ apis:
     url: openapi/zuora-aggregate-queries-api-openapi.yml
 - aid: zuora:zuora-api-health-api
   name: Zuora API Health API
-  description: Zuora System Health dashboard for API (API dashboard) collects and displays data about
-    API usage, failure, performance, and concurrency limit in near real time. It enables you to view all
-    the APIs in your Zuora tenant within the last 14 days. For more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_System_Health/B_APIs_dashboard"
+  description: >-
+    Zuora System Health dashboard for API (API dashboard) collects and displays data about API usage,
+    failure, performance, and concurrency limit in near real time. It enables you to view all the APIs
+    in your Zuora tenant within the last 14 days. For more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_System_Health/B_APIs_dashboard"
     target="_blank">APIs dashboard</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
@@ -194,10 +198,11 @@ apis:
     url: openapi/zuora-bill-run-api-openapi.yml
 - aid: zuora:zuora-bill-run-health-api
   name: Zuora Bill Run Health API
-  description: Zuora System Health dashboard for Bill Run (Bill Run dashboard) collects and displays data
-    about bill run usage, failure, and performance in near real time. Through the Bill Run dashboard,
-    you can view data about all the bill runs in your Zuora tenant within the last 30 days. For more information,
-    see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_System_Health/C_Bill_Run_dashboard"
+  description: >-
+    Zuora System Health dashboard for Bill Run (Bill Run dashboard) collects and displays data about bill
+    run usage, failure, and performance in near real time. Through the Bill Run dashboard, you can view
+    data about all the bill runs in your Zuora tenant within the last 30 days. For more information, see
+    <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_System_Health/C_Bill_Run_dashboard"
     target="_blank">Bill Run dashboard</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
@@ -230,9 +235,10 @@ apis:
     url: openapi/zuora-billing-preview-run-api-openapi.yml
 - aid: zuora:zuora-catalog-api
   name: Zuora Catalog API
-  description: The Zuora Billing product catalog is where you define your products and pricing. The product
-    catalog's ability to handle sophisticated pricing models gives you the power to easily adapt your
-    pricing to customer and market needs, to grow your business and drive more revenue.
+  description: >-
+    The Zuora Billing product catalog is where you define your products and pricing. The product catalog's
+    ability to handle sophisticated pricing models gives you the power to easily adapt your pricing to
+    customer and market needs, to grow your business and drive more revenue.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Catalog
@@ -250,11 +256,11 @@ apis:
     url: openapi/zuora-catalog-groups-api-openapi.yml
 - aid: zuora:zuora-configuration-templates-api
   name: Zuora Configuration Templates API
-  description: Configuration Templates in Zuora Deployment Manager enable you to configure your tenants
-    in minutes by importing a templated metadata configuration file. This feature eliminates the need
-    for long manual configuration processes that would have previously taken hours. You will be able to
-    access a comprehensive repository of industry-specific templates. It will be easier for you to deploy
-    and release.
+  description: >-
+    Configuration Templates in Zuora Deployment Manager enable you to configure your tenants in minutes
+    by importing a templated metadata configuration file. This feature eliminates the need for long manual
+    configuration processes that would have previously taken hours. You will be able to access a comprehensive
+    repository of industry-specific templates. It will be easier for you to deploy and release.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Configuration Templates
@@ -272,9 +278,10 @@ apis:
     url: openapi/zuora-contact-snapshots-api-openapi.yml
 - aid: zuora:zuora-contacts-api
   name: Zuora Contacts API
-  description: A contact defines the customer who holds an account or who is otherwise a person to contact
-    about an account. An account requires a contact for the `BillToId` and `SoldToId` fields before the
-    account can be active.
+  description: >-
+    A contact defines the customer who holds an account or who is otherwise a person to contact about
+    an account. An account requires a contact for the `BillToId` and `SoldToId` fields before the account
+    can be active.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Contacts
@@ -283,13 +290,14 @@ apis:
     url: openapi/zuora-contacts-api-openapi.yml
 - aid: zuora:zuora-credit-memos-api
   name: Zuora Credit Memos API
-  description: 'Credit memos reduce invoice and account balances. By applying one or more credit memos
-    to invoices with positive balances, you can reduce the invoice balances in the same way that applying
-    a payment to an invoice.
+  description: >-
+    Credit memos reduce invoice and account balances. By applying one or more credit memos to invoices
+    with positive balances, you can reduce the invoice balances in the same way that applying a payment
+    to an invoice.
 
 
     For more information about credit memos, see <a href="https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/B_Credit_and_Debit_Memos"
-    target="_blank">Credit and debit memos</a>.'
+    target="_blank">Credit and debit memos</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Credit Memos
@@ -298,13 +306,14 @@ apis:
     url: openapi/zuora-credit-memos-api-openapi.yml
 - aid: zuora:zuora-custom-event-triggers-api
   name: Zuora Custom Event Triggers API
-  description: 'The Event Trigger service manages the business events and trigger conditions that are
-    defined on [Zuora Business Object Model](http://knowledgecenter.zuora.com/BB_Introducing_Z_Business/D_Zuora_Business_Objects_Relationship)
+  description: >-
+    The Event Trigger service manages the business events and trigger conditions that are defined on [Zuora
+    Business Object Model](http://knowledgecenter.zuora.com/BB_Introducing_Z_Business/D_Zuora_Business_Objects_Relationship)
     or custom objects. When a Zuora object changes, the trigger conditions defined on the object are evaluated,
     and if any condition qualifies, a business event will be triggered and turned into a notification.
 
 
-    **Note**: Event Triggers operations are only applicable to custom events.'
+    **Note**: Event Triggers operations are only applicable to custom events.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Custom Event Triggers
@@ -382,13 +391,14 @@ apis:
     url: openapi/zuora-custom-object-records-api-openapi.yml
 - aid: zuora:zuora-custom-payment-method-types-api
   name: Zuora Custom Payment Method Types API
-  description: 'Open Payment Method (OPM) service is a framework developed by Zuora, which allows you
-    to integrate your custom payment method to Zuora subscription, billing, and revenue management in
-    a dynamic and flexible manner. With the support of the OPM service, you are able to define your custom
-    payment method types and create custom payment methods of the defined types. The custom payment method
-    of the defined type can only be used with the custom payment gateway that you set up through the Universal
-    Payment Connector (UPC) service. It cannot be used with the Zuora out-of-box gateway integrations
-    such as GoCardless, Stripe, etc.
+  description: >-
+    Open Payment Method (OPM) service is a framework developed by Zuora, which allows you to integrate
+    your custom payment method to Zuora subscription, billing, and revenue management in a dynamic and
+    flexible manner. With the support of the OPM service, you are able to define your custom payment method
+    types and create custom payment methods of the defined types. The custom payment method of the defined
+    type can only be used with the custom payment gateway that you set up through the Universal Payment
+    Connector (UPC) service. It cannot be used with the Zuora out-of-box gateway integrations such as
+    GoCardless, Stripe, etc.
 
 
     You can define up to 20 custom payment method types for one tenant. Do not define your fields with
@@ -400,7 +410,7 @@ apis:
 
 
     Note: You can only use the bearer token to access the "Custom Payment Method Types" API operations.
-    Access with `apiAccessKeyId` and `apiSecretAccessKey` is not supported.'
+    Access with `apiAccessKeyId` and `apiSecretAccessKey` is not supported.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Custom Payment Method Types
@@ -409,13 +419,14 @@ apis:
     url: openapi/zuora-custom-payment-method-types-api-openapi.yml
 - aid: zuora:zuora-custom-scheduled-events-api
   name: Zuora Custom Scheduled Events API
-  description: 'A custom scheduled event notification is evaluated at the scheduled time of the related
-    scheduled event on a daily basis. If the date meets the combination of the base field and the notification
-    parameters, the notification will be triggered immediately.
+  description: >-
+    A custom scheduled event notification is evaluated at the scheduled time of the related scheduled
+    event on a daily basis. If the date meets the combination of the base field and the notification parameters,
+    the notification will be triggered immediately.
 
 
     For more information about Custom Scheduled Events, see <a href="https://knowledgecenter.zuora.com/Central_Platform/Events_and_Notifications/A_Z_Custom_Scheduled_Events"
-    target="_blank">Custom Scheduled Events</a>.'
+    target="_blank">Custom Scheduled Events</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Custom Scheduled Events
@@ -451,8 +462,9 @@ apis:
     url: openapi/zuora-data-labeling-api-openapi.yml
 - aid: zuora:zuora-data-queries-api
   name: Zuora Data Queries API
-  description: The Data Query feature enables you to perform SQL queries in your Zuora tenant. To learn
-    how to get started with Data Query, see [Overview of Data Query](https://knowledgecenter.zuora.com/DC_Developers/BA_Data_Query/A_Overview_of_Data_Query).
+  description: >-
+    The Data Query feature enables you to perform SQL queries in your Zuora tenant. To learn how to get
+    started with Data Query, see [Overview of Data Query](https://knowledgecenter.zuora.com/DC_Developers/BA_Data_Query/A_Overview_of_Data_Query).
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Data Queries
@@ -461,14 +473,15 @@ apis:
     url: openapi/zuora-data-queries-api-openapi.yml
 - aid: zuora:zuora-debit-memos-api
   name: Zuora Debit Memos API
-  description: 'Debit memos increase the amount a customer owes. It is a separate document from the invoice.
-    Debit memos can be used to correct undercharging on an invoice or to levy ad hoc charges outside the
-    context of a subscription. Just like an invoice, debit memo balances can be settled by applying either
-    a payment or a credit memo.
+  description: >-
+    Debit memos increase the amount a customer owes. It is a separate document from the invoice. Debit
+    memos can be used to correct undercharging on an invoice or to levy ad hoc charges outside the context
+    of a subscription. Just like an invoice, debit memo balances can be settled by applying either a payment
+    or a credit memo.
 
 
     For more information about debit memos, see <a href="https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/B_Credit_and_Debit_Memos"
-    target="_blank">Credit and debit memos</a>.'
+    target="_blank">Credit and debit memos</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Debit Memos
@@ -477,8 +490,9 @@ apis:
     url: openapi/zuora-debit-memos-api-openapi.yml
 - aid: zuora:zuora-delivery-adjustments-api
   name: Zuora Delivery Adjustments API
-  description: Delivery Adjustments are used to handle end customer delivery complaints for the Delivery
-    Pricing charge model. For more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/Delivery_Adjustments"
+  description: >-
+    Delivery Adjustments are used to handle end customer delivery complaints for the Delivery Pricing
+    charge model. For more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/Delivery_Adjustments"
     target="_blank">Delivery Adjustments</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
@@ -488,12 +502,13 @@ apis:
     url: openapi/zuora-delivery-adjustments-api-openapi.yml
 - aid: zuora:zuora-describe-api
   name: Zuora Describe API
-  description: 'You can use the [Describe an object](https://www.zuora.com/redocly-test/api-references/api/operation/GET_Describe/)
+  description: >-
+    You can use the [Describe an object](https://www.zuora.com/redocly-test/api-references/api/operation/GET_Describe/)
     operation to get a reference listing of each object that is available in your Zuora tenant.
 
 
     By default, the information returned by the "Describe an object" operation corresponds to the latest
-    version of the Zuora WSDL.'
+    version of the Zuora WSDL.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Describe
@@ -515,10 +530,11 @@ apis:
     url: openapi/zuora-e-invoicing-api-openapi.yml
 - aid: zuora:zuora-electronic-payments-health-api
   name: Zuora Electronic Payments Health API
-  description: Zuora System Health dashboard for Electronic Payments (Electronic Payment dashboard) collects
-    and displays usage, failure, and performance data about electronic payments in near real time. It
-    enables you to view all the electronic payments in your Zuora tenant within the last 30 days. For
-    more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_System_Health/D_Electronic_Payments_dashboard"
+  description: >-
+    Zuora System Health dashboard for Electronic Payments (Electronic Payment dashboard) collects and
+    displays usage, failure, and performance data about electronic payments in near real time. It enables
+    you to view all the electronic payments in your Zuora tenant within the last 30 days. For more information,
+    see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_System_Health/D_Electronic_Payments_dashboard"
     target="_blank">Electronic Payments dashboard</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
@@ -528,8 +544,9 @@ apis:
     url: openapi/zuora-electronic-payments-health-api-openapi.yml
 - aid: zuora:zuora-files-api
   name: Zuora Files API
-  description: You can use the operations contained in this section to retrieve files such as export results,
-    invoices, accounting period reports, and so on.
+  description: >-
+    You can use the operations contained in this section to retrieve files such as export results, invoices,
+    accounting period reports, and so on.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - File
@@ -564,9 +581,9 @@ apis:
     url: openapi/zuora-hosted-pages-api-openapi.yml
 - aid: zuora:zuora-imports-api
   name: Zuora Imports API
-  description: An import uploads content, especially when you have a large amount of content. The Import
-    object contains all of the information you need to upload content, such as a large number of usage
-    records.
+  description: >-
+    An import uploads content, especially when you have a large amount of content. The Import object contains
+    all of the information you need to upload content, such as a large number of usage records.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Imports
@@ -597,12 +614,13 @@ apis:
     url: openapi/zuora-invoices-api-openapi.yml
 - aid: zuora:zuora-journal-runs-api
   name: Zuora Journal Runs API
-  description: 'Use journal runs to automatically create summary journal entities that are suitable for
-    importing into your general ledger system.
+  description: >-
+    Use journal runs to automatically create summary journal entities that are suitable for importing
+    into your general ledger system.
 
 
     For more information about journal runs, see <a href="https://knowledgecenter.zuora.com/Billing/Finance/F_Summary_Journal_Entries/h_Journal_Runs"
-    target="_blank">Journal Runs</a>.'
+    target="_blank">Journal Runs</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Journal Runs
@@ -611,11 +629,12 @@ apis:
     url: openapi/zuora-journal-runs-api-openapi.yml
 - aid: zuora:zuora-mass-updater-api
   name: Zuora Mass Updater API
-  description: 'Use mass updater to perform mass actions more easily.
+  description: >-
+    Use mass updater to perform mass actions more easily.
 
 
     For more information about mass updater, see <a href="https://knowledgecenter.zuora.com/Billing/Finance/Mass_Updater"
-    target="_blank">Mass Updater</a>.'
+    target="_blank">Mass Updater</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Mass Updater
@@ -624,16 +643,23 @@ apis:
     url: openapi/zuora-mass-updater-api-openapi.yml
 - aid: zuora:zuora-notifications-api
   name: Zuora Notifications API
-  description: "Notifications are the actions taken to inform users or call third-party endpoints when\
-    \ a certain event happens. Typical actions include emails and callouts. Callouts typically refer to\
-    \ HTTP invocations, such as HTTP calls to REST services.\n\n**NOTE:** Notifications are processed\
-    \ asynchronously and may be delivered with a delay and out of order.\n\nNotifications are associated\
-    \ with Communication Profiles, which allow you to send specific event-driven notifications to targeted\
-    \ customers. Zuora provides the following Settings API to access the settings of Communication Profiles:\n\
-    \  * [Get all Communication Profiles](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Get_all_Communication_Profiles)\n\
-    \  * [Create a new Communication Profile](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Create_a_new_Communication_Profile)\n\
-    \  * [Modify a Communication Profile](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Modify_a_Communication_Profile)\n\
-    \  * [Get all Notifications under a particular Communication Profile](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Get_all_Notifications_under_a_particular_Communication_Profile)"
+  description: >-
+    Notifications are the actions taken to inform users or call third-party endpoints when a certain event
+    happens. Typical actions include emails and callouts. Callouts typically refer to HTTP invocations,
+    such as HTTP calls to REST services.
+
+
+    **NOTE:** Notifications are processed asynchronously and may be delivered with a delay and out of
+    order.
+
+
+    Notifications are associated with Communication Profiles, which allow you to send specific event-driven
+    notifications to targeted customers. Zuora provides the following Settings API to access the settings
+    of Communication Profiles:
+      * [Get all Communication Profiles](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Get_all_Communication_Profiles)
+      * [Create a new Communication Profile](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Create_a_new_Communication_Profile)
+      * [Modify a Communication Profile](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Modify_a_Communication_Profile)
+      * [Get all Notifications under a particular Communication Profile](https://knowledgecenter.zuora.com/DC_Developers/BB_C_Settings_API/Settings_API_tutorials/Get_all_Notifications_under_a_particular_Communication_Profile)
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Notification
@@ -642,27 +668,14 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/zuora-notifications-api-openapi.yml
-- aid: zuora:zuora-oauth-api
-  name: Zuora OAuth API
-  description: "Zuora recommends that you use OAuth v2.0 to authenticate to the Zuora REST API. \n\nYou\
-    \ must first create an OAuth client in the Zuora UI before using the [Create an OAuth token](/api-references/api/operation/createToken)\
-    \ operation to create an OAuth token. See [Authentication](/rest-api/general-concepts/authentication/)\
-    \ for more information."
-  humanURL: https://developer.zuora.com/v1-api-reference/introduction
-  tags:
-  - Authentication
-  tags_raw:
-  - OAuth
-  properties:
-  - type: OpenAPI
-    url: openapi/zuora-oauth-api-openapi.yml
 - aid: zuora:zuora-offers-api
   name: Zuora Offers API
-  description: 'Use offers to define different product packages with multiple prices for all charge types
-    across different geographic regions, sales areas, customers, or billing frequencies, for example.
+  description: >-
+    Use offers to define different product packages with multiple prices for all charge types across different
+    geographic regions, sales areas, customers, or billing frequencies, for example.
 
 
-    The Offer object is in the **Beta** phase.'
+    The Offer object is in the **Beta** phase.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Offers
@@ -671,8 +684,9 @@ apis:
     url: openapi/zuora-offers-api-openapi.yml
 - aid: zuora:zuora-operations-api
   name: Zuora Operations API
-  description: Use operations to generate invoices and credit memos, collect payments for posted invoices,
-    and generate previews of future invoice items for customer accounts.
+  description: >-
+    Use operations to generate invoices and credit memos, collect payments for posted invoices, and generate
+    previews of future invoice items for customer accounts.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags: []
   tags_raw:
@@ -682,7 +696,8 @@ apis:
     url: openapi/zuora-operations-api-openapi.yml
 - aid: zuora:zuora-order-actions-api
   name: Zuora Order Actions API
-  description: You need to have the [Orders](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders)
+  description: >-
+    You need to have the [Orders](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders)
     or [Orders Harmonization](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders/Orders_Harmonization)
     feature enabled to use this API.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
@@ -693,11 +708,12 @@ apis:
     url: openapi/zuora-order-actions-api-openapi.yml
 - aid: zuora:zuora-order-line-items-api
   name: Zuora Order Line Items API
-  description: 'Use order line item to launch non-subscription and unified monetization business models
-    in Zuora, in addition to subscription business models.
+  description: >-
+    Use order line item to launch non-subscription and unified monetization business models in Zuora,
+    in addition to subscription business models.
 
     For more information about order line items, see <a href="https://knowledgecenter.zuora.com/Billing/Subscriptions/Orders/Order_Line_Items/AA_Overview_of_Order_Line_Items"
-    target="_blank">Order Line Items</a>.'
+    target="_blank">Order Line Items</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Order Line Items
@@ -772,11 +788,12 @@ apis:
     url: openapi/zuora-payment-method-snapshots-api-openapi.yml
 - aid: zuora:zuora-payment-method-transaction-logs-api
   name: Zuora Payment Method Transaction Logs API
-  description: 'The PaymentMethodTransactionLog object contains payment method transaction log data.
+  description: >-
+    The PaymentMethodTransactionLog object contains payment method transaction log data.
 
 
     You can use the [CRUD: Retrieve a payment method transaction log](https://www.zuora.com/redocly-test/api-references/api/operation/Object_GETPaymentMethodTransactionLog/)
-    operation to export such data.'
+    operation to export such data.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Payment Method Transaction Logs
@@ -785,8 +802,9 @@ apis:
     url: openapi/zuora-payment-method-transaction-logs-api-openapi.yml
 - aid: zuora:zuora-payment-method-updater-api
   name: Zuora Payment Method Updater API
-  description: Zuora Payment Method Updater (PMU) enables merchants to automatically incorporate changes
-    made to a customer's credit cards. For more information about Zuora PMU, see <a href="https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Method_Updater"
+  description: >-
+    Zuora Payment Method Updater (PMU) enables merchants to automatically incorporate changes made to
+    a customer's credit cards. For more information about Zuora PMU, see <a href="https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Method_Updater"
     target="_blank">Payment Method Updater</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
@@ -805,11 +823,12 @@ apis:
     url: openapi/zuora-payment-methods-api-openapi.yml
 - aid: zuora:zuora-payment-runs-api
   name: Zuora Payment Runs API
-  description: 'Use payment runs to collect payments using electronic payment methods, for example, credit
-    cards and ACH.
+  description: >-
+    Use payment runs to collect payments using electronic payment methods, for example, credit cards and
+    ACH.
 
     For more information about payment runs, see <a href="https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/K_Payment_Operations/CA_Payment_Runs/A_Introduction_to_Payment_Runs"
-    target="_blank">Payment Runs</a>.'
+    target="_blank">Payment Runs</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Payment Runs
@@ -818,11 +837,12 @@ apis:
     url: openapi/zuora-payment-runs-api-openapi.yml
 - aid: zuora:zuora-payment-schedules-api
   name: Zuora Payment Schedules API
-  description: 'Use payment schedules to split invoice or account balances into several installments and
-    automatically process payments for the installments.
+  description: >-
+    Use payment schedules to split invoice or account balances into several installments and automatically
+    process payments for the installments.
 
     For more information about payment schedules, see <a href="https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Payment_Schedules/A_Payment_Schedules_overview"
-    target="_blank">Payment Schedules</a>.'
+    target="_blank">Payment Schedules</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Payment Schedules
@@ -831,8 +851,8 @@ apis:
     url: openapi/zuora-payment-schedules-api-openapi.yml
 - aid: zuora:zuora-payment-transaction-logs-api
   name: Zuora Payment Transaction Logs API
-  description: Use payment transaction logs to export logs of all transactions from Zuora to the Gateway
-    for Payments.
+  description: >-
+    Use payment transaction logs to export logs of all transactions from Zuora to the Gateway for Payments.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Payment Transaction Logs
@@ -841,11 +861,12 @@ apis:
     url: openapi/zuora-payment-transaction-logs-api-openapi.yml
 - aid: zuora:zuora-payments-api
   name: Zuora Payments API
-  description: 'Use payments to process payments, for example, automate recurring payments, manage overpayments,
-    and create refunds.
+  description: >-
+    Use payments to process payments, for example, automate recurring payments, manage overpayments, and
+    create refunds.
 
     For more information about payments, see <a href="https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/K_Payment_Operations"
-    target="_blank">Payments</a>.'
+    target="_blank">Payments</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Payments
@@ -854,9 +875,10 @@ apis:
     url: openapi/zuora-payments-api-openapi.yml
 - aid: zuora:zuora-prepaid-with-drawdown-api
   name: Zuora Prepaid with Drawdown API
-  description: The Prepaid with Drawdown feature is a pricing model for consumption-based services, such
-    as data storage. Under this model, customers pay upfront to receive a number of units, usually for
-    a period of time like a month or a year. Then they consume against that prepayment balance in a use-it-or-lose-it
+  description: >-
+    The Prepaid with Drawdown feature is a pricing model for consumption-based services, such as data
+    storage. Under this model, customers pay upfront to receive a number of units, usually for a period
+    of time like a month or a year. Then they consume against that prepayment balance in a use-it-or-lose-it
     fashion, with a possibility of topping up more units or being charged for any overage. This model
     strikes a balance between upfront commitment and the pure pay-as-you-go pricing models. For more information,
     see <a href="https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/Bill_for_usage_or_prepaid_products/Advanced_Consumption_Billing/Prepaid_with_Drawdown"
@@ -869,12 +891,12 @@ apis:
     url: openapi/zuora-prepaid-with-drawdown-api-openapi.yml
 - aid: zuora:zuora-price-book-items-api
   name: Zuora Price Book Items API
-  description: 'Use price book items to define as many price points as needed for an individual product
-    rate plan charge without the need of duplicating the product rate plan and rate plan charges in your
-    catalog.
+  description: >-
+    Use price book items to define as many price points as needed for an individual product rate plan
+    charge without the need of duplicating the product rate plan and rate plan charges in your catalog.
 
 
-    The Price Book Item object is in the **Beta** phase.'
+    The Price Book Item object is in the **Beta** phase.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Price Book Items
@@ -896,7 +918,8 @@ apis:
     url: openapi/zuora-product-charge-definitions-api-openapi.yml
 - aid: zuora:zuora-product-rate-plan-charge-tiers-api
   name: Zuora Product Rate Plan Charge Tiers API
-  description: To manage product rate plan charge tiers, use the [Product Rate Plan Charges](/v1-api-reference/api/product-rate-plan-charges)
+  description: >-
+    To manage product rate plan charge tiers, use the [Product Rate Plan Charges](/v1-api-reference/api/product-rate-plan-charges)
     operations instead to update the corresponding product rate plan charge with all the tiers.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
@@ -906,13 +929,14 @@ apis:
     url: openapi/zuora-product-rate-plan-charge-tiers-api-openapi.yml
 - aid: zuora:zuora-product-rate-plan-charges-api
   name: Zuora Product Rate Plan Charges API
-  description: 'A product rate plan charge represents a charge model or a set of fees associated with
-    a product rate plan, which is the part of a product that your customers subscribe to. Each product
-    rate plan can have multiple product rate plan charges.
+  description: >-
+    A product rate plan charge represents a charge model or a set of fees associated with a product rate
+    plan, which is the part of a product that your customers subscribe to. Each product rate plan can
+    have multiple product rate plan charges.
 
 
     Product rate plan charges can be of three types: one-time fees, recurring fees, and usage fees. For
-    example, the $50 activation fee for the Topaz product rate plan is a one-time product rate plan charge.'
+    example, the $50 activation fee for the Topaz product rate plan is a one-time product rate plan charge.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Product Rate Plan Charges
@@ -921,12 +945,13 @@ apis:
     url: openapi/zuora-product-rate-plan-charges-api-openapi.yml
 - aid: zuora:zuora-product-rate-plan-definitions-api
   name: Zuora Product Rate Plan Definitions API
-  description: 'Use product rate plan definitions to reuse charges in different product rate plans.
+  description: >-
+    Use product rate plan definitions to reuse charges in different product rate plans.
 
 
     The Product Rate Plan Definition object is in the **Early Adopter** phase. We are actively soliciting
     feedback from a small set of early adopters before releasing it as generally available. If you are
-    interested, please reach out to your CSM.'
+    interested, please reach out to your CSM.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Product Rate Plan Definitions
@@ -935,9 +960,10 @@ apis:
     url: openapi/zuora-product-rate-plan-definitions-api-openapi.yml
 - aid: zuora:zuora-product-rate-plans-api
   name: Zuora Product Rate Plans API
-  description: A product rate plan is the part of a product that your customers subscribe to. Each product
-    can have multiple product rate plans, and each product rate plan can have multiple product rate plan
-    charges, which are fees for products and their product rate plans.
+  description: >-
+    A product rate plan is the part of a product that your customers subscribe to. Each product can have
+    multiple product rate plans, and each product rate plan can have multiple product rate plan charges,
+    which are fees for products and their product rate plans.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Product Rate Plans
@@ -946,10 +972,11 @@ apis:
     url: openapi/zuora-product-rate-plans-api-openapi.yml
 - aid: zuora:zuora-products-api
   name: Zuora Products API
-  description: 'A product is an item or service that your company sells. In the subscription economy,
-    a product is generally a service that your customers subscribe to rather than a physical item that
-    they purchase one time. For example, customers subscribe to a service that provides them a car when
-    and where they need a car rather than buying a car outright.
+  description: >-
+    A product is an item or service that your company sells. In the subscription economy, a product is
+    generally a service that your customers subscribe to rather than a physical item that they purchase
+    one time. For example, customers subscribe to a service that provides them a car when and where they
+    need a car rather than buying a car outright.
 
 
     A Product object contains all of the items in a specific product, especially product rate plans and
@@ -960,7 +987,7 @@ apis:
 
     Customers subscribe to products that are in your product catalog. Product objects collectively compose
     your product catalog. You create your product catalog by creating products. As soon as you create
-    your first product, you create your product catalog.'
+    your first product, you create your product catalog.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Product
@@ -971,9 +998,10 @@ apis:
     url: openapi/zuora-products-api-openapi.yml
 - aid: zuora:zuora-ramps-api
   name: Zuora Ramps API
-  description: 'A Ramp is a time container to associate with rate plan charges in your subscription. Inside
-    the Ramp, you can further define a set of Ramp Intervals (time-based periods) where products or pricing
-    can change. These periods are sub time containers to enable you to report out-of-the-box metrics based
+  description: >-
+    A Ramp is a time container to associate with rate plan charges in your subscription. Inside the Ramp,
+    you can further define a set of Ramp Intervals (time-based periods) where products or pricing can
+    change. These periods are sub time containers to enable you to report out-of-the-box metrics based
     on Ramp Intervals.
 
 
@@ -982,7 +1010,7 @@ apis:
 
 
     For more information, see <a href="https://knowledgecenter.zuora.com/Billing/Subscriptions/Orders/Ramps_and_Ramp_Metrics"
-    target="_blank">Ramps and Ramp Metrics</a>.'
+    target="_blank">Ramps and Ramp Metrics</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Ramps
@@ -1017,9 +1045,9 @@ apis:
     url: openapi/zuora-refunds-api-openapi.yml
 - aid: zuora:zuora-regenerate-api
   name: Zuora Regenerate API
-  description: If you are an <a href="https://knowledgecenter.zuora.com/Zuora_Billing/Enable_Order_to_Revenue"
-    target="_blank">Order to Revenue</a> user, you can use the Regenerate operations to regenerate transactions
-    objects.
+  description: >-
+    If you are an <a href="https://knowledgecenter.zuora.com/Zuora_Billing/Enable_Order_to_Revenue" target="_blank">Order
+    to Revenue</a> user, you can use the Regenerate operations to regenerate transactions objects.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Regenerate
@@ -1053,7 +1081,8 @@ apis:
     url: openapi/zuora-sequence-sets-api-openapi.yml
 - aid: zuora:zuora-settings-api
   name: Zuora Settings API
-  description: 'The Setting API provides a central API for managing settings in your Zuora tenant.
+  description: >-
+    The Setting API provides a central API for managing settings in your Zuora tenant.
 
 
     If you use Postman, you can import the Settings API endpoints as a collection into your Postman app
@@ -1064,34 +1093,24 @@ apis:
 
 
     You can sign up for a free account on the [Postman website](https://identity.getpostman.com/signup)
-    and download the app in case you do not use Postman yet.'
+    and download the app in case you do not use Postman yet.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Settings
   properties:
   - type: OpenAPI
     url: openapi/zuora-settings-api-openapi.yml
-- aid: zuora:zuora-sign-up-api
-  name: Zuora Sign Up API
-  description: "A light-weight API to sign up customers and subscribe. \n\nYou need to have the [Orders](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders)\
-    \ or [Orders Harmonization](https://knowledgecenter.zuora.com/Zuora_Billing/Subscriptions/Orders/Orders_Harmonization)\
-    \ feature enabled to use this API."
-  humanURL: https://developer.zuora.com/v1-api-reference/introduction
-  tags:
-  - Sign Up
-  properties:
-  - type: OpenAPI
-    url: openapi/zuora-sign-up-api-openapi.yml
 - aid: zuora:zuora-subscriptions-api
   name: Zuora Subscriptions API
-  description: 'A subscription is a product or service that has recurring charges, such as a monthly flat
-    fee or charges based on usage. Subscriptions can also include one-time charges, such as activation
-    fees. Every subscription must be associated with an account. At least one active account must exist
-    before any subscriptions can be created.
+  description: >-
+    A subscription is a product or service that has recurring charges, such as a monthly flat fee or charges
+    based on usage. Subscriptions can also include one-time charges, such as activation fees. Every subscription
+    must be associated with an account. At least one active account must exist before any subscriptions
+    can be created.
 
 
     For more information, see <a href="https://knowledgecenter.zuora.com/Billing/Subscriptions/Subscriptions"
-    target="_blank">Subscriptions</a>.'
+    target="_blank">Subscriptions</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Subscription
@@ -1114,15 +1133,16 @@ apis:
     url: openapi/zuora-summary-journal-entries-api-openapi.yml
 - aid: zuora:zuora-taxation-items-api
   name: Zuora Taxation Items API
-  description: 'The TaxationItem object is used to add a tax amount to an invoice item. In the typical
-    use case, the tax amount that you specify in the object is calculated by <a href="https://knowledgecenter.zuora.com/Billing/Taxes/A_Zuora_Tax"
+  description: >-
+    The TaxationItem object is used to add a tax amount to an invoice item. In the typical use case, the
+    tax amount that you specify in the object is calculated by <a href="https://knowledgecenter.zuora.com/Billing/Taxes/A_Zuora_Tax"
     target="_blank">Z-Tax</a> or a third-party tax engine such as <a href="https://knowledgecenter.zuora.com/Billing/Taxes/Direct_Avalara_Integration"
     target="_blank">Avalara</a> or <a href="https://knowledgecenter.zuora.com/Billing/Taxes/Additional_resources_on_taxes/AA_Connect_Tax_Engines"
     target="_blank">Connect tax engine</a>.
 
 
     Changes that you make with this object affect the product charges in your product catalog, but not
-    the charges in existing subscriptions.'
+    the charges in existing subscriptions.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Taxation Items
@@ -1146,12 +1166,13 @@ apis:
     url: openapi/zuora-usage-api-openapi.yml
 - aid: zuora:zuora-workflows-api
   name: Zuora Workflows API
-  description: 'A workflow is a sequence of tasks that are performed based on predefined logic. A workflow
-    improves efficiency and reduces errors by automating a series of complex tasks that otherwise need
-    to be performed manually and repetitively.
+  description: >-
+    A workflow is a sequence of tasks that are performed based on predefined logic. A workflow improves
+    efficiency and reduces errors by automating a series of complex tasks that otherwise need to be performed
+    manually and repetitively.
 
 
-    For more information, see <a href="https://knowledgecenter.zuora.com/Central_Platform/Workflow" target="_blank">Workflow</a>.'
+    For more information, see <a href="https://knowledgecenter.zuora.com/Central_Platform/Workflow" target="_blank">Workflow</a>.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Workflows
@@ -1160,15 +1181,43 @@ apis:
     url: openapi/zuora-workflows-api-openapi.yml
 - aid: zuora:zuora-zuora-revenue-integration-api
   name: Zuora Revenue Integration API
-  description: '**Note:** You can only use the operations in this section if you have the Billing - Revenue
-    Integration feature enabled. See <a href="https://knowledgecenter.zuora.com/Zuora_Revenue/Billing_-_Revenue_Integration"
-    target="_blank">Billing - Revenue Integration</a> for more information.'
+  description: >-
+    **Note:** You can only use the operations in this section if you have the Billing - Revenue Integration
+    feature enabled. See <a href="https://knowledgecenter.zuora.com/Zuora_Revenue/Billing_-_Revenue_Integration"
+    target="_blank">Billing - Revenue Integration</a> for more information.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
   - Zuora Revenue Integration
   properties:
   - type: OpenAPI
     url: openapi/zuora-zuora-revenue-integration-api-openapi.yml
+- aid: zuora:zuora-o-auth-api
+  name: Zuora O Auth API
+  description: >-
+    Zuora recommends that you use OAuth v2.0 to authenticate to the Zuora REST API.
+
+
+    You must first create an OAuth client in the Zuora UI before using the Create an OAuth token operation
+    to create an OAuth token. See Authentication for more information.
+  humanURL: https://developer.zuora.com/v1-api-reference/introduction
+  tags:
+  - O Auth
+  properties:
+  - type: OpenAPI
+    url: openapi/zuora-o-auth-api-openapi.yml
+- aid: zuora:zuora-signup-api
+  name: Zuora Signup API
+  description: >-
+    A light-weight API to sign up customers and subscribe.
+
+
+    You need to have the Orders or Orders Harmonization feature enabled to use this API.
+  humanURL: https://developer.zuora.com/v1-api-reference/introduction
+  tags:
+  - Signup
+  properties:
+  - type: OpenAPI
+    url: openapi/zuora-signup-api-openapi.yml
 common:
 - type: CapabilityMap
   url: capabilities/zuora-capability-edges.yml
