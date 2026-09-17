@@ -1191,20 +1191,18 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/zuora-zuora-revenue-integration-api-openapi.yml
-- aid: zuora:zuora-o-auth-api
+- aid: zuora:zuora-oauth-api
   name: Zuora O Auth API
-  description: >-
-    Zuora recommends that you use OAuth v2.0 to authenticate to the Zuora REST API.
-
-
-    You must first create an OAuth client in the Zuora UI before using the Create an OAuth token operation
-    to create an OAuth token. See Authentication for more information.
+  description: "Zuora recommends that you use OAuth v2.0 to authenticate to the Zuora REST API. \n\nYou\
+    \ must first create an OAuth client in the Zuora UI before using the [Create an OAuth token](/api-references/api/operation/createToken)\
+    \ operation to create an OAuth token. See [Authentication](/rest-api/general-concepts/authentication/)\
+    \ for more information."
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
-  - O Auth
+  - OAuth
   properties:
   - type: OpenAPI
-    url: openapi/zuora-o-auth-api-openapi.yml
+    url: openapi/zuora-oauth-api-openapi.yml
 - aid: zuora:zuora-signup-api
   name: Zuora Signup API
   description: >-
