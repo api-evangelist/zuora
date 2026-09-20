@@ -314,7 +314,8 @@ edges:
     catalogue, i.e. design of plans and their charge/entitlement rules. Overlap with price list management
     keeps confidence moderate.
 - tag: Sign Up
-  spec_file: zuora-sign-up-api-openapi.yml
+  spec_file: zuora-signup-api-openapi.yml
+  reanchored_from: zuora-sign-up-api-openapi.yml
   capability_id: BC-4240.30
   capability_id_l1: BC-4240
   capability_name: Subscription Provisioning
