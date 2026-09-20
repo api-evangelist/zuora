@@ -1,0 +1,324 @@
+slug: zuora
+provider: Zuora
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 32
+edges:
+- tag: Payment Methods
+  spec_file: zuora-payment-methods-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.92
+  evidence: '"Create a payment method", "Verify a payment method", "Create a stored credential profile"'
+  reason: Full lifecycle of customer payment methods (cards, bank transfer, Apple Pay, stored credentials)
+    on a subscription billing platform — the payment-method management element of Payment Collection &
+    Dunning.
+- tag: Subscriptions
+  spec_file: zuora-subscriptions-api-openapi.yml
+  capability_id: BC-4240
+  capability_id_l1: BC-4240
+  capability_name: Subscription Lifecycle Management
+  confidence: 0.92
+  evidence: PUT /v1/subscriptions/{subscription-key}/renew  "Renew a subscription"; PUT .../cancel  "Cancel
+    a subscription"; PUT .../suspend  "Suspend a subscription"
+  reason: Create, update, renew, cancel, suspend and resume operations span the whole subscription commercial
+    lifecycle; no single sub-capability covers it, so L1 only.
+- tag: Invoices
+  spec_file: zuora-invoices-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.9
+  evidence: '''Create a standalone invoice''; ''Post invoices''; ''Email an invoice''; ''List all items
+    of an invoice'''
+  reason: Direct invoice generation, posting, adjustment and delivery for subscription customers.
+- tag: Payment Runs
+  spec_file: zuora-payment-runs-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.88
+  evidence: POST /v1/payment-runs "Create a payment run"; GET /v1/payment-runs/{paymentRunKey}/summary
+    "Retrieve a payment run summary"
+  reason: Payment runs execute batch collection of due subscription invoices against customer payment
+    methods — recurring payment collection.
+- tag: Bill Run
+  spec_file: zuora-bill-run-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.85
+  evidence: POST /v1/bill-runs 'Create a bill run'; POST /v1/bill-runs/{billRunKey}/emails 'Email billing
+    documents generated from a bill run'
+  reason: Bill runs generate and post invoices/billing documents and email them to customers — subscription
+    invoicing and statement generation.
+- tag: Billing Documents
+  spec_file: zuora-billing-documents-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.85
+  evidence: POST /v1/accounts/{key}/billing-documents/generate 'Generate billing documents by account
+    ID'; schemas InvoiceResponseType, CreditMemoResponseType
+  reason: Generation, listing and file lifecycle of invoices and credit memos for an account — invoicing
+    and statement management in the subscription billing model.
+- tag: Credit Memos
+  spec_file: zuora-credit-memos-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.85
+  evidence: POST /v1/invoices/{invoiceKey}/creditmemos  Create a credit memo from an invoice; PUT /v1/creditmemos/{creditMemoKey}/apply  Apply
+    a credit memo; POST /v1/creditmemos/{creditMemoKey}/emails  Email a credit memo
+  reason: Credit memos are invoice adjustment documents generated, applied, emailed and cancelled against
+    subscription invoices — squarely invoicing and statement adjustment in a subscription billing platform.
+- tag: Debit Memos
+  spec_file: zuora-debit-memos-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.85
+  evidence: POST /v1/debitmemos  'Create a debit memo from a charge'; 'Create a debit memo from an invoice';
+    'Collect a posted debit memo'
+  reason: Debit memos are billing documents adjusting customer invoices in Zuora's subscription billing
+    platform — invoicing and statement/adjustment management.
+- tag: Payment Authorization
+  spec_file: zuora-payment-authorization-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.85
+  evidence: POST /v1/payment-methods/{payment-method-id}/authorize  Create authorization
+  reason: Payment-method authorisation and void — payment authorisation is explicitly part of payment
+    collection within subscription billing.
+- tag: Payments
+  spec_file: zuora-payments-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.85
+  evidence: '"Create a payment", "Apply a payment", "Transfer a payment", PaymentInvoiceApplicationApplyRequestType'
+  reason: Creation, application to invoices/debit memos, transfer and cancellation of customer payments
+    in a subscription billing system — payment collection against invoices.
+- tag: Summary Journal Entries
+  spec_file: zuora-summary-journal-entries-api-openapi.yml
+  capability_id: BC-200.10
+  capability_id_l1: BC-200
+  capability_name: General Ledger Management
+  confidence: 0.85
+  evidence: POST /v1/journal-entries  POST_SummaryJournalEntry  Create a summary journal entry
+  reason: Operations create, retrieve, cancel and delete summary journal entries produced from billing
+    transactions — general ledger journal management, i.e. General Ledger Management under Financial Management.
+- tag: Accounting Periods
+  spec_file: zuora-accounting-periods-api-openapi.yml
+  capability_id: BC-200.10
+  capability_id_l1: BC-200
+  capability_name: General Ledger Management
+  confidence: 0.82
+  evidence: PUT /v1/accounting-periods/{ap-id}/close  'Close an accounting period'; PUT_RunTrialBalance
+    'Run trial balance'
+  reason: Operations create, close, reopen accounting periods and run a trial balance — classic general-ledger
+    period-close mechanics, not a billing-specific capability.
+- tag: Payment Method Updater
+  spec_file: zuora-payment-method-updater-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.82
+  evidence: POST /v1/payment-method-updaters/batches "Create a Payment Method Updater batch asynchronously"
+  reason: Payment Method Updater batches refresh stored card credentials so recurring charges keep succeeding
+    — squarely payment-method management and involuntary churn recovery within subscription payment collection.
+- tag: Accounting Codes
+  spec_file: zuora-accounting-codes-api-openapi.yml
+  capability_id: BC-200.10
+  capability_id_l1: BC-200
+  capability_name: General Ledger Management
+  confidence: 0.8
+  evidence: POST /v1/accounting-codes  POST_AccountingCode  Create an accounting code
+  reason: CRUD and activation of accounting codes is chart-of-accounts / general ledger structure maintenance
+    within financial management.
+- tag: E-Invoicing
+  spec_file: zuora-e-invoicing-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.8
+  evidence: '''Create an e-invoicing service provider''; ''Create an e-invoicing business region''; ''Create
+    an e-invoice file template'''
+  reason: Configures electronic invoice generation and delivery (providers, regional regimes, file templates)
+    — invoice delivery/statement management.
+- tag: Invoice Schedules
+  spec_file: zuora-invoice-schedules-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.8
+  evidence: '''Create an invoice schedule''; ''Execute an invoice schedule''; schema ''ExecuteInvoiceScheduleBillRunResponse'''
+  reason: Schedules the generation of customer invoices over time — invoicing and statement management
+    in subscription billing.
+- tag: Payment Gateway Reconciliation
+  spec_file: zuora-payment-gateway-reconciliation-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.8
+  evidence: POST /v1/gateway-settlement/payments/{payment-key}/settle  Settle a payment; POST_ReversePayment  Reverse
+    a payment
+  reason: Settlement, rejection, chargeback and refund reconciliation against the gateway — payment collection
+    operations in the subscription billing lifecycle. Some overlap with cash application/AR, but the vendor
+    context is subscription payments.
+- tag: Payment Schedules
+  spec_file: zuora-payment-schedules-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.8
+  evidence: '"Create a payment schedule", "List payment schedules by customer account", POSTRetryPaymentScheduleItemRequest'
+  reason: Scheduling, retrying and cancelling scheduled customer payments (including retry of failed schedule
+    items) is payment collection and dunning on the subscription billing platform.
+- tag: Taxation Items
+  spec_file: zuora-taxation-items-api-openapi.yml
+  capability_id: BC-4250.60
+  capability_id_l1: BC-4250
+  capability_name: Subscription Tax Management
+  confidence: 0.8
+  evidence: PUT /v1/taxationitems/{id}  PUT_TaxationItem  Update a taxation item
+  reason: Taxation items are the tax lines applied to subscription/usage invoices in Zuora's billing object
+    model, matching Subscription Tax Management within Subscription Billing & Revenue Management.
+- tag: Journal Runs
+  spec_file: zuora-journal-runs-api-openapi.yml
+  capability_id: BC-200.10
+  capability_id_l1: BC-200
+  capability_name: General Ledger Management
+  confidence: 0.75
+  evidence: POST /v1/journal-runs  'Create a journal run'; schema 'GETJournalRunTransactionType'
+  reason: Journal runs generate summary journal entries from billing transactions for posting to the general
+    ledger — general ledger/journal management.
+- tag: Offers
+  spec_file: zuora-offers-api-openapi.yml
+  capability_id: BC-4240.10
+  capability_id_l1: BC-4240
+  capability_name: Plan & Entitlement Design
+  confidence: 0.75
+  evidence: POST /v1/offers  POST_CreateOffer  Create an offer; schemas GETOfferProductRatePlanCharge,
+    POSTOfferPriceBookItem, POSTOfferTier
+  reason: Offers bundle product rate plans, price book items and tiers — definition of commercial plan/offer
+    constructs for subscriptions, i.e. plan and entitlement/price design in the SaaS subscription lifecycle.
+    Some ambiguity with pricing/discount management (BC-440), hence moderate confidence.
+- tag: Refunds
+  spec_file: zuora-refunds-api-openapi.yml
+  capability_id: BC-4250
+  capability_id_l1: BC-4250
+  capability_name: Subscription Billing & Revenue Management
+  confidence: 0.75
+  evidence: PUT /v1/refunds/{refundKey}/cancel  "Cancel a refund"; GET /v1/refunds  "List refunds"
+  reason: Refund lifecycle against payments and invoice items sits in subscription billing/payment handling;
+    ambiguity between payment collection and invoice adjustment sub-capabilities so L1 only.
+- tag: API Health
+  spec_file: zuora-api-health-api-openapi.yml
+  capability_id: BC-4270.50
+  capability_id_l1: BC-4270
+  capability_name: API Consumption Governance
+  confidence: 0.7
+  evidence: GET /system-health/api-requests/volume-summary  List API volume summary records
+  reason: Exposes API request volume analytics for the platform's public API consumers, aligning with
+    API consumption governance/usage analytics.
+- tag: Billing Preview Run
+  spec_file: zuora-billing-preview-run-api-openapi.yml
+  capability_id: BC-4250
+  capability_id_l1: BC-4250
+  capability_name: Subscription Billing & Revenue Management
+  confidence: 0.7
+  evidence: POST /v1/billing-preview-runs 'Create a billing preview run'
+  reason: Runs a preview of upcoming charges/invoice items for accounts; clearly within subscription billing,
+    but the evidence does not distinguish rating from invoicing, so only the L1 is asserted.
+- tag: Contacts
+  spec_file: zuora-contacts-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.7
+  evidence: POST /v1/contacts  Create a contact; PUT /v1/contacts/{contactId}/scrub  Scrub a contact
+  reason: Full CRUD plus data scrubbing on customer contact records attached to billing accounts — maintenance
+    of customer/contact master data.
+- tag: Custom Payment Method Types
+  spec_file: zuora-custom-payment-method-types-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.7
+  evidence: POST /open-payment-method-types  Create a draft custom payment method type; PUT /open-payment-method-types/publish/{paymentMethodTypeName}  Publish
+    a custom payment method type
+  reason: Defines and publishes payment method types usable for collecting customer payments, which falls
+    under payment-method management within subscription payment collection. It is configuration of payment
+    instruments rather than execution, hence moderate confidence.
+- tag: Delivery Adjustments
+  spec_file: zuora-delivery-adjustments-api-openapi.yml
+  capability_id: BC-4250.20
+  capability_id_l1: BC-4250
+  capability_name: Rating & Charging
+  confidence: 0.7
+  evidence: POSTCreateBillingAdjustmentRequestType; 'Create a delivery adjustment'; 'List all delivery
+    adjustments of a subscription'
+  reason: Delivery adjustments credit/adjust subscription charges for undelivered periods — a rating/charging
+    adjustment in the subscription billing model.
+- tag: Operations
+  spec_file: zuora-operations-api-openapi.yml
+  capability_id: BC-4250.30
+  capability_id_l1: BC-4250
+  capability_name: Invoicing & Statement Management
+  confidence: 0.7
+  evidence: POST /v1/operations/invoice-collect  Invoice and collect; POST /v1/operations/billing-preview  Generate
+    a billing preview
+  reason: Despite the generic tag, the operations generate invoices, billing previews and collect payment
+    — subscription invoicing and collection. Split between invoicing and payment collection, so mapped
+    to the invoicing sub-capability at moderate confidence.
+- tag: Orders
+  spec_file: zuora-orders-api-openapi.yml
+  capability_id: BC-4240.20
+  capability_id_l1: BC-4240
+  capability_name: Subscription Contracting
+  confidence: 0.7
+  evidence: POST /v1/orders  POST_Order  Create an order; GET /v1/orders/subscriptionOwner/{accountNumber}  List
+    orders of a subscription owner
+  reason: Orders in Zuora are the contracting artefact that creates and amends subscriptions (order preview,
+    create, list by subscription owner). Maps to subscription contracting, though it also spans modification.
+- tag: Price Book Items
+  spec_file: zuora-price-book-items-api-openapi.yml
+  capability_id: BC-440.20
+  capability_id_l1: BC-440
+  capability_name: Price List Management
+  confidence: 0.7
+  evidence: '"Create a price book item", "List price book items", GETPriceBookItemIntervalPrice, POSTPriceBookItemTier'
+  reason: Maintenance of price book entries with tiered/interval prices is price book / list price management;
+    not a pure technical surface.
+- tag: Product Rate Plans
+  spec_file: zuora-product-rate-plans-api-openapi.yml
+  capability_id: BC-4240.10
+  capability_id_l1: BC-4240
+  capability_name: Plan & Entitlement Design
+  confidence: 0.7
+  evidence: GET /v1/products/{product-key}/product-rate-plans  "List all product rate plans of a product";
+    schema GETProductRatePlanChargePricingTierType
+  reason: Product rate plans with charges and pricing tiers are the plan definitions in Zuora's subscription
+    catalogue, i.e. design of plans and their charge/entitlement rules. Overlap with price list management
+    keeps confidence moderate.
+- tag: Sign Up
+  spec_file: zuora-sign-up-api-openapi.yml
+  capability_id: BC-4240.30
+  capability_id_l1: BC-4240
+  capability_name: Subscription Provisioning
+  confidence: 0.7
+  evidence: POST /v1/sign-up  "Sign up"; schemas AccountData, SubscriptionData, SignUpPaymentMethod, RatePlans
+  reason: Single call that creates an account, subscription and payment method for self-service subscriber
+    sign-up, i.e. activation/provisioning of a new subscription.
