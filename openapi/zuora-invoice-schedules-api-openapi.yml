@@ -778,6 +778,38 @@ paths:
         required: true
 components:
   schemas:
+    UpdateScheduleItems:
+      allOf:
+      - properties:
+          amount:
+            description: "The amount of the invoice to be generated during the processing of the invoice schedule item. \n\nYou can only specify either the `amount` field or `percentage` field in one request. \n- If you choose to specify the `amount` field in the request, `null` is returned as the value of the `percentage` field in the corresponding response. \n- If you choose to specify the `percentage` field in the request, the value of the `amount` field returned in the corresponding response is calculated based on the percentage of the total amount.\n"
+            format: number
+            type: string
+          id:
+            description: "The unique ID of the invoice schedule item to be updated. \n\nIf this field is not provided, a new invoice schedule item is added to the invoice schedule.\n"
+            type: string
+          name:
+            description: 'The name of the invoice schedule item.
+
+              '
+            maxLength: 100
+            type: string
+          percentage:
+            description: "The percentage of the total amount to be billed during the processing of the invoice schedule item. \n\nYou can only specify either the `amount` field or `percentage` field in one request. \n- If you choose to specify the `amount` field in the request, `null` is returned as the value of the `percentage` field in the corresponding response. \n- If you choose to specify the `percentage` field in the request, the value of the `amount` field returned in the corresponding response is calculated based on the percentage of the total amount.              \n"
+          runDate:
+            description: 'The date in the tenant’s time zone when the invoice schedule item is planned to be processed to generate an invoice.
+
+              '
+            format: date
+            type: string
+          targetDateForAdditionalSubscriptions:
+            description: "The date in the tenant's time zone used by the invoice schedule to determine which fixed-period regular charges to be billed together with the invoice schedule item. \n\nThe regular charges must come from the subscriptions specified in the `additionalSubscriptionsToBill` field.\n"
+            format: date
+            type: string
+        type: object
+      - $ref: '#/components/schemas/InvoiceScheduleItemCustomFields'
+      - {}
+      title: scheduleItems
     BillRunFilters:
       allOf:
       - properties:
@@ -801,16 +833,106 @@ components:
         type: object
       - {}
       title: billRunFilters
-    InvoiceScheduleItemCustomFields:
+    CommonResponseType:
+      properties:
+        processId:
+          description: 'The Id of the process that handle the operation.
+
+            '
+          type: string
+        reasons:
+          items:
+            properties:
+              code:
+                description: 'The error code of response.
+
+                  '
+                type: string
+              message:
+                description: 'The detail information of the error response
+
+                  '
+                type: string
+            type: object
+          type: array
+        success:
+          description: 'Indicates whether the call succeeded.
+
+            '
+          type: boolean
+      type: object
+    InvoiceScheduleCustomFields:
       additionalProperties:
-        description: 'Custom fields of the Invoice Schedule Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+        description: 'Custom fields of the Invoice Schedule object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
 
           '
-      description: 'Container for custom fields of an Invoice Schedule Item object.
+      description: 'Container for custom fields of an Invoice Schedule object.
 
         '
-      title: invoiceScheduleItemCustomFields
+      title: invoiceScheduleCustomFields
       type: object
+    ScheduleItemsResponse:
+      allOf:
+      - properties:
+          actualAmount:
+            description: 'The actual amount that needs to be billed during the processing of the invoice schedule item.
+
+
+              By default, the actual amount is the same as the total amount. Even if order changes occur like Remove Product or Cancel Subscription, the value of the `amount` field keeps unchanged. The value of the `actualAmount` field reflects the actual amount to be billed.
+
+              '
+            format: number
+            type: string
+          amount:
+            description: "The amount of the invoice generated during the processing of the invoice schedule item.\n\nYou can only specify either the `amount` field or `percentage` field in one request. \n- If you choose to specify the `amount` field in the request, `null` is returned as the value of the `percentage` field in the corresponding response. \n- If you choose to specify the `percentage` field in the request, the value of the `amount` field returned in the corresponding response is calculated based on the percentage of the total amount.\n\nThe value of this field keeps unchanged once invoice schedule items are created. \n"
+            format: number
+            type: string
+          creditMemoId:
+            description: 'The ID of the credit memo that is generated during the processing of the invoice schedule item.
+
+              '
+            type: string
+          id:
+            description: 'The unique ID of the invoice schedule item.
+
+              '
+            type: string
+          invoiceId:
+            description: 'The ID of the invoice that is generated during the processing of the invoice schedule item.
+
+              '
+            type: string
+          name:
+            description: 'The name of the invoice schedule item.
+
+              '
+            maxLength: 100
+            type: string
+          percentage:
+            description: "The percentage of the total amount to be billed during the processing of the invoice schedule item. \n\nYou can only specify either the `amount` field or `percentage` field in one request. \n- If you choose to specify the `amount` field in the request, `null` is returned as the value of the `percentage` field in the corresponding response. \n- If you choose to specify the `percentage` field in the request, the value of the `amount` field returned in the corresponding response is calculated based on the percentage of the total amount.\n"
+          runDate:
+            description: 'The date in the tenant’s time zone when the invoice schedule item is processed to generate an invoice.
+
+              '
+            format: date
+            type: string
+          status:
+            description: 'The status of the invoice schedule item.
+
+              '
+            enum:
+            - Pending
+            - Executing
+            - Processed
+            type: string
+          targetDateForAdditionalSubscriptions:
+            description: "The date in the tenant's time zone used by the invoice schedule to determine which fixed-period regular charges to be billed together with the invoice schedule item. \n\nThe regular charges must come from the subscriptions specified in the `additionalSubscriptionsToBill` field.\n"
+            format: date
+            type: string
+        type: object
+      - $ref: '#/components/schemas/InvoiceScheduleItemCustomFields'
+      - {}
+      title: scheduleItems
     POSTScheduleItemType:
       allOf:
       - properties:
@@ -841,6 +963,137 @@ components:
       - $ref: '#/components/schemas/InvoiceScheduleItemCustomFields'
       - {}
       title: scheduleItems
+    InvoiceScheduleSpecificSubscriptions:
+      properties:
+        chargeNumbers:
+          description: 'A list of charges in the subscription that are chosen to be included in the invoice schedule.
+
+            '
+          type: string
+        orderKey:
+          description: 'The unique ID or number of the order associated with the invoice schedule.
+
+            '
+          type: string
+        subscriptionKey:
+          description: 'The unique number of the subscription contained in the order associated with the invoice schedule.
+
+            '
+          type: string
+      title: specificSubscriptions
+      type: object
+    InvoiceScheduleResponses:
+      allOf:
+      - properties:
+          accountId:
+            description: 'The ID of the customer account that the invoice schedule belongs to.
+
+              '
+            type: string
+          actualAmount:
+            description: 'The actual amount that needs to be billed during the processing of the invoice schedule.
+
+
+              By default, the actual amount is the same as the total amount. Even if order changes occur like Remove Product or Cancel Subscription, the value of the `totalAmount` field keeps unchanged. The value of the `actualAmount` field reflects the actual amount to be billed.
+
+              '
+            format: number
+            type: string
+          additionalSubscriptionsToBill:
+            description: "A list of the numbers of the subscriptions that need to be billed together with the invoice schedule. \n\nOne invoice schedule can have at most 600 additional subscriptions.\n"
+            items:
+              type: string
+            type: array
+          billedAmount:
+            description: 'The amount that has been billed during the processing of the invoice schedule.
+
+              '
+            format: number
+            type: string
+          currency:
+            description: "The currency of the billing documents generated during the processing of the invoice schedule.\n\n**Note**: \n- This field is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/Flexible_Billing/Multiple_Currencies\" target=\"_blank\">Multiple Currencies</a> feature in the **Early Adopter** phase enabled.\n- If you have the Multiple Currencies feature disabled, the corresponding account's default currency is always used.\n"
+            type: string
+          id:
+            description: 'The unique ID of the invoice schedule.
+
+              '
+            type: string
+          invoiceSeparately:
+            description: 'Whether the invoice items created from the invoice schedule appears on a separate invoice when Zuora generates invoices.
+
+              '
+            type: boolean
+          nextRunDate:
+            description: 'The run date of the next execution of invoice schedule. By default, the next run date is the same as run date of next pending invoice schedule item. It can be overwritten with a different date other than the default value. When the invoice schedule has completed the execution, the next run date is null.
+
+              '
+            format: date
+            type: string
+          notes:
+            description: 'Comments on the invoice schedule.
+
+              '
+            maxLength: 255
+            type: string
+          number:
+            description: 'The sequence number of the invoice schedule.
+
+              '
+            type: string
+          orders:
+            description: 'A list of the IDs or numbers of the orders associated with the invoice schedule. One invoice schedule can be associated with at most 10 orders.
+
+              '
+            items:
+              type: string
+            type: array
+          scheduleItems:
+            description: 'Container for schedule items. One invoice schedule can have at most 50 invoice schedule items.
+
+              '
+            items:
+              $ref: '#/components/schemas/ScheduleItemsResponse'
+            type: array
+          specificSubscriptions:
+            description: 'A list of the numbers of specific subscriptions associated with the invoice schedule.
+
+              '
+            items:
+              $ref: '#/components/schemas/InvoiceScheduleSpecificSubscriptions'
+            type: array
+          status:
+            description: 'The status of the invoice schedule.
+
+              '
+            enum:
+            - Pending
+            - PartiallyProcessed
+            - Paused
+            - FullyProcessed
+            type: string
+          totalAmount:
+            description: "The total amount that needs to be billed during the processing of the invoice schedule. \n\nThe value of this field keeps unchanged once invoice schedule items are created.\n"
+            format: number
+            type: string
+          unbilledAmount:
+            description: 'The amount that is waiting to be billed during the processing of the invoice schedule.
+
+              '
+            format: number
+            type: string
+        type: object
+      - $ref: '#/components/schemas/InvoiceScheduleCustomFields'
+      - {}
+    InvoiceScheduleItemCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Invoice Schedule Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of an Invoice Schedule Item object.
+
+        '
+      title: invoiceScheduleItemCustomFields
+      type: object
     PUTUpdateInvoiceScheduleRequest:
       allOf:
       - properties:
@@ -918,25 +1171,6 @@ components:
         specificSubscriptions:
         - orderKey: O-00000008
           subscriptionKey: S-00000008
-    InvoiceScheduleSpecificSubscriptions:
-      properties:
-        chargeNumbers:
-          description: 'A list of charges in the subscription that are chosen to be included in the invoice schedule.
-
-            '
-          type: string
-        orderKey:
-          description: 'The unique ID or number of the order associated with the invoice schedule.
-
-            '
-          type: string
-        subscriptionKey:
-          description: 'The unique number of the subscription contained in the order associated with the invoice schedule.
-
-            '
-          type: string
-      title: specificSubscriptions
-      type: object
     ExecuteInvoiceScheduleBillRunResponse:
       allOf:
       - properties:
@@ -1103,96 +1337,6 @@ components:
         targetDate: '2020-02-01'
         updatedById: ff808081298c6e5401298c7274a40005
         updatedDate: '2022-01-24 19:58:27'
-    CommonResponseType:
-      properties:
-        processId:
-          description: 'The Id of the process that handle the operation.
-
-            '
-          type: string
-        reasons:
-          items:
-            properties:
-              code:
-                description: 'The error code of response.
-
-                  '
-                type: string
-              message:
-                description: 'The detail information of the error response
-
-                  '
-                type: string
-            type: object
-          type: array
-        success:
-          description: 'Indicates whether the call succeeded.
-
-            '
-          type: boolean
-      type: object
-    ScheduleItemsResponse:
-      allOf:
-      - properties:
-          actualAmount:
-            description: 'The actual amount that needs to be billed during the processing of the invoice schedule item.
-
-
-              By default, the actual amount is the same as the total amount. Even if order changes occur like Remove Product or Cancel Subscription, the value of the `amount` field keeps unchanged. The value of the `actualAmount` field reflects the actual amount to be billed.
-
-              '
-            format: number
-            type: string
-          amount:
-            description: "The amount of the invoice generated during the processing of the invoice schedule item.\n\nYou can only specify either the `amount` field or `percentage` field in one request. \n- If you choose to specify the `amount` field in the request, `null` is returned as the value of the `percentage` field in the corresponding response. \n- If you choose to specify the `percentage` field in the request, the value of the `amount` field returned in the corresponding response is calculated based on the percentage of the total amount.\n\nThe value of this field keeps unchanged once invoice schedule items are created. \n"
-            format: number
-            type: string
-          creditMemoId:
-            description: 'The ID of the credit memo that is generated during the processing of the invoice schedule item.
-
-              '
-            type: string
-          id:
-            description: 'The unique ID of the invoice schedule item.
-
-              '
-            type: string
-          invoiceId:
-            description: 'The ID of the invoice that is generated during the processing of the invoice schedule item.
-
-              '
-            type: string
-          name:
-            description: 'The name of the invoice schedule item.
-
-              '
-            maxLength: 100
-            type: string
-          percentage:
-            description: "The percentage of the total amount to be billed during the processing of the invoice schedule item. \n\nYou can only specify either the `amount` field or `percentage` field in one request. \n- If you choose to specify the `amount` field in the request, `null` is returned as the value of the `percentage` field in the corresponding response. \n- If you choose to specify the `percentage` field in the request, the value of the `amount` field returned in the corresponding response is calculated based on the percentage of the total amount.\n"
-          runDate:
-            description: 'The date in the tenant’s time zone when the invoice schedule item is processed to generate an invoice.
-
-              '
-            format: date
-            type: string
-          status:
-            description: 'The status of the invoice schedule item.
-
-              '
-            enum:
-            - Pending
-            - Executing
-            - Processed
-            type: string
-          targetDateForAdditionalSubscriptions:
-            description: "The date in the tenant's time zone used by the invoice schedule to determine which fixed-period regular charges to be billed together with the invoice schedule item. \n\nThe regular charges must come from the subscriptions specified in the `additionalSubscriptionsToBill` field.\n"
-            format: date
-            type: string
-        type: object
-      - $ref: '#/components/schemas/InvoiceScheduleItemCustomFields'
-      - {}
-      title: scheduleItems
     POSTCreateInvoiceScheduleRequest:
       allOf:
       - properties:
@@ -1277,151 +1421,36 @@ components:
       - {}
       example:
         scheduleItemId: 8ad09b7d82b5c62f0182c5cd16944f73
-    UpdateScheduleItems:
-      allOf:
-      - properties:
-          amount:
-            description: "The amount of the invoice to be generated during the processing of the invoice schedule item. \n\nYou can only specify either the `amount` field or `percentage` field in one request. \n- If you choose to specify the `amount` field in the request, `null` is returned as the value of the `percentage` field in the corresponding response. \n- If you choose to specify the `percentage` field in the request, the value of the `amount` field returned in the corresponding response is calculated based on the percentage of the total amount.\n"
-            format: number
-            type: string
-          id:
-            description: "The unique ID of the invoice schedule item to be updated. \n\nIf this field is not provided, a new invoice schedule item is added to the invoice schedule.\n"
-            type: string
-          name:
-            description: 'The name of the invoice schedule item.
-
-              '
-            maxLength: 100
-            type: string
-          percentage:
-            description: "The percentage of the total amount to be billed during the processing of the invoice schedule item. \n\nYou can only specify either the `amount` field or `percentage` field in one request. \n- If you choose to specify the `amount` field in the request, `null` is returned as the value of the `percentage` field in the corresponding response. \n- If you choose to specify the `percentage` field in the request, the value of the `amount` field returned in the corresponding response is calculated based on the percentage of the total amount.              \n"
-          runDate:
-            description: 'The date in the tenant’s time zone when the invoice schedule item is planned to be processed to generate an invoice.
-
-              '
-            format: date
-            type: string
-          targetDateForAdditionalSubscriptions:
-            description: "The date in the tenant's time zone used by the invoice schedule to determine which fixed-period regular charges to be billed together with the invoice schedule item. \n\nThe regular charges must come from the subscriptions specified in the `additionalSubscriptionsToBill` field.\n"
-            format: date
-            type: string
-        type: object
-      - $ref: '#/components/schemas/InvoiceScheduleItemCustomFields'
-      - {}
-      title: scheduleItems
-    InvoiceScheduleCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Invoice Schedule object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of an Invoice Schedule object.
+  parameters:
+    GLOBAL_REQUEST_pageSize:
+      name: pageSize
+      in: query
+      required: false
+      description: 'The number of records returned per page in the response.
 
         '
-      title: invoiceScheduleCustomFields
-      type: object
-    InvoiceScheduleResponses:
-      allOf:
-      - properties:
-          accountId:
-            description: 'The ID of the customer account that the invoice schedule belongs to.
+      schema:
+        type: integer
+        default: 20
+        maximum: 40
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
+      in: header
+      required: false
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
-              '
-            type: string
-          actualAmount:
-            description: 'The actual amount that needs to be billed during the processing of the invoice schedule.
+        '
+      schema:
+        type: string
+    GLOBAL_HEADER_Authorization_OAuth_optional:
+      name: Authorization
+      in: header
+      required: false
+      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
 
-
-              By default, the actual amount is the same as the total amount. Even if order changes occur like Remove Product or Cancel Subscription, the value of the `totalAmount` field keeps unchanged. The value of the `actualAmount` field reflects the actual amount to be billed.
-
-              '
-            format: number
-            type: string
-          additionalSubscriptionsToBill:
-            description: "A list of the numbers of the subscriptions that need to be billed together with the invoice schedule. \n\nOne invoice schedule can have at most 600 additional subscriptions.\n"
-            items:
-              type: string
-            type: array
-          billedAmount:
-            description: 'The amount that has been billed during the processing of the invoice schedule.
-
-              '
-            format: number
-            type: string
-          currency:
-            description: "The currency of the billing documents generated during the processing of the invoice schedule.\n\n**Note**: \n- This field is available only if you have the <a href=\"https://knowledgecenter.zuora.com/Zuora_Billing/Bill_your_customers/Flexible_Billing/Multiple_Currencies\" target=\"_blank\">Multiple Currencies</a> feature in the **Early Adopter** phase enabled.\n- If you have the Multiple Currencies feature disabled, the corresponding account's default currency is always used.\n"
-            type: string
-          id:
-            description: 'The unique ID of the invoice schedule.
-
-              '
-            type: string
-          invoiceSeparately:
-            description: 'Whether the invoice items created from the invoice schedule appears on a separate invoice when Zuora generates invoices.
-
-              '
-            type: boolean
-          nextRunDate:
-            description: 'The run date of the next execution of invoice schedule. By default, the next run date is the same as run date of next pending invoice schedule item. It can be overwritten with a different date other than the default value. When the invoice schedule has completed the execution, the next run date is null.
-
-              '
-            format: date
-            type: string
-          notes:
-            description: 'Comments on the invoice schedule.
-
-              '
-            maxLength: 255
-            type: string
-          number:
-            description: 'The sequence number of the invoice schedule.
-
-              '
-            type: string
-          orders:
-            description: 'A list of the IDs or numbers of the orders associated with the invoice schedule. One invoice schedule can be associated with at most 10 orders.
-
-              '
-            items:
-              type: string
-            type: array
-          scheduleItems:
-            description: 'Container for schedule items. One invoice schedule can have at most 50 invoice schedule items.
-
-              '
-            items:
-              $ref: '#/components/schemas/ScheduleItemsResponse'
-            type: array
-          specificSubscriptions:
-            description: 'A list of the numbers of specific subscriptions associated with the invoice schedule.
-
-              '
-            items:
-              $ref: '#/components/schemas/InvoiceScheduleSpecificSubscriptions'
-            type: array
-          status:
-            description: 'The status of the invoice schedule.
-
-              '
-            enum:
-            - Pending
-            - PartiallyProcessed
-            - Paused
-            - FullyProcessed
-            type: string
-          totalAmount:
-            description: "The total amount that needs to be billed during the processing of the invoice schedule. \n\nThe value of this field keeps unchanged once invoice schedule items are created.\n"
-            format: number
-            type: string
-          unbilledAmount:
-            description: 'The amount that is waiting to be billed during the processing of the invoice schedule.
-
-              '
-            format: number
-            type: string
-        type: object
-      - $ref: '#/components/schemas/InvoiceScheduleCustomFields'
-      - {}
-  parameters:
+        '
+      schema:
+        type: string
     GLOBAL_HEADER_Idempotency_Key:
       name: Idempotency-Key
       in: header
@@ -1443,26 +1472,6 @@ components:
       schema:
         type: string
         maxLength: 64
-    GLOBAL_REQUEST_pageSize:
-      name: pageSize
-      in: query
-      required: false
-      description: 'The number of records returned per page in the response.
-
-        '
-      schema:
-        type: integer
-        default: 20
-        maximum: 40
-    GLOBAL_HEADER_Authorization_OAuth_optional:
-      name: Authorization
-      in: header
-      required: false
-      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Accept_Encoding:
       name: Accept-Encoding
       in: header
@@ -1475,15 +1484,6 @@ components:
       in: header
       required: false
       description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:

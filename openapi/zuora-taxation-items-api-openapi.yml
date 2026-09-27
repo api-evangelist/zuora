@@ -456,14 +456,15 @@ paths:
         required: true
 components:
   parameters:
-    GLOBAL_HEADER_Idempotency_Key:
-      name: Idempotency-Key
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
       in: header
       required: false
-      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+        '
       schema:
         type: string
-        maxLength: 255
     GLOBAL_REQUEST_rejectUnknownFields:
       name: rejectUnknownFields
       in: query
@@ -472,6 +473,43 @@ components:
       schema:
         type: boolean
         default: false
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
+      schema:
+        type: string
+    GLOBAL_HEADER_Idempotency_Key:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+      schema:
+        type: string
+        maxLength: 255
+    GLOBAL_HEADER_Zuora_Org_Ids:
+      name: Zuora-Org-Ids
+      in: header
+      required: false
+      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+      schema:
+        type: string
+    GLOBAL_HEADER_Zuora_Track_Id:
+      name: Zuora-Track-Id
+      in: header
+      required: false
+      description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+        The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+        '
+      schema:
+        type: string
+        maxLength: 64
     GLOBAL_HEADER_Authorization_OAuth_optional:
       name: Authorization
       in: header
@@ -488,316 +526,7 @@ components:
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
       schema:
         type: string
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
-      in: header
-      required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Track_Id:
-      name: Zuora-Track-Id
-      in: header
-      required: false
-      description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
-
-
-        The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
-
-        '
-      schema:
-        type: string
-        maxLength: 64
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Org_Ids:
-      name: Zuora-Org-Ids
-      in: header
-      required: false
-      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
-      schema:
-        type: string
   schemas:
-    ProxyCreateOrModifyResponse:
-      properties:
-        Id:
-          description: ''
-          type: string
-        Success:
-          description: ''
-          type: boolean
-      type: object
-    ProxyCreateTaxationItem:
-      allOf:
-      - properties:
-          AccountingCode:
-            description: ' The Chart of Accounts '
-            type: string
-          ExemptAmount:
-            description: ' The calculated tax amount excluded due to the exemption.
-
-              **Character limit**: 16 **Values**: a decimal value '
-            format: double
-            type: number
-          InvoiceItemId:
-            description: ' The ID of the specific invoice item that the taxation information applies to.
-
-              **Character limit**: 32 **Values**: a valid invoice item ID '
-            type: string
-          Jurisdiction:
-            description: ' The jurisdiction that applies the tax or VAT. This value is typically a state, province, county, or city.
-
-              **Character limit**: 32 **Values**: a string of 32 characterrs or fewer '
-            type: string
-          LocationCode:
-            description: ' The identifier for the location based on the value of the `TaxCode` field.
-
-              **Character limit**: 32 **Values**: automatically generated '
-            type: string
-          Name:
-            description: ' The name of the tax rate, such as sales tax or GST. This name is displayed on invoices.
-
-              **Character limit**: 128 **Values**: a string of 128 characters or fewer '
-            type: string
-          TaxAmount:
-            description: ' The amount of the tax applied to the charge.
-
-              **Character limit**: 16 **Values**: a decimal value '
-            format: double
-            type: number
-          TaxCode:
-            description: ' The tax code identifies which tax rules and tax rates to apply to a specific charge.
-
-              **Character limit**: 32 **Values**: a string of 32 characters or fewer '
-            type: string
-          TaxCodeDescription:
-            description: ' The description for the tax code.
-
-              **Character limit**: 255 **Values**: a string of 255 characters or fewer '
-            type: string
-          TaxDate:
-            description: ' The date that the tax is applied to the charge, in `yyyy-mm-dd` format.
-
-              **Character limit**: 29 '
-            format: date
-            type: string
-          TaxRate:
-            description: ' The tax rate applied to the charge.
-
-              **Character limit**: 16 **Values**: a valid decimal value '
-            format: double
-            type: number
-          TaxRateDescription:
-            description: ' The description of the tax rate.
-
-              **Character limit**: 255 **Values**: a string of 255 characters or fewer '
-            type: string
-          TaxRateType:
-            description: ' The type of the tax rate applied to the charge.
-
-              **Character limit**: 10 **Values**: `Percentage`, `FlatFee` '
-            type: string
-        required:
-        - InvoiceItemId
-        - Jurisdiction
-        - Name
-        - TaxAmount
-        - TaxRate
-        - TaxDate
-        - TaxRateType
-        type: object
-      - $ref: '#/components/schemas/TaxationItemObjectCustomFields'
-      example:
-        AccountingCode: Usage Revenue
-        ExemptAmount: 50
-        InvoiceItemId: 2c93808457d787030157e0306cd43a88
-        Jurisdiction: test
-        LocationCode: code - 001
-        Name: test
-        TaxAmount: 3
-        TaxCode: taxcode
-        TaxCodeDescription: description
-        TaxDate: '2016-10-20'
-        TaxMode: TaxExclusive
-        TaxRate: 3
-        TaxRateDescription: test
-        TaxRateType: FlatFee
-    ProxyBadRequestResponse:
-      properties:
-        Errors:
-          items:
-            properties:
-              Code:
-                description: ''
-                type: string
-              Message:
-                description: ''
-                type: string
-            type: object
-          type: array
-        Success:
-          description: ''
-          type: boolean
-      type: object
-    PUTTaxationItemType:
-      allOf:
-      - properties:
-          exemptAmount:
-            description: 'The calculated tax amount excluded due to the exemption.
-
-              '
-            format: double
-            type: number
-          financeInformation:
-            description: 'Container for the finance information related to the taxation item.
-
-              '
-            properties:
-              onAccountAccountingCode:
-                description: 'The accounting code that maps to an on account in your accounting system.
-
-                  '
-                maxLength: 100
-                minLength: 0
-                type: string
-              salesTaxPayableAccountingCode:
-                description: 'The accounting code for the sales taxes payable.
-
-                  '
-                maxLength: 100
-                minLength: 0
-                type: string
-            type: object
-          jurisdiction:
-            description: 'The jurisdiction that applies the tax or VAT. This value is typically a state, province, county, or city.
-
-              '
-            type: string
-          locationCode:
-            description: "The identifier for the location based on the value of the `taxCode` field. \n"
-            type: string
-          name:
-            description: 'The name of the taxation item to be updated.
-
-              '
-            type: string
-          taxAmount:
-            description: 'The amount of the tax applied to the credit or debit memo.
-
-              '
-            format: double
-            type: number
-          taxCode:
-            description: 'The tax code identifies which tax rules and tax rates to apply to a specific credit or debit memo.
-
-              '
-            type: string
-          taxCodeDescription:
-            description: 'The description of the tax code.
-
-              '
-            type: string
-          taxDate:
-            description: 'The date when the tax is applied to the credit or debit memo.
-
-              '
-            format: date
-            type: string
-          taxRate:
-            description: 'The tax rate applied to the credit or debit memo.
-
-              '
-            format: double
-            type: number
-          taxRateDescription:
-            description: "The description of the tax rate. \n"
-            type: string
-          taxRateType:
-            description: 'The type of the tax rate applied to the credit or debit memo.
-
-              '
-            enum:
-            - Percentage
-            - FlatFee
-            type: string
-        type: object
-      - $ref: '#/components/schemas/TaxationItemObjectCustomFields'
-      example:
-        exemptAmount: 0.0
-        financeInformation:
-          onAccountAccountingCode: Check
-          salesTaxPayableAccountingCode: ''
-        jurisdiction: CALIFORNIA
-        locationCode: '06'
-        name: STATE TAX
-        taxAmount: 1.0
-        taxCode: ServiceTaxCode
-        taxCodeDescription: This is tax code description!
-        taxDate: '2016-06-05'
-        taxRate: 0.0625
-        taxRateDescription: This is tax rate description!
-        taxRateType: Percentage
-    ProxyUnauthorizedResponse:
-      properties:
-        message:
-          description: 'Error message.
-
-
-            If the error message is "Authentication error", ensure that the `Authorization` request header contains valid authentication credentials, then retry the request. See [Authentication](/rest-api/general-concepts/authentication/) for more information.
-
-
-            If the error message is "Failed to get user info", retry the request.
-
-            '
-          type: string
-      type: object
-    TaxationItemObjectCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Taxation Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of a Taxation Item object.
-
-        '
-      title: taxationItemFieldsCustom
-      type: object
-    CommonResponseType:
-      properties:
-        processId:
-          description: 'The Id of the process that handle the operation.
-
-            '
-          type: string
-        reasons:
-          items:
-            properties:
-              code:
-                description: 'The error code of response.
-
-                  '
-                type: string
-              message:
-                description: 'The detail information of the error response
-
-                  '
-                type: string
-            type: object
-          type: array
-        success:
-          description: 'Indicates whether the call succeeded.
-
-            '
-          type: boolean
-      type: object
     GETTaxationItemType:
       allOf:
       - properties:
@@ -925,6 +654,277 @@ components:
             type: string
         type: object
       - $ref: '#/components/schemas/TaxationItemObjectCustomFields'
+    ProxyCreateTaxationItem:
+      allOf:
+      - properties:
+          AccountingCode:
+            description: ' The Chart of Accounts '
+            type: string
+          ExemptAmount:
+            description: ' The calculated tax amount excluded due to the exemption.
+
+              **Character limit**: 16 **Values**: a decimal value '
+            format: double
+            type: number
+          InvoiceItemId:
+            description: ' The ID of the specific invoice item that the taxation information applies to.
+
+              **Character limit**: 32 **Values**: a valid invoice item ID '
+            type: string
+          Jurisdiction:
+            description: ' The jurisdiction that applies the tax or VAT. This value is typically a state, province, county, or city.
+
+              **Character limit**: 32 **Values**: a string of 32 characterrs or fewer '
+            type: string
+          LocationCode:
+            description: ' The identifier for the location based on the value of the `TaxCode` field.
+
+              **Character limit**: 32 **Values**: automatically generated '
+            type: string
+          Name:
+            description: ' The name of the tax rate, such as sales tax or GST. This name is displayed on invoices.
+
+              **Character limit**: 128 **Values**: a string of 128 characters or fewer '
+            type: string
+          TaxAmount:
+            description: ' The amount of the tax applied to the charge.
+
+              **Character limit**: 16 **Values**: a decimal value '
+            format: double
+            type: number
+          TaxCode:
+            description: ' The tax code identifies which tax rules and tax rates to apply to a specific charge.
+
+              **Character limit**: 32 **Values**: a string of 32 characters or fewer '
+            type: string
+          TaxCodeDescription:
+            description: ' The description for the tax code.
+
+              **Character limit**: 255 **Values**: a string of 255 characters or fewer '
+            type: string
+          TaxDate:
+            description: ' The date that the tax is applied to the charge, in `yyyy-mm-dd` format.
+
+              **Character limit**: 29 '
+            format: date
+            type: string
+          TaxRate:
+            description: ' The tax rate applied to the charge.
+
+              **Character limit**: 16 **Values**: a valid decimal value '
+            format: double
+            type: number
+          TaxRateDescription:
+            description: ' The description of the tax rate.
+
+              **Character limit**: 255 **Values**: a string of 255 characters or fewer '
+            type: string
+          TaxRateType:
+            description: ' The type of the tax rate applied to the charge.
+
+              **Character limit**: 10 **Values**: `Percentage`, `FlatFee` '
+            type: string
+        required:
+        - InvoiceItemId
+        - Jurisdiction
+        - Name
+        - TaxAmount
+        - TaxRate
+        - TaxDate
+        - TaxRateType
+        type: object
+      - $ref: '#/components/schemas/TaxationItemObjectCustomFields'
+      example:
+        AccountingCode: Usage Revenue
+        ExemptAmount: 50
+        InvoiceItemId: 2c93808457d787030157e0306cd43a88
+        Jurisdiction: test
+        LocationCode: code - 001
+        Name: test
+        TaxAmount: 3
+        TaxCode: taxcode
+        TaxCodeDescription: description
+        TaxDate: '2016-10-20'
+        TaxMode: TaxExclusive
+        TaxRate: 3
+        TaxRateDescription: test
+        TaxRateType: FlatFee
+    TaxationItemObjectCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Taxation Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of a Taxation Item object.
+
+        '
+      title: taxationItemFieldsCustom
+      type: object
+    ProxyBadRequestResponse:
+      properties:
+        Errors:
+          items:
+            properties:
+              Code:
+                description: ''
+                type: string
+              Message:
+                description: ''
+                type: string
+            type: object
+          type: array
+        Success:
+          description: ''
+          type: boolean
+      type: object
+    ProxyUnauthorizedResponse:
+      properties:
+        message:
+          description: 'Error message.
+
+
+            If the error message is "Authentication error", ensure that the `Authorization` request header contains valid authentication credentials, then retry the request. See [Authentication](/rest-api/general-concepts/authentication/) for more information.
+
+
+            If the error message is "Failed to get user info", retry the request.
+
+            '
+          type: string
+      type: object
+    CommonResponseType:
+      properties:
+        processId:
+          description: 'The Id of the process that handle the operation.
+
+            '
+          type: string
+        reasons:
+          items:
+            properties:
+              code:
+                description: 'The error code of response.
+
+                  '
+                type: string
+              message:
+                description: 'The detail information of the error response
+
+                  '
+                type: string
+            type: object
+          type: array
+        success:
+          description: 'Indicates whether the call succeeded.
+
+            '
+          type: boolean
+      type: object
+    ProxyCreateOrModifyResponse:
+      properties:
+        Id:
+          description: ''
+          type: string
+        Success:
+          description: ''
+          type: boolean
+      type: object
+    PUTTaxationItemType:
+      allOf:
+      - properties:
+          exemptAmount:
+            description: 'The calculated tax amount excluded due to the exemption.
+
+              '
+            format: double
+            type: number
+          financeInformation:
+            description: 'Container for the finance information related to the taxation item.
+
+              '
+            properties:
+              onAccountAccountingCode:
+                description: 'The accounting code that maps to an on account in your accounting system.
+
+                  '
+                maxLength: 100
+                minLength: 0
+                type: string
+              salesTaxPayableAccountingCode:
+                description: 'The accounting code for the sales taxes payable.
+
+                  '
+                maxLength: 100
+                minLength: 0
+                type: string
+            type: object
+          jurisdiction:
+            description: 'The jurisdiction that applies the tax or VAT. This value is typically a state, province, county, or city.
+
+              '
+            type: string
+          locationCode:
+            description: "The identifier for the location based on the value of the `taxCode` field. \n"
+            type: string
+          name:
+            description: 'The name of the taxation item to be updated.
+
+              '
+            type: string
+          taxAmount:
+            description: 'The amount of the tax applied to the credit or debit memo.
+
+              '
+            format: double
+            type: number
+          taxCode:
+            description: 'The tax code identifies which tax rules and tax rates to apply to a specific credit or debit memo.
+
+              '
+            type: string
+          taxCodeDescription:
+            description: 'The description of the tax code.
+
+              '
+            type: string
+          taxDate:
+            description: 'The date when the tax is applied to the credit or debit memo.
+
+              '
+            format: date
+            type: string
+          taxRate:
+            description: 'The tax rate applied to the credit or debit memo.
+
+              '
+            format: double
+            type: number
+          taxRateDescription:
+            description: "The description of the tax rate. \n"
+            type: string
+          taxRateType:
+            description: 'The type of the tax rate applied to the credit or debit memo.
+
+              '
+            enum:
+            - Percentage
+            - FlatFee
+            type: string
+        type: object
+      - $ref: '#/components/schemas/TaxationItemObjectCustomFields'
+      example:
+        exemptAmount: 0.0
+        financeInformation:
+          onAccountAccountingCode: Check
+          salesTaxPayableAccountingCode: ''
+        jurisdiction: CALIFORNIA
+        locationCode: '06'
+        name: STATE TAX
+        taxAmount: 1.0
+        taxCode: ServiceTaxCode
+        taxCodeDescription: This is tax code description!
+        taxDate: '2016-06-05'
+        taxRate: 0.0625
+        taxRateDescription: This is tax rate description!
+        taxRateType: Percentage
 x-tagGroups:
 - name: Authentication
   tags:

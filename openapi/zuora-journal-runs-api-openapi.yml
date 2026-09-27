@@ -330,6 +330,15 @@ paths:
                 success: true
 components:
   parameters:
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
+      in: header
+      required: false
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+        '
+      schema:
+        type: string
     GLOBAL_HEADER_Idempotency_Key:
       name: Idempotency-Key
       in: header
@@ -338,6 +347,35 @@ components:
       schema:
         type: string
         maxLength: 255
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
+      schema:
+        type: string
+    GLOBAL_HEADER_Zuora_Org_Ids:
+      name: Zuora-Org-Ids
+      in: header
+      required: false
+      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+      schema:
+        type: string
+    GLOBAL_HEADER_Zuora_Track_Id:
+      name: Zuora-Track-Id
+      in: header
+      required: false
+      description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+        The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+        '
+      schema:
+        type: string
+        maxLength: 64
     GLOBAL_HEADER_Authorization_OAuth_optional:
       name: Authorization
       in: header
@@ -354,45 +392,59 @@ components:
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
       schema:
         type: string
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
-      in: header
-      required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Track_Id:
-      name: Zuora-Track-Id
-      in: header
-      required: false
-      description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
-
-
-        The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
-
-        '
-      schema:
-        type: string
-        maxLength: 64
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Org_Ids:
-      name: Zuora-Org-Ids
-      in: header
-      required: false
-      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
-      schema:
-        type: string
   schemas:
+    POSTJournalRunTransactionType:
+      properties:
+        type:
+          description: "Transaction type. Invoice Adjustment is deprecated on Production. Zuora recommends that you use the Invoice Item Adjustment instead.\n\nIf you enable the Invoice Settlement feature, Debit Memo Item, Credit Memo Item, and Credit Memo Application Item are available, Payment and Refund will be replaced by Payment Application and Refund Application. \n\nIf you enable both the Invoice Settlement feature and the Invoice Item Settlement feature, Payment and Refund will be replaced by Payment Application Item and Refund Application Item. \n"
+          enum:
+          - Invoice Item
+          - Taxation Item
+          - Invoice Item Adjustment (Invoice)
+          - Invoice Item Adjustment (Tax)
+          - Invoice Adjustment
+          - Electronic Payment
+          - External Payment
+          - Electronic Refund
+          - External Refund
+          - Electronic Credit Balance Payment
+          - External Credit Balance Payment
+          - Electronic Credit Balance Refund
+          - External Credit Balance Refund
+          - Credit Balance Adjustment (Applied from Credit Balance)
+          - Credit Balance Adjustment (Transferred to Credit Balance)
+          - Revenue Event Item
+          - Debit Memo Item (Charge)
+          - Debit Memo Item (Tax)
+          - Credit Memo Item (Charge)
+          - Credit Memo Item (Tax)
+          - Credit Memo Application Item
+          - Electronic Payment Application
+          - External Payment Application
+          - Electronic Refund Application
+          - External Refund Application
+          - Electronic Payment Application Item
+          - External Payment Application Item
+          - Electronic Refund Application Item
+          - External Refund Application Item
+          type: string
+      required:
+      - type
+      title: transactionTypes
+      type: object
+    POSTJournalRunResponseType:
+      properties:
+        journalRunNumber:
+          description: 'Journal run number.
+
+            '
+          type: string
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+      type: object
     GETJournalRunType:
       properties:
         aggregateCurrency:
@@ -478,42 +530,33 @@ components:
             $ref: '#/components/schemas/GETJournalRunTransactionType'
           type: array
       type: object
-    GETJournalRunTransactionType:
+    CommonResponseType:
       properties:
-        type:
-          description: "Transaction type. Invoice Adjustment is deprecated on Production. Zuora recommends that you use the Invoice Item Adjustment instead.\n\nIf you enable the Invoice Settlement feature, Debit Memo Item, Credit Memo Item, and Credit Memo Application Item are available, Payment and Refund will be replaced by Payment Application and Refund Application. \n\nIf you enable both the Invoice Settlement feature and the Invoice Item Settlement feature, Payment and Refund will be replaced by Payment Application Item and Refund Application Item. \n"
-          enum:
-          - Invoice Item
-          - Taxation Item
-          - Invoice Item Adjustment (Invoice)
-          - Invoice Item Adjustment (Tax)
-          - Invoice Adjustment
-          - Electronic Payment
-          - External Payment
-          - Electronic Refund
-          - External Refund
-          - Electronic Credit Balance Payment
-          - External Credit Balance Payment
-          - Electronic Credit Balance Refund
-          - External Credit Balance Refund
-          - Credit Balance Adjustment (Applied from Credit Balance)
-          - Credit Balance Adjustment (Transferred to Credit Balance)
-          - Revenue Event Item
-          - Debit Memo Item (Charge)
-          - Debit Memo Item (Tax)
-          - Credit Memo Item (Charge)
-          - Credit Memo Item (Tax)
-          - Credit Memo Application Item
-          - Electronic Payment Application
-          - External Payment Application
-          - Electronic Refund Application
-          - External Refund Application
-          - Electronic Payment Application Item
-          - External Payment Application Item
-          - Electronic Refund Application Item
-          - External Refund Application Item
+        processId:
+          description: 'The Id of the process that handle the operation.
+
+            '
           type: string
-      title: transactionTypes
+        reasons:
+          items:
+            properties:
+              code:
+                description: 'The error code of response.
+
+                  '
+                type: string
+              message:
+                description: 'The detail information of the error response
+
+                  '
+                type: string
+            type: object
+          type: array
+        success:
+          description: 'Indicates whether the call succeeded.
+
+            '
+          type: boolean
       type: object
     POSTJournalRunType:
       example:
@@ -591,7 +634,7 @@ components:
       - transactionTypes
       - journalEntryDate
       type: object
-    POSTJournalRunTransactionType:
+    GETJournalRunTransactionType:
       properties:
         type:
           description: "Transaction type. Invoice Adjustment is deprecated on Production. Zuora recommends that you use the Invoice Item Adjustment instead.\n\nIf you enable the Invoice Settlement feature, Debit Memo Item, Credit Memo Item, and Credit Memo Application Item are available, Payment and Refund will be replaced by Payment Application and Refund Application. \n\nIf you enable both the Invoice Settlement feature and the Invoice Item Settlement feature, Payment and Refund will be replaced by Payment Application Item and Refund Application Item. \n"
@@ -626,50 +669,7 @@ components:
           - Electronic Refund Application Item
           - External Refund Application Item
           type: string
-      required:
-      - type
       title: transactionTypes
-      type: object
-    CommonResponseType:
-      properties:
-        processId:
-          description: 'The Id of the process that handle the operation.
-
-            '
-          type: string
-        reasons:
-          items:
-            properties:
-              code:
-                description: 'The error code of response.
-
-                  '
-                type: string
-              message:
-                description: 'The detail information of the error response
-
-                  '
-                type: string
-            type: object
-          type: array
-        success:
-          description: 'Indicates whether the call succeeded.
-
-            '
-          type: boolean
-      type: object
-    POSTJournalRunResponseType:
-      properties:
-        journalRunNumber:
-          description: 'Journal run number.
-
-            '
-          type: string
-        success:
-          description: 'Returns `true` if the request was processed successfully.
-
-            '
-          type: boolean
       type: object
 x-tagGroups:
 - name: Authentication

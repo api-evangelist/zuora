@@ -518,6 +518,225 @@ paths:
         required: true
 components:
   schemas:
+    GETJournalEntryDetailType:
+      allOf:
+      - properties:
+          accountingPeriodName:
+            description: 'Name of the accounting period that the journal entry belongs to.
+
+              '
+            type: string
+          aggregateCurrency:
+            description: 'Returns true if the journal entry is aggregating currencies. That is, if the journal entry was created when the `Aggregate transactions with different currencies during a Journal Run` setting was configured to `Yes`. Otherwise, returns `false`.
+
+              '
+            type: boolean
+          currency:
+            description: 'Currency used.
+
+              '
+            type: string
+          homeCurrency:
+            description: 'Home currency used.
+
+              '
+            type: string
+          journalEntryDate:
+            description: 'Date of the journal entry.
+
+              '
+            format: date
+            type: string
+          journalEntryItems:
+            description: 'Key name that represents the list of journal entry items.
+
+              '
+            items:
+              $ref: '#/components/schemas/GETJournalEntryItemType'
+            type: array
+          notes:
+            description: '
+
+              Additional information about this record.
+
+              Character limit: 2,000
+
+              '
+            type: string
+          number:
+            description: 'Journal entry number in the format JE-00000001.
+
+              '
+            type: string
+          organizationLabel:
+            description: 'The organization that this object belongs to.
+
+
+              Note: This field is available only when the Multi-Org feature is enabled.
+
+              '
+            type: string
+          segments:
+            description: 'List of segments that apply to the summary journal entry.
+
+              '
+            items:
+              $ref: '#/components/schemas/GETJournalEntrySegmentType'
+            type: array
+          status:
+            description: 'Status of journal entry.
+
+              '
+            enum:
+            - Created
+            - Cancelled
+            type: string
+          success:
+            description: 'Returns `true` if the request was processed successfully.
+
+              '
+            type: boolean
+          timePeriodEnd:
+            description: 'End date of time period included in the journal entry.
+
+              '
+            format: date
+            type: string
+          timePeriodStart:
+            description: 'Start date of time period included in the journal entry.
+
+              '
+            format: date
+            type: string
+          transactionType:
+            description: 'Transaction type of the transactions included in the summary journal entry.
+
+              '
+            type: string
+          transferDateTime:
+            description: 'Date and time that transferredToAccounting was changed to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
+
+              '
+            format: date-time
+            type: string
+          transferredBy:
+            description: 'User ID of the person who changed transferredToAccounting to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
+
+              '
+            type: string
+          transferredToAccounting:
+            description: 'Status shows whether the journal entry has been transferred to an accounting system. '
+            enum:
+            - 'No'
+            - Processing
+            - 'Yes'
+            - Error
+            - Ignore
+            type: string
+        type: object
+      - $ref: '#/components/schemas/JournalEntryObjectCustomFields'
+    JournalEntryObjectCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Journal Entry object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of a Journal Entry object.
+
+        '
+      title: journalEntryFieldsCustom
+      type: object
+    POSTJournalEntryResponseType:
+      properties:
+        journalEntryNumber:
+          description: 'Journal entry number in the format JE-00000001.
+
+            '
+          type: string
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+      type: object
+    CommonResponseType:
+      properties:
+        processId:
+          description: 'The Id of the process that handle the operation.
+
+            '
+          type: string
+        reasons:
+          items:
+            properties:
+              code:
+                description: 'The error code of response.
+
+                  '
+                type: string
+              message:
+                description: 'The detail information of the error response
+
+                  '
+                type: string
+            type: object
+          type: array
+        success:
+          description: 'Indicates whether the call succeeded.
+
+            '
+          type: boolean
+      type: object
+    PUTJournalEntryItemType:
+      allOf:
+      - properties:
+          accountingCodeName:
+            description: 'Name of the accounting code.
+
+
+              If the Journal Entry Item has a blank accounting code, enter the empty string.
+
+              '
+            type: string
+          accountingCodeType:
+            description: "Accounting code type.\n\nNote that `On-Account Receivable` is only available if you enable the Invoice Settlement feature. \n"
+            enum:
+            - AccountsReceivable
+            - On-Account Receivable
+            - Cash
+            - OtherAssets
+            - CustomerCashOnAccount
+            - DeferredRevenue
+            - SalesTaxPayable
+            - OtherLiabilities
+            - SalesRevenue
+            - SalesDiscounts
+            - OtherRevenue
+            - OtherEquity
+            - BadDebt
+            - OtherExpenses
+            type: string
+          type:
+            description: 'Type of journal entry item. '
+            enum:
+            - Credit
+            - Debit
+            type: string
+        required:
+        - accountingCodeName
+        - type
+        type: object
+      - $ref: '#/components/schemas/JournalEntryItemObjectCustomFields'
+      title: journalEntryItems
+    JournalEntryItemObjectCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Journal Entry Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of a Journal Entry Item object.
+
+        '
+      title: journalEntryItemFieldsCustom
+      type: object
     POSTJournalEntryItemType:
       allOf:
       - properties:
@@ -572,31 +791,193 @@ components:
         type: object
       - $ref: '#/components/schemas/JournalEntryItemObjectCustomFields'
       title: journalEntryItems
-    POSTJournalEntrySegmentType:
+    GETJournalEntriesInJournalRunType:
       properties:
-        segmentName:
-          description: 'Name of segment. You must use the segment name that has already been specified in the default segment rule. In addition, segments need to be passed in the order where they were defined in the segmentation rule. If multiple segments are configured in the default rule, you need to specify all of them in order. '
-          type: string
-        segmentValue:
-          description: 'Value of segment in this summary journal entry.
+        journalEntries:
+          description: 'Key name that represents the list of journal entries.
 
             '
+          items:
+            $ref: '#/components/schemas/GETJournalEntryDetailTypeWithoutSuccess'
+          type: array
+        nextPage:
+          description: 'URL to retrieve the next page of the response if it exists; otherwise absent.
+
+            '
+          format: URL
           type: string
-      required:
-      - segmentName
-      - segmentValue
-      title: segments
-      type: object
-    JournalEntryObjectCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Journal Entry object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+        success:
+          description: 'Returns `true` if the request was processed successfully.
 
-          '
-      description: 'Container for custom fields of a Journal Entry object.
-
-        '
-      title: journalEntryFieldsCustom
+            '
+          type: boolean
       type: object
+    GETJournalEntryDetailTypeWithoutSuccess:
+      allOf:
+      - properties:
+          accountingPeriodName:
+            description: 'Name of the accounting period that the journal entry belongs to.
+
+              '
+            type: string
+          aggregateCurrency:
+            description: 'Returns true if the journal entry is aggregating currencies. That is, if the journal entry was created when the `Aggregate transactions with different currencies during a JournalRun` setting was configured to "Yes". Otherwise, returns `false`.
+
+              '
+            type: boolean
+          currency:
+            description: 'Currency used.
+
+              '
+            type: string
+          homeCurrency:
+            description: 'Home currency used.
+
+              '
+            type: string
+          journalEntryDate:
+            description: 'Date of the journal entry.
+
+              '
+            format: date
+            type: string
+          journalEntryItems:
+            description: 'Key name that represents the list of journal entry items.
+
+              '
+            items:
+              $ref: '#/components/schemas/GETJournalEntryItemType'
+            type: array
+          notes:
+            description: 'Additional information about this record.
+
+              Character limit: 2,000
+
+              '
+            type: string
+          number:
+            description: 'Journal entry number in the format JE-00000001.
+
+              '
+            type: string
+          organizationLabel:
+            description: 'The organization that this object belongs to.
+
+
+              Note: This field is available only when the Multi-Org feature is enabled.
+
+              '
+            type: string
+          segments:
+            description: 'List of segments that apply to the summary journal entry.
+
+              '
+            items:
+              $ref: '#/components/schemas/GETJournalEntrySegmentType'
+            type: array
+          status:
+            description: 'Status of journal entry. '
+            enum:
+            - Created
+            - Cancelled
+            type: string
+          timePeriodEnd:
+            description: 'End date of time period included in the journal entry.
+
+              '
+            format: date
+            type: string
+          timePeriodStart:
+            description: 'Start date of time period included in the journal entry.
+
+              '
+            format: date
+            type: string
+          transactionType:
+            description: 'Transaction type of the transactions included in the summary journal entry.
+
+              '
+            type: string
+          transferDateTime:
+            description: 'Date and time that transferredToAccounting was changed to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
+
+              '
+            format: date-time
+            type: string
+          transferredBy:
+            description: 'User ID of the person who changed transferredToAccounting to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
+
+              '
+            type: string
+          transferredToAccounting:
+            description: 'Status shows whether the journal entry has been transferred to an accounting system. '
+            enum:
+            - 'No'
+            - Processing
+            - 'Yes'
+            - Error
+            - Ignore
+            type: string
+        type: object
+      - $ref: '#/components/schemas/JournalEntryObjectCustomFields'
+      title: journalEntries
+    GETJournalEntryItemType:
+      allOf:
+      - properties:
+          accountingCodeName:
+            description: 'Name of the accounting code.
+
+              '
+            type: string
+          accountingCodeType:
+            description: "Accounting code type.\n\nNote that `On-Account Receivable` is only available if you enable the Invoice Settlement feature. \n"
+            enum:
+            - AccountsReceivable
+            - On-Account Receivable
+            - Cash
+            - OtherAssets
+            - CustomerCashOnAccount
+            - DeferredRevenue
+            - SalesTaxPayable
+            - OtherLiabilities
+            - SalesRevenue
+            - SalesDiscounts
+            - OtherRevenue
+            - OtherEquity
+            - BadDebt
+            - OtherExpenses
+            type: string
+          amount:
+            description: 'Journal entry item amount in transaction currency.
+
+              '
+            format: decimal
+            type: string
+          glAccountName:
+            description: 'The account number in the general ledger (GL) that corresponds to the accounting code.
+
+              '
+            type: string
+          glAccountNumber:
+            description: 'The account name in the general ledger (GL) that corresponds to the accounting code.
+
+              '
+            type: string
+          homeCurrencyAmount:
+            description: 'Journal entry item amount in home currency.
+
+              '
+            format: decimal
+            type: string
+          type:
+            description: 'Type of journal entry item. '
+            enum:
+            - Credit
+            - Debit
+            type: string
+        type: object
+      - $ref: '#/components/schemas/JournalEntryItemObjectCustomFields'
+      title: journalEntryItems
     POSTJournalEntryType:
       allOf:
       - properties:
@@ -718,361 +1099,21 @@ components:
           type: Debit
         notes: Transfer to accounting system
         transferredToAccounting: 'Yes'
-    GETJournalEntriesInJournalRunType:
+    POSTJournalEntrySegmentType:
       properties:
-        journalEntries:
-          description: 'Key name that represents the list of journal entries.
-
-            '
-          items:
-            $ref: '#/components/schemas/GETJournalEntryDetailTypeWithoutSuccess'
-          type: array
-        nextPage:
-          description: 'URL to retrieve the next page of the response if it exists; otherwise absent.
-
-            '
-          format: URL
+        segmentName:
+          description: 'Name of segment. You must use the segment name that has already been specified in the default segment rule. In addition, segments need to be passed in the order where they were defined in the segmentation rule. If multiple segments are configured in the default rule, you need to specify all of them in order. '
           type: string
-        success:
-          description: 'Returns `true` if the request was processed successfully.
-
-            '
-          type: boolean
-      type: object
-    GETJournalEntryDetailType:
-      allOf:
-      - properties:
-          accountingPeriodName:
-            description: 'Name of the accounting period that the journal entry belongs to.
-
-              '
-            type: string
-          aggregateCurrency:
-            description: 'Returns true if the journal entry is aggregating currencies. That is, if the journal entry was created when the `Aggregate transactions with different currencies during a Journal Run` setting was configured to `Yes`. Otherwise, returns `false`.
-
-              '
-            type: boolean
-          currency:
-            description: 'Currency used.
-
-              '
-            type: string
-          homeCurrency:
-            description: 'Home currency used.
-
-              '
-            type: string
-          journalEntryDate:
-            description: 'Date of the journal entry.
-
-              '
-            format: date
-            type: string
-          journalEntryItems:
-            description: 'Key name that represents the list of journal entry items.
-
-              '
-            items:
-              $ref: '#/components/schemas/GETJournalEntryItemType'
-            type: array
-          notes:
-            description: '
-
-              Additional information about this record.
-
-              Character limit: 2,000
-
-              '
-            type: string
-          number:
-            description: 'Journal entry number in the format JE-00000001.
-
-              '
-            type: string
-          organizationLabel:
-            description: 'The organization that this object belongs to.
-
-
-              Note: This field is available only when the Multi-Org feature is enabled.
-
-              '
-            type: string
-          segments:
-            description: 'List of segments that apply to the summary journal entry.
-
-              '
-            items:
-              $ref: '#/components/schemas/GETJournalEntrySegmentType'
-            type: array
-          status:
-            description: 'Status of journal entry.
-
-              '
-            enum:
-            - Created
-            - Cancelled
-            type: string
-          success:
-            description: 'Returns `true` if the request was processed successfully.
-
-              '
-            type: boolean
-          timePeriodEnd:
-            description: 'End date of time period included in the journal entry.
-
-              '
-            format: date
-            type: string
-          timePeriodStart:
-            description: 'Start date of time period included in the journal entry.
-
-              '
-            format: date
-            type: string
-          transactionType:
-            description: 'Transaction type of the transactions included in the summary journal entry.
-
-              '
-            type: string
-          transferDateTime:
-            description: 'Date and time that transferredToAccounting was changed to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
-
-              '
-            format: date-time
-            type: string
-          transferredBy:
-            description: 'User ID of the person who changed transferredToAccounting to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
-
-              '
-            type: string
-          transferredToAccounting:
-            description: 'Status shows whether the journal entry has been transferred to an accounting system. '
-            enum:
-            - 'No'
-            - Processing
-            - 'Yes'
-            - Error
-            - Ignore
-            type: string
-        type: object
-      - $ref: '#/components/schemas/JournalEntryObjectCustomFields'
-    GETJournalEntryDetailTypeWithoutSuccess:
-      allOf:
-      - properties:
-          accountingPeriodName:
-            description: 'Name of the accounting period that the journal entry belongs to.
-
-              '
-            type: string
-          aggregateCurrency:
-            description: 'Returns true if the journal entry is aggregating currencies. That is, if the journal entry was created when the `Aggregate transactions with different currencies during a JournalRun` setting was configured to "Yes". Otherwise, returns `false`.
-
-              '
-            type: boolean
-          currency:
-            description: 'Currency used.
-
-              '
-            type: string
-          homeCurrency:
-            description: 'Home currency used.
-
-              '
-            type: string
-          journalEntryDate:
-            description: 'Date of the journal entry.
-
-              '
-            format: date
-            type: string
-          journalEntryItems:
-            description: 'Key name that represents the list of journal entry items.
-
-              '
-            items:
-              $ref: '#/components/schemas/GETJournalEntryItemType'
-            type: array
-          notes:
-            description: 'Additional information about this record.
-
-              Character limit: 2,000
-
-              '
-            type: string
-          number:
-            description: 'Journal entry number in the format JE-00000001.
-
-              '
-            type: string
-          organizationLabel:
-            description: 'The organization that this object belongs to.
-
-
-              Note: This field is available only when the Multi-Org feature is enabled.
-
-              '
-            type: string
-          segments:
-            description: 'List of segments that apply to the summary journal entry.
-
-              '
-            items:
-              $ref: '#/components/schemas/GETJournalEntrySegmentType'
-            type: array
-          status:
-            description: 'Status of journal entry. '
-            enum:
-            - Created
-            - Cancelled
-            type: string
-          timePeriodEnd:
-            description: 'End date of time period included in the journal entry.
-
-              '
-            format: date
-            type: string
-          timePeriodStart:
-            description: 'Start date of time period included in the journal entry.
-
-              '
-            format: date
-            type: string
-          transactionType:
-            description: 'Transaction type of the transactions included in the summary journal entry.
-
-              '
-            type: string
-          transferDateTime:
-            description: 'Date and time that transferredToAccounting was changed to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
-
-              '
-            format: date-time
-            type: string
-          transferredBy:
-            description: 'User ID of the person who changed transferredToAccounting to `Yes`. This field is returned only when transferredToAccounting is `Yes`. Otherwise, this field is `null`.
-
-              '
-            type: string
-          transferredToAccounting:
-            description: 'Status shows whether the journal entry has been transferred to an accounting system. '
-            enum:
-            - 'No'
-            - Processing
-            - 'Yes'
-            - Error
-            - Ignore
-            type: string
-        type: object
-      - $ref: '#/components/schemas/JournalEntryObjectCustomFields'
-      title: journalEntries
-    CommonResponseType:
-      properties:
-        processId:
-          description: 'The Id of the process that handle the operation.
+        segmentValue:
+          description: 'Value of segment in this summary journal entry.
 
             '
           type: string
-        reasons:
-          items:
-            properties:
-              code:
-                description: 'The error code of response.
-
-                  '
-                type: string
-              message:
-                description: 'The detail information of the error response
-
-                  '
-                type: string
-            type: object
-          type: array
-        success:
-          description: 'Indicates whether the call succeeded.
-
-            '
-          type: boolean
+      required:
+      - segmentName
+      - segmentValue
+      title: segments
       type: object
-    JournalEntryItemObjectCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Journal Entry Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of a Journal Entry Item object.
-
-        '
-      title: journalEntryItemFieldsCustom
-      type: object
-    POSTJournalEntryResponseType:
-      properties:
-        journalEntryNumber:
-          description: 'Journal entry number in the format JE-00000001.
-
-            '
-          type: string
-        success:
-          description: 'Returns `true` if the request was processed successfully.
-
-            '
-          type: boolean
-      type: object
-    GETJournalEntryItemType:
-      allOf:
-      - properties:
-          accountingCodeName:
-            description: 'Name of the accounting code.
-
-              '
-            type: string
-          accountingCodeType:
-            description: "Accounting code type.\n\nNote that `On-Account Receivable` is only available if you enable the Invoice Settlement feature. \n"
-            enum:
-            - AccountsReceivable
-            - On-Account Receivable
-            - Cash
-            - OtherAssets
-            - CustomerCashOnAccount
-            - DeferredRevenue
-            - SalesTaxPayable
-            - OtherLiabilities
-            - SalesRevenue
-            - SalesDiscounts
-            - OtherRevenue
-            - OtherEquity
-            - BadDebt
-            - OtherExpenses
-            type: string
-          amount:
-            description: 'Journal entry item amount in transaction currency.
-
-              '
-            format: decimal
-            type: string
-          glAccountName:
-            description: 'The account number in the general ledger (GL) that corresponds to the accounting code.
-
-              '
-            type: string
-          glAccountNumber:
-            description: 'The account name in the general ledger (GL) that corresponds to the accounting code.
-
-              '
-            type: string
-          homeCurrencyAmount:
-            description: 'Journal entry item amount in home currency.
-
-              '
-            format: decimal
-            type: string
-          type:
-            description: 'Type of journal entry item. '
-            enum:
-            - Credit
-            - Debit
-            type: string
-        type: object
-      - $ref: '#/components/schemas/JournalEntryItemObjectCustomFields'
-      title: journalEntryItems
     GETJournalEntrySegmentType:
       properties:
         segmentName:
@@ -1087,48 +1128,36 @@ components:
           type: string
       title: segments
       type: object
-    PUTJournalEntryItemType:
-      allOf:
-      - properties:
-          accountingCodeName:
-            description: 'Name of the accounting code.
-
-
-              If the Journal Entry Item has a blank accounting code, enter the empty string.
-
-              '
-            type: string
-          accountingCodeType:
-            description: "Accounting code type.\n\nNote that `On-Account Receivable` is only available if you enable the Invoice Settlement feature. \n"
-            enum:
-            - AccountsReceivable
-            - On-Account Receivable
-            - Cash
-            - OtherAssets
-            - CustomerCashOnAccount
-            - DeferredRevenue
-            - SalesTaxPayable
-            - OtherLiabilities
-            - SalesRevenue
-            - SalesDiscounts
-            - OtherRevenue
-            - OtherEquity
-            - BadDebt
-            - OtherExpenses
-            type: string
-          type:
-            description: 'Type of journal entry item. '
-            enum:
-            - Credit
-            - Debit
-            type: string
-        required:
-        - accountingCodeName
-        - type
-        type: object
-      - $ref: '#/components/schemas/JournalEntryItemObjectCustomFields'
-      title: journalEntryItems
   parameters:
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
+      in: header
+      required: false
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+        '
+      schema:
+        type: string
+    GLOBAL_REQUEST_pageSize_finance_revenue:
+      name: pageSize
+      in: query
+      required: false
+      description: 'The number of records returned per page in the response.
+
+        '
+      schema:
+        type: integer
+        default: 8
+        maximum: 300
+    GLOBAL_HEADER_Authorization_OAuth_optional:
+      name: Authorization
+      in: header
+      required: false
+      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+        '
+      schema:
+        type: string
     GLOBAL_HEADER_Idempotency_Key:
       name: Idempotency-Key
       in: header
@@ -1150,15 +1179,6 @@ components:
       schema:
         type: string
         maxLength: 64
-    GLOBAL_HEADER_Authorization_OAuth_optional:
-      name: Authorization
-      in: header
-      required: false
-      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Accept_Encoding:
       name: Accept-Encoding
       in: header
@@ -1175,15 +1195,6 @@ components:
         '
       schema:
         type: string
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Zuora_Org_Ids:
       name: Zuora-Org-Ids
       in: header
@@ -1191,17 +1202,6 @@ components:
       description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
       schema:
         type: string
-    GLOBAL_REQUEST_pageSize_finance_revenue:
-      name: pageSize
-      in: query
-      required: false
-      description: 'The number of records returned per page in the response.
-
-        '
-      schema:
-        type: integer
-        default: 8
-        maximum: 300
     GLOBAL_REQUEST_page:
       name: page
       in: query

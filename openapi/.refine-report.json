@@ -85,15 +85,15 @@
     "zuora-zuora-revenue-integration-api-openapi.yml"
   ],
   "archived": [
-    "deleted 2 superseded output(s) from the previous generation"
+    "deleted 1 superseded output(s) from the previous generation"
   ],
   "errors": [],
   "warnings": [],
   "notes": [
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "zuora-v1-openapi.yml: upgraded swagger 2.0 -> OpenAPI 3.2.0",
-    "superseded outputs removed: zuora-o-auth-api-openapi.yml, zuora-signup-api-openapi.yml",
-    "apis.yml register: written (+2 apis, 80 total)"
+    "superseded outputs removed: zuora-signup-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 80 total)"
   ],
   "skipped": [
     "zuora-accounting-codes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
@@ -136,7 +136,7 @@
     "zuora-journal-runs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "zuora-mass-updater-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "zuora-notifications-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "zuora-o-auth-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "zuora-oauth-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "zuora-offers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "zuora-operations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "zuora-order-actions-api-openapi.yml: previously refined output, superseded by openapi/_original/",

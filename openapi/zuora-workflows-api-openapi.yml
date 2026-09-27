@@ -2587,6 +2587,30 @@ paths:
                     taskCount: 2
 components:
   schemas:
+    WorkflowError:
+      properties:
+        code:
+          description: A short error code describing the error
+          enum:
+          - invalid
+          type: string
+        status:
+          description: The http status code for this error
+          type: integer
+        title:
+          description: A human readable description describing the error
+          type: string
+      type: object
+    UsagesResponse:
+      properties:
+        metrics:
+          description: 'The list of tasks retrieved.
+
+            '
+          items:
+            $ref: '#/components/schemas/Usage'
+          type: array
+      type: object
     Usage:
       description: 'The task usage of a particular day.
 
@@ -2606,19 +2630,231 @@ components:
               type: integer
           type: object
       type: object
-    WorkflowError:
+    GetWorkflowResponse:
       properties:
-        code:
-          description: A short error code describing the error
-          enum:
-          - invalid
+        cpuTime:
+          description: 'The overall CPU time for the execution of the workflow.
+
+            '
+          format: time
           type: string
-        status:
-          description: The http status code for this error
+        createdAt:
+          description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format..
+
+            '
+          format: datetime
+          type: string
+        finishedAt:
+          description: 'The date and time when the execution of the workflow completes, in the `YYYY-MM-DD HH:MM:SS` format.
+
+            '
+          format: datetime
+          type: string
+        id:
+          description: 'The unique ID of the workflow.
+
+            '
           type: integer
-        title:
-          description: A human readable description describing the error
+        messages:
+          description: "Messages from tasks. \n\n**Note:** This field is only returned in Production.\n"
+          type: object
+        name:
+          description: 'The unique run number of the workflow.
+
+            '
           type: string
+        originalWorkflowId:
+          description: 'The ID of the workflow setup.
+
+            '
+          type: string
+        runTime:
+          description: 'The execution time of the workflow including the waiting time, in seconds.
+
+            '
+          format: double
+          type: number
+        status:
+          description: "The status of the workflow:\n  - Queued: The workflow is in queue for being processed.\n  - Processing: The workflow is in process.\n  - Stopping: The workflow is being stopped through Zuora UI.\n  - Stopped: The workflow is stopped through Zuora UI.\n  - Finished: The workflow is finished. When a workflow is finished, it might have tasks pending for retry or delay. Pending tasks do not block the onfinish branch of the workflow, but they block the oncomplete branch of the iterate. \n"
+          enum:
+          - Queued
+          - Processing
+          - Stopping
+          - Stopped
+          - Finished
+          type: string
+        tasks:
+          description: 'An object containing task counts.
+
+            '
+          properties:
+            error:
+              description: 'The number of tasks in **Error** state.
+
+                '
+              type: integer
+            pending:
+              description: 'The number of tasks in **Pending** state.
+
+                '
+              type: integer
+            processing:
+              description: 'The number of tasks in **Processing** state.
+
+                '
+              type: integer
+            queued:
+              description: 'The number of tasks in **Queued** state.
+
+                '
+              type: integer
+            stopped:
+              description: 'The number of tasks in **Stopped** state.
+
+                '
+              type: integer
+            success:
+              description: 'The number of tasks in **Success** state.
+
+                '
+              type: integer
+            total:
+              description: 'The total number of tasks.
+
+                '
+              type: integer
+          type: object
+        type:
+          description: "The type of the current workflow. Possible values:\n  - `Workflow::Setup`: The workflow is a setup and is used for creating workflow instances.\n  - `Workflow::Instance`: The workflow is an execution that has data.\n"
+          type: string
+        updatedAt:
+          description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
+
+            '
+          format: datetime
+          type: string
+      type: object
+    ExportWorkflowVersionResponse:
+      properties:
+        linkages:
+          items:
+            $ref: '#/components/schemas/Linkage'
+          type: array
+        tasks:
+          items:
+            $ref: '#/components/schemas/Task'
+          type: array
+        workflow:
+          $ref: '#/components/schemas/Workflow'
+          type: object
+      type: object
+    GetWorkflowsResponse:
+      properties:
+        data:
+          description: "The list of workflows retrieved. \n"
+          items:
+            $ref: '#/components/schemas/WorkflowDefinitionAndVersions'
+          type: array
+        pagination:
+          description: 'An object containing pagination information for the list of workflows returned by the api
+
+            '
+          properties:
+            next_page:
+              description: 'A string containing the URL where the next page of data can be retrieved.
+
+                '
+              type: string
+            page:
+              description: 'An integer denoting the current page number.
+
+                '
+              type: integer
+            page_length:
+              description: 'An integer denoting the number of workflows in this response. The maximum value is 50.
+
+                '
+              type: integer
+          type: object
+      type: object
+    ValidationReasons:
+      properties:
+        fieldName:
+          description: The name of the invalid field
+          type: string
+        title:
+          description: A description why that field is invalid
+          type: string
+      type: object
+    DeleteWorkflowError:
+      properties:
+        Errors:
+          description: The error messages
+          items:
+            type: string
+          type: array
+      type: object
+    PutTasksRequest:
+      example:
+        data:
+        - action_type: If
+          call_type: SOAP
+          concurrent_limit: 9999999
+          id: 2771
+          name: If
+          object: null
+          object_id: null
+          status: Success
+          tags: []
+          workflow_id: 476
+      properties:
+        data:
+          description: 'The list of tasks to update.
+
+            '
+          items:
+            $ref: '#/components/schemas/UpdateTask'
+          maximum: 50
+          minimum: 1
+          type: array
+      type: object
+    POSTWorkflowDefinitionImportRequest:
+      properties:
+        linkages:
+          items:
+            $ref: '#/components/schemas/Linkage'
+          type: array
+        tasks:
+          items:
+            $ref: '#/components/schemas/Task'
+          type: array
+        workflow:
+          $ref: '#/components/schemas/Workflow'
+          type: object
+      type: object
+    Linkage:
+      description: Used to represent the relationship between workflow tasks
+      properties:
+        linkage_type:
+          enum:
+          - Start
+          - Success
+          - Failure
+          - Iterate
+          - 'True'
+          - 'False'
+          - Approve
+          - Reject
+          type: string
+        source_task_id:
+          description: the task that spawned the target task
+          type: integer
+        source_workflow_id:
+          description: the workflow the target task is associated with
+          type: integer
+        target_task_id:
+          description: the task that the source task is linked to.
+          type: integer
       type: object
     Workflow:
       description: 'A workflow.
@@ -2689,212 +2925,6 @@ components:
           description: "The version number of the workflow. \n"
           type: string
       title: workflow
-      type: object
-    WorkflowDefinitionAndVersions:
-      description: 'A workflow.
-
-        '
-      properties:
-        active_version:
-          description: "Information of the active version. \n"
-          properties:
-            description:
-              description: 'The description of the active version.
-
-                '
-              type: string
-            id:
-              description: 'The unique ID of the active version.
-
-                '
-              type: integer
-            status:
-              description: 'The status of the active version.
-
-                '
-              type: string
-            type:
-              description: 'The type of the active version. Currently the only valid value is ''Workflow::Setup''.
-
-                '
-              enum:
-              - Workflow::Setup
-              - Workflow::Instance
-              type: string
-            version:
-              description: 'The version number of the active version.
-
-                '
-              type: string
-          type: object
-        calloutTrigger:
-          description: 'Indicates whether the callout trigger is enabled for the retrieved workflow.
-
-            '
-          type: boolean
-        createdAt:
-          description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
-
-            '
-          format: datetime
-          type: string
-        description:
-          description: 'The description of the workflow definition.
-
-            '
-          type: string
-        id:
-          description: 'The unique ID of the workflow definition.
-
-            '
-          type: integer
-        interval:
-          description: 'The schedule of the workflow, in a CRON expression. Returns null if the schedued trigger is disabled.
-
-            '
-          type: string
-        latest_inactive_verisons:
-          description: "The list of inactive workflow versions retrieved. Maximum number of versions retrieved is 10.  \n"
-          items:
-            $ref: '#/components/schemas/Workflow'
-          type: array
-        name:
-          description: 'The name of the workflow definition.
-
-            '
-          type: string
-        ondemandTrigger:
-          description: 'Indicates whether the ondemand trigger is enabled for the workflow.
-
-            '
-          type: boolean
-        scheduledTrigger:
-          description: 'Indicates whether the scheduled trigger is enabled for the workflow.
-
-            '
-          type: boolean
-        status:
-          description: 'The status of the workflow definition.
-
-            '
-          type: string
-        timezone:
-          description: 'The timezone that is configured for the scheduler of the workflow. Returns null if the scheduled trigger is disabled.
-
-            '
-          type: string
-        updatedAt:
-          description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
-
-            '
-          format: datetime
-          type: string
-      title: a workflow definition with version information
-      type: object
-    DetailedWorkflow:
-      description: 'A workflow.
-
-        '
-      properties:
-        call_type:
-          description: 'The call type of the active workflow version.
-
-            '
-          type: string
-        calloutTrigger:
-          description: 'Indicates whether the callout trigger is enabled for the retrieved workflow.
-
-            '
-          type: boolean
-        createdAt:
-          description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
-
-            '
-          format: datetime
-          type: string
-        description:
-          description: 'The description of the workflow.
-
-            '
-          type: string
-        finished_at:
-          description: 'The date and time when the instance of the workflow version finished at.
-
-            '
-          format: datetime
-          type: string
-        id:
-          description: 'The unique ID of the workflow.
-
-            '
-          type: integer
-        interval:
-          description: 'The schedule of the workflow, in a CRON expression. Returns null if the schedued trigger is disabled.
-
-            '
-          type: string
-        name:
-          description: 'The name of the workflow.
-
-            '
-          type: string
-        ondemandTrigger:
-          description: 'Indicates whether the ondemand trigger is enabled for the workflow.
-
-            '
-          type: boolean
-        original_workflow_id:
-          description: 'The unique ID of the original workflow version.
-
-            '
-          type: integer
-        priority:
-          description: "The priority of the active workflow version. \n"
-          type: string
-        scheduledTrigger:
-          description: 'Indicates whether the scheduled trigger is enabled for the workflow.
-
-            '
-          type: boolean
-        started_at:
-          description: 'The date and time when the instance of the workflow version started at.
-
-            '
-          format: datetime
-          type: string
-        status:
-          description: 'The status of the active workflow version.
-
-            '
-          type: integer
-        sync_trigger:
-          description: 'Indicates whether the workflow version is enabled for the sync mode.
-
-            '
-          type: boolean
-        timezone:
-          description: 'The timezone that is configured for the scheduler of the workflow. Returns null if the scheduled trigger is disabled.
-
-            '
-          type: string
-        type:
-          description: 'The type of the workflow. Currently the only valid value is ''Workflow::Setup''.
-
-            '
-          enum:
-          - Workflow::Setup
-          - Workflow::Instance
-          type: string
-        updatedAt:
-          description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
-
-            '
-          format: datetime
-          type: string
-        version:
-          description: "The version number of the active workflow version.            \n"
-          type: string
-      title: detailed workflow
       type: object
     Task:
       description: 'A task.
@@ -3061,155 +3091,49 @@ components:
             '
           type: integer
       type: object
-    GetWorkflowsResponse:
+    WorkflowInstance:
+      description: A instance workflow object.
       properties:
-        data:
-          description: "The list of workflows retrieved. \n"
-          items:
-            $ref: '#/components/schemas/WorkflowDefinitionAndVersions'
-          type: array
-        pagination:
-          description: 'An object containing pagination information for the list of workflows returned by the api
+        createdAt:
+          description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
 
             '
-          properties:
-            next_page:
-              description: 'A string containing the URL where the next page of data can be retrieved.
-
-                '
-              type: string
-            page:
-              description: 'An integer denoting the current page number.
-
-                '
-              type: integer
-            page_length:
-              description: 'An integer denoting the number of workflows in this response. The maximum value is 50.
-
-                '
-              type: integer
-          type: object
-      type: object
-    BadRequestResponse:
-      properties:
-        Errors:
-          items:
-            properties:
-              code:
-                description: The error code.
-                type: string
-              status:
-                description: The status of the response.
-                type: string
-              title:
-                description: The reason for the error.
-                type: string
-            type: object
-          type: array
-      type: object
-    ValidationReasons:
-      properties:
-        fieldName:
-          description: The name of the invalid field
+          format: datetime
           type: string
-        title:
-          description: A description why that field is invalid
-          type: string
-      type: object
-    DeleteWorkflowSuccess:
-      properties:
         id:
-          description: The id of the deleted workflow
-          type: string
-        success:
-          description: The indicator for whether the deletion was a success
-          type: boolean
-      type: object
-    Linkage:
-      description: Used to represent the relationship between workflow tasks
-      properties:
-        linkage_type:
-          enum:
-          - Start
-          - Success
-          - Failure
-          - Iterate
-          - 'True'
-          - 'False'
-          - Approve
-          - Reject
-          type: string
-        source_task_id:
-          description: the task that spawned the target task
-          type: integer
-        source_workflow_id:
-          description: the workflow the target task is associated with
-          type: integer
-        target_task_id:
-          description: the task that the source task is linked to.
-          type: integer
-      type: object
-    UsagesResponse:
-      properties:
-        metrics:
-          description: 'The list of tasks retrieved.
+          description: 'The unique ID of the workflow.
 
             '
-          items:
-            $ref: '#/components/schemas/Usage'
-          type: array
+          type: integer
+        name:
+          description: 'The run number of this workflow instance
+
+            '
+          type: string
+        originalWorkflowId:
+          description: 'The identifier of the workflow template that is used to create this instance.
+
+            '
+          type: integer
+        status:
+          description: "Describes the current state of this workflow instance:\n  - Queued: The workflow is in queue for being processed.\n  - Processing: The workflow is in process.\n"
+          enum:
+          - Queued
+          - Processing
+          type: string
+        updatedAt:
+          description: 'The date and time the last time when the workflow is updated, in the `YYYY-MM-DD HH:MM:SS` format.
+
+            '
+          format: datetime
+          type: string
       type: object
-    TasksResponse:
+    GetVersionsResponse:
       properties:
         data:
-          description: 'The list of tasks retrieved.
-
-            '
+          description: "The list of workflow versions retrieved. \n"
           items:
-            $ref: '#/components/schemas/Task'
-          type: array
-        pagination:
-          description: 'An object containing pagination information for the list of tasks returned by the API.
-
-            '
-          properties:
-            next_page:
-              description: 'A string containing the URL where the next page of data can be retrieved.
-
-                '
-              type: string
-            page:
-              description: 'An integer denoting the current page number.
-
-                '
-              type: integer
-            page_length:
-              description: 'An integer denoting the number of tasks in this response. The maximum value is 100.
-
-                '
-              type: integer
-          type: object
-      type: object
-    POSTWorkflowDefinitionImportRequest:
-      properties:
-        linkages:
-          items:
-            $ref: '#/components/schemas/Linkage'
-          type: array
-        tasks:
-          items:
-            $ref: '#/components/schemas/Task'
-          type: array
-        workflow:
-          $ref: '#/components/schemas/Workflow'
-          type: object
-      type: object
-    DeleteWorkflowError:
-      properties:
-        Errors:
-          description: The error messages
-          items:
-            type: string
+            $ref: '#/components/schemas/Workflow'
           type: array
       type: object
     UpdateTask:
@@ -3282,6 +3206,238 @@ components:
       - id
       title: task
       type: object
+    DetailedWorkflow:
+      description: 'A workflow.
+
+        '
+      properties:
+        call_type:
+          description: 'The call type of the active workflow version.
+
+            '
+          type: string
+        calloutTrigger:
+          description: 'Indicates whether the callout trigger is enabled for the retrieved workflow.
+
+            '
+          type: boolean
+        createdAt:
+          description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
+
+            '
+          format: datetime
+          type: string
+        description:
+          description: 'The description of the workflow.
+
+            '
+          type: string
+        finished_at:
+          description: 'The date and time when the instance of the workflow version finished at.
+
+            '
+          format: datetime
+          type: string
+        id:
+          description: 'The unique ID of the workflow.
+
+            '
+          type: integer
+        interval:
+          description: 'The schedule of the workflow, in a CRON expression. Returns null if the schedued trigger is disabled.
+
+            '
+          type: string
+        name:
+          description: 'The name of the workflow.
+
+            '
+          type: string
+        ondemandTrigger:
+          description: 'Indicates whether the ondemand trigger is enabled for the workflow.
+
+            '
+          type: boolean
+        original_workflow_id:
+          description: 'The unique ID of the original workflow version.
+
+            '
+          type: integer
+        priority:
+          description: "The priority of the active workflow version. \n"
+          type: string
+        scheduledTrigger:
+          description: 'Indicates whether the scheduled trigger is enabled for the workflow.
+
+            '
+          type: boolean
+        started_at:
+          description: 'The date and time when the instance of the workflow version started at.
+
+            '
+          format: datetime
+          type: string
+        status:
+          description: 'The status of the active workflow version.
+
+            '
+          type: integer
+        sync_trigger:
+          description: 'Indicates whether the workflow version is enabled for the sync mode.
+
+            '
+          type: boolean
+        timezone:
+          description: 'The timezone that is configured for the scheduler of the workflow. Returns null if the scheduled trigger is disabled.
+
+            '
+          type: string
+        type:
+          description: 'The type of the workflow. Currently the only valid value is ''Workflow::Setup''.
+
+            '
+          enum:
+          - Workflow::Setup
+          - Workflow::Instance
+          type: string
+        updatedAt:
+          description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
+
+            '
+          format: datetime
+          type: string
+        version:
+          description: "The version number of the active workflow version.            \n"
+          type: string
+      title: detailed workflow
+      type: object
+    BadRequestResponse:
+      properties:
+        Errors:
+          items:
+            properties:
+              code:
+                description: The error code.
+                type: string
+              status:
+                description: The status of the response.
+                type: string
+              title:
+                description: The reason for the error.
+                type: string
+            type: object
+          type: array
+      type: object
+    WorkflowDefinitionAndVersions:
+      description: 'A workflow.
+
+        '
+      properties:
+        active_version:
+          description: "Information of the active version. \n"
+          properties:
+            description:
+              description: 'The description of the active version.
+
+                '
+              type: string
+            id:
+              description: 'The unique ID of the active version.
+
+                '
+              type: integer
+            status:
+              description: 'The status of the active version.
+
+                '
+              type: string
+            type:
+              description: 'The type of the active version. Currently the only valid value is ''Workflow::Setup''.
+
+                '
+              enum:
+              - Workflow::Setup
+              - Workflow::Instance
+              type: string
+            version:
+              description: 'The version number of the active version.
+
+                '
+              type: string
+          type: object
+        calloutTrigger:
+          description: 'Indicates whether the callout trigger is enabled for the retrieved workflow.
+
+            '
+          type: boolean
+        createdAt:
+          description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
+
+            '
+          format: datetime
+          type: string
+        description:
+          description: 'The description of the workflow definition.
+
+            '
+          type: string
+        id:
+          description: 'The unique ID of the workflow definition.
+
+            '
+          type: integer
+        interval:
+          description: 'The schedule of the workflow, in a CRON expression. Returns null if the schedued trigger is disabled.
+
+            '
+          type: string
+        latest_inactive_verisons:
+          description: "The list of inactive workflow versions retrieved. Maximum number of versions retrieved is 10.  \n"
+          items:
+            $ref: '#/components/schemas/Workflow'
+          type: array
+        name:
+          description: 'The name of the workflow definition.
+
+            '
+          type: string
+        ondemandTrigger:
+          description: 'Indicates whether the ondemand trigger is enabled for the workflow.
+
+            '
+          type: boolean
+        scheduledTrigger:
+          description: 'Indicates whether the scheduled trigger is enabled for the workflow.
+
+            '
+          type: boolean
+        status:
+          description: 'The status of the workflow definition.
+
+            '
+          type: string
+        timezone:
+          description: 'The timezone that is configured for the scheduler of the workflow. Returns null if the scheduled trigger is disabled.
+
+            '
+          type: string
+        updatedAt:
+          description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
+
+            '
+          format: datetime
+          type: string
+      title: a workflow definition with version information
+      type: object
+    DeleteWorkflowSuccess:
+      properties:
+        id:
+          description: The id of the deleted workflow
+          type: string
+        success:
+          description: The indicator for whether the deletion was a success
+          type: boolean
+      type: object
     ValidationErrors:
       properties:
         reasons:
@@ -3293,30 +3449,6 @@ components:
         success:
           description: Returns `false` if the request was not successful.
           type: boolean
-      type: object
-    PutTasksRequest:
-      example:
-        data:
-        - action_type: If
-          call_type: SOAP
-          concurrent_limit: 9999999
-          id: 2771
-          name: If
-          object: null
-          object_id: null
-          status: Success
-          tags: []
-          workflow_id: 476
-      properties:
-        data:
-          description: 'The list of tasks to update.
-
-            '
-          items:
-            $ref: '#/components/schemas/UpdateTask'
-          maximum: 50
-          minimum: 1
-          type: array
       type: object
     WorkflowDefinition:
       description: 'A workflow.
@@ -3414,178 +3546,38 @@ components:
           type: string
       title: a workflow definition with version information
       type: object
-    ExportWorkflowVersionResponse:
+    TasksResponse:
       properties:
-        linkages:
-          items:
-            $ref: '#/components/schemas/Linkage'
-          type: array
-        tasks:
+        data:
+          description: 'The list of tasks retrieved.
+
+            '
           items:
             $ref: '#/components/schemas/Task'
           type: array
-        workflow:
-          $ref: '#/components/schemas/Workflow'
-          type: object
-      type: object
-    GetWorkflowResponse:
-      properties:
-        cpuTime:
-          description: 'The overall CPU time for the execution of the workflow.
-
-            '
-          format: time
-          type: string
-        createdAt:
-          description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format..
-
-            '
-          format: datetime
-          type: string
-        finishedAt:
-          description: 'The date and time when the execution of the workflow completes, in the `YYYY-MM-DD HH:MM:SS` format.
-
-            '
-          format: datetime
-          type: string
-        id:
-          description: 'The unique ID of the workflow.
-
-            '
-          type: integer
-        messages:
-          description: "Messages from tasks. \n\n**Note:** This field is only returned in Production.\n"
-          type: object
-        name:
-          description: 'The unique run number of the workflow.
-
-            '
-          type: string
-        originalWorkflowId:
-          description: 'The ID of the workflow setup.
-
-            '
-          type: string
-        runTime:
-          description: 'The execution time of the workflow including the waiting time, in seconds.
-
-            '
-          format: double
-          type: number
-        status:
-          description: "The status of the workflow:\n  - Queued: The workflow is in queue for being processed.\n  - Processing: The workflow is in process.\n  - Stopping: The workflow is being stopped through Zuora UI.\n  - Stopped: The workflow is stopped through Zuora UI.\n  - Finished: The workflow is finished. When a workflow is finished, it might have tasks pending for retry or delay. Pending tasks do not block the onfinish branch of the workflow, but they block the oncomplete branch of the iterate. \n"
-          enum:
-          - Queued
-          - Processing
-          - Stopping
-          - Stopped
-          - Finished
-          type: string
-        tasks:
-          description: 'An object containing task counts.
+        pagination:
+          description: 'An object containing pagination information for the list of tasks returned by the API.
 
             '
           properties:
-            error:
-              description: 'The number of tasks in **Error** state.
+            next_page:
+              description: 'A string containing the URL where the next page of data can be retrieved.
+
+                '
+              type: string
+            page:
+              description: 'An integer denoting the current page number.
 
                 '
               type: integer
-            pending:
-              description: 'The number of tasks in **Pending** state.
-
-                '
-              type: integer
-            processing:
-              description: 'The number of tasks in **Processing** state.
-
-                '
-              type: integer
-            queued:
-              description: 'The number of tasks in **Queued** state.
-
-                '
-              type: integer
-            stopped:
-              description: 'The number of tasks in **Stopped** state.
-
-                '
-              type: integer
-            success:
-              description: 'The number of tasks in **Success** state.
-
-                '
-              type: integer
-            total:
-              description: 'The total number of tasks.
+            page_length:
+              description: 'An integer denoting the number of tasks in this response. The maximum value is 100.
 
                 '
               type: integer
           type: object
-        type:
-          description: "The type of the current workflow. Possible values:\n  - `Workflow::Setup`: The workflow is a setup and is used for creating workflow instances.\n  - `Workflow::Instance`: The workflow is an execution that has data.\n"
-          type: string
-        updatedAt:
-          description: 'The date and time when the workflow is updated the last time, in the `YYYY-MM-DD HH:MM:SS` format.
-
-            '
-          format: datetime
-          type: string
-      type: object
-    WorkflowInstance:
-      description: A instance workflow object.
-      properties:
-        createdAt:
-          description: 'The date and time when the workflow is created, in the `YYYY-MM-DD HH:MM:SS` format.
-
-            '
-          format: datetime
-          type: string
-        id:
-          description: 'The unique ID of the workflow.
-
-            '
-          type: integer
-        name:
-          description: 'The run number of this workflow instance
-
-            '
-          type: string
-        originalWorkflowId:
-          description: 'The identifier of the workflow template that is used to create this instance.
-
-            '
-          type: integer
-        status:
-          description: "Describes the current state of this workflow instance:\n  - Queued: The workflow is in queue for being processed.\n  - Processing: The workflow is in process.\n"
-          enum:
-          - Queued
-          - Processing
-          type: string
-        updatedAt:
-          description: 'The date and time the last time when the workflow is updated, in the `YYYY-MM-DD HH:MM:SS` format.
-
-            '
-          format: datetime
-          type: string
-      type: object
-    GetVersionsResponse:
-      properties:
-        data:
-          description: "The list of workflow versions retrieved. \n"
-          items:
-            $ref: '#/components/schemas/Workflow'
-          type: array
       type: object
   parameters:
-    GLOBAL_HEADER_Idempotency_Key:
-      name: Idempotency-Key
-      in: header
-      required: false
-      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
-      schema:
-        type: string
-        maxLength: 255
     GLOBAL_HEADER_Authorization_OAuth:
       name: Authorization
       in: header
@@ -3595,6 +3587,23 @@ components:
         '
       schema:
         type: string
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
+      in: header
+      required: false
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+
+        '
+      schema:
+        type: string
+    GLOBAL_HEADER_Idempotency_Key:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+      schema:
+        type: string
+        maxLength: 255
     GLOBAL_HEADER_Zuora_Track_Id:
       name: Zuora-Track-Id
       in: header
@@ -3620,15 +3629,6 @@ components:
       in: header
       required: false
       description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:
