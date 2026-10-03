@@ -969,173 +969,122 @@ paths:
                 message: Authentication error
 components:
   schemas:
-    ProxyNoDataResponse:
+    GETProductRatePlanChargeDeliverySchedule:
+      description: 'The delivery schedule information of this charge. Only when this charge is using Delivery Pricing charge model
+
+        '
       properties:
-        done:
-          description: ''
-          type: boolean
-        records:
-          description: ''
-          items:
-            type: object
-          type: array
-        size:
-          description: ''
-          type: integer
-      type: object
-    GETProductRatePlanWithExternalIdMultiResponse:
-      items:
-        properties:
-          ExternalIdSourceSystem:
-            description: 'The combination of `externallyManagedPlanId` and `externalIdSourceSystem` is the unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
-
-              '
-            type: string
-          description:
-            description: 'The short description of the product rate plan.
-
-              '
-            type: string
-          effectiveEndDate:
-            description: 'The end date of the product rate plan.
-
-              '
-            format: date
-            type: string
-          effectiveStartDate:
-            description: 'The start date of the product rate plan.
-
-              '
-            format: date
-            type: string
-          externallyManagedPlanIds:
-            description: 'The unique identifier for the product rate plan in a third-party store. This field is used to represent a rate plan created through third-party stores.
-
-              '
-            items:
-              type: string
-            type: array
-          grade:
-            description: 'The grade of the product rate plan.
-
-
-              **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
-
-              '
-            type: number
-          id:
-            description: 'The unique product rate plan ID.
-
-              '
-            type: string
-          name:
-            description: 'The name of the product rate plan.
-
-              '
-            type: string
-          organizationLabels:
-            description: "The organization(s) that the object belongs to. \n\nNote: This field is available only when the Multi-Org feature is enabled.            \n"
-            items:
-              properties:
-                organizationId:
-                  description: 'The organization ID.
-
-                    '
-                  type: string
-                organizationName:
-                  description: 'The organization name.
-
-                    '
-                  type: string
-              type: object
-            type: array
-          status:
-            description: "The status of the product rate plan. \n"
-            enum:
-            - Active
-            - Expired
-            - NotStarted
-            type: string
-          success:
-            description: 'Returns `true` if the request was processed successfully.
-
-              '
-            type: boolean
-      type: array
-    GETProductRatePlansResponse:
-      properties:
-        nextPage:
-          description: 'URL to retrieve the next page of the response if it exists; otherwise absent.
+        frequency:
+          description: 'The frequency of the delivery. Only supports weekly now
 
             '
-          format: URL
+          enum:
+          - Weekly
           type: string
-        productRatePlans:
-          description: 'Container for one or more products.
-
-            '
-          items:
-            $ref: '#/components/schemas/GETProductRatePlanType'
-          type: array
-        success:
-          description: 'Returns `true` if the request was processed successfully.
+        friday:
+          description: 'The flag to indicate should the delivery happen on Friday
 
             '
           type: boolean
+        monday:
+          description: 'The flag to indicate should the delivery happen on Monday
+
+            '
+          type: boolean
+        saturday:
+          description: 'The flag to indicate should the delivery happen on Saturday
+
+            '
+          type: boolean
+        sunday:
+          description: 'The flag to indicate should the delivery happen on Sunday
+
+            '
+          type: boolean
+        thursday:
+          description: 'The flag to indicate should the delivery happen on Thursday
+
+            '
+          type: boolean
+        tuesday:
+          description: 'The flag to indicate should the delivery happen on Tuesday
+
+            '
+          type: boolean
+        wendesday:
+          description: 'The flag to indicate should the delivery happen on Wendesday
+
+            '
+          type: boolean
+      title: deliverySchedule
       type: object
-    GETProductRatePlanChargePricingTierType:
+    GETProductRatePlanChargePricingType:
       properties:
-        endingUnit:
-          description: 'Decimal defining end of tier range.
+        currency:
+          description: 'Currency used by the charge model. For example: USD or EUR
+
+            '
+          type: string
+        discountAmount:
+          description: 'Value subtracted from price in currency specified. Used only when the charge model is DiscountFixedAmount.
+
+            '
+          format: decimal
+          type: string
+        discountPercentage:
+          description: 'Percent discount applied to the price. Used only when the charge model is DiscountPercentage.
+
+            '
+          format: decimal
+          type: string
+        includedUnits:
+          description: 'Specifies the number of units in the base set of units when the charge model is Overage.
+
+            '
+          format: decimal
+          type: string
+        overagePrice:
+          description: 'Price per unit when base set of units is exceeded. Used only when charge model is Overage or Tiered with Overage.
 
             '
           format: decimal
           type: string
         price:
-          description: 'The decimal value of the tiered charge model. If the charge model is not a tiered type then this price field will be null and the price field directly under the productRatePlanCharges applies.
+          description: 'The decimal value that applies when the charge model is not tiered
 
             '
           format: decimal
           type: string
-        priceFormat:
-          description: "Tier price format.\n\nAllowed values:\n- flat fee \n- per unit\n"
-          type: string
-        startingUnit:
-          description: 'Decimal defining start of tier range.
+        tiers:
+          description: 'Container for one or many defined tier ranges with distinct pricing.  Applies when model is `Tiered`, `TieredWithOverage`, or `Volume`
 
             '
-          format: decimal
-          type: string
-        tier:
-          description: 'Unique number of the tier.
-
-            '
-          format: int64
-          type: integer
-      title: tiers
+          items:
+            $ref: '#/components/schemas/GETProductRatePlanChargePricingTierType'
+          type: array
+      title: pricing
       type: object
-    ProxyModifyProductRatePlan:
+    ProxyGetProductRatePlan:
       allOf:
       - properties:
           ActiveCurrencies:
-            description: 'A list of 3-letter currency codes representing active currencies for the product rate plan. Use a comma to separate each currency code.
-
-
-              If the request body contains this field, the value of this field must contain the desired list of active currencies. The new list can never have more than four differences from the existing list.
-
-
-              This field cannot be used to modify the status of more than four currencies in a single request. For example, in a single request, you can only activate four currencies, or deactivate four currencies, or activate two and deactivate two. Making more than four changes to currencies always requires more than one call.
-
-
-              When specifying this field in the update request, you must provide the full list of active currencies you want, not just incremental changes. For each active currency update, provide the following currencies in the list:
-
-
-              Current active currencies + at most four changes (additions or deletions)
-
-              '
+            description: "A list of 3-letter currency codes representing active currencies for the product rate plan. \n\nThis field cannot be queried in conjunction with any other fields except `id` at the same time. \n"
             items:
               type: string
             type: array
+          CreatedById:
+            description: 'The automatically generated ID of the Zuora user who created the `ProductRatePlan` object.
+
+              '
+            maxLength: 32
+            type: string
+          CreatedDate:
+            description: 'The date when the `ProductRatePlan` object was created.
+
+              '
+            format: date-time
+            maxLength: 29
+            type: string
           Description:
             description: 'A description of the product rate plan.
 
@@ -1157,8 +1106,11 @@ components:
             maxLength: 29
             type: string
           Grade:
-            description: "The grade that is assigned for the product rate plan. The value of this field must be a positive integer. The greater the value, the higher the grade.\n\nA product rate plan to be added to a Grading catalog group must have one grade. You can specify a grade for a product rate plan in this request or update the product rate plan individually.\n\n**Notes**: \n  - To use this field, you must set the `X-Zuora-WSDL-Version` request header to `116` or later. Otherwise, an error occurs.\n  - This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).\n"
+            description: "The grade that is assigned for the product rate plan.\n\n**Notes**: \n  - To use this field, you must set the `X-Zuora-WSDL-Version` request header to `116` or later. Otherwise, an error occurs.\n  - This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).\n"
             type: number
+          Id:
+            description: Object identifier.
+            type: string
           Name:
             description: 'The name of the product rate plan. The name doesn''t have to be unique in a Product Catalog, but the name has to be unique within a product.
 
@@ -1171,98 +1123,170 @@ components:
               '
             maxLength: 32
             type: string
-          ProductRatePlanNumber:
-            description: "The natural key of the product rate plan. \n\nFor existing Product Rate Plan objects that are created before this field is introduced, this field will be null. Use this field to specify a value for only these objects. Zuora also provides a tool to help you automatically backfill this field with tenant ID for your existing product catalog. If you want to use this backfill tool, contact [Zuora Global Support](https://support.zuora.com/).\n\n**Note**: This field is only available if you set the `X-Zuora-WSDL-Version` request header to `133` or later.\n"
-            maxLength: 100
+          UpdatedById:
+            description: 'The automatically generated ID of the last user to update the object.
+
+              '
+            maxLength: 32
+            type: string
+          UpdatedDate:
+            description: 'The date when the object was last updated.
+
+              '
+            format: date-time
+            maxLength: 29
             type: string
         type: object
       - $ref: '#/components/schemas/ProductRatePlanObjectNSFields'
       - $ref: '#/components/schemas/ProductRatePlanObjectCustomFields'
-      example:
-        Id: 2c93808457d787030157e02da0d91852
-        Name: ProductRatePlan1476934869186_new
-    GETProductRatePlanWithExternalIdResponse:
-      properties:
-        ExternalIdSourceSystem:
-          description: 'The combination of `externallyManagedPlanId` and `externalIdSourceSystem` is the unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
+    GETProductRatePlanType:
+      allOf:
+      - properties:
+          description:
+            description: 'Rate plan description.
 
-            '
-          type: string
-        description:
-          description: 'The short description of the product rate plan.
-
-            '
-          type: string
-        effectiveEndDate:
-          description: 'The end date of the product rate plan.
-
-            '
-          format: date
-          type: string
-        effectiveStartDate:
-          description: 'The start date of the product rate plan.
-
-            '
-          format: date
-          type: string
-        externallyManagedPlanIds:
-          description: 'The unique identifier for the product rate plan in a third-party store. This field is used to represent a rate plan created through third-party stores.
-
-            '
-          items:
+              '
             type: string
-          type: array
-        grade:
-          description: 'The grade of the product rate plan.
+          effectiveEndDate:
+            description: 'Final date the rate plan is active, as `yyyy-mm-dd`. After this date, the rate plan status is `Expired`.
+
+              '
+            format: date
+            type: string
+          effectiveStartDate:
+            description: 'First date the rate plan is active (i.e., available to be subscribed to), as `yyyy-mm-dd`.  Before this date, the status is `NotStarted`.
+
+              '
+            format: date
+            type: string
+          grade:
+            description: 'The grade of the product rate plan.
 
 
-            **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
+              **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
+
+              '
+            type: number
+          id:
+            description: 'Unique product rate-plan ID.
+
+              '
+            type: string
+          name:
+            description: 'Name of the product rate-plan charge. (Not required to be unique.)
+
+              '
+            type: string
+          productRatePlanCharges:
+            description: 'Field attributes describing the product rate plan charges:
+
+              '
+            items:
+              $ref: '#/components/schemas/GETProductRatePlanChargeType'
+            type: array
+          productRatePlanNumber:
+            description: "The natural key of the product rate plan.  \n"
+            type: string
+          status:
+            description: 'The status of the product rate plan.
+
+              '
+            enum:
+            - Active
+            - Expired
+            - NotStarted
+            type: string
+        type: object
+      - $ref: '#/components/schemas/ProductRatePlanObjectNSFields'
+      - $ref: '#/components/schemas/ProductRatePlanObjectCustomFields'
+      title: productRatePlans
+    ProductRatePlanObjectNSFields:
+      description: 'Container for Product Rate Plan fields provided by the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+        '
+      properties:
+        BillingPeriod__NS:
+          description: 'Billing period associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
 
             '
-          type: number
-        id:
-          description: 'The unique product rate plan ID.
-
-            '
-          type: string
-        name:
-          description: 'The name of the product rate plan.
-
-            '
-          type: string
-        organizationLabels:
-          description: "The organization(s) that the object belongs to. \n\nNote: This field is available only when the Multi-Org feature is enabled.            \n"
-          items:
-            properties:
-              organizationId:
-                description: 'The organization ID.
-
-                  '
-                type: string
-              organizationName:
-                description: 'The organization name.
-
-                  '
-                type: string
-            type: object
-          type: array
-        productRatePlanNumber:
-          description: 'The natural key of the product rate plan.
-
-            '
-          type: string
-        status:
-          description: "The status of the product rate plan. \n"
           enum:
-          - Active
-          - Expired
-          - NotStarted
+          - Monthly
+          - Quarterly
+          - Annual
+          - Semi-Annual
           type: string
-        success:
-          description: 'Returns `true` if the request was processed successfully.
+        Class__NS:
+          description: 'Class associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
 
             '
-          type: boolean
+          maxLength: 255
+          type: string
+        Department__NS:
+          description: 'Department associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          maxLength: 255
+          type: string
+        IncludeChildren__NS:
+          description: 'Specifies whether the corresponding item in NetSuite is visible under child subsidiaries. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          enum:
+          - 'Yes'
+          - 'No'
+          type: string
+        IntegrationId__NS:
+          description: 'ID of the corresponding object in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          maxLength: 255
+          type: string
+        IntegrationStatus__NS:
+          description: 'Status of the product rate plan''s synchronization with NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          maxLength: 255
+          type: string
+        ItemType__NS:
+          description: 'Type of item that is created in NetSuite for the product rate plan. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          enum:
+          - Inventory
+          - Non Inventory
+          - Service
+          type: string
+        Location__NS:
+          description: 'Location associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          maxLength: 255
+          type: string
+        MultiCurrencyPrice__NS:
+          description: 'Multi-currency price associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          maxLength: 255
+          type: string
+        Price__NS:
+          description: 'Price associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          maxLength: 255
+          type: string
+        Subsidiary__NS:
+          description: 'Subsidiary associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          maxLength: 255
+          type: string
+        SyncDate__NS:
+          description: 'Date when the product rate plan was synchronized with NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
+
+            '
+          maxLength: 255
+          type: string
+      title: productRatePlanFieldsNS
       type: object
     ProxyBadRequestResponse:
       properties:
@@ -1346,67 +1370,65 @@ components:
         Grade: 3
         Name: ProductRatePlan1476935173957
         ProductId: 2c93808457d787030157e03246ae5129
-    GETProductRatePlanType:
-      allOf:
-      - properties:
-          description:
-            description: 'Rate plan description.
+    GETProductDiscountApplyDetailsType:
+      properties:
+        appliedProductRatePlanChargeId:
+          description: 'The ID of the product rate plan charge that the discount product rate plan charge applies to.
 
-              '
-            type: string
-          effectiveEndDate:
-            description: 'Final date the rate plan is active, as `yyyy-mm-dd`. After this date, the rate plan status is `Expired`.
+            '
+          type: string
+        appliedProductRatePlanId:
+          description: 'The ID of the product rate plan that the discount product rate plan charge applies to.
 
-              '
-            format: date
-            type: string
-          effectiveStartDate:
-            description: 'First date the rate plan is active (i.e., available to be subscribed to), as `yyyy-mm-dd`.  Before this date, the status is `NotStarted`.
+            '
+          type: string
+      title: productDiscountApplyDetails
+      type: object
+    GETProductRatePlanChargePricingTierType:
+      properties:
+        endingUnit:
+          description: 'Decimal defining end of tier range.
 
-              '
-            format: date
-            type: string
-          grade:
-            description: 'The grade of the product rate plan.
+            '
+          format: decimal
+          type: string
+        price:
+          description: 'The decimal value of the tiered charge model. If the charge model is not a tiered type then this price field will be null and the price field directly under the productRatePlanCharges applies.
 
+            '
+          format: decimal
+          type: string
+        priceFormat:
+          description: "Tier price format.\n\nAllowed values:\n- flat fee \n- per unit\n"
+          type: string
+        startingUnit:
+          description: 'Decimal defining start of tier range.
 
-              **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
+            '
+          format: decimal
+          type: string
+        tier:
+          description: 'Unique number of the tier.
 
-              '
-            type: number
-          id:
-            description: 'Unique product rate-plan ID.
-
-              '
-            type: string
-          name:
-            description: 'Name of the product rate-plan charge. (Not required to be unique.)
-
-              '
-            type: string
-          productRatePlanCharges:
-            description: 'Field attributes describing the product rate plan charges:
-
-              '
-            items:
-              $ref: '#/components/schemas/GETProductRatePlanChargeType'
-            type: array
-          productRatePlanNumber:
-            description: "The natural key of the product rate plan.  \n"
-            type: string
-          status:
-            description: 'The status of the product rate plan.
-
-              '
-            enum:
-            - Active
-            - Expired
-            - NotStarted
-            type: string
-        type: object
-      - $ref: '#/components/schemas/ProductRatePlanObjectNSFields'
-      - $ref: '#/components/schemas/ProductRatePlanObjectCustomFields'
-      title: productRatePlans
+            '
+          format: int64
+          type: integer
+      title: tiers
+      type: object
+    ProxyNoDataResponse:
+      properties:
+        done:
+          description: ''
+          type: boolean
+        records:
+          description: ''
+          items:
+            type: object
+          type: array
+        size:
+          description: ''
+          type: integer
+      type: object
     ProductRatePlanObjectCustomFields:
       additionalProperties:
         description: 'Custom fields of the Product Rate Plan object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
@@ -1417,16 +1439,82 @@ components:
         '
       title: productRatePlanFieldsCustom
       type: object
-    ProductRatePlanChargeObjectCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Product Rate Plan Charge object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of a Product Rate Plan Charge object.
-
-        '
-      title: productRatePlanChargeFieldsCustom
+    ProxyCreateOrModifyResponse:
+      properties:
+        Id:
+          description: ''
+          type: string
+        Success:
+          description: ''
+          type: boolean
       type: object
+    ProxyModifyProductRatePlan:
+      allOf:
+      - properties:
+          ActiveCurrencies:
+            description: 'A list of 3-letter currency codes representing active currencies for the product rate plan. Use a comma to separate each currency code.
+
+
+              If the request body contains this field, the value of this field must contain the desired list of active currencies. The new list can never have more than four differences from the existing list.
+
+
+              This field cannot be used to modify the status of more than four currencies in a single request. For example, in a single request, you can only activate four currencies, or deactivate four currencies, or activate two and deactivate two. Making more than four changes to currencies always requires more than one call.
+
+
+              When specifying this field in the update request, you must provide the full list of active currencies you want, not just incremental changes. For each active currency update, provide the following currencies in the list:
+
+
+              Current active currencies + at most four changes (additions or deletions)
+
+              '
+            items:
+              type: string
+            type: array
+          Description:
+            description: 'A description of the product rate plan.
+
+              '
+            maxLength: 500
+            type: string
+          EffectiveEndDate:
+            description: 'The date when the product rate plan expires and can''t be subscribed to, in `yyyy-mm-dd` format.
+
+              '
+            format: date
+            maxLength: 29
+            type: string
+          EffectiveStartDate:
+            description: 'The date when the product rate plan becomes available and can be subscribed to, in `yyyy-mm-dd` format.
+
+              '
+            format: date
+            maxLength: 29
+            type: string
+          Grade:
+            description: "The grade that is assigned for the product rate plan. The value of this field must be a positive integer. The greater the value, the higher the grade.\n\nA product rate plan to be added to a Grading catalog group must have one grade. You can specify a grade for a product rate plan in this request or update the product rate plan individually.\n\n**Notes**: \n  - To use this field, you must set the `X-Zuora-WSDL-Version` request header to `116` or later. Otherwise, an error occurs.\n  - This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).\n"
+            type: number
+          Name:
+            description: 'The name of the product rate plan. The name doesn''t have to be unique in a Product Catalog, but the name has to be unique within a product.
+
+              '
+            maxLength: 255
+            type: string
+          ProductId:
+            description: 'The ID of the product that contains the product rate plan.
+
+              '
+            maxLength: 32
+            type: string
+          ProductRatePlanNumber:
+            description: "The natural key of the product rate plan. \n\nFor existing Product Rate Plan objects that are created before this field is introduced, this field will be null. Use this field to specify a value for only these objects. Zuora also provides a tool to help you automatically backfill this field with tenant ID for your existing product catalog. If you want to use this backfill tool, contact [Zuora Global Support](https://support.zuora.com/).\n\n**Note**: This field is only available if you set the `X-Zuora-WSDL-Version` request header to `133` or later.\n"
+            maxLength: 100
+            type: string
+        type: object
+      - $ref: '#/components/schemas/ProductRatePlanObjectNSFields'
+      - $ref: '#/components/schemas/ProductRatePlanObjectCustomFields'
+      example:
+        Id: 2c93808457d787030157e02da0d91852
+        Name: ProductRatePlan1476934869186_new
     ProxyDeleteResponse:
       properties:
         id:
@@ -1436,51 +1524,202 @@ components:
           description: ''
           type: boolean
       type: object
-    GETProductRatePlanChargePricingType:
+    ProxyUnauthorizedResponse:
       properties:
-        currency:
-          description: 'Currency used by the charge model. For example: USD or EUR
+        message:
+          description: 'Error message.
+
+
+            If the error message is "Authentication error", ensure that the `Authorization` request header contains valid authentication credentials, then retry the request. See [Authentication](/rest-api/general-concepts/authentication/) for more information.
+
+
+            If the error message is "Failed to get user info", retry the request.
 
             '
           type: string
-        discountAmount:
-          description: 'Value subtracted from price in currency specified. Used only when the charge model is DiscountFixedAmount.
+      type: object
+    GETProductRatePlansResponse:
+      properties:
+        nextPage:
+          description: 'URL to retrieve the next page of the response if it exists; otherwise absent.
 
             '
-          format: decimal
+          format: URL
           type: string
-        discountPercentage:
-          description: 'Percent discount applied to the price. Used only when the charge model is DiscountPercentage.
-
-            '
-          format: decimal
-          type: string
-        includedUnits:
-          description: 'Specifies the number of units in the base set of units when the charge model is Overage.
-
-            '
-          format: decimal
-          type: string
-        overagePrice:
-          description: 'Price per unit when base set of units is exceeded. Used only when charge model is Overage or Tiered with Overage.
-
-            '
-          format: decimal
-          type: string
-        price:
-          description: 'The decimal value that applies when the charge model is not tiered
-
-            '
-          format: decimal
-          type: string
-        tiers:
-          description: 'Container for one or many defined tier ranges with distinct pricing.  Applies when model is `Tiered`, `TieredWithOverage`, or `Volume`
+        productRatePlans:
+          description: 'Container for one or more products.
 
             '
           items:
-            $ref: '#/components/schemas/GETProductRatePlanChargePricingTierType'
+            $ref: '#/components/schemas/GETProductRatePlanType'
           type: array
-      title: pricing
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+      type: object
+    GETProductRatePlanWithExternalIdMultiResponse:
+      items:
+        properties:
+          ExternalIdSourceSystem:
+            description: 'The combination of `externallyManagedPlanId` and `externalIdSourceSystem` is the unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
+
+              '
+            type: string
+          description:
+            description: 'The short description of the product rate plan.
+
+              '
+            type: string
+          effectiveEndDate:
+            description: 'The end date of the product rate plan.
+
+              '
+            format: date
+            type: string
+          effectiveStartDate:
+            description: 'The start date of the product rate plan.
+
+              '
+            format: date
+            type: string
+          externallyManagedPlanIds:
+            description: 'The unique identifier for the product rate plan in a third-party store. This field is used to represent a rate plan created through third-party stores.
+
+              '
+            items:
+              type: string
+            type: array
+          grade:
+            description: 'The grade of the product rate plan.
+
+
+              **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
+
+              '
+            type: number
+          id:
+            description: 'The unique product rate plan ID.
+
+              '
+            type: string
+          name:
+            description: 'The name of the product rate plan.
+
+              '
+            type: string
+          organizationLabels:
+            description: "The organization(s) that the object belongs to. \n\nNote: This field is available only when the Multi-Org feature is enabled.            \n"
+            items:
+              properties:
+                organizationId:
+                  description: 'The organization ID.
+
+                    '
+                  type: string
+                organizationName:
+                  description: 'The organization name.
+
+                    '
+                  type: string
+              type: object
+            type: array
+          status:
+            description: "The status of the product rate plan. \n"
+            enum:
+            - Active
+            - Expired
+            - NotStarted
+            type: string
+          success:
+            description: 'Returns `true` if the request was processed successfully.
+
+              '
+            type: boolean
+      type: array
+    GETProductRatePlanWithExternalIdResponse:
+      properties:
+        ExternalIdSourceSystem:
+          description: 'The combination of `externallyManagedPlanId` and `externalIdSourceSystem` is the unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
+
+            '
+          type: string
+        description:
+          description: 'The short description of the product rate plan.
+
+            '
+          type: string
+        effectiveEndDate:
+          description: 'The end date of the product rate plan.
+
+            '
+          format: date
+          type: string
+        effectiveStartDate:
+          description: 'The start date of the product rate plan.
+
+            '
+          format: date
+          type: string
+        externallyManagedPlanIds:
+          description: 'The unique identifier for the product rate plan in a third-party store. This field is used to represent a rate plan created through third-party stores.
+
+            '
+          items:
+            type: string
+          type: array
+        grade:
+          description: 'The grade of the product rate plan.
+
+
+            **Note**: This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).
+
+            '
+          type: number
+        id:
+          description: 'The unique product rate plan ID.
+
+            '
+          type: string
+        name:
+          description: 'The name of the product rate plan.
+
+            '
+          type: string
+        organizationLabels:
+          description: "The organization(s) that the object belongs to. \n\nNote: This field is available only when the Multi-Org feature is enabled.            \n"
+          items:
+            properties:
+              organizationId:
+                description: 'The organization ID.
+
+                  '
+                type: string
+              organizationName:
+                description: 'The organization name.
+
+                  '
+                type: string
+            type: object
+          type: array
+        productRatePlanNumber:
+          description: 'The natural key of the product rate plan.
+
+            '
+          type: string
+        status:
+          description: "The status of the product rate plan. \n"
+          enum:
+          - Active
+          - Expired
+          - NotStarted
+          type: string
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
       type: object
     GETProductRatePlanChargeType:
       allOf:
@@ -2176,256 +2415,32 @@ components:
           type: string
       title: productRatePlanChargeFieldsNS
       type: object
-    ProxyUnauthorizedResponse:
-      properties:
-        message:
-          description: 'Error message.
+    ProductRatePlanChargeObjectCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Product Rate Plan Charge object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
 
-
-            If the error message is "Authentication error", ensure that the `Authorization` request header contains valid authentication credentials, then retry the request. See [Authentication](/rest-api/general-concepts/authentication/) for more information.
-
-
-            If the error message is "Failed to get user info", retry the request.
-
-            '
-          type: string
-      type: object
-    GETProductRatePlanChargeDeliverySchedule:
-      description: 'The delivery schedule information of this charge. Only when this charge is using Delivery Pricing charge model
+          '
+      description: 'Container for custom fields of a Product Rate Plan Charge object.
 
         '
-      properties:
-        frequency:
-          description: 'The frequency of the delivery. Only supports weekly now
-
-            '
-          enum:
-          - Weekly
-          type: string
-        friday:
-          description: 'The flag to indicate should the delivery happen on Friday
-
-            '
-          type: boolean
-        monday:
-          description: 'The flag to indicate should the delivery happen on Monday
-
-            '
-          type: boolean
-        saturday:
-          description: 'The flag to indicate should the delivery happen on Saturday
-
-            '
-          type: boolean
-        sunday:
-          description: 'The flag to indicate should the delivery happen on Sunday
-
-            '
-          type: boolean
-        thursday:
-          description: 'The flag to indicate should the delivery happen on Thursday
-
-            '
-          type: boolean
-        tuesday:
-          description: 'The flag to indicate should the delivery happen on Tuesday
-
-            '
-          type: boolean
-        wendesday:
-          description: 'The flag to indicate should the delivery happen on Wendesday
-
-            '
-          type: boolean
-      title: deliverySchedule
+      title: productRatePlanChargeFieldsCustom
       type: object
-    ProxyCreateOrModifyResponse:
-      properties:
-        Id:
-          description: ''
-          type: string
-        Success:
-          description: ''
-          type: boolean
-      type: object
-    GETProductDiscountApplyDetailsType:
-      properties:
-        appliedProductRatePlanChargeId:
-          description: 'The ID of the product rate plan charge that the discount product rate plan charge applies to.
-
-            '
-          type: string
-        appliedProductRatePlanId:
-          description: 'The ID of the product rate plan that the discount product rate plan charge applies to.
-
-            '
-          type: string
-      title: productDiscountApplyDetails
-      type: object
-    ProductRatePlanObjectNSFields:
-      description: 'Container for Product Rate Plan fields provided by the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-        '
-      properties:
-        BillingPeriod__NS:
-          description: 'Billing period associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          enum:
-          - Monthly
-          - Quarterly
-          - Annual
-          - Semi-Annual
-          type: string
-        Class__NS:
-          description: 'Class associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-        Department__NS:
-          description: 'Department associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-        IncludeChildren__NS:
-          description: 'Specifies whether the corresponding item in NetSuite is visible under child subsidiaries. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          enum:
-          - 'Yes'
-          - 'No'
-          type: string
-        IntegrationId__NS:
-          description: 'ID of the corresponding object in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-        IntegrationStatus__NS:
-          description: 'Status of the product rate plan''s synchronization with NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-        ItemType__NS:
-          description: 'Type of item that is created in NetSuite for the product rate plan. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          enum:
-          - Inventory
-          - Non Inventory
-          - Service
-          type: string
-        Location__NS:
-          description: 'Location associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-        MultiCurrencyPrice__NS:
-          description: 'Multi-currency price associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-        Price__NS:
-          description: 'Price associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-        Subsidiary__NS:
-          description: 'Subsidiary associated with the corresponding item in NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-        SyncDate__NS:
-          description: 'Date when the product rate plan was synchronized with NetSuite. Only available if you have installed the [Zuora Connector for NetSuite](https://www.zuora.com/connect/app/?appId=265).
-
-            '
-          maxLength: 255
-          type: string
-      title: productRatePlanFieldsNS
-      type: object
-    ProxyGetProductRatePlan:
-      allOf:
-      - properties:
-          ActiveCurrencies:
-            description: "A list of 3-letter currency codes representing active currencies for the product rate plan. \n\nThis field cannot be queried in conjunction with any other fields except `id` at the same time. \n"
-            items:
-              type: string
-            type: array
-          CreatedById:
-            description: 'The automatically generated ID of the Zuora user who created the `ProductRatePlan` object.
-
-              '
-            maxLength: 32
-            type: string
-          CreatedDate:
-            description: 'The date when the `ProductRatePlan` object was created.
-
-              '
-            format: date-time
-            maxLength: 29
-            type: string
-          Description:
-            description: 'A description of the product rate plan.
-
-              '
-            maxLength: 500
-            type: string
-          EffectiveEndDate:
-            description: 'The date when the product rate plan expires and can''t be subscribed to, in `yyyy-mm-dd` format.
-
-              '
-            format: date
-            maxLength: 29
-            type: string
-          EffectiveStartDate:
-            description: 'The date when the product rate plan becomes available and can be subscribed to, in `yyyy-mm-dd` format.
-
-              '
-            format: date
-            maxLength: 29
-            type: string
-          Grade:
-            description: "The grade that is assigned for the product rate plan.\n\n**Notes**: \n  - To use this field, you must set the `X-Zuora-WSDL-Version` request header to `116` or later. Otherwise, an error occurs.\n  - This field is in the **Early Adopter** phase. We are actively soliciting feedback from a small set of early adopters before releasing it as generally available. If you want to join this early adopter program, submit a request at [Zuora Global Support](http://support.zuora.com/).\n"
-            type: number
-          Id:
-            description: Object identifier.
-            type: string
-          Name:
-            description: 'The name of the product rate plan. The name doesn''t have to be unique in a Product Catalog, but the name has to be unique within a product.
-
-              '
-            maxLength: 255
-            type: string
-          ProductId:
-            description: 'The ID of the product that contains the product rate plan.
-
-              '
-            maxLength: 32
-            type: string
-          UpdatedById:
-            description: 'The automatically generated ID of the last user to update the object.
-
-              '
-            maxLength: 32
-            type: string
-          UpdatedDate:
-            description: 'The date when the object was last updated.
-
-              '
-            format: date-time
-            maxLength: 29
-            type: string
-        type: object
-      - $ref: '#/components/schemas/ProductRatePlanObjectNSFields'
-      - $ref: '#/components/schemas/ProductRatePlanObjectCustomFields'
   parameters:
+    GLOBAL_HEADER_Idempotency_Key:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+      schema:
+        type: string
+        maxLength: 255
+    GLOBAL_HEADER_Accept_Encoding:
+      name: Accept-Encoding
+      in: header
+      required: false
+      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      schema:
+        type: string
     GLOBAL_REQUEST_pageSize:
       name: pageSize
       in: query
@@ -2437,24 +2452,25 @@ components:
         type: integer
         default: 20
         maximum: 40
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
+    GLOBAL_REQUEST_page:
+      name: page
+      in: query
       required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
+      description: 'The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.
 
         '
       schema:
-        type: string
-    GLOBAL_HEADER_Authorization_OAuth_optional:
-      name: Authorization
-      in: header
+        type: integer
+        default: 1
+        minimum: 1
+    GLOBAL_REQUEST_rejectUnknownFields:
+      name: rejectUnknownFields
+      in: query
       required: false
-      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
+      description: "Specifies whether the call fails if the request body contains unknown fields.\nWith `rejectUnknownFields` set to `true`, Zuora returns a 400 response if\nthe request body contains unknown fields. The body of the 400 response is:\n\n```json\n{\n    \"message\": \"Error - unrecognised fields\"\n}\n```\n\nBy default, Zuora ignores unknown fields in the request body.\n"
       schema:
-        type: string
+        type: boolean
+        default: false
     GLOBAL_HEADER_X_Zuora_WSDL_Version:
       name: X-Zuora-WSDL-Version
       in: header
@@ -2465,14 +2481,6 @@ components:
       schema:
         type: string
         default: 79
-    GLOBAL_HEADER_Idempotency_Key:
-      name: Idempotency-Key
-      in: header
-      required: false
-      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
-      schema:
-        type: string
-        maxLength: 255
     GLOBAL_HEADER_Zuora_Track_Id:
       name: Zuora-Track-Id
       in: header
@@ -2486,26 +2494,20 @@ components:
       schema:
         type: string
         maxLength: 64
-    GLOBAL_HEADER_Accept_Encoding:
-      name: Accept-Encoding
+    GLOBAL_HEADER_Authorization_OAuth_optional:
+      name: Authorization
       in: header
       required: false
-      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+        '
       schema:
         type: string
-    GLOBAL_REQUEST_rejectUnknownFields:
-      name: rejectUnknownFields
-      in: query
-      required: false
-      description: "Specifies whether the call fails if the request body contains unknown fields.\nWith `rejectUnknownFields` set to `true`, Zuora returns a 400 response if\nthe request body contains unknown fields. The body of the 400 response is:\n\n```json\n{\n    \"message\": \"Error - unrecognised fields\"\n}\n```\n\nBy default, Zuora ignores unknown fields in the request body.\n"
-      schema:
-        type: boolean
-        default: false
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
       in: header
       required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:
@@ -2517,17 +2519,15 @@ components:
       description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
       schema:
         type: string
-    GLOBAL_REQUEST_page:
-      name: page
-      in: query
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
       required: false
-      description: 'The index number of the page that you want to retrieve. This parameter is dependent on `pageSize`. You must set `pageSize` before specifying `page`. For example, if you set `pageSize` to `20` and `page` to `2`, the 21st to 40th records are returned in the response.
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
 
         '
       schema:
-        type: integer
-        default: 1
-        minimum: 1
+        type: string
 x-tagGroups:
 - name: Authentication
   tags:

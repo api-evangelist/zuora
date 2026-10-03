@@ -157,67 +157,6 @@ paths:
         label: Curl
         source: "curl -i -X GET \\\n  'https://rest.zuora.com/system-health/billing-documents/volume-summary?startTime=2022-09-22T09:07-0800&endTime=2022-09-24T09:07-0800' \\ \n  -H 'Authorization: Bearer 7la16f1afa6f48099dc0605d7a175846'\n"
 components:
-  schemas:
-    BillingDocVolumeSummaryRecord:
-      allOf:
-      - properties:
-          totalFailedAccounts:
-            description: The count of total accounts who have failed records.
-            type: integer
-          totalGeneratedCreditMemos:
-            description: 'The count of total generated credit memos.
-
-              '
-            type: integer
-          totalGeneratedInvoices:
-            description: 'The count of total generated invoices.
-
-              '
-            type: integer
-        type: object
-      description: 'A volume summary record.
-
-        '
-      title: volumeSummaryRecord
-    SystemHealthErrorResponse:
-      properties:
-        error:
-          description: 'Error status text.
-
-            '
-          type: string
-        message:
-          description: 'The associated reason.
-
-            '
-          type: string
-        path:
-          description: 'The system health api path having error.
-
-            '
-          type: string
-        status:
-          description: 'Error status code.
-
-            '
-          type: integer
-        timestamp:
-          description: 'The time when error happens.
-
-            '
-          format: date-time
-          type: string
-      type: object
-    GetBillingDocVolumeSummaryResponse:
-      properties:
-        data:
-          description: 'List of billing documents summary, including total generated invoices and credit memos, also a total number of accounts that failed to process.
-
-            '
-          items:
-            $ref: '#/components/schemas/BillingDocVolumeSummaryRecord'
-          type: array
-      type: object
   parameters:
     GLOBAL_HEADER_Authorization_OAuth:
       name: Authorization
@@ -233,15 +172,6 @@ components:
       in: header
       required: false
       description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
-      in: header
-      required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
 
         '
       schema:
@@ -273,6 +203,76 @@ components:
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
       schema:
         type: string
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
+      schema:
+        type: string
+  schemas:
+    GetBillingDocVolumeSummaryResponse:
+      properties:
+        data:
+          description: 'List of billing documents summary, including total generated invoices and credit memos, also a total number of accounts that failed to process.
+
+            '
+          items:
+            $ref: '#/components/schemas/BillingDocVolumeSummaryRecord'
+          type: array
+      type: object
+    SystemHealthErrorResponse:
+      properties:
+        error:
+          description: 'Error status text.
+
+            '
+          type: string
+        message:
+          description: 'The associated reason.
+
+            '
+          type: string
+        path:
+          description: 'The system health api path having error.
+
+            '
+          type: string
+        status:
+          description: 'Error status code.
+
+            '
+          type: integer
+        timestamp:
+          description: 'The time when error happens.
+
+            '
+          format: date-time
+          type: string
+      type: object
+    BillingDocVolumeSummaryRecord:
+      allOf:
+      - properties:
+          totalFailedAccounts:
+            description: The count of total accounts who have failed records.
+            type: integer
+          totalGeneratedCreditMemos:
+            description: 'The count of total generated credit memos.
+
+              '
+            type: integer
+          totalGeneratedInvoices:
+            description: 'The count of total generated invoices.
+
+              '
+            type: integer
+        type: object
+      description: 'A volume summary record.
+
+        '
+      title: volumeSummaryRecord
 x-tagGroups:
 - name: Authentication
   tags:

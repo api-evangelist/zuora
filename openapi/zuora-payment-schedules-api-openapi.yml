@@ -2117,41 +2117,6 @@ paths:
         required: true
 components:
   schemas:
-    POSTPaymentSchedulesRequest:
-      properties:
-        paymentSchedules:
-          description: 'Container of the payment schedules to be created.
-
-            '
-          items:
-            $ref: '#/components/schemas/POSTPaymentScheduleRequest'
-          type: array
-      type: object
-    PaymentSchedulePaymentOptionFields:
-      properties:
-        detail:
-          description: 'The field used to pass the transactional payment data to the gateway side in the key-value format.
-
-            '
-          properties:
-            key:
-              description: 'The name of the field.
-
-                '
-              type: string
-            value:
-              description: 'The value of the field.
-
-                '
-              type: string
-          type: object
-        type:
-          description: 'The type of the payment option. Currently, only `GatewayOptions` is supported for specifying Gateway Options fields supported by a payment gateway.
-
-            '
-          type: string
-      title: paymentOption
-      type: object
     PUTPaymentScheduleItemResponse:
       allOf:
       - properties:
@@ -2318,459 +2283,7 @@ components:
             type: string
         type: object
       - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
-    PaymentScheduleCommonResponse:
-      allOf:
-      - properties:
-          accountId:
-            description: 'ID of the account that owns the payment schedule.
-
-              '
-            type: string
-          accountNumber:
-            description: 'Number of the account that owns the payment schedule.
-
-              '
-            type: string
-          billingDocument:
-            properties:
-              id:
-                description: 'ID of the billing document. for example, `2c9890306fb2121e016fb21a6b550041`.
-
-                  '
-                type: string
-              number:
-                description: 'The number of the billing docuemnt, for example, `INV00002345`.
-
-                  '
-                type: string
-              type:
-                description: 'Indicates whether the associated billing document is a debit memo or a invoice.
-
-                  '
-                type: string
-            type: object
-          createdById:
-            description: 'The ID of the user who created this payment schedule.
-
-              '
-            type: string
-          createdDate:
-            description: 'The date and time the payment schedule is created.
-
-              '
-            format: date
-            type: string
-          description:
-            description: 'The description of the payment schedule.
-
-              '
-            type: string
-          id:
-            description: 'ID of the payment schedule.
-
-              '
-            type: string
-          isCustom:
-            description: 'Indicates if the payment schedule is a custom payment schedule.
-
-              '
-            type: boolean
-          items:
-            description: 'Container for payment schedule items.
-
-              '
-            items:
-              $ref: '#/components/schemas/PaymentScheduleItemCommonResponse'
-            type: array
-          nextPaymentDate:
-            description: 'The date the next payment will be processed.
-
-              '
-            format: date
-            type: string
-          occurrences:
-            description: 'The number of payment schedule items that are created by this payment schedule.
-
-              '
-            type: integer
-          paymentOption:
-            description: 'Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.
-
-
-              `paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.
-
-              '
-            items:
-              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
-            type: array
-          paymentScheduleNumber:
-            description: 'Number of the payment schedule.
-
-              '
-            type: string
-          period:
-            description: 'For recurring payment schedule only. The period of payment generation. Available values include: `Monthly`, `Weekly`, `BiWeekly`.
-
-              Returns `null` for custom payment schedules.
-
-              '
-            type: string
-          prepayment:
-            description: 'Indicates whether the payments created by the payment schedule are used as a reserved payment. This field is available only if the prepaid cash drawdown permission is enabled. See [Prepaid Cash with Drawdown](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Invoicing/JA_Advanced_Consumption_Billing/Prepaid_Cash_with_Drawdown) for more information.
-
-              '
-            type: boolean
-          recentPaymentDate:
-            description: 'The date the last payment was processed.
-
-              '
-            format: date
-            type: string
-          runHour:
-            description: '[0,1,2,~,22,23]
-
-
-              At which hour in the day in the tenant’s timezone the recurring payment schedule items will be collected.
-
-              Return `0` for custom payment schedules.
-
-              '
-            type: integer
-          standalone:
-            description: 'Indicates if the payments that the payment schedule created are standalone payments or not.
-
-              '
-            type: boolean
-          startDate:
-            description: 'The date when the first payment of this payment schedule is proccessed.
-
-              '
-            format: date
-            type: string
-          status:
-            description: 'The status of the payment schedule.
-
-
-              - Active: There is still payment schedule item to process.
-
-              - Canceled: After a payment schedule is canceled by the user, the schedule is marked as `canceled`.
-
-              - Completed: After all payment schedule items are processed, the schedule is marked as `Completed`.
-
-              '
-            enum:
-            - Active
-            - Canceled
-            - Completed
-            type: string
-          totalAmount:
-            description: "The total amount that will be collected by the payment schedule.            \n"
-            type: number
-          totalPaymentsErrored:
-            description: 'The number of errored payments.
-
-              '
-            type: integer
-          totalPaymentsProcessed:
-            description: 'The number of processed payments.
-
-              '
-            type: integer
-          updatedById:
-            description: 'The ID of the user who last updated this payment schedule.
-
-              '
-            type: string
-          updatedDate:
-            description: 'The date and time the payment schedule is last updated.
-
-              '
-            format: date
-            type: string
-        type: object
-      - $ref: '#/components/schemas/PaymentScheduleCustomFields'
-    PUTPaymentScheduleItemRequest:
-      allOf:
-      - properties:
-          amount:
-            description: 'The amount of the payment.
-
-              '
-            format: decimal
-            type: number
-          currency:
-            description: 'The currency of the payment.
-
-              '
-            type: string
-          description:
-            description: 'The description of the payment schedule item.
-
-              '
-            type: string
-          linkPayments:
-            description: 'Container for payments linked to the payment schedule item.
-
-              '
-            items:
-              $ref: '#/components/schemas/LinkedPaymentID'
-            type: array
-          paymentGatewayId:
-            description: 'ID of the payment gateway of the payment schedule item.
-
-              '
-            type: string
-          paymentId:
-            description: 'ID of the payment to be linked to the payment schedule item.
-
-
-              **Note**: This feild is version controlled. To enable this field, you must set `zuora-version` to equal or smaller than `336.0`.
-
-              '
-            type: string
-          paymentMethodId:
-            description: 'ID of the payment method of the payment schedule item.
-
-              '
-            type: string
-          paymentOption:
-            description: "Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.\n\nHere is an example:\n```\n\"paymentOption\": [\n  {\n    \"type\": \"GatewayOptions\",\n    \"detail\": {\n      \"SecCode\":\"WEB\"\n    }\n  }\n]\n```\n\n`paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.\n"
-            items:
-              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
-            type: array
-          runHour:
-            description: 'At which hour of the day in the tenant’s timezone this payment will be collected. If the payment `runHour` and `scheduledDate` are backdated, the system will collect the payment when the next runHour occurs.
-
-              '
-            type: integer
-          scheduledDate:
-            description: 'The scheduled date when the payment is processed.
-
-              '
-            format: date
-            type: string
-          unlinkPayments:
-            description: 'Container for payments to be unlinked from the payment schedule item.
-
-              '
-            items:
-              $ref: '#/components/schemas/LinkedPaymentID'
-            type: array
-        type: object
-      - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
-    POSTPaymentScheduleResponse:
-      allOf:
-      - properties:
-          accountId:
-            description: 'ID of the account that owns the payment schedule.
-
-              '
-            type: string
-          accountNumber:
-            description: 'Number of the account that owns the payment schedule.
-
-              '
-            type: string
-          billingDocument:
-            properties:
-              id:
-                description: 'ID of the billing document. for example, `2c9890306fb2121e016fb21a6b550041`.
-
-                  '
-                type: string
-              number:
-                description: 'Number of the billing docuemnt, for example, `INV00002345`.
-
-                  '
-                type: string
-              type:
-                description: 'Indicates whether the associated billing document is a debit memo or a invoice.
-
-                  '
-                type: string
-            type: object
-          createdById:
-            description: 'ID of the user who created this payment schedule.
-
-              '
-            type: string
-          createdDate:
-            description: 'The date and time the payment schedule is created.
-
-              '
-            format: date
-            type: string
-          description:
-            description: 'The description of the payment schedule.
-
-              '
-            type: string
-          id:
-            description: 'ID of the payment schedule.
-
-              '
-            type: string
-          isCustom:
-            description: 'Indicates if the payment schedule is a custom payment schedule.
-
-              '
-            type: boolean
-          items:
-            description: 'Container for payment schedule items.
-
-              '
-            items:
-              $ref: '#/components/schemas/PaymentScheduleItemCommonResponse'
-            type: array
-          nextPaymentDate:
-            description: 'The date the next payment will be processed.
-
-              '
-            format: date
-            type: string
-          occurrences:
-            description: 'The number of payment schedule items that are created by this payment schedule.
-
-              '
-            type: integer
-          paymentOption:
-            description: 'Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.
-
-
-              `paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.
-
-              '
-            items:
-              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
-            type: array
-          paymentScheduleNumber:
-            description: 'Number of the payment schedule.
-
-              '
-            type: string
-          period:
-            description: 'For recurring payment schedule only. The period of payment generation. Available values include: `Monthly`, `Weekly`, `BiWeekly`.
-
-              Return `null` for custom payment schedules.
-
-              '
-            type: string
-          prepayment:
-            description: 'Indicates whether the payments created by the payment schedule are used as a reserved payment. This field will only be available if the prepaid cash drawdown permission is enabled. See [Prepaid Cash with Drawdown](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Invoicing/JA_Advanced_Consumption_Billing/Prepaid_Cash_with_Drawdown) for more information.
-
-              '
-            type: boolean
-          recentPaymentDate:
-            description: 'The date the last payment was processed.
-
-              '
-            format: date
-            type: string
-          runHour:
-            description: '[0,1,2,~,22,23]
-
-
-              At which hour in the day in the tenant’s timezone this payment will be collected. If the payment `runHour` and `scheduledDate` are backdated, the system will collect the payment when the next runHour occurs.
-
-              Return `0` for custom payment schedules.
-
-              '
-            type: integer
-          standalone:
-            description: 'Indicates if the payments that the payment schedule created are standalone payments or not.
-
-              '
-            type: boolean
-          startDate:
-            description: 'The date when the first payment of this payment schedule is proccessed.
-
-              '
-            format: date
-            type: string
-          status:
-            description: 'The status of the payment schedule.
-
-
-              - `Active`: There are still pament schedule items to process.
-
-              - `Canceled`: After a payment schedule is canceled by the user, the schedule is marked as `Canceled`.
-
-              - `Completed`: After all payment schedule items are processed, the schedule is marked as `Completed`.
-
-              '
-            enum:
-            - Active
-            - Canceled
-            - Completed
-            type: string
-          success:
-            description: "Returns `true` if the request was processed successfully.        \n"
-            type: boolean
-          totalAmount:
-            description: 'The total amount that will be collected by this payment schedule. This field will contain a null value if the `standalone` value is `true`.
-
-              '
-            type: number
-          totalPaymentsErrored:
-            description: 'The number of errored payments.
-
-              '
-            type: integer
-          totalPaymentsProcessed:
-            description: 'The number of processed payments.
-
-              '
-            type: integer
-          updatedById:
-            description: 'ID of the user who last updated this payment schedule.
-
-              '
-            type: string
-          updatedDate:
-            description: 'The date and time the payment schedule is last updated.
-
-              '
-            format: date
-            type: string
-        type: object
-      - $ref: '#/components/schemas/PaymentScheduleCustomFields'
-    PaymentRunStatistic:
-      description: Payment run statistic.
-      properties:
-        completedOn:
-          description: 'The date and time the payment run is completed.
-
-            '
-          format: date-time
-          type: string
-        executedOn:
-          description: 'The date and time the payment run is executed.
-
-            '
-          format: date-time
-          type: string
-        number:
-          description: 'Payment run number.
-
-            '
-          type: string
-        numberOfErrors:
-          description: 'Number of errored payments
-
-            '
-          type: integer
-        numberOfPayments:
-          description: 'Number of processed payments.
-
-            '
-          type: integer
-        status:
-          description: 'Payment run status.
-
-            '
-          type: string
-      type: object
-    PUTPreviewPaymentScheduleRequest:
+    PUTPaymentScheduleRequest:
       allOf:
       - properties:
           amount:
@@ -2782,9 +2295,7 @@ components:
             description: "Indicates the updated currency of the pending payment schedule items.      \n"
             type: string
           occurrences:
-            description: 'Indicates the updated number of payment schedule items that are created by the payment schedule.
-
-              '
+            description: "Indicates the updated number of payment schedule items that are created by the payment schedule.\n\n**Note:**\n  - If \"updated `occurrences` > existing `occurrences`\", the following number of pending payment schedule item will be added to the payment schedule: “updated `occurrences` - existing `occurrences`”.\n  - If \"existing `occurrences` > updated `occurrences` >= the number of `processed`/`errored`/`canceled` payment schedule items\", the following number of pending items will be removed by descending order of the schedule dates: \"existing `occurrences` - updated `occurrences`\".\n  - If \"updated `occurrences` < the number of `processed`/`erroed`/`canceled` payment schedule items\", a validation error will be returned.\n"
             type: integer
           paymentGatewayId:
             description: 'Indicates the updated payment gateway ID of the pending payment schedule items.
@@ -2795,7 +2306,7 @@ components:
             description: "Indicates the updated payment method ID of the pending payment schedule items. \n"
             type: string
           paymentOption:
-            description: "Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.\n\nHere is an example:\n```\n\"paymentOption\": [\n  {\n    \"type\": \"GatewayOptions\",\n    \"detail\": {\n      \"SecCode\":\"WEB\"\n    }\n  }\n]\n```\n\n`paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.\n"
+            description: "Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.\n\nHere is an example:\n```\n\"paymentOption\": [\n  {\n    \"type\": \"GatewayOptions\",\n    \"detail\": {\n      \"SecCode\":\"WEB\"\n    }\n  }\n]\n```\n\n`paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.\n\n **Note:** To enable this field, submit a request at [Zuora Global Support](https://support.zuora.com/).\n"
             items:
               $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
             type: array
@@ -2820,406 +2331,6 @@ components:
             type: integer
         type: object
       - $ref: '#/components/schemas/PaymentScheduleCustomFields'
-    GETPaymentScheduleItemResponse:
-      allOf:
-      - properties:
-          accountId:
-            description: 'ID of the customer account that owns the payment schedule item, for example `402880e741112b310149b7343ef81234`.
-
-              '
-            type: string
-          amount:
-            description: 'The total amount of the payment schedule item.
-
-              '
-            format: decimal
-            type: number
-          balance:
-            description: 'The remaining balance of payment schedule item.
-
-              '
-            format: decimal
-            type: number
-          billingDocument:
-            properties:
-              id:
-                description: 'ID of the billing document. for example, `2c9890306fb2121e016fb21a6b550041`.
-
-                  '
-                type: string
-              number:
-                description: 'The number of the billing docuemnt, for example, `INV00002345`.
-
-                  '
-                type: string
-              type:
-                description: 'Indicates whether the associated billing document is a debit memo or a invoice.
-
-                  '
-                type: string
-            type: object
-          cancellationReason:
-            description: "The reason for the cancellation of payment schedule item.  \n"
-            type: string
-          createdById:
-            description: 'The ID of the user who created the payment schedule item.
-
-              '
-            type: string
-          createdDate:
-            description: 'The date and time when the payment schedule item was created.
-
-              '
-            format: date
-            type: string
-          currency:
-            description: 'The currency of the payment.
-
-              '
-            type: string
-          description:
-            description: 'The description of the payment schedule item.
-
-              '
-            type: string
-          errorMessage:
-            description: 'The error message indicating if the error is related to the configuration or the payment collection.
-
-              '
-            type: string
-          id:
-            description: 'ID of the payment schedule item. For example, `412880e749b72b310149b7343ef81346`.
-
-              '
-            type: string
-          number:
-            description: 'Number of the payment schedule item.
-
-              '
-            type: string
-          paymentGatewayId:
-            description: 'ID of the payment gateway of the payment schedule item.
-
-              '
-            type: string
-          paymentId:
-            description: "ID of the payment that is created by the payment schedule item， or linked to the payment schedule item. This field is only available if the request doesn’t specify `zuora-version`, or `zuora-version` is set to a value equal to or smaller than `336.0`. \n"
-            type: string
-          paymentMethodId:
-            description: 'ID of the payment method of the payment schedule item.
-
-              '
-            type: string
-          paymentOption:
-            description: 'Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.
-
-
-              `paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.
-
-              '
-            items:
-              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
-            type: array
-          paymentScheduleId:
-            description: 'ID of the payment schedule that contains the payment schedule item, for example, `ID402880e749b72b310149b7343ef80005`,
-
-              '
-            type: string
-          paymentScheduleNumber:
-            description: 'Number of the payment schedule that contains the payment schedule item, for example, `ID402880e749b72b310149b7343ef80005`,
-
-              '
-            type: string
-          psiPayments:
-            description: "Container for payments linked to the payment schedule item. \n"
-            items:
-              $ref: '#/components/schemas/LinkedPaymentID'
-            type: array
-          runHour:
-            description: 'At which hour in the day in the tenant’s timezone this payment will be collected. If the payment `runHour` and `scheduledDate` are backdated, the system will collect the payment when the next runHour occurs.
-
-              '
-            type: integer
-          scheduledDate:
-            description: 'The scheduled date when the payment is processed.
-
-              '
-            format: date
-            type: string
-          standalone:
-            description: 'Indicates if the payment created by the payment schedule item is a standalone payment.
-
-              '
-            type: boolean
-          status:
-            description: 'ID of the payment method of the payment schedule item.
-
-
-              - `Pending`: Waiting for processing.
-
-              - `Processed`: The payment has been collected.
-
-              - `Error`: Failed to collect the payment.
-
-              - `Canceled`: After a pending payment schedule item is canceled by the user, the item is marked as `Canceled`.
-
-              '
-            enum:
-            - Pending
-            - Processed
-            - Error
-            - Canceled
-            type: string
-          success:
-            description: "Returns `true` if the request was processed successfully. \n"
-            type: boolean
-          updatedById:
-            description: 'The ID of the user who updated the payment schedule item.
-
-              '
-            type: string
-          updatedDate:
-            description: 'The date and time when the payment schedule item was last updated.
-
-              '
-            format: date
-            type: string
-        type: object
-      - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
-    PaymentScheduleItemCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Payment Schedule Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case-sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of a Payment Schedule Item object.
-
-        '
-      title: paymentScheduleItemFieldsCustom
-      type: object
-    PaymentScheduleCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Payment Schedule object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case-sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-
-          **Note:**
-
-          The values will automatically be pushed to payment schedule items level if the same fields exist at the payment schedule item level.
-
-          '
-      description: 'Container for custom fields of a Payment Schedule object.
-
-        '
-      title: paymentScheduleFieldsCustom
-      type: object
-    POSTPaymentSchedulesEach:
-      properties:
-        id:
-          description: 'The ID of the created payment schedule.
-
-            '
-          type: string
-        paymentScheduleNumber:
-          description: 'The number of the created payment schedule.
-
-            '
-          type: string
-      title: Payment Schedule ID and Number
-      type: object
-    POSTRetryPaymentScheduleItemResponse:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/PaymentScheduleItemCommonResponse'
-          type: array
-        success:
-          description: "Returns `true` if the request was processed successfully. \n"
-          type: boolean
-      type: object
-    POSTAddItemsToPaymentScheduleRequest:
-      description: 'Container for the payment schedule items to be added to the payment schedule.
-
-        '
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/PaymentScheduleItemCommon'
-          title: paymentScheduleItem
-          type: array
-      type: object
-    POSTRetryPaymentScheduleItemInfo:
-      description: 'Information of the payment schedule items to be retried.
-
-        '
-      properties:
-        id:
-          description: 'Specifies the ID of the payment schedule item to be retried.
-
-            '
-          type: string
-        paymentGatewayId:
-          description: 'Specifies the ID of a payment gateway that will be used in the retry.
-
-            '
-          type: string
-        paymentMethodId:
-          description: 'Specifies the ID of a payment method that will be used in the retry.
-
-            '
-          type: string
-      type: object
-    PUTSkipPaymentScheduleItemResponse:
-      allOf:
-      - properties:
-          amount:
-            description: 'The amount of the payment.
-
-              '
-            format: decimal
-            type: number
-          billingDocument:
-            properties:
-              id:
-                description: 'ID of the billing document. for example, `2c9890306fb2121e016fb21a6b550041`.
-
-                  '
-                type: string
-              number:
-                description: 'The number of the billing docuemnt, for example, `INV00002345`.
-
-                  '
-                type: string
-              type:
-                description: 'Indicates whether the associated billing document is a debit memo or a invoice.
-
-                  '
-                type: string
-            type: object
-          cancellationReason:
-            description: "The reason for the cancellation of payment schedule item.            \n"
-            type: string
-          createdById:
-            description: 'The ID of the user who created the payment schedule item.
-
-              '
-            type: string
-          createdDate:
-            description: 'The date and time when the payment schedule item was created.
-
-              '
-            format: date
-            type: string
-          currency:
-            description: 'The currency of the payment.
-
-              '
-            type: string
-          description:
-            description: 'The description of the payment schedule item.
-
-              '
-            type: string
-          errorMessage:
-            description: 'The error message indicating if the error is related to the configuration or the payment collection.
-
-              '
-            type: string
-          id:
-            description: 'ID of the newly-created payment schedule item. For example, `412880e749b72b310149b7343ef81346`.
-
-              '
-            type: string
-          number:
-            description: 'Number of the newly-created payment schedule item.
-
-              '
-            type: string
-          paymentGatewayId:
-            description: 'ID of the payment gateway of the payment schedule item.
-
-              '
-            type: string
-          paymentId:
-            description: "ID of the payment that is created by the payment schedule item， or linked to the payment schedule item. This field is only available if the request doesn’t specify `zuora-version`, or `zuora-version` is set to a value equal to or smaller than `336.0`.  \n"
-            type: string
-          paymentMethodId:
-            description: 'ID of the payment method of the payment schedule item.
-
-              '
-            type: string
-          paymentOption:
-            description: 'Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.
-
-
-              `paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.
-
-              '
-            items:
-              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
-            type: array
-          paymentScheduleId:
-            description: 'ID of the payment schedule that contains the payment schedule item, for example, `ID402880e749b72b310149b7343ef80005`,
-
-              '
-            type: string
-          paymentScheduleNumber:
-            description: "Number of the payment schedule that contains the payment schedule item, for example, `ID402880e749b72b310149b7343ef80005`,\n     \n"
-            type: string
-          psiPayments:
-            description: "Container for payments linked to the payment schedule item. \n"
-            items:
-              $ref: '#/components/schemas/LinkedPaymentID'
-            type: array
-          runHour:
-            description: 'At which hour in the day in the tenant’s timezone this payment will be collected.
-
-              '
-            type: integer
-          scheduledDate:
-            description: 'The scheduled date when the payment is processed.
-
-              '
-            format: date
-            type: string
-          standalone:
-            description: 'Indicates if the payment created by the payment schedule item is a standalone payment.
-
-              '
-            type: boolean
-          status:
-            description: 'ID of the payment method of the payment schedule item.
-
-
-              - `Pending`: Waiting for processing.
-
-              - `Processed`: The payment has been collected.
-
-              - `Error`: Failed to collect the payment.
-
-              - `Canceled`: After a pending payment schedule item is canceled by the user, the item is marked as `Canceled`.
-
-              '
-            enum:
-            - Pending
-            - Processed
-            - Error
-            - Canceled
-            type: string
-          success:
-            description: "Returns `true` if the request was processed successfully. \n"
-            type: boolean
-          updatedById:
-            description: 'The ID of the user who updated the payment schedule item.
-
-              '
-            type: string
-          updatedDate:
-            description: 'The date and time when the payment schedule item was last updated.
-
-              '
-            format: date
-            type: string
-        type: object
-      - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
     POSTPaymentScheduleRequest:
       allOf:
       - properties:
@@ -3435,62 +2546,6 @@ components:
             type: number
         type: object
       - $ref: '#/components/schemas/PaymentScheduleCustomFields'
-    GETPaymentScheduleStatisticResponse:
-      description: 'The object that contains the payment schedule statistic of the specified date.
-
-        '
-      properties:
-        date:
-          description: 'The specified date.
-
-            '
-          format: date
-          type: string
-        paymentRuns:
-          items:
-            $ref: '#/components/schemas/PaymentRunStatistic'
-          title: PaymentRunStatistic
-          type: array
-        paymentScheduleItems:
-          properties:
-            error:
-              description: "The number of errored payment schedule items.              \n"
-              type: integer
-            pending:
-              description: 'The number of pending payment schedule items.
-
-                '
-              type: integer
-            processed:
-              description: "The number of processed payment schedule items. \n"
-              type: integer
-          type: object
-        success:
-          description: 'Returns `true` if the request was processed successfully.
-
-            '
-          type: boolean
-      type: object
-    LinkedPaymentID:
-      properties:
-        paymentId:
-          description: 'ID of the payment.
-
-            '
-          type: string
-      title: PaymentID
-      type: object
-    PUTCancelPaymentScheduleRequest:
-      properties:
-        cancelDate:
-          description: 'Specifies when the payment schedule will be canceled.
-
-            '
-          format: date
-          type: string
-      required:
-      - cancelDate
-      type: object
     GETPaymentScheduleResponse:
       allOf:
       - properties:
@@ -3669,6 +2724,121 @@ components:
             type: string
         type: object
       - $ref: '#/components/schemas/PaymentScheduleCustomFields'
+    LinkedPaymentID:
+      properties:
+        paymentId:
+          description: 'ID of the payment.
+
+            '
+          type: string
+      title: PaymentID
+      type: object
+    POSTAddItemsToPaymentScheduleRequest:
+      description: 'Container for the payment schedule items to be added to the payment schedule.
+
+        '
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/PaymentScheduleItemCommon'
+          title: paymentScheduleItem
+          type: array
+      type: object
+    PaymentScheduleCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Payment Schedule object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case-sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+
+          **Note:**
+
+          The values will automatically be pushed to payment schedule items level if the same fields exist at the payment schedule item level.
+
+          '
+      description: 'Container for custom fields of a Payment Schedule object.
+
+        '
+      title: paymentScheduleFieldsCustom
+      type: object
+    PUTPaymentScheduleItemRequest:
+      allOf:
+      - properties:
+          amount:
+            description: 'The amount of the payment.
+
+              '
+            format: decimal
+            type: number
+          currency:
+            description: 'The currency of the payment.
+
+              '
+            type: string
+          description:
+            description: 'The description of the payment schedule item.
+
+              '
+            type: string
+          linkPayments:
+            description: 'Container for payments linked to the payment schedule item.
+
+              '
+            items:
+              $ref: '#/components/schemas/LinkedPaymentID'
+            type: array
+          paymentGatewayId:
+            description: 'ID of the payment gateway of the payment schedule item.
+
+              '
+            type: string
+          paymentId:
+            description: 'ID of the payment to be linked to the payment schedule item.
+
+
+              **Note**: This feild is version controlled. To enable this field, you must set `zuora-version` to equal or smaller than `336.0`.
+
+              '
+            type: string
+          paymentMethodId:
+            description: 'ID of the payment method of the payment schedule item.
+
+              '
+            type: string
+          paymentOption:
+            description: "Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.\n\nHere is an example:\n```\n\"paymentOption\": [\n  {\n    \"type\": \"GatewayOptions\",\n    \"detail\": {\n      \"SecCode\":\"WEB\"\n    }\n  }\n]\n```\n\n`paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.\n"
+            items:
+              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
+            type: array
+          runHour:
+            description: 'At which hour of the day in the tenant’s timezone this payment will be collected. If the payment `runHour` and `scheduledDate` are backdated, the system will collect the payment when the next runHour occurs.
+
+              '
+            type: integer
+          scheduledDate:
+            description: 'The scheduled date when the payment is processed.
+
+              '
+            format: date
+            type: string
+          unlinkPayments:
+            description: 'Container for payments to be unlinked from the payment schedule item.
+
+              '
+            items:
+              $ref: '#/components/schemas/LinkedPaymentID'
+            type: array
+        type: object
+      - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
+    PUTCancelPaymentScheduleRequest:
+      properties:
+        cancelDate:
+          description: 'Specifies when the payment schedule will be canceled.
+
+            '
+          format: date
+          type: string
+      required:
+      - cancelDate
+      type: object
     POSTRetryPaymentScheduleItemRequest:
       properties:
         items:
@@ -3680,7 +2850,912 @@ components:
           title: Payment schedule items to be retried.
           type: array
       type: object
-    PUTPaymentScheduleRequest:
+    PaymentScheduleItemCommon:
+      allOf:
+      - properties:
+          amount:
+            description: 'The amount that needs to be collected by this payment schedule item.
+
+              '
+            type: number
+          currency:
+            description: 'The currency of the payment.
+
+
+              **Note**:
+
+              - This field is optional. If not specified, the default value is the currency set for the account.
+
+              '
+            type: string
+          description:
+            description: 'Description of the payment schedule item.
+
+              '
+            type: string
+          paymentGatewayId:
+            description: 'The ID of the payment gateway.
+
+
+              **Note**:
+
+              - This field is optional. If not specified, the default value is the payment gateway id set for the account.
+
+              '
+            required:
+            - type
+            type: string
+          paymentMethodId:
+            description: 'The ID of the payment method.
+
+
+              **Note**:
+
+              - This field is optional. If not specified, the default value is the payment method id set for the account.
+
+              '
+            type: string
+          paymentOption:
+            description: "Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.\n\nHere is an example:\n```\n\"paymentOption\": [\n  {\n    \"type\": \"GatewayOptions\",\n    \"detail\": {\n      \"SecCode\":\"WEB\"\n    }\n  }\n]\n```\n\n`paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.\n"
+            items:
+              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
+            type: array
+          runHour:
+            description: 'At which hour of the day in the tenant’s timezone this payment will be collected. Available values:`[0,1,2,~,22,23]`.
+
+              If the payment `runHour` and `scheduledDate` are backdated, the system will collect the payment when the next runHour occurs.
+
+              The default value is `0`.
+
+              '
+            type: string
+          scheduledDate:
+            description: 'The date to collect the payment.
+
+              '
+            format: date
+            type: string
+        required:
+        - scheduledDate
+        - amount
+        type: object
+      - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
+    POSTRetryPaymentScheduleItemInfo:
+      description: 'Information of the payment schedule items to be retried.
+
+        '
+      properties:
+        id:
+          description: 'Specifies the ID of the payment schedule item to be retried.
+
+            '
+          type: string
+        paymentGatewayId:
+          description: 'Specifies the ID of a payment gateway that will be used in the retry.
+
+            '
+          type: string
+        paymentMethodId:
+          description: 'Specifies the ID of a payment method that will be used in the retry.
+
+            '
+          type: string
+      type: object
+    GETPaymentSchedulesResponse:
+      description: 'Container for payment schedules.
+
+        '
+      items:
+        $ref: '#/components/schemas/PaymentScheduleCommonResponse'
+      type: array
+    PaymentScheduleCommonResponse:
+      allOf:
+      - properties:
+          accountId:
+            description: 'ID of the account that owns the payment schedule.
+
+              '
+            type: string
+          accountNumber:
+            description: 'Number of the account that owns the payment schedule.
+
+              '
+            type: string
+          billingDocument:
+            properties:
+              id:
+                description: 'ID of the billing document. for example, `2c9890306fb2121e016fb21a6b550041`.
+
+                  '
+                type: string
+              number:
+                description: 'The number of the billing docuemnt, for example, `INV00002345`.
+
+                  '
+                type: string
+              type:
+                description: 'Indicates whether the associated billing document is a debit memo or a invoice.
+
+                  '
+                type: string
+            type: object
+          createdById:
+            description: 'The ID of the user who created this payment schedule.
+
+              '
+            type: string
+          createdDate:
+            description: 'The date and time the payment schedule is created.
+
+              '
+            format: date
+            type: string
+          description:
+            description: 'The description of the payment schedule.
+
+              '
+            type: string
+          id:
+            description: 'ID of the payment schedule.
+
+              '
+            type: string
+          isCustom:
+            description: 'Indicates if the payment schedule is a custom payment schedule.
+
+              '
+            type: boolean
+          items:
+            description: 'Container for payment schedule items.
+
+              '
+            items:
+              $ref: '#/components/schemas/PaymentScheduleItemCommonResponse'
+            type: array
+          nextPaymentDate:
+            description: 'The date the next payment will be processed.
+
+              '
+            format: date
+            type: string
+          occurrences:
+            description: 'The number of payment schedule items that are created by this payment schedule.
+
+              '
+            type: integer
+          paymentOption:
+            description: 'Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.
+
+
+              `paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.
+
+              '
+            items:
+              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
+            type: array
+          paymentScheduleNumber:
+            description: 'Number of the payment schedule.
+
+              '
+            type: string
+          period:
+            description: 'For recurring payment schedule only. The period of payment generation. Available values include: `Monthly`, `Weekly`, `BiWeekly`.
+
+              Returns `null` for custom payment schedules.
+
+              '
+            type: string
+          prepayment:
+            description: 'Indicates whether the payments created by the payment schedule are used as a reserved payment. This field is available only if the prepaid cash drawdown permission is enabled. See [Prepaid Cash with Drawdown](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Invoicing/JA_Advanced_Consumption_Billing/Prepaid_Cash_with_Drawdown) for more information.
+
+              '
+            type: boolean
+          recentPaymentDate:
+            description: 'The date the last payment was processed.
+
+              '
+            format: date
+            type: string
+          runHour:
+            description: '[0,1,2,~,22,23]
+
+
+              At which hour in the day in the tenant’s timezone the recurring payment schedule items will be collected.
+
+              Return `0` for custom payment schedules.
+
+              '
+            type: integer
+          standalone:
+            description: 'Indicates if the payments that the payment schedule created are standalone payments or not.
+
+              '
+            type: boolean
+          startDate:
+            description: 'The date when the first payment of this payment schedule is proccessed.
+
+              '
+            format: date
+            type: string
+          status:
+            description: 'The status of the payment schedule.
+
+
+              - Active: There is still payment schedule item to process.
+
+              - Canceled: After a payment schedule is canceled by the user, the schedule is marked as `canceled`.
+
+              - Completed: After all payment schedule items are processed, the schedule is marked as `Completed`.
+
+              '
+            enum:
+            - Active
+            - Canceled
+            - Completed
+            type: string
+          totalAmount:
+            description: "The total amount that will be collected by the payment schedule.            \n"
+            type: number
+          totalPaymentsErrored:
+            description: 'The number of errored payments.
+
+              '
+            type: integer
+          totalPaymentsProcessed:
+            description: 'The number of processed payments.
+
+              '
+            type: integer
+          updatedById:
+            description: 'The ID of the user who last updated this payment schedule.
+
+              '
+            type: string
+          updatedDate:
+            description: 'The date and time the payment schedule is last updated.
+
+              '
+            format: date
+            type: string
+        type: object
+      - $ref: '#/components/schemas/PaymentScheduleCustomFields'
+    GETPaymentScheduleStatisticResponse:
+      description: 'The object that contains the payment schedule statistic of the specified date.
+
+        '
+      properties:
+        date:
+          description: 'The specified date.
+
+            '
+          format: date
+          type: string
+        paymentRuns:
+          items:
+            $ref: '#/components/schemas/PaymentRunStatistic'
+          title: PaymentRunStatistic
+          type: array
+        paymentScheduleItems:
+          properties:
+            error:
+              description: "The number of errored payment schedule items.              \n"
+              type: integer
+            pending:
+              description: 'The number of pending payment schedule items.
+
+                '
+              type: integer
+            processed:
+              description: "The number of processed payment schedule items. \n"
+              type: integer
+          type: object
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+      type: object
+    POSTPaymentSchedulesRequest:
+      properties:
+        paymentSchedules:
+          description: 'Container of the payment schedules to be created.
+
+            '
+          items:
+            $ref: '#/components/schemas/POSTPaymentScheduleRequest'
+          type: array
+      type: object
+    PaymentScheduleItemCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Payment Schedule Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case-sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of a Payment Schedule Item object.
+
+        '
+      title: paymentScheduleItemFieldsCustom
+      type: object
+    PaymentRunStatistic:
+      description: Payment run statistic.
+      properties:
+        completedOn:
+          description: 'The date and time the payment run is completed.
+
+            '
+          format: date-time
+          type: string
+        executedOn:
+          description: 'The date and time the payment run is executed.
+
+            '
+          format: date-time
+          type: string
+        number:
+          description: 'Payment run number.
+
+            '
+          type: string
+        numberOfErrors:
+          description: 'Number of errored payments
+
+            '
+          type: integer
+        numberOfPayments:
+          description: 'Number of processed payments.
+
+            '
+          type: integer
+        status:
+          description: 'Payment run status.
+
+            '
+          type: string
+      type: object
+    POSTPaymentSchedulesEach:
+      properties:
+        id:
+          description: 'The ID of the created payment schedule.
+
+            '
+          type: string
+        paymentScheduleNumber:
+          description: 'The number of the created payment schedule.
+
+            '
+          type: string
+      title: Payment Schedule ID and Number
+      type: object
+    PUTSkipPaymentScheduleItemResponse:
+      allOf:
+      - properties:
+          amount:
+            description: 'The amount of the payment.
+
+              '
+            format: decimal
+            type: number
+          billingDocument:
+            properties:
+              id:
+                description: 'ID of the billing document. for example, `2c9890306fb2121e016fb21a6b550041`.
+
+                  '
+                type: string
+              number:
+                description: 'The number of the billing docuemnt, for example, `INV00002345`.
+
+                  '
+                type: string
+              type:
+                description: 'Indicates whether the associated billing document is a debit memo or a invoice.
+
+                  '
+                type: string
+            type: object
+          cancellationReason:
+            description: "The reason for the cancellation of payment schedule item.            \n"
+            type: string
+          createdById:
+            description: 'The ID of the user who created the payment schedule item.
+
+              '
+            type: string
+          createdDate:
+            description: 'The date and time when the payment schedule item was created.
+
+              '
+            format: date
+            type: string
+          currency:
+            description: 'The currency of the payment.
+
+              '
+            type: string
+          description:
+            description: 'The description of the payment schedule item.
+
+              '
+            type: string
+          errorMessage:
+            description: 'The error message indicating if the error is related to the configuration or the payment collection.
+
+              '
+            type: string
+          id:
+            description: 'ID of the newly-created payment schedule item. For example, `412880e749b72b310149b7343ef81346`.
+
+              '
+            type: string
+          number:
+            description: 'Number of the newly-created payment schedule item.
+
+              '
+            type: string
+          paymentGatewayId:
+            description: 'ID of the payment gateway of the payment schedule item.
+
+              '
+            type: string
+          paymentId:
+            description: "ID of the payment that is created by the payment schedule item， or linked to the payment schedule item. This field is only available if the request doesn’t specify `zuora-version`, or `zuora-version` is set to a value equal to or smaller than `336.0`.  \n"
+            type: string
+          paymentMethodId:
+            description: 'ID of the payment method of the payment schedule item.
+
+              '
+            type: string
+          paymentOption:
+            description: 'Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.
+
+
+              `paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.
+
+              '
+            items:
+              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
+            type: array
+          paymentScheduleId:
+            description: 'ID of the payment schedule that contains the payment schedule item, for example, `ID402880e749b72b310149b7343ef80005`,
+
+              '
+            type: string
+          paymentScheduleNumber:
+            description: "Number of the payment schedule that contains the payment schedule item, for example, `ID402880e749b72b310149b7343ef80005`,\n     \n"
+            type: string
+          psiPayments:
+            description: "Container for payments linked to the payment schedule item. \n"
+            items:
+              $ref: '#/components/schemas/LinkedPaymentID'
+            type: array
+          runHour:
+            description: 'At which hour in the day in the tenant’s timezone this payment will be collected.
+
+              '
+            type: integer
+          scheduledDate:
+            description: 'The scheduled date when the payment is processed.
+
+              '
+            format: date
+            type: string
+          standalone:
+            description: 'Indicates if the payment created by the payment schedule item is a standalone payment.
+
+              '
+            type: boolean
+          status:
+            description: 'ID of the payment method of the payment schedule item.
+
+
+              - `Pending`: Waiting for processing.
+
+              - `Processed`: The payment has been collected.
+
+              - `Error`: Failed to collect the payment.
+
+              - `Canceled`: After a pending payment schedule item is canceled by the user, the item is marked as `Canceled`.
+
+              '
+            enum:
+            - Pending
+            - Processed
+            - Error
+            - Canceled
+            type: string
+          success:
+            description: "Returns `true` if the request was processed successfully. \n"
+            type: boolean
+          updatedById:
+            description: 'The ID of the user who updated the payment schedule item.
+
+              '
+            type: string
+          updatedDate:
+            description: 'The date and time when the payment schedule item was last updated.
+
+              '
+            format: date
+            type: string
+        type: object
+      - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
+    PaymentSchedulePaymentOptionFields:
+      properties:
+        detail:
+          description: 'The field used to pass the transactional payment data to the gateway side in the key-value format.
+
+            '
+          properties:
+            key:
+              description: 'The name of the field.
+
+                '
+              type: string
+            value:
+              description: 'The value of the field.
+
+                '
+              type: string
+          type: object
+        type:
+          description: 'The type of the payment option. Currently, only `GatewayOptions` is supported for specifying Gateway Options fields supported by a payment gateway.
+
+            '
+          type: string
+      title: paymentOption
+      type: object
+    GETPaymentScheduleItemResponse:
+      allOf:
+      - properties:
+          accountId:
+            description: 'ID of the customer account that owns the payment schedule item, for example `402880e741112b310149b7343ef81234`.
+
+              '
+            type: string
+          amount:
+            description: 'The total amount of the payment schedule item.
+
+              '
+            format: decimal
+            type: number
+          balance:
+            description: 'The remaining balance of payment schedule item.
+
+              '
+            format: decimal
+            type: number
+          billingDocument:
+            properties:
+              id:
+                description: 'ID of the billing document. for example, `2c9890306fb2121e016fb21a6b550041`.
+
+                  '
+                type: string
+              number:
+                description: 'The number of the billing docuemnt, for example, `INV00002345`.
+
+                  '
+                type: string
+              type:
+                description: 'Indicates whether the associated billing document is a debit memo or a invoice.
+
+                  '
+                type: string
+            type: object
+          cancellationReason:
+            description: "The reason for the cancellation of payment schedule item.  \n"
+            type: string
+          createdById:
+            description: 'The ID of the user who created the payment schedule item.
+
+              '
+            type: string
+          createdDate:
+            description: 'The date and time when the payment schedule item was created.
+
+              '
+            format: date
+            type: string
+          currency:
+            description: 'The currency of the payment.
+
+              '
+            type: string
+          description:
+            description: 'The description of the payment schedule item.
+
+              '
+            type: string
+          errorMessage:
+            description: 'The error message indicating if the error is related to the configuration or the payment collection.
+
+              '
+            type: string
+          id:
+            description: 'ID of the payment schedule item. For example, `412880e749b72b310149b7343ef81346`.
+
+              '
+            type: string
+          number:
+            description: 'Number of the payment schedule item.
+
+              '
+            type: string
+          paymentGatewayId:
+            description: 'ID of the payment gateway of the payment schedule item.
+
+              '
+            type: string
+          paymentId:
+            description: "ID of the payment that is created by the payment schedule item， or linked to the payment schedule item. This field is only available if the request doesn’t specify `zuora-version`, or `zuora-version` is set to a value equal to or smaller than `336.0`. \n"
+            type: string
+          paymentMethodId:
+            description: 'ID of the payment method of the payment schedule item.
+
+              '
+            type: string
+          paymentOption:
+            description: 'Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.
+
+
+              `paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.
+
+              '
+            items:
+              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
+            type: array
+          paymentScheduleId:
+            description: 'ID of the payment schedule that contains the payment schedule item, for example, `ID402880e749b72b310149b7343ef80005`,
+
+              '
+            type: string
+          paymentScheduleNumber:
+            description: 'Number of the payment schedule that contains the payment schedule item, for example, `ID402880e749b72b310149b7343ef80005`,
+
+              '
+            type: string
+          psiPayments:
+            description: "Container for payments linked to the payment schedule item. \n"
+            items:
+              $ref: '#/components/schemas/LinkedPaymentID'
+            type: array
+          runHour:
+            description: 'At which hour in the day in the tenant’s timezone this payment will be collected. If the payment `runHour` and `scheduledDate` are backdated, the system will collect the payment when the next runHour occurs.
+
+              '
+            type: integer
+          scheduledDate:
+            description: 'The scheduled date when the payment is processed.
+
+              '
+            format: date
+            type: string
+          standalone:
+            description: 'Indicates if the payment created by the payment schedule item is a standalone payment.
+
+              '
+            type: boolean
+          status:
+            description: 'ID of the payment method of the payment schedule item.
+
+
+              - `Pending`: Waiting for processing.
+
+              - `Processed`: The payment has been collected.
+
+              - `Error`: Failed to collect the payment.
+
+              - `Canceled`: After a pending payment schedule item is canceled by the user, the item is marked as `Canceled`.
+
+              '
+            enum:
+            - Pending
+            - Processed
+            - Error
+            - Canceled
+            type: string
+          success:
+            description: "Returns `true` if the request was processed successfully. \n"
+            type: boolean
+          updatedById:
+            description: 'The ID of the user who updated the payment schedule item.
+
+              '
+            type: string
+          updatedDate:
+            description: 'The date and time when the payment schedule item was last updated.
+
+              '
+            format: date
+            type: string
+        type: object
+      - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
+    POSTPaymentScheduleResponse:
+      allOf:
+      - properties:
+          accountId:
+            description: 'ID of the account that owns the payment schedule.
+
+              '
+            type: string
+          accountNumber:
+            description: 'Number of the account that owns the payment schedule.
+
+              '
+            type: string
+          billingDocument:
+            properties:
+              id:
+                description: 'ID of the billing document. for example, `2c9890306fb2121e016fb21a6b550041`.
+
+                  '
+                type: string
+              number:
+                description: 'Number of the billing docuemnt, for example, `INV00002345`.
+
+                  '
+                type: string
+              type:
+                description: 'Indicates whether the associated billing document is a debit memo or a invoice.
+
+                  '
+                type: string
+            type: object
+          createdById:
+            description: 'ID of the user who created this payment schedule.
+
+              '
+            type: string
+          createdDate:
+            description: 'The date and time the payment schedule is created.
+
+              '
+            format: date
+            type: string
+          description:
+            description: 'The description of the payment schedule.
+
+              '
+            type: string
+          id:
+            description: 'ID of the payment schedule.
+
+              '
+            type: string
+          isCustom:
+            description: 'Indicates if the payment schedule is a custom payment schedule.
+
+              '
+            type: boolean
+          items:
+            description: 'Container for payment schedule items.
+
+              '
+            items:
+              $ref: '#/components/schemas/PaymentScheduleItemCommonResponse'
+            type: array
+          nextPaymentDate:
+            description: 'The date the next payment will be processed.
+
+              '
+            format: date
+            type: string
+          occurrences:
+            description: 'The number of payment schedule items that are created by this payment schedule.
+
+              '
+            type: integer
+          paymentOption:
+            description: 'Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.
+
+
+              `paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.
+
+              '
+            items:
+              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
+            type: array
+          paymentScheduleNumber:
+            description: 'Number of the payment schedule.
+
+              '
+            type: string
+          period:
+            description: 'For recurring payment schedule only. The period of payment generation. Available values include: `Monthly`, `Weekly`, `BiWeekly`.
+
+              Return `null` for custom payment schedules.
+
+              '
+            type: string
+          prepayment:
+            description: 'Indicates whether the payments created by the payment schedule are used as a reserved payment. This field will only be available if the prepaid cash drawdown permission is enabled. See [Prepaid Cash with Drawdown](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Invoicing/JA_Advanced_Consumption_Billing/Prepaid_Cash_with_Drawdown) for more information.
+
+              '
+            type: boolean
+          recentPaymentDate:
+            description: 'The date the last payment was processed.
+
+              '
+            format: date
+            type: string
+          runHour:
+            description: '[0,1,2,~,22,23]
+
+
+              At which hour in the day in the tenant’s timezone this payment will be collected. If the payment `runHour` and `scheduledDate` are backdated, the system will collect the payment when the next runHour occurs.
+
+              Return `0` for custom payment schedules.
+
+              '
+            type: integer
+          standalone:
+            description: 'Indicates if the payments that the payment schedule created are standalone payments or not.
+
+              '
+            type: boolean
+          startDate:
+            description: 'The date when the first payment of this payment schedule is proccessed.
+
+              '
+            format: date
+            type: string
+          status:
+            description: 'The status of the payment schedule.
+
+
+              - `Active`: There are still pament schedule items to process.
+
+              - `Canceled`: After a payment schedule is canceled by the user, the schedule is marked as `Canceled`.
+
+              - `Completed`: After all payment schedule items are processed, the schedule is marked as `Completed`.
+
+              '
+            enum:
+            - Active
+            - Canceled
+            - Completed
+            type: string
+          success:
+            description: "Returns `true` if the request was processed successfully.        \n"
+            type: boolean
+          totalAmount:
+            description: 'The total amount that will be collected by this payment schedule. This field will contain a null value if the `standalone` value is `true`.
+
+              '
+            type: number
+          totalPaymentsErrored:
+            description: 'The number of errored payments.
+
+              '
+            type: integer
+          totalPaymentsProcessed:
+            description: 'The number of processed payments.
+
+              '
+            type: integer
+          updatedById:
+            description: 'ID of the user who last updated this payment schedule.
+
+              '
+            type: string
+          updatedDate:
+            description: 'The date and time the payment schedule is last updated.
+
+              '
+            format: date
+            type: string
+        type: object
+      - $ref: '#/components/schemas/PaymentScheduleCustomFields'
+    POSTRetryPaymentScheduleItemResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/PaymentScheduleItemCommonResponse'
+          type: array
+        success:
+          description: "Returns `true` if the request was processed successfully. \n"
+          type: boolean
+      type: object
+    PUTPreviewPaymentScheduleRequest:
       allOf:
       - properties:
           amount:
@@ -3692,7 +3767,9 @@ components:
             description: "Indicates the updated currency of the pending payment schedule items.      \n"
             type: string
           occurrences:
-            description: "Indicates the updated number of payment schedule items that are created by the payment schedule.\n\n**Note:**\n  - If \"updated `occurrences` > existing `occurrences`\", the following number of pending payment schedule item will be added to the payment schedule: “updated `occurrences` - existing `occurrences`”.\n  - If \"existing `occurrences` > updated `occurrences` >= the number of `processed`/`errored`/`canceled` payment schedule items\", the following number of pending items will be removed by descending order of the schedule dates: \"existing `occurrences` - updated `occurrences`\".\n  - If \"updated `occurrences` < the number of `processed`/`erroed`/`canceled` payment schedule items\", a validation error will be returned.\n"
+            description: 'Indicates the updated number of payment schedule items that are created by the payment schedule.
+
+              '
             type: integer
           paymentGatewayId:
             description: 'Indicates the updated payment gateway ID of the pending payment schedule items.
@@ -3703,7 +3780,7 @@ components:
             description: "Indicates the updated payment method ID of the pending payment schedule items. \n"
             type: string
           paymentOption:
-            description: "Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.\n\nHere is an example:\n```\n\"paymentOption\": [\n  {\n    \"type\": \"GatewayOptions\",\n    \"detail\": {\n      \"SecCode\":\"WEB\"\n    }\n  }\n]\n```\n\n`paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.\n\n **Note:** To enable this field, submit a request at [Zuora Global Support](https://support.zuora.com/).\n"
+            description: "Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.\n\nHere is an example:\n```\n\"paymentOption\": [\n  {\n    \"type\": \"GatewayOptions\",\n    \"detail\": {\n      \"SecCode\":\"WEB\"\n    }\n  }\n]\n```\n\n`paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.\n"
             items:
               $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
             type: array
@@ -3728,13 +3805,6 @@ components:
             type: integer
         type: object
       - $ref: '#/components/schemas/PaymentScheduleCustomFields'
-    GETPaymentSchedulesResponse:
-      description: 'Container for payment schedules.
-
-        '
-      items:
-        $ref: '#/components/schemas/PaymentScheduleCommonResponse'
-      type: array
     PaymentScheduleItemCommonResponse:
       allOf:
       - properties:
@@ -3911,95 +3981,7 @@ components:
           description: Returns `true` if the request was processed successfully.
           type: boolean
       type: object
-    PaymentScheduleItemCommon:
-      allOf:
-      - properties:
-          amount:
-            description: 'The amount that needs to be collected by this payment schedule item.
-
-              '
-            type: number
-          currency:
-            description: 'The currency of the payment.
-
-
-              **Note**:
-
-              - This field is optional. If not specified, the default value is the currency set for the account.
-
-              '
-            type: string
-          description:
-            description: 'Description of the payment schedule item.
-
-              '
-            type: string
-          paymentGatewayId:
-            description: 'The ID of the payment gateway.
-
-
-              **Note**:
-
-              - This field is optional. If not specified, the default value is the payment gateway id set for the account.
-
-              '
-            required:
-            - type
-            type: string
-          paymentMethodId:
-            description: 'The ID of the payment method.
-
-
-              **Note**:
-
-              - This field is optional. If not specified, the default value is the payment method id set for the account.
-
-              '
-            type: string
-          paymentOption:
-            description: "Container for the paymentOption items, which describe the transactional level rules for processing payments. Currently, only the Gateway Options type is supported.\n\nHere is an example:\n```\n\"paymentOption\": [\n  {\n    \"type\": \"GatewayOptions\",\n    \"detail\": {\n      \"SecCode\":\"WEB\"\n    }\n  }\n]\n```\n\n`paymentOption` of the payment schedule takes precedence over `paymentOption` of the payment schedule item.\n"
-            items:
-              $ref: '#/components/schemas/PaymentSchedulePaymentOptionFields'
-            type: array
-          runHour:
-            description: 'At which hour of the day in the tenant’s timezone this payment will be collected. Available values:`[0,1,2,~,22,23]`.
-
-              If the payment `runHour` and `scheduledDate` are backdated, the system will collect the payment when the next runHour occurs.
-
-              The default value is `0`.
-
-              '
-            type: string
-          scheduledDate:
-            description: 'The date to collect the payment.
-
-              '
-            format: date
-            type: string
-        required:
-        - scheduledDate
-        - amount
-        type: object
-      - $ref: '#/components/schemas/PaymentScheduleItemCustomFields'
   parameters:
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Authorization_OAuth_optional:
-      name: Authorization
-      in: header
-      required: false
-      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Idempotency_Key:
       name: Idempotency-Key
       in: header
@@ -4008,6 +3990,22 @@ components:
       schema:
         type: string
         maxLength: 255
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
+      schema:
+        type: string
+    GLOBAL_HEADER_Accept_Encoding:
+      name: Accept-Encoding
+      in: header
+      required: false
+      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      schema:
+        type: string
     GLOBAL_HEADER_Zuora_Track_Id:
       name: Zuora-Track-Id
       in: header
@@ -4021,18 +4019,20 @@ components:
       schema:
         type: string
         maxLength: 64
-    GLOBAL_HEADER_Accept_Encoding:
-      name: Accept-Encoding
+    GLOBAL_HEADER_Authorization_OAuth_optional:
+      name: Authorization
       in: header
       required: false
-      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+        '
       schema:
         type: string
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
       in: header
       required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:

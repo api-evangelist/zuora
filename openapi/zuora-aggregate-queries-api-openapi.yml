@@ -384,25 +384,15 @@ paths:
                 encrypted: none
 components:
   schemas:
-    BatchesQueriesById:
+    BatchQueries:
       properties:
-        apiVersion:
-          description: 'The API version for the query. If an API version is not specified, the latest version is used by default. Using the latest WSDL version is most useful for reporting use cases. For integration purposes, specify the WSDL version to ensure consistent query behavior, that is, what is supported and included in the response returned by the API.
-
-
-            **Note**: As of API version 69 and later, Zuora changed the format of certain fields. See <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/G_SOAP_API/AB_Getting_started_with_the__SOAP_API/C_Date_Field_Changes_in_the_SOAP_API" target="_blank">Date Field Changes in the SOAP API</a> for more information and a list of affected fields.
-
-            '
-          type: string
         batchId:
           description: 'A 32-character ID of the query batch.
 
             '
           type: string
         batchType:
-          description: 'The kind of batch job being submitted.
-
-            '
+          description: "The kind of batch job being submitted.              \n"
           enum:
           - zoql
           - zoqlexport
@@ -415,11 +405,6 @@ components:
 
             '
           type: string
-        full:
-          description: 'This field indicates a full or incremental load. `True` = Full and `False` = Incremental.
-
-            '
-          type: boolean
         message:
           description: 'The error message.
 
@@ -537,110 +522,180 @@ components:
           - zoqlexport
           type: string
       title: query
-    SubmitBatchQueryResponse:
+    BatchesQueriesById:
       properties:
-        batches:
-          description: 'A JSON array object that contains a list of batch objects.
+        apiVersion:
+          description: 'The API version for the query. If an API version is not specified, the latest version is used by default. Using the latest WSDL version is most useful for reporting use cases. For integration purposes, specify the WSDL version to ensure consistent query behavior, that is, what is supported and included in the response returned by the API.
+
+
+            **Note**: As of API version 69 and later, Zuora changed the format of certain fields. See <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/G_SOAP_API/AB_Getting_started_with_the__SOAP_API/C_Date_Field_Changes_in_the_SOAP_API" target="_blank">Date Field Changes in the SOAP API</a> for more information and a list of affected fields.
 
             '
-          items:
-            $ref: '#/components/schemas/BatchesQueries'
-          required:
-          - name
-          - query
-          - status
-          - batchId
-          - batchType
-          type: array
-        encrypted:
-          description: "If enabled, you must supply the formatting (zip or unzip) first and decrypt it to get the actual contents.      \n"
-          enum:
-          - pgp
-          - none
           type: string
-        format:
-          description: 'The format of the query. The default value is `csv`.
+        batchId:
+          description: 'A 32-character ID of the query batch.
+
+            '
+          type: string
+        batchType:
+          description: 'The kind of batch job being submitted.
 
             '
           enum:
-          - csv
-          - zip
-          - gzip
+          - zoql
+          - zoqlexport
           type: string
-        id:
-          description: "The job ID created for the AQuA API request. The job ID can be used for querying for the query status. \n\nThe ID exists only if the JSON request can be parsed and validated successfully. Otherwise, the job ID is null.\n"
+        fileId:
+          description: 'The ID of the query results file.
+
+
+            Use Get Results Files to download the query results file. The query results file is formatted as requested in the batch job. Supported formats are CSV, GZIP, and ZIP.
+
+            '
           type: string
-        incrementalTime:
-          description: "Allows you to override the time from which a Stateful AQuA job incrementally retrieves records that have been created or modified, using the `incrementalTime` parameter. For example, if you set `incrementalTime` = `2015-01-21 10:30:01`, AQuA will retrieve records that have created or modified beginning at 10:30:01. If this parameter is not set, AQuA continues to use the Start Time of the last AQuA session to retrieve records incrementally.\n\nThe time zone of `incrementalTime` depends on which Zuora data center you use. For US Data Center customers, the time zone of `incrementalTime` is Pacific Time. For EU Data Center customers, the time zone of `incrementalTime` is UTC. If the time zone of your system is different from the time zone of `incrementalTime`, you will need to convert to the appropriate time zone before setting `incrementalTime`.\n\n**Note**: This field can only be used in Stateful AQuA mode.    \n"
-          format: dateTime
+        full:
+          description: 'This field indicates a full or incremental load. `True` = Full and `False` = Incremental.
+
+            '
+          type: boolean
+        message:
+          description: 'The error message.
+
+            '
+          maximum: 2048
           type: string
         name:
-          description: 'The name of the job. 32 character limit.
+          description: 'Name of the query supplied in the request.
 
             '
           type: string
-        notifyUrl:
-          description: "If URL is provided, the AQuA job will call this `notifyUrl` once the job has completed. The value of `notifyUrl` needs to have `${JOBID}` and `${STATUS}` placeholders. These placeholders will be replaced by the actual job ID and status when returned in the response. Status will be `Completed` after the AQuA job is done.\n\nIf you submit an AQuA query with `notifyUrl` specified, the value of `notifyUrl` will be ignored if your organization has already <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/AB_Aggregate_Query_API/Callout_Notification_for_Completed_AQuA_Jobs\" target=\"_blank\">configured a callout notification through the Zuora user interface</a>.           \n"
-          type: string
-        offset:
-          default: 0
-          description: "This field specifies the time offset for AQuA queries in stateful mode. It is an integer in the range 0 to 3,600 seconds.\n\nFor example, if you set this field to 600 seconds and you post a query in stateful mode at 2:00 AM, it will query against data created or updated between the completion time of the previous query and 1:50 AM.\n\nThe value of this field will override the value you configured in **Settings** > **Administration** > **AQuA API Stateful Mode Time Offset**.    \n"
-          format: integer
-          type: number
-        partner:
-          description: "The partner field indicates the unique ID of a data integration partner. The dropdown list of this field displays partner IDs for the past thirty days.\n\nIt must be used together with \"project\" field to uniquely identify a data integration target.\n\nFor example, if a continuous AQuA session is to retrieve data incrementally for a Salesforce.com Org 00170000011K3Ub, you can use partner as \"Salesforce\", and \"project\" as \"00170000011K3Ub.\" \n\nThis field is required only if you are using AQuA in stateful mode. Otherwise, if you are using AQuA in stateless mode, partner field can be null.\n\n**Note**: Zuora highly recommends you use the stateless mode instead of the stateful mode to extract bulk data. See <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/AB_Aggregate_Query_API/Bulk_data__extraction_from_Zuora_using_AQuA\" target=\"_blank\">Bulk data extraction from Zuora using AQuA</a> for best practices.\n\n**Note**: Submit a request at <a href=\"http://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> to obtain a partner ID.\n"
-          type: string
-        project:
-          description: "The project field contains the unique ID of a data integration project for a particular partner. The dropdown list of this field displays project IDs for the past thirty days.\n\nThis field must be used together with partner field to uniquely identify a data integration target. \n\nThis field is required only if you are using AQuA in stateful mode. Otherwise, if you are using AQuA in stateless mode, partner field can be null.\n"
-          type: string
-        sourceData:
-          description: 'Indicates the source this aggregate query runs against:
-
-
-            * `LIVE` represents the live transactional databases at Zuora (Data Query Live).
-
-
-            * `WAREHOUSE` represents Zuora Warehouse, which has better performance and fewer limitations than the live transactional database. For more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_Warehouse/A_Zuora_Warehouse_overview" target="_blank">Zuora Warehouse</a>.
+        query:
+          description: 'The requested query string.
 
             '
           type: string
+        recordCount:
+          description: 'The number of records included in the query output file.
+
+            '
+          type: string
+        segments:
+          description: 'Array of IDs of query results files. Replaces fileId for full data loads in stateful mode if <a href = "https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/AB_Aggregate_Query_API/G_File_Segmentation" target="_blank">File Segmentation</a> is enabled.
+
+
+            Use Get Results Files to download each query results file. Each query results file contains at most 500,000 records and is formatted as requested in the batch job. Supported formats are CSV, GZIP, and ZIP.
+
+            '
+          type: array
         status:
-          description: 'The status of the AQuA job:
+          description: 'The status of the query task:
 
-            - submitted: The AQuA job was submitted to the query executor for processing.
+            - submitted: The query was submitted to the query executor for processing.
 
-            - executing: The AQuA job is being processed.
+            - pending: The query was waiting for being processed.
 
-            - completed: The AQuA job was successfully executed.
+            - executing: The query is being processed.
 
-            - error: The AQuA job was not processed because of validation errors.
+            - completed: The query was successfully executed.
 
-            - aborted: The AQuA job execution failed because one or more queries of this job failed.
+            - aborted: The query execution failed.
 
-            - cancelled: The AQuA job was cancelled.
+            - deleted_notallowed: The query execution failed because objects included in the query do not support the querying of deleted records.
 
             '
           enum:
           - submitted
+          - pending
           - executing
           - completed
-          - error
           - aborted
-          - cancelled
+          - deleted_notallowed
           type: string
-        useLastCompletedJobQueries:
-          description: 'If this flag is set to `true`, then all the previous queries are merged with existing queries.
+      title: batch
+    BatchesQueries:
+      properties:
+        apiVersion:
+          description: 'The API version for the query. If an API version is not specified, the latest version is used by default. Using the latest WSDL version is most useful for reporting use cases. For integration purposes, specify the WSDL version to ensure consistent query behavior, that is, what is supported and included in the response returned by the API.
 
 
-            If the flag is set to `false`, then the previous queries are ignored, and only the new query is executed.
+            **Note**: As of API version 69 and later, Zuora changed the format of certain fields. See <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/G_SOAP_API/AB_Getting_started_with_the__SOAP_API/C_Date_Field_Changes_in_the_SOAP_API" target="_blank">Date Field Changes in the SOAP API</a> for more information and a list of affected fields.
 
             '
+          type: string
+        batchId:
+          description: 'A 32-character ID of the query batch.
+
+            '
+          type: string
+        batchType:
+          description: 'The kind of batch job being submitted.
+
+            '
+          enum:
+          - zoql
+          - zoqlexport
+          type: string
+        deleted:
+          description: 'This field indicates that the AQuA incremental load will retrieve deleted records.
+
+
+            **Note**: AQuA API is subject to Zuora Data Retention Policy. The retention period of deleted data is 30 days. You can only retrieve deleted data for 30 days through AQuA.
+
+            '
+          items:
+            properties:
+              column:
+                description: "Name of the Column in the extracted file that points to the deleted records. \n"
+                type: string
+              format:
+                description: "Can be set to either `Numeric` or `Boolean`. If set to `Numeric`, deleted records are marked as `1`. If set to `Boolean`, deleted records are marked as `true`.          \n"
+                type: string
+            title: deletedRecord
+            type: object
+          type: array
+        full:
+          description: "This field indicates a full or incremental load. `True` = Full and `False` = Incremental.          \n"
           type: boolean
-        version:
-          description: "The API version you want to use. \n\nThe supported versions are as follows:\n  - `1.1`. It supports both modes\n  - `1.0`. Default. It supports stateless modes only.\n\nSee <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/AB_Aggregate_Query_API/BA_Stateless_and_Stateful_Modes\" target=\"_blank\">Stateless and stateful modes</a> for more information.\n"
-          format: float
-          type: number
-      type: object
+        name:
+          description: 'Name of the query supplied in the request.
+
+            '
+          type: string
+        query:
+          description: 'The requested query string.
+
+            '
+          type: string
+        recordCount:
+          description: 'The number of records included in the query output file.
+
+            '
+          type: string
+        status:
+          description: 'The status of the query task:
+
+            - submitted: The query was submitted to the query executor for processing.
+
+            - pending: The query was waiting for being processed.
+
+            - executing: The query is being processed.
+
+            - completed: The query was successfully executed.
+
+            - aborted: The query execution failed.
+
+            - deleted_notallowed: The query execution failed because objects included in the query do not support the querying of deleted records.
+
+            '
+          enum:
+          - submitted
+          - pending
+          - executing
+          - completed
+          - aborted
+          - deleted_notallowed
+          type: string
+      title: batch
     SubmitBatchQueryRequest:
       example:
         dateTimeUtc: 'true'
@@ -758,6 +813,110 @@ components:
           - xsmall
           - 'NULL'
           type: string
+      type: object
+    SubmitBatchQueryResponse:
+      properties:
+        batches:
+          description: 'A JSON array object that contains a list of batch objects.
+
+            '
+          items:
+            $ref: '#/components/schemas/BatchesQueries'
+          required:
+          - name
+          - query
+          - status
+          - batchId
+          - batchType
+          type: array
+        encrypted:
+          description: "If enabled, you must supply the formatting (zip or unzip) first and decrypt it to get the actual contents.      \n"
+          enum:
+          - pgp
+          - none
+          type: string
+        format:
+          description: 'The format of the query. The default value is `csv`.
+
+            '
+          enum:
+          - csv
+          - zip
+          - gzip
+          type: string
+        id:
+          description: "The job ID created for the AQuA API request. The job ID can be used for querying for the query status. \n\nThe ID exists only if the JSON request can be parsed and validated successfully. Otherwise, the job ID is null.\n"
+          type: string
+        incrementalTime:
+          description: "Allows you to override the time from which a Stateful AQuA job incrementally retrieves records that have been created or modified, using the `incrementalTime` parameter. For example, if you set `incrementalTime` = `2015-01-21 10:30:01`, AQuA will retrieve records that have created or modified beginning at 10:30:01. If this parameter is not set, AQuA continues to use the Start Time of the last AQuA session to retrieve records incrementally.\n\nThe time zone of `incrementalTime` depends on which Zuora data center you use. For US Data Center customers, the time zone of `incrementalTime` is Pacific Time. For EU Data Center customers, the time zone of `incrementalTime` is UTC. If the time zone of your system is different from the time zone of `incrementalTime`, you will need to convert to the appropriate time zone before setting `incrementalTime`.\n\n**Note**: This field can only be used in Stateful AQuA mode.    \n"
+          format: dateTime
+          type: string
+        name:
+          description: 'The name of the job. 32 character limit.
+
+            '
+          type: string
+        notifyUrl:
+          description: "If URL is provided, the AQuA job will call this `notifyUrl` once the job has completed. The value of `notifyUrl` needs to have `${JOBID}` and `${STATUS}` placeholders. These placeholders will be replaced by the actual job ID and status when returned in the response. Status will be `Completed` after the AQuA job is done.\n\nIf you submit an AQuA query with `notifyUrl` specified, the value of `notifyUrl` will be ignored if your organization has already <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/AB_Aggregate_Query_API/Callout_Notification_for_Completed_AQuA_Jobs\" target=\"_blank\">configured a callout notification through the Zuora user interface</a>.           \n"
+          type: string
+        offset:
+          default: 0
+          description: "This field specifies the time offset for AQuA queries in stateful mode. It is an integer in the range 0 to 3,600 seconds.\n\nFor example, if you set this field to 600 seconds and you post a query in stateful mode at 2:00 AM, it will query against data created or updated between the completion time of the previous query and 1:50 AM.\n\nThe value of this field will override the value you configured in **Settings** > **Administration** > **AQuA API Stateful Mode Time Offset**.    \n"
+          format: integer
+          type: number
+        partner:
+          description: "The partner field indicates the unique ID of a data integration partner. The dropdown list of this field displays partner IDs for the past thirty days.\n\nIt must be used together with \"project\" field to uniquely identify a data integration target.\n\nFor example, if a continuous AQuA session is to retrieve data incrementally for a Salesforce.com Org 00170000011K3Ub, you can use partner as \"Salesforce\", and \"project\" as \"00170000011K3Ub.\" \n\nThis field is required only if you are using AQuA in stateful mode. Otherwise, if you are using AQuA in stateless mode, partner field can be null.\n\n**Note**: Zuora highly recommends you use the stateless mode instead of the stateful mode to extract bulk data. See <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/AB_Aggregate_Query_API/Bulk_data__extraction_from_Zuora_using_AQuA\" target=\"_blank\">Bulk data extraction from Zuora using AQuA</a> for best practices.\n\n**Note**: Submit a request at <a href=\"http://support.zuora.com\" target=\"_blank\">Zuora Global Support</a> to obtain a partner ID.\n"
+          type: string
+        project:
+          description: "The project field contains the unique ID of a data integration project for a particular partner. The dropdown list of this field displays project IDs for the past thirty days.\n\nThis field must be used together with partner field to uniquely identify a data integration target. \n\nThis field is required only if you are using AQuA in stateful mode. Otherwise, if you are using AQuA in stateless mode, partner field can be null.\n"
+          type: string
+        sourceData:
+          description: 'Indicates the source this aggregate query runs against:
+
+
+            * `LIVE` represents the live transactional databases at Zuora (Data Query Live).
+
+
+            * `WAREHOUSE` represents Zuora Warehouse, which has better performance and fewer limitations than the live transactional database. For more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_Warehouse/A_Zuora_Warehouse_overview" target="_blank">Zuora Warehouse</a>.
+
+            '
+          type: string
+        status:
+          description: 'The status of the AQuA job:
+
+            - submitted: The AQuA job was submitted to the query executor for processing.
+
+            - executing: The AQuA job is being processed.
+
+            - completed: The AQuA job was successfully executed.
+
+            - error: The AQuA job was not processed because of validation errors.
+
+            - aborted: The AQuA job execution failed because one or more queries of this job failed.
+
+            - cancelled: The AQuA job was cancelled.
+
+            '
+          enum:
+          - submitted
+          - executing
+          - completed
+          - error
+          - aborted
+          - cancelled
+          type: string
+        useLastCompletedJobQueries:
+          description: 'If this flag is set to `true`, then all the previous queries are merged with existing queries.
+
+
+            If the flag is set to `false`, then the previous queries are ignored, and only the new query is executed.
+
+            '
+          type: boolean
+        version:
+          description: "The API version you want to use. \n\nThe supported versions are as follows:\n  - `1.1`. It supports both modes\n  - `1.0`. Default. It supports stateless modes only.\n\nSee <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/AB_Aggregate_Query_API/BA_Stateless_and_Stateful_Modes\" target=\"_blank\">Stateless and stateful modes</a> for more information.\n"
+          format: float
+          type: number
       type: object
     GetAggregateQueryJobResponse:
       properties:
@@ -920,180 +1079,12 @@ components:
           format: float
           type: number
       type: object
-    BatchQueries:
-      properties:
-        batchId:
-          description: 'A 32-character ID of the query batch.
-
-            '
-          type: string
-        batchType:
-          description: "The kind of batch job being submitted.              \n"
-          enum:
-          - zoql
-          - zoqlexport
-          type: string
-        fileId:
-          description: 'The ID of the query results file.
-
-
-            Use Get Results Files to download the query results file. The query results file is formatted as requested in the batch job. Supported formats are CSV, GZIP, and ZIP.
-
-            '
-          type: string
-        message:
-          description: 'The error message.
-
-            '
-          maximum: 2048
-          type: string
-        name:
-          description: 'Name of the query supplied in the request.
-
-            '
-          type: string
-        query:
-          description: 'The requested query string.
-
-            '
-          type: string
-        recordCount:
-          description: 'The number of records included in the query output file.
-
-            '
-          type: string
-        segments:
-          description: 'Array of IDs of query results files. Replaces fileId for full data loads in stateful mode if <a href = "https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/AB_Aggregate_Query_API/G_File_Segmentation" target="_blank">File Segmentation</a> is enabled.
-
-
-            Use Get Results Files to download each query results file. Each query results file contains at most 500,000 records and is formatted as requested in the batch job. Supported formats are CSV, GZIP, and ZIP.
-
-            '
-          type: array
-        status:
-          description: 'The status of the query task:
-
-            - submitted: The query was submitted to the query executor for processing.
-
-            - pending: The query was waiting for being processed.
-
-            - executing: The query is being processed.
-
-            - completed: The query was successfully executed.
-
-            - aborted: The query execution failed.
-
-            - deleted_notallowed: The query execution failed because objects included in the query do not support the querying of deleted records.
-
-            '
-          enum:
-          - submitted
-          - pending
-          - executing
-          - completed
-          - aborted
-          - deleted_notallowed
-          type: string
-      title: batch
-    BatchesQueries:
-      properties:
-        apiVersion:
-          description: 'The API version for the query. If an API version is not specified, the latest version is used by default. Using the latest WSDL version is most useful for reporting use cases. For integration purposes, specify the WSDL version to ensure consistent query behavior, that is, what is supported and included in the response returned by the API.
-
-
-            **Note**: As of API version 69 and later, Zuora changed the format of certain fields. See <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/API/G_SOAP_API/AB_Getting_started_with_the__SOAP_API/C_Date_Field_Changes_in_the_SOAP_API" target="_blank">Date Field Changes in the SOAP API</a> for more information and a list of affected fields.
-
-            '
-          type: string
-        batchId:
-          description: 'A 32-character ID of the query batch.
-
-            '
-          type: string
-        batchType:
-          description: 'The kind of batch job being submitted.
-
-            '
-          enum:
-          - zoql
-          - zoqlexport
-          type: string
-        deleted:
-          description: 'This field indicates that the AQuA incremental load will retrieve deleted records.
-
-
-            **Note**: AQuA API is subject to Zuora Data Retention Policy. The retention period of deleted data is 30 days. You can only retrieve deleted data for 30 days through AQuA.
-
-            '
-          items:
-            properties:
-              column:
-                description: "Name of the Column in the extracted file that points to the deleted records. \n"
-                type: string
-              format:
-                description: "Can be set to either `Numeric` or `Boolean`. If set to `Numeric`, deleted records are marked as `1`. If set to `Boolean`, deleted records are marked as `true`.          \n"
-                type: string
-            title: deletedRecord
-            type: object
-          type: array
-        full:
-          description: "This field indicates a full or incremental load. `True` = Full and `False` = Incremental.          \n"
-          type: boolean
-        name:
-          description: 'Name of the query supplied in the request.
-
-            '
-          type: string
-        query:
-          description: 'The requested query string.
-
-            '
-          type: string
-        recordCount:
-          description: 'The number of records included in the query output file.
-
-            '
-          type: string
-        status:
-          description: 'The status of the query task:
-
-            - submitted: The query was submitted to the query executor for processing.
-
-            - pending: The query was waiting for being processed.
-
-            - executing: The query is being processed.
-
-            - completed: The query was successfully executed.
-
-            - aborted: The query execution failed.
-
-            - deleted_notallowed: The query execution failed because objects included in the query do not support the querying of deleted records.
-
-            '
-          enum:
-          - submitted
-          - pending
-          - executing
-          - completed
-          - aborted
-          - deleted_notallowed
-          type: string
-      title: batch
   parameters:
     GLOBAL_HEADER_Authorization_OAuth:
       name: Authorization
       in: header
       required: true
       description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:
@@ -1106,11 +1097,11 @@ components:
       schema:
         type: string
         maxLength: 255
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
       in: header
       required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:
@@ -1140,6 +1131,15 @@ components:
       in: header
       required: false
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      schema:
+        type: string
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
       schema:
         type: string
 x-tagGroups:

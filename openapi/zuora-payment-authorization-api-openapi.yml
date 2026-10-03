@@ -172,151 +172,6 @@ paths:
         required: true
 components:
   schemas:
-    POSTVoidAuthorizeResponse:
-      example:
-        gatewayOrderId: A001
-        resultCode: 0
-        resultMessage: 'Request ID: 5231719060426316203012'
-        success: true
-        transactionId: '5231719060426316203012'
-      properties:
-        gatewayOrderId:
-          description: 'The order ID for the specific gateway.
-
-
-            The specified order ID will be used in transaction authorization. If you specify an empty value for this field, Zuora will generate an ID and you will have to associate this ID with your order ID by yourself if needed. It is recommended to specify an ID for this field.
-
-            '
-          type: string
-        resultCode:
-          description: "The result code of the request. \n\n0 indicates that the request succeeded, and the following values indicate that the request failed:\n  - 1: The request is declined.\n  - 7: The field format is not correct.\n  - 10: Client connection has timed out.\n  - 11: Host connection has timed out.\n  - 12: Processor connection has timed out.\n  - 13: Gateway server is busy.\n  - 20: The card type is not supported.\n  - 21: The merchant account information is invalid.\n  - 22: A generic error occurred on the processor.\n  - 40: The card type has not been set up yet.\n  - 41: The limit for a single transaction is exceeded.\n  - 42: Address checking failed.\n  - 43: Card security code checking failed.\n  - 44: Failed due to the gateway security setting.\n  - 45: Fraud protection is declined.\n  - 46: Address checking or card security code checking failed (for Authorize.net gateway only).\n  - 47: The maximum amount is exceeded (for Authorize.net gateway only).\n  - 48: The IP address is blocked by the gateway (for Authorize.net gateway only).\n  - 49: Card security code checking failed (for Authorize.net gateway only).\n  - 60: User authentication failed.\n  - 61: The currency code is invalid.\n  - 62: The transaction ID is invalid.\n  - 63: The credit card number is invalid.\n  - 64: The card expiration date is invalid.\n  - 65: The transaction is duplicated.\n  - 66: Credit transaction error.\n  - 67: Void transaction error.\n  - 90: A valid amount is required.\n  - 91: The BA code is invalid.\n  - 92: The account number is invalid.\n  - 93: The ACH transaction is not accepted by the merchant.\n  - 94: An error occurred for the ACH transaction.\n  - 95: The version parameter is invalid.\n  - 96: The transaction type is invalid.\n  - 97: The transaction method is invalid.\n  - 98: The bank account type is invalid.\n  - 99: The authorization code is invalid.\n  - 200: General transaction error.\n  - 500: The transaction is queued for submission.\n  - 999: Unknown error.\n  - -1: An error occurred in gateway communication.\n  - -2: Idempotency is not supported.\n  - -3: Inquiry call is not supported.\n"
-          type: string
-        resultMessage:
-          description: The corresponding request ID.
-          type: string
-        success:
-          description: Indicates whether the call succeeded.
-          type: boolean
-        transactionId:
-          description: The ID of the transaction.
-          type: string
-      type: object
-    POSTVoidAuthorize:
-      example:
-        accountId: 402881e861bd8a7e0161c6a453750026
-        accountNumber: A00000004
-        gatewayOrderId: A001
-        transactionId: '5205213224866613203009'
-      properties:
-        accountId:
-          description: The ID of the customer account. This field is generally required, but is optional if you are using the Ingenico ePayments gateway.
-          type: string
-        accountNumber:
-          description: The number of the customer account. This field is generally required, but is optional if you are using the Ingenico ePayments gateway.
-          type: string
-        gatewayOptions:
-          description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
-
-
-            Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
-
-            '
-          properties:
-            key:
-              description: 'The name of a gateway-specific parameter.
-
-                '
-              type: string
-            value:
-              description: 'The value of the gateway-specific parameter.
-
-                '
-              type: string
-          type: object
-        gatewayOrderId:
-          description: 'The order ID for the specific gateway.
-
-
-            The specified order ID will be used in transaction authorization. If you specify an empty value for this field, Zuora will generate an ID and you will have to associate this ID with your order ID by yourself if needed. It is recommended to specify an ID for this field.
-
-            '
-          type: string
-        paymentGatewayId:
-          description: The ID of the payment gateway instance. This field is required if you do not specify the `accountId` and `accountNumber` fields.
-          type: string
-        transactionId:
-          description: The ID of the transaction.
-          type: string
-      required:
-      - transactionId
-      - gatewayOrderId
-      type: object
-    POSTDelayAuthorizeCapture:
-      example:
-        accountId: 402881e861bd8a7e0161c6a453750026
-        accountNumber: A00000004
-        amount: 1.99
-        gatewayOrderId: A001
-        softDescriptor: Service fee
-        softDescriptorPhone: 400-000-1234
-      properties:
-        accountId:
-          description: The ID of the customer account. Either `accountId` or `accountNumber` is required.
-          type: string
-        accountNumber:
-          description: The number of the customer account. Either `accountNumber` or `accountId` is required.
-          type: string
-        amount:
-          description: The amount of the trasaction.
-          type: number
-        gatewayOptions:
-          description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
-
-
-            Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
-
-            '
-          properties:
-            key:
-              description: 'The name of a gateway-specific parameter.
-
-                '
-              type: string
-            value:
-              description: 'The value of the gateway-specific parameter.
-
-                '
-              type: string
-          type: object
-        gatewayOrderId:
-          description: 'The order ID for the specific gateway.
-
-
-            The specified order ID will be used in transaction authorization. If you specify an empty value for this field, Zuora will generate an ID and you will have to associate this ID with your order ID by yourself if needed. It is recommended to specify an ID for this field.
-
-            '
-          type: string
-        mitTransactionSource:
-          description: "Payment transaction source used to differentiate the transaction source in Stored Credential Transaction framework.\n  - `C_Unscheduled`: Cardholder-initiated transaction (CIT) that does not occur on scheduled or regularly occurring dates.\n  - `M_Recurring`: Merchant-initiated transaction (MIT) that occurs at regular intervals.\n  - `M_Unscheduled`: Merchant-initiated transaction (MIT) that does not occur on scheduled or regularly occurring dates.\n  - `M_MOTO`: Mail Order Telephone Order (MOTO) payment transaction. This option is only available for credit card payments on Stripe v2. See [Overview of Stripe payment gateway integration](https://knowledgecenter.zuora.com/Zuora_Collect/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration) for more information.\n"
-          enum:
-          - C_Unscheduled
-          - M_Recurring
-          - M_Unscheduled
-          - M_MOTO
-          type: string
-        paymentGatewayId:
-          description: The ID of the payment gateway instance.
-          type: string
-        softDescriptor:
-          description: A text, rendered on a cardholder’s statement, describing a particular product or service purchased by the cardholder.
-          type: string
-        softDescriptorPhone:
-          description: The phone number that relates to the soft descriptor, usually the phone number of customer service.
-          type: string
-      required:
-      - amount
-      - gatewayOrderId
-      type: object
     POSTAuthorizeResponse:
       example:
         gatewayOrderId: A001
@@ -403,6 +258,151 @@ components:
           description: The ID of the transaction.
           type: string
       type: object
+    POSTDelayAuthorizeCapture:
+      example:
+        accountId: 402881e861bd8a7e0161c6a453750026
+        accountNumber: A00000004
+        amount: 1.99
+        gatewayOrderId: A001
+        softDescriptor: Service fee
+        softDescriptorPhone: 400-000-1234
+      properties:
+        accountId:
+          description: The ID of the customer account. Either `accountId` or `accountNumber` is required.
+          type: string
+        accountNumber:
+          description: The number of the customer account. Either `accountNumber` or `accountId` is required.
+          type: string
+        amount:
+          description: The amount of the trasaction.
+          type: number
+        gatewayOptions:
+          description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
+
+
+            Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
+
+            '
+          properties:
+            key:
+              description: 'The name of a gateway-specific parameter.
+
+                '
+              type: string
+            value:
+              description: 'The value of the gateway-specific parameter.
+
+                '
+              type: string
+          type: object
+        gatewayOrderId:
+          description: 'The order ID for the specific gateway.
+
+
+            The specified order ID will be used in transaction authorization. If you specify an empty value for this field, Zuora will generate an ID and you will have to associate this ID with your order ID by yourself if needed. It is recommended to specify an ID for this field.
+
+            '
+          type: string
+        mitTransactionSource:
+          description: "Payment transaction source used to differentiate the transaction source in Stored Credential Transaction framework.\n  - `C_Unscheduled`: Cardholder-initiated transaction (CIT) that does not occur on scheduled or regularly occurring dates.\n  - `M_Recurring`: Merchant-initiated transaction (MIT) that occurs at regular intervals.\n  - `M_Unscheduled`: Merchant-initiated transaction (MIT) that does not occur on scheduled or regularly occurring dates.\n  - `M_MOTO`: Mail Order Telephone Order (MOTO) payment transaction. This option is only available for credit card payments on Stripe v2. See [Overview of Stripe payment gateway integration](https://knowledgecenter.zuora.com/Zuora_Collect/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration) for more information.\n"
+          enum:
+          - C_Unscheduled
+          - M_Recurring
+          - M_Unscheduled
+          - M_MOTO
+          type: string
+        paymentGatewayId:
+          description: The ID of the payment gateway instance.
+          type: string
+        softDescriptor:
+          description: A text, rendered on a cardholder’s statement, describing a particular product or service purchased by the cardholder.
+          type: string
+        softDescriptorPhone:
+          description: The phone number that relates to the soft descriptor, usually the phone number of customer service.
+          type: string
+      required:
+      - amount
+      - gatewayOrderId
+      type: object
+    POSTVoidAuthorize:
+      example:
+        accountId: 402881e861bd8a7e0161c6a453750026
+        accountNumber: A00000004
+        gatewayOrderId: A001
+        transactionId: '5205213224866613203009'
+      properties:
+        accountId:
+          description: The ID of the customer account. This field is generally required, but is optional if you are using the Ingenico ePayments gateway.
+          type: string
+        accountNumber:
+          description: The number of the customer account. This field is generally required, but is optional if you are using the Ingenico ePayments gateway.
+          type: string
+        gatewayOptions:
+          description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
+
+
+            Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
+
+            '
+          properties:
+            key:
+              description: 'The name of a gateway-specific parameter.
+
+                '
+              type: string
+            value:
+              description: 'The value of the gateway-specific parameter.
+
+                '
+              type: string
+          type: object
+        gatewayOrderId:
+          description: 'The order ID for the specific gateway.
+
+
+            The specified order ID will be used in transaction authorization. If you specify an empty value for this field, Zuora will generate an ID and you will have to associate this ID with your order ID by yourself if needed. It is recommended to specify an ID for this field.
+
+            '
+          type: string
+        paymentGatewayId:
+          description: The ID of the payment gateway instance. This field is required if you do not specify the `accountId` and `accountNumber` fields.
+          type: string
+        transactionId:
+          description: The ID of the transaction.
+          type: string
+      required:
+      - transactionId
+      - gatewayOrderId
+      type: object
+    POSTVoidAuthorizeResponse:
+      example:
+        gatewayOrderId: A001
+        resultCode: 0
+        resultMessage: 'Request ID: 5231719060426316203012'
+        success: true
+        transactionId: '5231719060426316203012'
+      properties:
+        gatewayOrderId:
+          description: 'The order ID for the specific gateway.
+
+
+            The specified order ID will be used in transaction authorization. If you specify an empty value for this field, Zuora will generate an ID and you will have to associate this ID with your order ID by yourself if needed. It is recommended to specify an ID for this field.
+
+            '
+          type: string
+        resultCode:
+          description: "The result code of the request. \n\n0 indicates that the request succeeded, and the following values indicate that the request failed:\n  - 1: The request is declined.\n  - 7: The field format is not correct.\n  - 10: Client connection has timed out.\n  - 11: Host connection has timed out.\n  - 12: Processor connection has timed out.\n  - 13: Gateway server is busy.\n  - 20: The card type is not supported.\n  - 21: The merchant account information is invalid.\n  - 22: A generic error occurred on the processor.\n  - 40: The card type has not been set up yet.\n  - 41: The limit for a single transaction is exceeded.\n  - 42: Address checking failed.\n  - 43: Card security code checking failed.\n  - 44: Failed due to the gateway security setting.\n  - 45: Fraud protection is declined.\n  - 46: Address checking or card security code checking failed (for Authorize.net gateway only).\n  - 47: The maximum amount is exceeded (for Authorize.net gateway only).\n  - 48: The IP address is blocked by the gateway (for Authorize.net gateway only).\n  - 49: Card security code checking failed (for Authorize.net gateway only).\n  - 60: User authentication failed.\n  - 61: The currency code is invalid.\n  - 62: The transaction ID is invalid.\n  - 63: The credit card number is invalid.\n  - 64: The card expiration date is invalid.\n  - 65: The transaction is duplicated.\n  - 66: Credit transaction error.\n  - 67: Void transaction error.\n  - 90: A valid amount is required.\n  - 91: The BA code is invalid.\n  - 92: The account number is invalid.\n  - 93: The ACH transaction is not accepted by the merchant.\n  - 94: An error occurred for the ACH transaction.\n  - 95: The version parameter is invalid.\n  - 96: The transaction type is invalid.\n  - 97: The transaction method is invalid.\n  - 98: The bank account type is invalid.\n  - 99: The authorization code is invalid.\n  - 200: General transaction error.\n  - 500: The transaction is queued for submission.\n  - 999: Unknown error.\n  - -1: An error occurred in gateway communication.\n  - -2: Idempotency is not supported.\n  - -3: Inquiry call is not supported.\n"
+          type: string
+        resultMessage:
+          description: The corresponding request ID.
+          type: string
+        success:
+          description: Indicates whether the call succeeded.
+          type: boolean
+        transactionId:
+          description: The ID of the transaction.
+          type: string
+      type: object
   parameters:
     GLOBAL_HEADER_Idempotency_Key:
       name: Idempotency-Key
@@ -412,15 +412,6 @@ components:
       schema:
         type: string
         maxLength: 255
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
-      in: header
-      required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Zuora_Entity_Ids_Single:
       name: Zuora-Entity-Ids
       in: header
@@ -437,15 +428,6 @@ components:
       description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
       schema:
         type: string
-    GLOBAL_HEADER_Authorization_OAuth_optional:
-      name: Authorization
-      in: header
-      required: false
-      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Zuora_Track_Id:
       name: Zuora-Track-Id
       in: header
@@ -459,11 +441,29 @@ components:
       schema:
         type: string
         maxLength: 64
+    GLOBAL_HEADER_Authorization_OAuth_optional:
+      name: Authorization
+      in: header
+      required: false
+      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+        '
+      schema:
+        type: string
     GLOBAL_HEADER_Accept_Encoding:
       name: Accept-Encoding
       in: header
       required: false
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      schema:
+        type: string
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
       schema:
         type: string
 x-tagGroups:

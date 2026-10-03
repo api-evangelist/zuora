@@ -1269,127 +1269,63 @@ paths:
         required: true
 components:
   schemas:
-    PUTVerifyPaymentMethodType:
-      example:
-        gatewayOptions:
-          Comments: test
-          IPAddress: 192.168.1.1
-        paymentGatewayName: Adyen
-        securityCode: '737'
+    CreatePaymentMethodCardholderInfo:
+      description: 'Container for cardholder information. This container field is required for credit card payment methods. The nested `cardHolderName` field is required.
+
+        '
       properties:
-        currencyCode:
-          description: "The currency used for payment method authorization. \n"
-          type: string
-        gatewayOptions:
-          description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
-
-
-            Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
-
-            '
-          properties:
-            key:
-              description: 'The name of a gateway-specific parameter.
-
-                '
-              type: string
-            value:
-              description: 'The value of the gateway-specific parameter.
-
-                '
-              type: string
-          type: object
-        paymentGatewayName:
-          description: 'The name of the payment gateway instance. If no value is specified for this field, the default payment gateway of the customer account will be used.
+        addressLine1:
+          description: 'First address line, 255 characters or less.
 
             '
           type: string
-        securityCode:
-          description: 'The CVV or CVV2 security code for the credit card or debit card. To ensure PCI compliance, the value of this field is not stored and cannot be queried.
+        addressLine2:
+          description: 'Second address line, 255 characters or less.
 
             '
           type: string
-      type: object
-    CreateStoredCredentialProfileRequest:
-      example:
-        authGateway: 4028905f5702783601570291e14c0015
-        consentAgreementRef: ACCT1338AgreementV1.pdf
-        consentAgreementSrc: External
-        status: Active
-        type: Recurring
-      properties:
-        action:
-          description: "Specifies how Zuora activates the stored credential profile. Only applicable if you set the `status` field to `Active`.\n\n- `Activate` (default) - Use this value if you are creating the stored credential profile after receiving the customer's consent.\n\n  Zuora will create the stored credential profile then send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile. If the CIT succeeds, the status of the stored credential profile will be `Active`. If the CIT does not succeed, Zuora will not create a stored credential profile.\n  \n  If the payment gateway does not support the stored credential transaction framework, the status of the stored credential profile will be `Agreed`.\n\n\n- `Persist` - Use this value if the stored credential profile represents a stored credential profile in an external system. The status of the payment method's stored credential profile will be `Active`.\n"
-          enum:
-          - Activate
-          - Persist
-          type: string
-        agreedOn:
-          description: 'The date on which the profile is agreed. The date format is `yyyy-mm-dd`.
-
-            '
-          format: date
-          type: string
-        authGateway:
-          description: 'Specifies the ID of the payment gateway that Zuora will use when activating the stored credential profile.
+        cardHolderName:
+          description: 'The card holder''s full name as it appears on the card, e.g., "John J Smith", 50 characters or less.
 
             '
           type: string
-        cardSecurityCode:
-          description: 'The security code of the credit card.
+        city:
+          description: 'City, 40 characters or less.
+
+            It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
 
             '
           type: string
-        consentAgreementRef:
-          description: 'Specifies your reference for the consent agreement that you have established with the customer.
+        country:
+          description: 'Country, must be a valid country name or abbreviation.
+
+            It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
 
             '
-          maxLength: 128
           type: string
-        consentAgreementSrc:
-          description: 'Specifies how the consent agreement has been established with the customer. The allowed value is `External`.
+        email:
+          description: 'Card holder''s email address, 80 characters or less.
 
             '
-          enum:
-          - External
           type: string
-        networkTransactionId:
-          description: 'The ID of a network transaction. Only applicable if you set the `action` field to `Persist`.
+        phone:
+          description: 'Phone number, 40 characters or less.
 
             '
-          maxLength: 128
           type: string
-        status:
-          description: "Specifies the status of the stored credential profile.\n\n- `Active` - Use this value if you are creating the stored credential profile after receiving the customer's consent, or if the stored credential profile represents a stored credential profile in an external system.\n\n  You can use the `action` field to specify how Zuora activates the stored credential profile.\n\n\n- `Agreed` - Use this value if you are migrating the payment method to the stored credential transaction framework.\n\n  In this case, Zuora will not send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile.\n"
-          enum:
-          - Agreed
-          - Active
-          type: string
-        type:
-          description: 'Indicates the type of the stored credential profile to process recurring or unsecheduled transactions.
+        state:
+          description: 'State; must be a valid state name or 2-character abbreviation.
 
             '
-          enum:
-          - Recurring
-          - Unscheduled
+          type: string
+        zipCode:
+          description: 'Zip code, 20 characters or less.
+
+            '
           type: string
       required:
-      - status
-      - type
-      - consentAgreementSrc
-      type: object
-    PUTPaymentMethodResponse:
-      properties:
-        id:
-          description: 'ID of the updated payment method.
-
-            '
-          type: string
-        success:
-          description: 'Returns `true` if the request was processed successfully.
-
-            '
-          type: boolean
+      - cardHolderName
+      title: cardHolderInfo
       type: object
     CreatePaymentMethodACH:
       properties:
@@ -1478,56 +1414,71 @@ components:
             '
           type: string
       type: object
-    CommonResponseType:
+    PUTPMCreditCardInfo:
       properties:
-        processId:
-          description: 'The Id of the process that handle the operation.
+        expirationMonth:
+          description: "One or two digits expiration month (1-12).\n        \n"
+          type: integer
+        expirationYear:
+          description: 'Four-digit expiration year.
 
             '
+          type: integer
+        securityCode:
+          description: "Optional. It is the CVV or CVV2 security code specific for the credit card or debit card. To ensure PCI compliance, this value is not stored and cannot be queried. \n\nIf securityCode code is not passed in the request payload, this operation only updates related fields in the payload. It does not validate the payment method through the gateway.\n\nIf securityCode is passed in the request payload, this operation retrieves the credit card information from payload and validates them through the gateway.\n"
           type: string
-        reasons:
-          items:
-            properties:
-              code:
-                description: 'The error code of response.
-
-                  '
-                type: string
-              message:
-                description: 'The detail information of the error response
-
-                  '
-                type: string
-            type: object
-          type: array
-        success:
-          description: 'Indicates whether the call succeeded.
-
-            '
-          type: boolean
       type: object
-    POSTPaymentMethodResponseDecryption:
+    GETPaymentMethodResponseGooglePay:
       properties:
-        amount:
-          description: 'The payment amount contained within the encrypted token.
+        googleBIN:
+          description: 'This field is only available for Google Pay payment methods.
 
             '
           type: string
-        paymentId:
-          description: 'The ID of newly processed payment,
+        googleCardNumber:
+          description: 'This field is only available for Google Pay payment methods.
 
             '
           type: string
-        paymentMethodId:
-          description: 'ID of the newly-created payment method.
+        googleCardType:
+          description: 'This field is only available for Google Pay payment methods.
+
+
+            For Google Pay payment methods on Adyen, the first 100 characters of [paymentMethodVariant](https://docs.adyen.com/development-resources/paymentmethodvariant) returned from Adyen are stored in this field.
 
             '
           type: string
-        success:
-          description: 'Returns `true` if the request was processed successfully.
+        googleExpiryDate:
+          description: 'This field is only available for Google Pay payment methods.
 
             '
-          type: boolean
+          type: string
+        googleGatewayToken:
+          description: 'This field is only available for Google Pay payment methods.
+
+            '
+          type: string
+      type: object
+    CreatePMPayPalECPayPalNativeECPayPalCP:
+      properties:
+        BAID:
+          description: 'ID of a PayPal billing agreement. For example, I-1TJ3GAGG82Y9.
+
+            '
+          type: string
+        email:
+          description: "Email address associated with the payment method. This field is supported for the following payment methods:\n  - PayPal payment methods. This field is required for creating any of the following PayPal payment methods.\n    - PayPal Express Checkout\n    - PayPal Adaptive\n    - PayPal Commerce Platform\n  - Apple Pay and Google Pay payment methods on Adyen v2.0. This field will be passed to Adyen as `shopperEmail`.\n"
+          type: string
+      type: object
+    PaymentMethodObjectCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the payment method. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of a payment method object.
+
+        '
+      title: paymentMethodFieldsCustom
       type: object
     CreatePaymentMethodCreditCard:
       properties:
@@ -1619,103 +1570,28 @@ components:
             '
           type: string
       type: object
-    CreatePaymentMethodPayPalAdaptive:
+    POSTCreatePaymentSessionResponse:
       properties:
-        preapprovalKey:
-          description: 'The PayPal preapproval key.
+        token:
+          description: 'The token for the payment session data. Send the token back to your client side for identifying your website to Zuora.
+
+
+            For more information, see [Set up Apple Pay through the JavaScript SDK approach](https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0).
 
             '
           type: string
       type: object
-    POSTPaymentMethodDecryption:
+    POSTRegisterApplePayDomainRequest:
       example:
-        accountID: 402891a25a02e11c015a02f3c6100003
-        integrationType: ApplePay
-        invoiceId: INV000000005
-        merchantID: merchant.CN.com.zuora.services416
-        mitConsentAgreementSrc: External
-        mitProfileAction: Activate
-        mitProfileType: Recurring
-        paymentGateway: CyberSourceOPG
-        paymentToken:
-          data: xGc......JDxuYz1gug0KZRrGXJQ=
-          header:
-            ephemeralPublicKey: MFkwEw......TMbLoojKBA==
-            publicKeyHash: HuLvfqvLon......9jEyX0w=
-            transactionId: abbadd18818baea1f37b40844c9e09afa9733b0eccb373905b811da43cf1753b
-          signature: MIAGCSqGSIb......AEtrLSv7hE9gAAAAAAAA==
-          version: EC_v1
-        processPayment: true
+        domainName: testapplepay.zuora.com
       properties:
-        accountID:
-          description: 'The ID of the customer account associated with this payment method.
-
-            To create an orphan payment method that is not associated with any customer account, you do not need to specify this field during creation. However, you must associate the orphan payment method with a customer account within 10 days. Otherwise, this orphan payment method will be deleted.'
-          type: string
-        cardHolderInfo:
-          $ref: '#/components/schemas/CreatePaymentMethodCardholderInfo'
-        integrationType:
-          description: 'Field to identify the token decryption type.
-
-
-            **Note:** The only value at this time is `ApplePay`.
-
+        domainName:
+          description: 'The name of the domain to be registered with Apple Pay, such as `testapplepay.zuora.com`.
 
             '
           type: string
-        invoiceId:
-          description: 'The id of invoice this payment will apply to.
-
-
-            **Note:** When `processPayment` is `true`, this field is required.
-
-            Only one invoice can be paid; for scenarios where you want to pay for multiple invoices, set `processPayment` to `false` and call payment API separately.
-
-            '
-          type: string
-        merchantID:
-          description: 'The Merchant ID that was configured for use with Apple Pay in the Apple iOS Developer Center.
-
-            '
-          type: string
-        mitConsentAgreementSrc:
-          description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nSpecify how the consent agreement has been established with the customer. The allowed value is `External`. It is required if the `mitProfileAction` field is specified. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `External` set to this field.\n"
-          enum:
-          - External
-          type: string
-        mitProfileAction:
-          description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nSpecify either of the following values in this field:\n    \n  - `Activate` - Use this value if you are creating the stored credential profile after receiving the customer's consent.\n    \n    Zuora will create the stored credential profile then send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile. If the CIT succeeds, the status of the stored credential profile will be `Active`. If the CIT does not succeed, Zuora will not create a stored credential profile.\n      \n    If the payment gateway does not support the stored credential transaction framework, the status of the stored credential profile will be `Agreed`.\n    \n  - `Persist` - Use this value if the stored credential profile represents a stored credential profile in an external system. The status of the payment method's stored credential profile will be `Active`.\n\n  If you do not specify this field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Activate` set to this field.\n    \n"
-          enum:
-          - Activate
-          - Persist
-          type: string
-        mitProfileType:
-          description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nThis field indicates the type of the stored credential profile to process recurring or unsecheduled transactions. It is required if the `mitProfileAction` field is specified. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Recurring` set to this field.\n    \n"
-          enum:
-          - Recurring
-          - Unscheduled
-          type: string
-        paymentGateway:
-          description: 'The label name of the gateway instance configured in Zuora that should process the payment. When creating a Payment, this must be a valid gateway instance ID and this gateway must support the specific payment method. If not specified, the default gateway of your Zuora customer account will be used.
-
-
-            **Note:** When `processPayment` is `true`, this field is required. When `processPayment` is `false`, the default payment gateway of your Zuora customer account will be used no matter whether a payment gateway instance is specified in the `paymentGateway` field.
-
-            '
-          type: string
-        paymentToken:
-          description: 'The complete JSON Object representing the encrypted payment token payload returned in the response from the Apple Pay session.
-
-
-            '
-          type: object
-        processPayment:
-          description: "A boolean flag to control whether a payment should be processed after creating payment method. The payment amount will be equivalent to the amount the merchant supplied in the ApplePay session. Default is false.\n\nIf this field is set to `true`, you must specify the `paymentGateway` field with the payment gateway instance name.\n\nIf this field is set to `false`:\n  - The default payment gateway of your Zuora customer account will be used no matter whether a payment gateway instance is specified in the `paymentGateway` field. \n  - You must select the **Verify new credit card** check box on the gateway instance settings page. Otherwise, the cryptogram will not be sent to the gateway.\n  - A separate subscribe or payment API call is required after this payment method creation call.\n"
-          type: boolean
       required:
-      - integrationType
-      - merchantID
-      - paymentToken
+      - domainName
       type: object
     CreatePaymentMethodCCReferenceTransaction:
       properties:
@@ -1757,134 +1633,229 @@ components:
         '
       title: paymentMethodFieldsCustom
       type: object
-    POSTRegisterApplePayDomainResponse:
-      properties:
-        domainName:
-          description: 'The name of the domain registered with Apple Pay, such as `testapplepay.zuora.com`.
-
-            '
-          type: string
-        domainVerified:
-          description: 'Indicates whether the domain registration is successfully verified.
-
-            '
-          type: boolean
-        id:
-          description: 'The ID of the domain, such as `402881a38924ff1001892502da090021`.
-
-            '
-          type: string
-        success:
-          description: 'Indicates whether this call succeeds.
-
-            '
-          type: boolean
-      type: object
-    POSTPaymentMethodResponse:
+    PUTPaymentMethodRequest:
       allOf:
-      - $ref: '#/components/schemas/CommonResponseType'
       - properties:
-          id:
-            description: 'Internal ID of the payment method that was created.
+          accountHolderInfo:
+            $ref: '#/components/schemas/PUTPMAccountHolderInfo'
+          accountKey:
+            description: 'The ID of the customer account associated with this payment method, such as `2x92c0f859b0480f0159d3a4a6ee5bb6`.
+
+
+              **Note:** You can use this field to associate an orphan payment method with a customer account. If a payment method is already associated with a customer account, you cannot change the associated payment method through this operation. You cannot remove the previous account ID and leave this field empty, either.
 
               '
             type: string
-          reasons:
-            items:
-              description: 'Error information. Only applicable if the payment method was not created.
+          authGateway:
+            description: "Specifies the ID of the payment gateway that Zuora will use to authorize the payments that are made with the payment method. \n\nThis field is not supported in updating Credit Card Reference Transaction payment methods.\n"
+            type: string
+          currencyCode:
+            description: 'The currency used for payment method authorization.
 
-                '
-              properties:
-                code:
-                  description: 'Error code.
+              '
+            type: string
+          gatewayOptions:
+            description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
 
-                    '
-                  type: string
-                message:
-                  description: 'Error message.
 
-                    '
-                  type: string
-              type: object
-            type: array
-        type: object
-    GETListApplePayDomainsResponse:
-      properties:
-        domains:
-          description: 'Container for domains that are already registered with Apple Pay.
+              Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
 
-            '
-          items:
+
+              This field is not supported in updating Credit Card Reference Transaction payment methods.
+
+              '
             properties:
-              createdBy:
-                description: 'The ID of the user who created this domain.
+              key:
+                description: 'The name of a gateway-specific parameter.
 
                   '
                 type: string
-              createdOn:
-                description: "The date and time when the domain was created, in `yyyy-mm-dd hh:mm:ss` format. \n"
-                format: date-time
-                type: string
-              domainName:
-                description: "The name of the domain registered with Apple Pay, such as `testapplepay.zuora.com`. \n"
-                type: string
-              domainVerified:
-                description: "Indicates whether the domain registration is successfully verified. \n"
-                type: boolean
-              id:
-                description: 'The ID of the domain, such as `402881a38924ff1001892502da090021`.
+              value:
+                description: 'The value of the gateway-specific parameter.
 
                   '
                 type: string
-              updatedBy:
-                description: 'The ID of the user who made the last update to this domain.
+            type: object
+          ipAddress:
+            description: "The IPv4 or IPv6 information of the user when the payment method is created or updated. Some gateways use this field for fraud prevention. If this field is passed to Zuora, Zuora directly passes it to gateways. \n\nIf the IP address length is beyond 45 characters, a validation error occurs.\n\nFor validating SEPA payment methods on Stripe v2, this field is required.\n"
+            type: string
+          mandateInfo:
+            description: 'The mandate information for the Credit Card, Credit Card Reference Transaction, ACH, or Bank Transfer payment method.
+
+              '
+            properties:
+              mandateId:
+                description: 'The mandate ID.
+
+                  '
+                maxLength: 36
+                type: string
+              mandateReason:
+                description: 'The reason of the mandate from the gateway side.
+
+                  '
+                maxLength: 64
+                type: string
+              mandateStatus:
+                description: 'The status of the mandate from the gateway side.
+
+                  '
+                maxLength: 64
+                type: string
+            type: object
+        type: object
+      - $ref: '#/components/schemas/PUTPMCreditCardInfo'
+      - $ref: '#/components/schemas/PUTPaymentMethodObjectCustomFields'
+      example:
+        accountHolderInfo:
+          addressLine1: address 1
+          phone: '1333333333'
+        expirationMonth: 8
+        expirationYear: 2024
+        securityCode: '123'
+    POSTPaymentMethodRequest:
+      allOf:
+      - properties:
+          accountKey:
+            description: "Internal ID of the customer account that will own the payment method. \n\nTo create an orphan payment method that is not associated with any customer account, you do not need to specify this field during creation. However, you must associate the orphan payment method with a customer account within 10 days. Otherwise, this orphan payment method will be deleted.\n"
+            type: string
+          authGateway:
+            description: 'Internal ID of the payment gateway that Zuora will use to authorize the payments that are made with the payment method.
+
+
+              If you do not set this field, Zuora will use one of the following payment gateways instead:
+
+
+              * The default payment gateway of the customer account that owns the payment method, if the `accountKey` field is set.
+
+              * The default payment gateway of your Zuora tenant, if the `accountKey` field is not set.
+
+              '
+            type: string
+          gatewayOptions:
+            description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
+
+
+              Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
+
+              '
+            properties:
+              key:
+                description: 'The name of a gateway-specific parameter.
 
                   '
                 type: string
-              updatedOn:
-                description: 'The last date and time when the domain was updated, in `yyyy-mm-dd hh:mm:ss` format.
+              value:
+                description: 'The value of the gateway-specific parameter.
 
                   '
-                format: date-time
                 type: string
-          type: array
-        success:
-          description: 'Indicates whether this call succeeds.
+            type: object
+          ipAddress:
+            description: "The IPv4 or IPv6 information of the user when the payment method is created or updated. Some gateways use this field for fraud prevention. If this field is passed to Zuora, Zuora directly passes it to gateways. \n\nIf the IP address length is beyond 45 characters, a validation error occurs.\n\nFor validating SEPA payment methods on Stripe v2, this field is required.\n"
+            type: string
+          makeDefault:
+            default: false
+            description: 'Specifies whether the payment method will be the default payment method of the customer account that owns the payment method. Only applicable if the `accountKey` field is set.
 
-            '
-          type: boolean
-      type: object
-    PUTPMCreditCardInfo:
-      properties:
-        expirationMonth:
-          description: "One or two digits expiration month (1-12).\n        \n"
-          type: integer
-        expirationYear:
-          description: 'Four-digit expiration year.
 
-            '
-          type: integer
-        securityCode:
-          description: "Optional. It is the CVV or CVV2 security code specific for the credit card or debit card. To ensure PCI compliance, this value is not stored and cannot be queried. \n\nIf securityCode code is not passed in the request payload, this operation only updates related fields in the payload. It does not validate the payment method through the gateway.\n\nIf securityCode is passed in the request payload, this operation retrieves the credit card information from payload and validates them through the gateway.\n"
-          type: string
-      type: object
-    GETPaymentMethodResponseCreditCard:
-      properties:
-        cardNumber:
-          description: "The masked credit card number.\n\nWhen `cardNumber` is `null`, the following fields will not be returned:\n  - `expirationMonth`\n  - `expirationYear`\n  - `accountHolderInfo`\n"
-          type: string
-        expirationMonth:
-          description: "One or two digits expiration month (1-12).\n        \n"
-          type: integer
-        expirationYear:
-          description: 'Four-digit expiration year.
+              When you set this field to `true`, make sure the payment method is supported by the default payment gateway.
 
-            '
-          type: integer
-        securityCode:
-          description: "The CVV or CVV2 security code for the credit card or debit card.\n            Only required if changing expirationMonth, expirationYear, or cardHolderName.\n            To ensure PCI compliance, this value isn''t stored and can''t be queried.                  \n"
-          type: string
-      type: object
+              '
+            type: boolean
+          mandateInfo:
+            description: 'The mandate information for the Credit Card, Credit Card Reference Transaction, ACH, or Bank Transfer payment method.
+
+              '
+            properties:
+              mandateId:
+                description: 'The mandate ID.
+
+
+                  When creating an ACH payment method, if you need to pass in tokenized information, use the `mandateId` instead of `tokenId` field.
+
+                  '
+                maxLength: 36
+                type: string
+              mandateReason:
+                description: 'The reason of the mandate from the gateway side.
+
+                  '
+                maxLength: 64
+                type: string
+              mandateStatus:
+                description: 'The status of the mandate from the gateway side.
+
+                  '
+                maxLength: 64
+                type: string
+            type: object
+          skipValidation:
+            default: false
+            description: "Specify whether to skip the validation of the information through the payment gateway. For example, when migrating your payment methods, you can set this field to `true` to skip the validation. \n"
+            type: boolean
+          type:
+            description: 'Type of the payment method. Possible values include:
+
+
+              * `CreditCard` - Credit card payment method.
+
+              * `CreditCardReferenceTransaction` - Credit Card Reference Transaction. See [Supported payment methods](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Supported_Payment_Methods) for payment gateways that support this type of payment method.
+
+              * `ACH` - ACH payment method.
+
+              * `SEPA` - Single Euro Payments Area.
+
+              * `Betalingsservice` - Direct Debit DK.
+
+              * `Autogiro` - Direct Debit SE.
+
+              * `Bacs` - Direct Debit UK.
+
+              * `Becs` - Direct Entry AU.
+
+              * `Becsnz` - Direct Debit NZ.
+
+              * `PAD` - Pre-Authorized Debit.
+
+              * `PayPalCP` - PayPal Commerce Platform payment method. Use this type if you are using a [PayPal Commerce Platform Gateway](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Commerce_Platform_Gateway) instance.
+
+              * `PayPalEC` - PayPal Express Checkout payment method. Use this type if you are using a [PayPal Payflow Pro Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Payflow_Pro%2C_Website_Payments_Payflow_Edition%2C_Website_Pro_Payment_Gateway) instance.
+
+              * `PayPalNativeEC` - PayPal Native Express Checkout payment method. Use this type if you are using a [PayPal Express Checkout Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Express_Checkout_Gateway) instance.
+
+              * `PayPalAdaptive` - PayPal Adaptive payment method. Use this type if you are using a [PayPal Adaptive Payment Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Adaptive_Payments_Gateway) instance.
+
+              * `AdyenApplePay` - Apple Pay on Adyen Integration v2.0. See [Set up Adyen Apple Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Apple_Pay_on_Web/Set_up_Adyen_Apple_Pay) for details.
+
+              * `AdyenGooglePay` - Google Pay on Adyen Integration v2.0. See [Set up Adyen Google Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Adyen_Google_Pay) for details.
+
+              * `GooglePay` - Google Pay on Chase Paymentech Orbital gateway integration. See [Set up Google Pay on Chase](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Google_Pay_on_Chase) for details.
+
+              * You can also specify a custom payment method type. See [Set up custom payment gateways and payment methods](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) for details.
+
+
+              Note that Zuora is continuously adding new payment method types.
+
+              '
+            type: string
+        required:
+        - type
+        type: object
+      - $ref: '#/components/schemas/CreatePMPayPalECPayPalNativeECPayPalCP'
+      - $ref: '#/components/schemas/CreatePaymentMethodPayPalAdaptive'
+      - $ref: '#/components/schemas/CreatePaymentMethodCreditCard'
+      - $ref: '#/components/schemas/CreatePaymentMethodACH'
+      - $ref: '#/components/schemas/CreatePaymentMethodBankTransfer'
+      - $ref: '#/components/schemas/CreatePaymentMethodCCReferenceTransaction'
+      - $ref: '#/components/schemas/CreatePaymentMethodApplePayAdyen'
+      - $ref: '#/components/schemas/CreatePaymentMethodGooglePayAdyenChase'
+      - $ref: '#/components/schemas/PaymentMethodObjectCustomFields'
+      example:
+        BAID: I-1TJ3GAGG82Y9
+        accountKey: 2c92c0f95be68649015bf14e001f2760
+        email: customer@example.com
+        type: PayPalEC
     PUTPMAccountHolderInfo:
       description: 'The account holder information. This field is not supported in updating Credit Card Reference Transaction payment methods.
 
@@ -1936,36 +1907,110 @@ components:
           type: string
       title: accountHolderInfo
       type: object
-    PaymentMethodObjectCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the payment method. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of a payment method object.
-
-        '
-      title: paymentMethodFieldsCustom
-      type: object
-    PUTVerifyPaymentMethodResponseType:
+    PUTVerifyPaymentMethodType:
+      example:
+        gatewayOptions:
+          Comments: test
+          IPAddress: 192.168.1.1
+        paymentGatewayName: Adyen
+        securityCode: '737'
       properties:
-        paymentMethodId:
-          description: 'The ID of the verified payment method.
+        currencyCode:
+          description: "The currency used for payment method authorization. \n"
+          type: string
+        gatewayOptions:
+          description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
+
+
+            Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
+
+            '
+          properties:
+            key:
+              description: 'The name of a gateway-specific parameter.
+
+                '
+              type: string
+            value:
+              description: 'The value of the gateway-specific parameter.
+
+                '
+              type: string
+          type: object
+        paymentGatewayName:
+          description: 'The name of the payment gateway instance. If no value is specified for this field, the default payment gateway of the customer account will be used.
 
             '
           type: string
-        success:
-          description: 'Returns `true` if the request was processed successfully.
+        securityCode:
+          description: 'The CVV or CVV2 security code for the credit card or debit card. To ensure PCI compliance, the value of this field is not stored and cannot be queried.
+
+            '
+          type: string
+      type: object
+    CreatePaymentMethodPayPalAdaptive:
+      properties:
+        preapprovalKey:
+          description: 'The PayPal preapproval key.
+
+            '
+          type: string
+      type: object
+    POSTCreatePaymentSessionRequest:
+      example:
+        accountId: 402880de8779e14f018779e82905000f
+        amount: '100'
+        currency: USD
+        paymentGateway: e884322ab8c711edab030242ac120004
+        processPayment: true
+      properties:
+        accountId:
+          description: 'The ID of the customer account in Zuora that is associated with this payment method.
+
+            '
+          type: string
+        amount:
+          description: 'The amount of the payment.
+
+
+            This field is required if `processPayment` is `true`.
+
+            '
+          type: number
+        authAmount:
+          description: 'The authorization amount for the payment method. Specify a value greater than 0.
+
+
+            This field is required if `processPayment` is false.
+
+            '
+          type: number
+        currency:
+          description: 'The currency of the payment in the format of the three-character ISO currency code.
+
+            '
+          type: string
+        paymentGateway:
+          description: 'The ID of the payment gateway instance configured in Zuora that will process the payment, such as `e884322ab8c711edab030242ac120004`.
+
+            '
+          type: string
+        processPayment:
+          description: 'Indicate whether a payment should be processed after creating the payment method.
+
+
+            If this field is set to `true`, you must specify the `amount` field.
+
+
+            If this field is set to `false`, you must specify the `authAmount` field. The payment method will be verified through the payment gateway instance specified in the `paymentGateway` field.
 
             '
           type: boolean
-      type: object
-    CreatePaymentMethodGooglePayAdyenChase:
-      properties:
-        googlePaymentToken:
-          description: 'This field is specific for setting up Google Pay for Adyen and Chase gateway integrations to specify the stringified Google Pay token. For more information, see [Set up Adyen Google Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Adyen_Google_Pay) and [Set up Google Pay on Chase](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Google_Pay_on_Chase).
-
-            '
-          type: string
+      required:
+      - accountId
+      - currency
+      - paymentGateway
+      - processPayment
       type: object
     POSTPMMandateInfo:
       description: 'The mandate information for the Credit Card, Apple Pay, Google Pay, Credit Card Reference Transaction, ACH, or Bank Transfer payment method.
@@ -2085,41 +2130,754 @@ components:
           type: string
       title: mandateInfo
       type: object
-    CreatePaymentMethodApplePayAdyen:
+    GETPaymentMethodResponseACH:
       properties:
-        applePaymentData:
-          description: 'This field is specific for setting up Apple Pay for Adyen to include payload with Apple Pay token or Apple payment data. This information should be stringified. For more information, see [Set up Adyen Apple Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Apple_Pay_on_Web/Set_up_Adyen_Apple_Pay).
+        bankABACode:
+          description: 'The nine-digit routing number or ABA number used by banks. This field is only required if the `type` field is set to `ACH`.
+
+            '
+          type: string
+        bankAccountName:
+          description: 'The name of the account holder, which can be either a person or a company. This field is only required if the `type` field is set to `ACH`.
+
+            '
+          type: string
+        bankAccountNumber:
+          description: 'The bank account number associated with the ACH payment. This field is only required if the `type` field is set to `ACH`.
+
+            '
+          type: string
+        bankAccountType:
+          description: 'The type of bank account associated with the ACH payment. This field is only required if the `type` field is set to `ACH`.
+
+
+            When creating an ACH payment method on Adyen, this field is required by Zuora but it is not required by Adyen. To create the ACH payment method successfully, specify a real value for this field if you can. If it is not possible to get the real value for it, specify any of the allowed values as a dummy value, `Checking` preferably.
+
+            '
+          enum:
+          - BusinessChecking
+          - BusinessSaving
+          - Checking
+          - Saving
+          type: string
+        bankName:
+          description: 'The name of the bank where the ACH payment account is held. This field is only required if the `type` field is set to `ACH`.
+
+
+            When creating an ACH payment method on Adyen, this field is required by Zuora but it is not required by Adyen. To create the ACH payment method successfully, specify a real value for this field if you can. If it is not possible to get the real value for it, specify a dummy value.
 
             '
           type: string
       type: object
-    GETPaymentMethodResponseGooglePay:
+    PUTPaymentMethodResponse:
       properties:
-        googleBIN:
-          description: 'This field is only available for Google Pay payment methods.
+        id:
+          description: 'ID of the updated payment method.
 
             '
           type: string
-        googleCardNumber:
-          description: 'This field is only available for Google Pay payment methods.
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+      type: object
+    GETPaymentMethodResponseBankTransfer:
+      properties:
+        IBAN:
+          description: 'The International Bank Account Number used to create the SEPA payment method. The value is masked.
 
             '
           type: string
-        googleCardType:
-          description: 'This field is only available for Google Pay payment methods.
-
-
-            For Google Pay payment methods on Adyen, the first 100 characters of [paymentMethodVariant](https://docs.adyen.com/development-resources/paymentmethodvariant) returned from Adyen are stored in this field.
+        accountNumber:
+          description: 'The number of the customer''s bank account and it is masked.
 
             '
           type: string
-        googleExpiryDate:
-          description: 'This field is only available for Google Pay payment methods.
+        bankCode:
+          description: "The sort code or number that identifies the bank. This is also known as the sort code.         \n"
+          type: string
+        bankTransferType:
+          description: 'The type of the Bank Transfer payment method. For example, `SEPA`.
 
             '
           type: string
-        googleGatewayToken:
-          description: 'This field is only available for Google Pay payment methods.
+        branchCode:
+          description: "The branch code of the bank used for Direct Debit.          \n"
+          type: string
+        businessIdentificationCode:
+          description: "The BIC code used for SEPA. The value is masked.       \n"
+          type: string
+        identityNumber:
+          description: "The identity number used for Bank Transfer.        \n"
+          type: string
+      type: object
+    ModifiedStoredCredentialProfileResponse:
+      properties:
+        number:
+          description: 'The number that identifies the stored credential profile within the payment method.
+
+            '
+          type: integer
+        paymentMethodId:
+          description: 'ID of the payment method.
+
+            '
+          type: string
+        success:
+          type: boolean
+      type: object
+    CreatePaymentMethodGooglePayAdyenChase:
+      properties:
+        googlePaymentToken:
+          description: 'This field is specific for setting up Google Pay for Adyen and Chase gateway integrations to specify the stringified Google Pay token. For more information, see [Set up Adyen Google Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Adyen_Google_Pay) and [Set up Google Pay on Chase](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Google_Pay_on_Chase).
+
+            '
+          type: string
+      type: object
+    PUTVerifyPaymentMethodResponseType:
+      properties:
+        paymentMethodId:
+          description: 'The ID of the verified payment method.
+
+            '
+          type: string
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+      type: object
+    GETPaymentMethodResponseApplePay:
+      properties:
+        appleBIN:
+          description: 'This field is only available for Apple Pay payment methods.
+
+            '
+          type: string
+        appleCardNumber:
+          description: 'This field is only available for Apple Pay payment methods.
+
+            '
+          type: string
+        appleCardType:
+          description: 'This field is only available for Apple Pay payment methods.
+
+
+            For Apple Pay payment methods on Adyen, the first 100 characters of [paymentMethodVariant](https://docs.adyen.com/development-resources/paymentmethodvariant) returned from Adyen are stored in this field.
+
+            '
+          type: string
+        appleExpiryDate:
+          description: 'This field is only available for Apple Pay payment methods.
+
+            '
+          type: string
+        appleGatewayToken:
+          description: 'This field is only available for Apple Pay payment methods.
+
+            '
+          type: string
+      type: object
+    GETPaymentMethodResponsePayPal:
+      properties:
+        BAID:
+          description: 'ID of a PayPal billing agreement. For example, I-1TJ3GAGG82Y9.
+
+            '
+          type: string
+        email:
+          description: "Email address associated with the PayPal payment method. \n"
+          type: string
+        preapprovalKey:
+          description: 'The PayPal preapproval key.
+
+            '
+          type: string
+      type: object
+    POSTPaymentMethodResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponseType'
+      - properties:
+          id:
+            description: 'Internal ID of the payment method that was created.
+
+              '
+            type: string
+          reasons:
+            items:
+              description: 'Error information. Only applicable if the payment method was not created.
+
+                '
+              properties:
+                code:
+                  description: 'Error code.
+
+                    '
+                  type: string
+                message:
+                  description: 'Error message.
+
+                    '
+                  type: string
+              type: object
+            type: array
+        type: object
+    POSTRegisterApplePayDomainResponse:
+      properties:
+        domainName:
+          description: 'The name of the domain registered with Apple Pay, such as `testapplepay.zuora.com`.
+
+            '
+          type: string
+        domainVerified:
+          description: 'Indicates whether the domain registration is successfully verified.
+
+            '
+          type: boolean
+        id:
+          description: 'The ID of the domain, such as `402881a38924ff1001892502da090021`.
+
+            '
+          type: string
+        success:
+          description: 'Indicates whether this call succeeds.
+
+            '
+          type: boolean
+      type: object
+    DELETEUnresigerApplePayDomainResponse:
+      properties:
+        success:
+          description: Indicates whether this call succeeds.
+          type: boolean
+      type: object
+    GETPMAccountHolderInfo:
+      description: 'The account holder information.
+
+        '
+      properties:
+        accountHolderName:
+          description: 'The full name of the account holder.
+
+            '
+          type: string
+        addressLine1:
+          description: 'The first line of the address for the account holder.
+
+            '
+          type: string
+        addressLine2:
+          description: "The second line of the address for the account holder. \n"
+          type: string
+        city:
+          description: 'The city where the account holder stays.
+
+            '
+          type: string
+        country:
+          description: 'The country where the account holder stays.
+
+
+            When creating a payment method through a translated UI or Payment Page, a country name in a translated language might be selected. Regardless of the country texts selected when creating the payment method, only the country name listed in [Country Names and Their ISO Standard 2- and 3-Digit Codes](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/D_Country%2C_State%2C_and_Province_Codes/A_Country_Names_and_Their_ISO_Codes) returns in this field. Internationalization is not supported for the API field value.
+
+            '
+          type: string
+        email:
+          description: 'The email address of the account holder.
+
+            '
+          type: string
+        phone:
+          description: 'The phone number of the account holder.
+
+            '
+          type: string
+        state:
+          description: 'The state where the account holder stays.
+
+            '
+          type: string
+        zipCode:
+          description: 'The zip code for the address of the account holder.
+
+            '
+          type: string
+      title: accountHolderInfo
+      type: object
+    POSTPaymentMethodDecryption:
+      example:
+        accountID: 402891a25a02e11c015a02f3c6100003
+        integrationType: ApplePay
+        invoiceId: INV000000005
+        merchantID: merchant.CN.com.zuora.services416
+        mitConsentAgreementSrc: External
+        mitProfileAction: Activate
+        mitProfileType: Recurring
+        paymentGateway: CyberSourceOPG
+        paymentToken:
+          data: xGc......JDxuYz1gug0KZRrGXJQ=
+          header:
+            ephemeralPublicKey: MFkwEw......TMbLoojKBA==
+            publicKeyHash: HuLvfqvLon......9jEyX0w=
+            transactionId: abbadd18818baea1f37b40844c9e09afa9733b0eccb373905b811da43cf1753b
+          signature: MIAGCSqGSIb......AEtrLSv7hE9gAAAAAAAA==
+          version: EC_v1
+        processPayment: true
+      properties:
+        accountID:
+          description: 'The ID of the customer account associated with this payment method.
+
+            To create an orphan payment method that is not associated with any customer account, you do not need to specify this field during creation. However, you must associate the orphan payment method with a customer account within 10 days. Otherwise, this orphan payment method will be deleted.'
+          type: string
+        cardHolderInfo:
+          $ref: '#/components/schemas/CreatePaymentMethodCardholderInfo'
+        integrationType:
+          description: 'Field to identify the token decryption type.
+
+
+            **Note:** The only value at this time is `ApplePay`.
+
+
+            '
+          type: string
+        invoiceId:
+          description: 'The id of invoice this payment will apply to.
+
+
+            **Note:** When `processPayment` is `true`, this field is required.
+
+            Only one invoice can be paid; for scenarios where you want to pay for multiple invoices, set `processPayment` to `false` and call payment API separately.
+
+            '
+          type: string
+        merchantID:
+          description: 'The Merchant ID that was configured for use with Apple Pay in the Apple iOS Developer Center.
+
+            '
+          type: string
+        mitConsentAgreementSrc:
+          description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nSpecify how the consent agreement has been established with the customer. The allowed value is `External`. It is required if the `mitProfileAction` field is specified. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `External` set to this field.\n"
+          enum:
+          - External
+          type: string
+        mitProfileAction:
+          description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nSpecify either of the following values in this field:\n    \n  - `Activate` - Use this value if you are creating the stored credential profile after receiving the customer's consent.\n    \n    Zuora will create the stored credential profile then send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile. If the CIT succeeds, the status of the stored credential profile will be `Active`. If the CIT does not succeed, Zuora will not create a stored credential profile.\n      \n    If the payment gateway does not support the stored credential transaction framework, the status of the stored credential profile will be `Agreed`.\n    \n  - `Persist` - Use this value if the stored credential profile represents a stored credential profile in an external system. The status of the payment method's stored credential profile will be `Active`.\n\n  If you do not specify this field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Activate` set to this field.\n    \n"
+          enum:
+          - Activate
+          - Persist
+          type: string
+        mitProfileType:
+          description: "This field is only available for the following gateway integrations to create stored credential profiles within payment methods:\n  - Chase Paymentech Orbital Gateway\n  - CyberSource Payment API v2.0\n  - Stripe v2\n  - Vantiv (Now Worldpay)\n\nThis field indicates the type of the stored credential profile to process recurring or unsecheduled transactions. It is required if the `mitProfileAction` field is specified. If you do not specify the `mitProfileAction` field, Zuora will automatically create a stored credential profile for the payment method, with the default value `Recurring` set to this field.\n    \n"
+          enum:
+          - Recurring
+          - Unscheduled
+          type: string
+        paymentGateway:
+          description: 'The label name of the gateway instance configured in Zuora that should process the payment. When creating a Payment, this must be a valid gateway instance ID and this gateway must support the specific payment method. If not specified, the default gateway of your Zuora customer account will be used.
+
+
+            **Note:** When `processPayment` is `true`, this field is required. When `processPayment` is `false`, the default payment gateway of your Zuora customer account will be used no matter whether a payment gateway instance is specified in the `paymentGateway` field.
+
+            '
+          type: string
+        paymentToken:
+          description: 'The complete JSON Object representing the encrypted payment token payload returned in the response from the Apple Pay session.
+
+
+            '
+          type: object
+        processPayment:
+          description: "A boolean flag to control whether a payment should be processed after creating payment method. The payment amount will be equivalent to the amount the merchant supplied in the ApplePay session. Default is false.\n\nIf this field is set to `true`, you must specify the `paymentGateway` field with the payment gateway instance name.\n\nIf this field is set to `false`:\n  - The default payment gateway of your Zuora customer account will be used no matter whether a payment gateway instance is specified in the `paymentGateway` field. \n  - You must select the **Verify new credit card** check box on the gateway instance settings page. Otherwise, the cryptogram will not be sent to the gateway.\n  - A separate subscribe or payment API call is required after this payment method creation call.\n"
+          type: boolean
+      required:
+      - integrationType
+      - merchantID
+      - paymentToken
+      type: object
+    GetStoredCredentialProfilesResponse:
+      properties:
+        profiles:
+          description: 'Container for stored credential profiles.
+
+            '
+          items:
+            properties:
+              activatedOn:
+                description: 'The date when the stored credential profile was activated (if applicable).
+
+                  '
+                format: date-time
+                type: string
+              agreedOn:
+                description: 'The date when the stored credential profile was created.
+
+                  '
+                format: date-time
+                type: string
+              brand:
+                description: 'The stored credential transaction framework. For example, Visa.
+
+                  '
+                type: string
+              cancelledOn:
+                description: 'The date when the stored credential profile was cancelled (if applicable).
+
+                  '
+                format: date-time
+                type: string
+              consentAgreementRef:
+                description: 'Your reference for the consent agreement that you have established with the customer.
+
+                  '
+                maxLength: 128
+                type: string
+              consentAgreementSrc:
+                enum:
+                - External
+                type: string
+              expiredOn:
+                description: 'The date when the stored credential profile was expired (if applicable).
+
+                  '
+                format: date-time
+                type: string
+              number:
+                description: 'The number that identifies the stored credential profile within the payment method.
+
+                  '
+                type: integer
+              paymentMethodId:
+                description: 'ID of the payment method.
+
+                  '
+                type: string
+              status:
+                description: 'The status of the stored credential profile.
+
+
+                  * `Agreed` - The stored credential profile has not been validated via an authorization transaction with the payment gateway.
+
+                  * `Active` - The stored credential profile has been validated via an authorization transaction with the payment gateway.
+
+                  * `Cancelled` - The stored credentials are no longer valid, per a customer request. Zuora cannot use the stored credentials in transactions.
+
+                  * `Expired` - The stored credentials are no longer valid, per an expiration policy in the stored credential transaction framework. Zuora cannot use the stored credentials in transactions.
+
+                  '
+                enum:
+                - Agreed
+                - Active
+                - Cancelled
+                - Expired
+                type: string
+              type:
+                enum:
+                - Recurring
+                - Unscheduled
+                type: string
+          type: array
+        success:
+          type: boolean
+      type: object
+    CreatePaymentMethodBankTransfer:
+      properties:
+        IBAN:
+          description: "The International Bank Account Number. \n\nThis field is required if the `type` field is set to `SEPA`. However, for creating tokenized SEPA payment methods on Adyen Integration v2.0, this field is optional. \n  - If the `tokenize` field is `true`, `IBAN` is required. \n  - If the `tokens` field is specified,  `IBAN` is not required but `accountMaskNumber` is required.\n"
+          type: string
+        accountHolderInfo:
+          description: "This container field is required for the following bank transfer payment methods. The nested `accountHolderName` field is required.\n  - Direct Debit NZ (`Becsnz`)\n  - Single Euro Payments Area (`SEPA`)\n  - Direct Debit UK (`Bacs`)\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
+          properties:
+            accountHolderName:
+              description: 'Required.
+
+
+                The full name of the bank account holder.
+
+                '
+              maxLength: 60
+              type: string
+            addressLine1:
+              description: 'The first line of the address for the account holder.
+
+
+                This field is required for SEPA Direct Debit payment methods on Stripe v2 for [certain countries](https://stripe.com/docs/payments/sepa-debit/set-up-payment?platform=web#web-submit-payment-method).
+
+                '
+              type: string
+            addressLine2:
+              description: "The second line of the address for the account holder. \n"
+              type: string
+            city:
+              description: 'The city where the account holder stays.
+
+
+                It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
+
+                '
+              type: string
+            country:
+              description: 'The country where the account holder stays.
+
+
+                This field is required for SEPA payment methods on Stripe v2 for [certain countries](https://stripe.com/docs/payments/sepa-debit/set-up-payment?platform=web#web-submit-payment-method).
+
+                '
+              type: string
+            email:
+              description: 'The email address of the account holder.
+
+                '
+              type: string
+            firstName:
+              description: 'The first name of the account holder.
+
+                '
+              type: string
+            lastName:
+              description: 'The last name of the account holder.
+
+                '
+              type: string
+            phone:
+              description: 'The phone number of the account holder.
+
+                '
+              type: string
+            state:
+              description: 'The state where the account holder stays.
+
+                '
+              type: string
+            zipCode:
+              description: 'The zip code for the address of the account holder.
+
+                '
+              type: string
+          type: object
+        accountMaskNumber:
+          description: "The masked account number such as ****1234.\n\nWhen creating the following tokenized payment methods, if the `tokens` field is provided, this `accountMaskNumber` field is required.\n  - SEPA payment methods on Adyen\n  - BACS payment methods on Stripe\n\nFor more information about how to create the preceding tokenized payment methods, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
+          type: string
+        accountNumber:
+          description: "The number of the customer's bank account. This field is required for the following bank transfer payment methods:\n  - Direct Entry AU (`Becs`)\n  - Direct Debit NZ (`Becsnz`)\n  - Direct Debit UK (`Bacs`). For creating tokenized BACS payment methods on Stripe v2, this field is optional. If the `tokens` field is specified, `accountNumber` is not required but  `accountMaskNumber` is required.\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
+          type: string
+        bankCode:
+          description: "The sort code or number that identifies the bank. This is also known as the sort code. This field is required for the following bank transfer payment methods:\n  - Direct Debit UK (`Bacs`)\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Direct Debit NZ (`Becsnz`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
+          type: string
+        branchCode:
+          description: "The branch code of the bank used for direct debit. This field is required for the following bank transfer payment methods:\n  - Sweden Direct Debit (`Autogiro`)\n  - Direct Entry AU (`Becs`)\n  - Direct Debit NZ (`Becsnz`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
+          type: string
+        businessIdentificationCode:
+          description: 'The BIC code used for SEPA.
+
+            '
+          type: string
+        currencyCode:
+          description: 'The currency used for payment method authorization.
+
+
+            If this field is not specified, `currency` specified for the account is used for payment method authorization. If no currency is specified for the account, the default currency of the account is then used.
+
+            '
+          type: string
+        identityNumber:
+          description: "The identity number used for Bank Transfer. This field is required for the following bank transfer payment methods:\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n"
+          type: string
+        tokenize:
+          default: false
+          description: "When creating a SEPA payment method on Adyen Integration v2.0, use this field to specify whether to tokenize the payment method with IBAN. If `tokenize` is `true`, `IBAN` is required.\n\nIf the `tokens` field is provided, this `tokenize` field is not required. \n\nFor more information about how to create tokenized SEPA payment methods on Adyen, see <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>.\n"
+          type: boolean
+        tokens:
+          description: "To create the following tokenized payment methods, pass in the existing token information:\n  - Tokenized SEPA payment methods on Adyen Integration v2.0\n  - Tokenized BACS payment methods on Stripe v2\n\nFor more information about how to create the preceding tokenized payment methods, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
+          properties:
+            gatewayType:
+              description: "Required. \n\nThe type of the payment gateway to generate the tokens. This field is case-sensitive.\n"
+              enum:
+              - Adyen
+              - Stripe
+              type: string
+            secondTokenId:
+              description: "Pass in the second token of the payment method. The value of this field varies depending on gateways. For more information, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
+              type: string
+            thirdTokenId:
+              description: 'Pass in the third token of the payment method.
+
+                '
+              type: string
+            tokenId:
+              description: "Required. \n\nPass in the first token of the payment method. The value of this field varies depending on gateways. For more information, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
+              type: string
+          type: object
+      type: object
+    POSTPaymentMethodResponseDecryption:
+      properties:
+        amount:
+          description: 'The payment amount contained within the encrypted token.
+
+            '
+          type: string
+        paymentId:
+          description: 'The ID of newly processed payment,
+
+            '
+          type: string
+        paymentMethodId:
+          description: 'ID of the newly-created payment method.
+
+            '
+          type: string
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+      type: object
+    CommonResponseType:
+      properties:
+        processId:
+          description: 'The Id of the process that handle the operation.
+
+            '
+          type: string
+        reasons:
+          items:
+            properties:
+              code:
+                description: 'The error code of response.
+
+                  '
+                type: string
+              message:
+                description: 'The detail information of the error response
+
+                  '
+                type: string
+            type: object
+          type: array
+        success:
+          description: 'Indicates whether the call succeeded.
+
+            '
+          type: boolean
+      type: object
+    CreateStoredCredentialProfileRequest:
+      example:
+        authGateway: 4028905f5702783601570291e14c0015
+        consentAgreementRef: ACCT1338AgreementV1.pdf
+        consentAgreementSrc: External
+        status: Active
+        type: Recurring
+      properties:
+        action:
+          description: "Specifies how Zuora activates the stored credential profile. Only applicable if you set the `status` field to `Active`.\n\n- `Activate` (default) - Use this value if you are creating the stored credential profile after receiving the customer's consent.\n\n  Zuora will create the stored credential profile then send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile. If the CIT succeeds, the status of the stored credential profile will be `Active`. If the CIT does not succeed, Zuora will not create a stored credential profile.\n  \n  If the payment gateway does not support the stored credential transaction framework, the status of the stored credential profile will be `Agreed`.\n\n\n- `Persist` - Use this value if the stored credential profile represents a stored credential profile in an external system. The status of the payment method's stored credential profile will be `Active`.\n"
+          enum:
+          - Activate
+          - Persist
+          type: string
+        agreedOn:
+          description: 'The date on which the profile is agreed. The date format is `yyyy-mm-dd`.
+
+            '
+          format: date
+          type: string
+        authGateway:
+          description: 'Specifies the ID of the payment gateway that Zuora will use when activating the stored credential profile.
+
+            '
+          type: string
+        cardSecurityCode:
+          description: 'The security code of the credit card.
+
+            '
+          type: string
+        consentAgreementRef:
+          description: 'Specifies your reference for the consent agreement that you have established with the customer.
+
+            '
+          maxLength: 128
+          type: string
+        consentAgreementSrc:
+          description: 'Specifies how the consent agreement has been established with the customer. The allowed value is `External`.
+
+            '
+          enum:
+          - External
+          type: string
+        networkTransactionId:
+          description: 'The ID of a network transaction. Only applicable if you set the `action` field to `Persist`.
+
+            '
+          maxLength: 128
+          type: string
+        status:
+          description: "Specifies the status of the stored credential profile.\n\n- `Active` - Use this value if you are creating the stored credential profile after receiving the customer's consent, or if the stored credential profile represents a stored credential profile in an external system.\n\n  You can use the `action` field to specify how Zuora activates the stored credential profile.\n\n\n- `Agreed` - Use this value if you are migrating the payment method to the stored credential transaction framework.\n\n  In this case, Zuora will not send a cardholder-initiated transaction (CIT) to the payment gateway to validate the stored credential profile.\n"
+          enum:
+          - Agreed
+          - Active
+          type: string
+        type:
+          description: 'Indicates the type of the stored credential profile to process recurring or unsecheduled transactions.
+
+            '
+          enum:
+          - Recurring
+          - Unscheduled
+          type: string
+      required:
+      - status
+      - type
+      - consentAgreementSrc
+      type: object
+    GETListApplePayDomainsResponse:
+      properties:
+        domains:
+          description: 'Container for domains that are already registered with Apple Pay.
+
+            '
+          items:
+            properties:
+              createdBy:
+                description: 'The ID of the user who created this domain.
+
+                  '
+                type: string
+              createdOn:
+                description: "The date and time when the domain was created, in `yyyy-mm-dd hh:mm:ss` format. \n"
+                format: date-time
+                type: string
+              domainName:
+                description: "The name of the domain registered with Apple Pay, such as `testapplepay.zuora.com`. \n"
+                type: string
+              domainVerified:
+                description: "Indicates whether the domain registration is successfully verified. \n"
+                type: boolean
+              id:
+                description: 'The ID of the domain, such as `402881a38924ff1001892502da090021`.
+
+                  '
+                type: string
+              updatedBy:
+                description: 'The ID of the user who made the last update to this domain.
+
+                  '
+                type: string
+              updatedOn:
+                description: 'The last date and time when the domain was updated, in `yyyy-mm-dd hh:mm:ss` format.
+
+                  '
+                format: date-time
+                type: string
+          type: array
+        success:
+          description: 'Indicates whether this call succeeds.
+
+            '
+          type: boolean
+      type: object
+    CreatePaymentMethodApplePayAdyen:
+      properties:
+        applePaymentData:
+          description: 'This field is specific for setting up Apple Pay for Adyen to include payload with Apple Pay token or Apple payment data. This information should be stringified. For more information, see [Set up Adyen Apple Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Apple_Pay_on_Web/Set_up_Adyen_Apple_Pay).
 
             '
           type: string
@@ -2286,800 +3044,24 @@ components:
       - $ref: '#/components/schemas/GETPaymentMethodResponsePayPal'
       - $ref: '#/components/schemas/GETPaymentMethodResponseGooglePay'
       - $ref: '#/components/schemas/GETPaymentMethodResponseApplePay'
-    CreatePaymentMethodCardholderInfo:
-      description: 'Container for cardholder information. This container field is required for credit card payment methods. The nested `cardHolderName` field is required.
-
-        '
+    GETPaymentMethodResponseCreditCard:
       properties:
-        addressLine1:
-          description: 'First address line, 255 characters or less.
-
-            '
+        cardNumber:
+          description: "The masked credit card number.\n\nWhen `cardNumber` is `null`, the following fields will not be returned:\n  - `expirationMonth`\n  - `expirationYear`\n  - `accountHolderInfo`\n"
           type: string
-        addressLine2:
-          description: 'Second address line, 255 characters or less.
-
-            '
-          type: string
-        cardHolderName:
-          description: 'The card holder''s full name as it appears on the card, e.g., "John J Smith", 50 characters or less.
-
-            '
-          type: string
-        city:
-          description: 'City, 40 characters or less.
-
-            It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
-
-            '
-          type: string
-        country:
-          description: 'Country, must be a valid country name or abbreviation.
-
-            It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
-
-            '
-          type: string
-        email:
-          description: 'Card holder''s email address, 80 characters or less.
-
-            '
-          type: string
-        phone:
-          description: 'Phone number, 40 characters or less.
-
-            '
-          type: string
-        state:
-          description: 'State; must be a valid state name or 2-character abbreviation.
-
-            '
-          type: string
-        zipCode:
-          description: 'Zip code, 20 characters or less.
-
-            '
-          type: string
-      required:
-      - cardHolderName
-      title: cardHolderInfo
-      type: object
-    GETPMAccountHolderInfo:
-      description: 'The account holder information.
-
-        '
-      properties:
-        accountHolderName:
-          description: 'The full name of the account holder.
-
-            '
-          type: string
-        addressLine1:
-          description: 'The first line of the address for the account holder.
-
-            '
-          type: string
-        addressLine2:
-          description: "The second line of the address for the account holder. \n"
-          type: string
-        city:
-          description: 'The city where the account holder stays.
-
-            '
-          type: string
-        country:
-          description: 'The country where the account holder stays.
-
-
-            When creating a payment method through a translated UI or Payment Page, a country name in a translated language might be selected. Regardless of the country texts selected when creating the payment method, only the country name listed in [Country Names and Their ISO Standard 2- and 3-Digit Codes](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/D_Country%2C_State%2C_and_Province_Codes/A_Country_Names_and_Their_ISO_Codes) returns in this field. Internationalization is not supported for the API field value.
-
-            '
-          type: string
-        email:
-          description: 'The email address of the account holder.
-
-            '
-          type: string
-        phone:
-          description: 'The phone number of the account holder.
-
-            '
-          type: string
-        state:
-          description: 'The state where the account holder stays.
-
-            '
-          type: string
-        zipCode:
-          description: 'The zip code for the address of the account holder.
-
-            '
-          type: string
-      title: accountHolderInfo
-      type: object
-    CreatePMPayPalECPayPalNativeECPayPalCP:
-      properties:
-        BAID:
-          description: 'ID of a PayPal billing agreement. For example, I-1TJ3GAGG82Y9.
-
-            '
-          type: string
-        email:
-          description: "Email address associated with the payment method. This field is supported for the following payment methods:\n  - PayPal payment methods. This field is required for creating any of the following PayPal payment methods.\n    - PayPal Express Checkout\n    - PayPal Adaptive\n    - PayPal Commerce Platform\n  - Apple Pay and Google Pay payment methods on Adyen v2.0. This field will be passed to Adyen as `shopperEmail`.\n"
-          type: string
-      type: object
-    PUTPaymentMethodRequest:
-      allOf:
-      - properties:
-          accountHolderInfo:
-            $ref: '#/components/schemas/PUTPMAccountHolderInfo'
-          accountKey:
-            description: 'The ID of the customer account associated with this payment method, such as `2x92c0f859b0480f0159d3a4a6ee5bb6`.
-
-
-              **Note:** You can use this field to associate an orphan payment method with a customer account. If a payment method is already associated with a customer account, you cannot change the associated payment method through this operation. You cannot remove the previous account ID and leave this field empty, either.
-
-              '
-            type: string
-          authGateway:
-            description: "Specifies the ID of the payment gateway that Zuora will use to authorize the payments that are made with the payment method. \n\nThis field is not supported in updating Credit Card Reference Transaction payment methods.\n"
-            type: string
-          currencyCode:
-            description: 'The currency used for payment method authorization.
-
-              '
-            type: string
-          gatewayOptions:
-            description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
-
-
-              Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
-
-
-              This field is not supported in updating Credit Card Reference Transaction payment methods.
-
-              '
-            properties:
-              key:
-                description: 'The name of a gateway-specific parameter.
-
-                  '
-                type: string
-              value:
-                description: 'The value of the gateway-specific parameter.
-
-                  '
-                type: string
-            type: object
-          ipAddress:
-            description: "The IPv4 or IPv6 information of the user when the payment method is created or updated. Some gateways use this field for fraud prevention. If this field is passed to Zuora, Zuora directly passes it to gateways. \n\nIf the IP address length is beyond 45 characters, a validation error occurs.\n\nFor validating SEPA payment methods on Stripe v2, this field is required.\n"
-            type: string
-          mandateInfo:
-            description: 'The mandate information for the Credit Card, Credit Card Reference Transaction, ACH, or Bank Transfer payment method.
-
-              '
-            properties:
-              mandateId:
-                description: 'The mandate ID.
-
-                  '
-                maxLength: 36
-                type: string
-              mandateReason:
-                description: 'The reason of the mandate from the gateway side.
-
-                  '
-                maxLength: 64
-                type: string
-              mandateStatus:
-                description: 'The status of the mandate from the gateway side.
-
-                  '
-                maxLength: 64
-                type: string
-            type: object
-        type: object
-      - $ref: '#/components/schemas/PUTPMCreditCardInfo'
-      - $ref: '#/components/schemas/PUTPaymentMethodObjectCustomFields'
-      example:
-        accountHolderInfo:
-          addressLine1: address 1
-          phone: '1333333333'
-        expirationMonth: 8
-        expirationYear: 2024
-        securityCode: '123'
-    GETPaymentMethodResponsePayPal:
-      properties:
-        BAID:
-          description: 'ID of a PayPal billing agreement. For example, I-1TJ3GAGG82Y9.
-
-            '
-          type: string
-        email:
-          description: "Email address associated with the PayPal payment method. \n"
-          type: string
-        preapprovalKey:
-          description: 'The PayPal preapproval key.
-
-            '
-          type: string
-      type: object
-    GETPaymentMethodResponseApplePay:
-      properties:
-        appleBIN:
-          description: 'This field is only available for Apple Pay payment methods.
-
-            '
-          type: string
-        appleCardNumber:
-          description: 'This field is only available for Apple Pay payment methods.
-
-            '
-          type: string
-        appleCardType:
-          description: 'This field is only available for Apple Pay payment methods.
-
-
-            For Apple Pay payment methods on Adyen, the first 100 characters of [paymentMethodVariant](https://docs.adyen.com/development-resources/paymentmethodvariant) returned from Adyen are stored in this field.
-
-            '
-          type: string
-        appleExpiryDate:
-          description: 'This field is only available for Apple Pay payment methods.
-
-            '
-          type: string
-        appleGatewayToken:
-          description: 'This field is only available for Apple Pay payment methods.
-
-            '
-          type: string
-      type: object
-    CreatePaymentMethodBankTransfer:
-      properties:
-        IBAN:
-          description: "The International Bank Account Number. \n\nThis field is required if the `type` field is set to `SEPA`. However, for creating tokenized SEPA payment methods on Adyen Integration v2.0, this field is optional. \n  - If the `tokenize` field is `true`, `IBAN` is required. \n  - If the `tokens` field is specified,  `IBAN` is not required but `accountMaskNumber` is required.\n"
-          type: string
-        accountHolderInfo:
-          description: "This container field is required for the following bank transfer payment methods. The nested `accountHolderName` field is required.\n  - Direct Debit NZ (`Becsnz`)\n  - Single Euro Payments Area (`SEPA`)\n  - Direct Debit UK (`Bacs`)\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
-          properties:
-            accountHolderName:
-              description: 'Required.
-
-
-                The full name of the bank account holder.
-
-                '
-              maxLength: 60
-              type: string
-            addressLine1:
-              description: 'The first line of the address for the account holder.
-
-
-                This field is required for SEPA Direct Debit payment methods on Stripe v2 for [certain countries](https://stripe.com/docs/payments/sepa-debit/set-up-payment?platform=web#web-submit-payment-method).
-
-                '
-              type: string
-            addressLine2:
-              description: "The second line of the address for the account holder. \n"
-              type: string
-            city:
-              description: 'The city where the account holder stays.
-
-
-                It is recommended to provide the city and country information when creating a payment method. The information will be used to process payments. If the information is not provided during payment method creation, the city and country data will be missing during payment processing.
-
-                '
-              type: string
-            country:
-              description: 'The country where the account holder stays.
-
-
-                This field is required for SEPA payment methods on Stripe v2 for [certain countries](https://stripe.com/docs/payments/sepa-debit/set-up-payment?platform=web#web-submit-payment-method).
-
-                '
-              type: string
-            email:
-              description: 'The email address of the account holder.
-
-                '
-              type: string
-            firstName:
-              description: 'The first name of the account holder.
-
-                '
-              type: string
-            lastName:
-              description: 'The last name of the account holder.
-
-                '
-              type: string
-            phone:
-              description: 'The phone number of the account holder.
-
-                '
-              type: string
-            state:
-              description: 'The state where the account holder stays.
-
-                '
-              type: string
-            zipCode:
-              description: 'The zip code for the address of the account holder.
-
-                '
-              type: string
-          type: object
-        accountMaskNumber:
-          description: "The masked account number such as ****1234.\n\nWhen creating the following tokenized payment methods, if the `tokens` field is provided, this `accountMaskNumber` field is required.\n  - SEPA payment methods on Adyen\n  - BACS payment methods on Stripe\n\nFor more information about how to create the preceding tokenized payment methods, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
-          type: string
-        accountNumber:
-          description: "The number of the customer's bank account. This field is required for the following bank transfer payment methods:\n  - Direct Entry AU (`Becs`)\n  - Direct Debit NZ (`Becsnz`)\n  - Direct Debit UK (`Bacs`). For creating tokenized BACS payment methods on Stripe v2, this field is optional. If the `tokens` field is specified, `accountNumber` is not required but  `accountMaskNumber` is required.\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
-          type: string
-        bankCode:
-          description: "The sort code or number that identifies the bank. This is also known as the sort code. This field is required for the following bank transfer payment methods:\n  - Direct Debit UK (`Bacs`)\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Direct Debit NZ (`Becsnz`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
-          type: string
-        branchCode:
-          description: "The branch code of the bank used for direct debit. This field is required for the following bank transfer payment methods:\n  - Sweden Direct Debit (`Autogiro`)\n  - Direct Entry AU (`Becs`)\n  - Direct Debit NZ (`Becsnz`)\n  - Canadian Pre-Authorized Debit (`PAD`)\n"
-          type: string
-        businessIdentificationCode:
-          description: 'The BIC code used for SEPA.
-
-            '
-          type: string
-        currencyCode:
-          description: 'The currency used for payment method authorization.
-
-
-            If this field is not specified, `currency` specified for the account is used for payment method authorization. If no currency is specified for the account, the default currency of the account is then used.
-
-            '
-          type: string
-        identityNumber:
-          description: "The identity number used for Bank Transfer. This field is required for the following bank transfer payment methods:\n  - Denmark Direct Debit (`Betalingsservice`)\n  - Sweden Direct Debit (`Autogiro`)\n"
-          type: string
-        tokenize:
-          default: false
-          description: "When creating a SEPA payment method on Adyen Integration v2.0, use this field to specify whether to tokenize the payment method with IBAN. If `tokenize` is `true`, `IBAN` is required.\n\nIf the `tokens` field is provided, this `tokenize` field is not required. \n\nFor more information about how to create tokenized SEPA payment methods on Adyen, see <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>.\n"
-          type: boolean
-        tokens:
-          description: "To create the following tokenized payment methods, pass in the existing token information:\n  - Tokenized SEPA payment methods on Adyen Integration v2.0\n  - Tokenized BACS payment methods on Stripe v2\n\nFor more information about how to create the preceding tokenized payment methods, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
-          properties:
-            gatewayType:
-              description: "Required. \n\nThe type of the payment gateway to generate the tokens. This field is case-sensitive.\n"
-              enum:
-              - Adyen
-              - Stripe
-              type: string
-            secondTokenId:
-              description: "Pass in the second token of the payment method. The value of this field varies depending on gateways. For more information, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
-              type: string
-            thirdTokenId:
-              description: 'Pass in the third token of the payment method.
-
-                '
-              type: string
-            tokenId:
-              description: "Required. \n\nPass in the first token of the payment method. The value of this field varies depending on gateways. For more information, see the following articles in Zuora Knowledge Center:\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Adyen_Integration_v2.0/D_Tokenize_SEPA_payment_methods_on_Adyen_Integration_v2.0\" target=\"_blank\">Tokenize SEPA payment methods on Adyen Integration v2.0</a>\n  - <a href=\"https://knowledgecenter.zuora.com/Zuora_Payments/Payment_gateway_integrations/Supported_payment_gateways/Stripe_Payment_Gateway/A_Overview_of_Stripe_payment_gateway_integration\" target=\"_blank\">Overview of Stripe payment gateway integration</a>\n"
-              type: string
-          type: object
-      type: object
-    POSTRegisterApplePayDomainRequest:
-      example:
-        domainName: testapplepay.zuora.com
-      properties:
-        domainName:
-          description: 'The name of the domain to be registered with Apple Pay, such as `testapplepay.zuora.com`.
-
-            '
-          type: string
-      required:
-      - domainName
-      type: object
-    ModifiedStoredCredentialProfileResponse:
-      properties:
-        number:
-          description: 'The number that identifies the stored credential profile within the payment method.
+        expirationMonth:
+          description: "One or two digits expiration month (1-12).\n        \n"
+          type: integer
+        expirationYear:
+          description: 'Four-digit expiration year.
 
             '
           type: integer
-        paymentMethodId:
-          description: 'ID of the payment method.
-
-            '
-          type: string
-        success:
-          type: boolean
-      type: object
-    POSTPaymentMethodRequest:
-      allOf:
-      - properties:
-          accountKey:
-            description: "Internal ID of the customer account that will own the payment method. \n\nTo create an orphan payment method that is not associated with any customer account, you do not need to specify this field during creation. However, you must associate the orphan payment method with a customer account within 10 days. Otherwise, this orphan payment method will be deleted.\n"
-            type: string
-          authGateway:
-            description: 'Internal ID of the payment gateway that Zuora will use to authorize the payments that are made with the payment method.
-
-
-              If you do not set this field, Zuora will use one of the following payment gateways instead:
-
-
-              * The default payment gateway of the customer account that owns the payment method, if the `accountKey` field is set.
-
-              * The default payment gateway of your Zuora tenant, if the `accountKey` field is not set.
-
-              '
-            type: string
-          gatewayOptions:
-            description: 'The field used to pass gateway-specific parameters and parameter values. The fields supported by gateways vary. For more information, see the Overview topic of each gateway integration in [Zuora Knowledge Center](https://knowledgecenter.zuora.com/Zuora_Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways).
-
-
-              Zuora sends all the information that you specified to the gateway. If you specify any unsupported gateway option parameters, they will be ignored without error prompts.
-
-              '
-            properties:
-              key:
-                description: 'The name of a gateway-specific parameter.
-
-                  '
-                type: string
-              value:
-                description: 'The value of the gateway-specific parameter.
-
-                  '
-                type: string
-            type: object
-          ipAddress:
-            description: "The IPv4 or IPv6 information of the user when the payment method is created or updated. Some gateways use this field for fraud prevention. If this field is passed to Zuora, Zuora directly passes it to gateways. \n\nIf the IP address length is beyond 45 characters, a validation error occurs.\n\nFor validating SEPA payment methods on Stripe v2, this field is required.\n"
-            type: string
-          makeDefault:
-            default: false
-            description: 'Specifies whether the payment method will be the default payment method of the customer account that owns the payment method. Only applicable if the `accountKey` field is set.
-
-
-              When you set this field to `true`, make sure the payment method is supported by the default payment gateway.
-
-              '
-            type: boolean
-          mandateInfo:
-            description: 'The mandate information for the Credit Card, Credit Card Reference Transaction, ACH, or Bank Transfer payment method.
-
-              '
-            properties:
-              mandateId:
-                description: 'The mandate ID.
-
-
-                  When creating an ACH payment method, if you need to pass in tokenized information, use the `mandateId` instead of `tokenId` field.
-
-                  '
-                maxLength: 36
-                type: string
-              mandateReason:
-                description: 'The reason of the mandate from the gateway side.
-
-                  '
-                maxLength: 64
-                type: string
-              mandateStatus:
-                description: 'The status of the mandate from the gateway side.
-
-                  '
-                maxLength: 64
-                type: string
-            type: object
-          skipValidation:
-            default: false
-            description: "Specify whether to skip the validation of the information through the payment gateway. For example, when migrating your payment methods, you can set this field to `true` to skip the validation. \n"
-            type: boolean
-          type:
-            description: 'Type of the payment method. Possible values include:
-
-
-              * `CreditCard` - Credit card payment method.
-
-              * `CreditCardReferenceTransaction` - Credit Card Reference Transaction. See [Supported payment methods](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Supported_Payment_Methods) for payment gateways that support this type of payment method.
-
-              * `ACH` - ACH payment method.
-
-              * `SEPA` - Single Euro Payments Area.
-
-              * `Betalingsservice` - Direct Debit DK.
-
-              * `Autogiro` - Direct Debit SE.
-
-              * `Bacs` - Direct Debit UK.
-
-              * `Becs` - Direct Entry AU.
-
-              * `Becsnz` - Direct Debit NZ.
-
-              * `PAD` - Pre-Authorized Debit.
-
-              * `PayPalCP` - PayPal Commerce Platform payment method. Use this type if you are using a [PayPal Commerce Platform Gateway](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Commerce_Platform_Gateway) instance.
-
-              * `PayPalEC` - PayPal Express Checkout payment method. Use this type if you are using a [PayPal Payflow Pro Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Payflow_Pro%2C_Website_Payments_Payflow_Edition%2C_Website_Pro_Payment_Gateway) instance.
-
-              * `PayPalNativeEC` - PayPal Native Express Checkout payment method. Use this type if you are using a [PayPal Express Checkout Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Express_Checkout_Gateway) instance.
-
-              * `PayPalAdaptive` - PayPal Adaptive payment method. Use this type if you are using a [PayPal Adaptive Payment Gateway](https://knowledgecenter.zuora.com/CB_Billing/M_Payment_Gateways/Supported_Payment_Gateways/PayPal_Adaptive_Payments_Gateway) instance.
-
-              * `AdyenApplePay` - Apple Pay on Adyen Integration v2.0. See [Set up Adyen Apple Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Apple_Pay_on_Web/Set_up_Adyen_Apple_Pay) for details.
-
-              * `AdyenGooglePay` - Google Pay on Adyen Integration v2.0. See [Set up Adyen Google Pay](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Adyen_Google_Pay) for details.
-
-              * `GooglePay` - Google Pay on Chase Paymentech Orbital gateway integration. See [Set up Google Pay on Chase](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/L_Payment_Methods/Payment_Method_Types/Set_up_Google_Pay_on_Chase) for details.
-
-              * You can also specify a custom payment method type. See [Set up custom payment gateways and payment methods](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/MB_Set_up_custom_payment_gateways_and_payment_methods) for details.
-
-
-              Note that Zuora is continuously adding new payment method types.
-
-              '
-            type: string
-        required:
-        - type
-        type: object
-      - $ref: '#/components/schemas/CreatePMPayPalECPayPalNativeECPayPalCP'
-      - $ref: '#/components/schemas/CreatePaymentMethodPayPalAdaptive'
-      - $ref: '#/components/schemas/CreatePaymentMethodCreditCard'
-      - $ref: '#/components/schemas/CreatePaymentMethodACH'
-      - $ref: '#/components/schemas/CreatePaymentMethodBankTransfer'
-      - $ref: '#/components/schemas/CreatePaymentMethodCCReferenceTransaction'
-      - $ref: '#/components/schemas/CreatePaymentMethodApplePayAdyen'
-      - $ref: '#/components/schemas/CreatePaymentMethodGooglePayAdyenChase'
-      - $ref: '#/components/schemas/PaymentMethodObjectCustomFields'
-      example:
-        BAID: I-1TJ3GAGG82Y9
-        accountKey: 2c92c0f95be68649015bf14e001f2760
-        email: customer@example.com
-        type: PayPalEC
-    GETPaymentMethodResponseACH:
-      properties:
-        bankABACode:
-          description: 'The nine-digit routing number or ABA number used by banks. This field is only required if the `type` field is set to `ACH`.
-
-            '
-          type: string
-        bankAccountName:
-          description: 'The name of the account holder, which can be either a person or a company. This field is only required if the `type` field is set to `ACH`.
-
-            '
-          type: string
-        bankAccountNumber:
-          description: 'The bank account number associated with the ACH payment. This field is only required if the `type` field is set to `ACH`.
-
-            '
-          type: string
-        bankAccountType:
-          description: 'The type of bank account associated with the ACH payment. This field is only required if the `type` field is set to `ACH`.
-
-
-            When creating an ACH payment method on Adyen, this field is required by Zuora but it is not required by Adyen. To create the ACH payment method successfully, specify a real value for this field if you can. If it is not possible to get the real value for it, specify any of the allowed values as a dummy value, `Checking` preferably.
-
-            '
-          enum:
-          - BusinessChecking
-          - BusinessSaving
-          - Checking
-          - Saving
-          type: string
-        bankName:
-          description: 'The name of the bank where the ACH payment account is held. This field is only required if the `type` field is set to `ACH`.
-
-
-            When creating an ACH payment method on Adyen, this field is required by Zuora but it is not required by Adyen. To create the ACH payment method successfully, specify a real value for this field if you can. If it is not possible to get the real value for it, specify a dummy value.
-
-            '
-          type: string
-      type: object
-    GETPaymentMethodResponseBankTransfer:
-      properties:
-        IBAN:
-          description: 'The International Bank Account Number used to create the SEPA payment method. The value is masked.
-
-            '
-          type: string
-        accountNumber:
-          description: 'The number of the customer''s bank account and it is masked.
-
-            '
-          type: string
-        bankCode:
-          description: "The sort code or number that identifies the bank. This is also known as the sort code.         \n"
-          type: string
-        bankTransferType:
-          description: 'The type of the Bank Transfer payment method. For example, `SEPA`.
-
-            '
-          type: string
-        branchCode:
-          description: "The branch code of the bank used for Direct Debit.          \n"
-          type: string
-        businessIdentificationCode:
-          description: "The BIC code used for SEPA. The value is masked.       \n"
-          type: string
-        identityNumber:
-          description: "The identity number used for Bank Transfer.        \n"
-          type: string
-      type: object
-    POSTCreatePaymentSessionRequest:
-      example:
-        accountId: 402880de8779e14f018779e82905000f
-        amount: '100'
-        currency: USD
-        paymentGateway: e884322ab8c711edab030242ac120004
-        processPayment: true
-      properties:
-        accountId:
-          description: 'The ID of the customer account in Zuora that is associated with this payment method.
-
-            '
-          type: string
-        amount:
-          description: 'The amount of the payment.
-
-
-            This field is required if `processPayment` is `true`.
-
-            '
-          type: number
-        authAmount:
-          description: 'The authorization amount for the payment method. Specify a value greater than 0.
-
-
-            This field is required if `processPayment` is false.
-
-            '
-          type: number
-        currency:
-          description: 'The currency of the payment in the format of the three-character ISO currency code.
-
-            '
-          type: string
-        paymentGateway:
-          description: 'The ID of the payment gateway instance configured in Zuora that will process the payment, such as `e884322ab8c711edab030242ac120004`.
-
-            '
-          type: string
-        processPayment:
-          description: 'Indicate whether a payment should be processed after creating the payment method.
-
-
-            If this field is set to `true`, you must specify the `amount` field.
-
-
-            If this field is set to `false`, you must specify the `authAmount` field. The payment method will be verified through the payment gateway instance specified in the `paymentGateway` field.
-
-            '
-          type: boolean
-      required:
-      - accountId
-      - currency
-      - paymentGateway
-      - processPayment
-      type: object
-    DELETEUnresigerApplePayDomainResponse:
-      properties:
-        success:
-          description: Indicates whether this call succeeds.
-          type: boolean
-      type: object
-    GetStoredCredentialProfilesResponse:
-      properties:
-        profiles:
-          description: 'Container for stored credential profiles.
-
-            '
-          items:
-            properties:
-              activatedOn:
-                description: 'The date when the stored credential profile was activated (if applicable).
-
-                  '
-                format: date-time
-                type: string
-              agreedOn:
-                description: 'The date when the stored credential profile was created.
-
-                  '
-                format: date-time
-                type: string
-              brand:
-                description: 'The stored credential transaction framework. For example, Visa.
-
-                  '
-                type: string
-              cancelledOn:
-                description: 'The date when the stored credential profile was cancelled (if applicable).
-
-                  '
-                format: date-time
-                type: string
-              consentAgreementRef:
-                description: 'Your reference for the consent agreement that you have established with the customer.
-
-                  '
-                maxLength: 128
-                type: string
-              consentAgreementSrc:
-                enum:
-                - External
-                type: string
-              expiredOn:
-                description: 'The date when the stored credential profile was expired (if applicable).
-
-                  '
-                format: date-time
-                type: string
-              number:
-                description: 'The number that identifies the stored credential profile within the payment method.
-
-                  '
-                type: integer
-              paymentMethodId:
-                description: 'ID of the payment method.
-
-                  '
-                type: string
-              status:
-                description: 'The status of the stored credential profile.
-
-
-                  * `Agreed` - The stored credential profile has not been validated via an authorization transaction with the payment gateway.
-
-                  * `Active` - The stored credential profile has been validated via an authorization transaction with the payment gateway.
-
-                  * `Cancelled` - The stored credentials are no longer valid, per a customer request. Zuora cannot use the stored credentials in transactions.
-
-                  * `Expired` - The stored credentials are no longer valid, per an expiration policy in the stored credential transaction framework. Zuora cannot use the stored credentials in transactions.
-
-                  '
-                enum:
-                - Agreed
-                - Active
-                - Cancelled
-                - Expired
-                type: string
-              type:
-                enum:
-                - Recurring
-                - Unscheduled
-                type: string
-          type: array
-        success:
-          type: boolean
-      type: object
-    POSTCreatePaymentSessionResponse:
-      properties:
-        token:
-          description: 'The token for the payment session data. Send the token back to your client side for identifying your website to Zuora.
-
-
-            For more information, see [Set up Apple Pay through the JavaScript SDK approach](https://knowledgecenter.zuora.com/Zuora_Payments/Payment_Methods/B_Define_Payment_Methods/Set_up_Apple_Pay_for_gateway_integrations_other_than_Adyen_Integration_v2.0).
-
-            '
+        securityCode:
+          description: "The CVV or CVV2 security code for the credit card or debit card.\n            Only required if changing expirationMonth, expirationYear, or cardHolderName.\n            To ensure PCI compliance, this value isn''t stored and can''t be queried.                  \n"
           type: string
       type: object
   parameters:
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Authorization_OAuth_optional:
-      name: Authorization
-      in: header
-      required: false
-      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Idempotency_Key:
       name: Idempotency-Key
       in: header
@@ -3088,6 +3070,13 @@ components:
       schema:
         type: string
         maxLength: 255
+    GLOBAL_HEADER_Accept_Encoding:
+      name: Accept-Encoding
+      in: header
+      required: false
+      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      schema:
+        type: string
     GLOBAL_HEADER_Zuora_Track_Id:
       name: Zuora-Track-Id
       in: header
@@ -3101,18 +3090,20 @@ components:
       schema:
         type: string
         maxLength: 64
-    GLOBAL_HEADER_Accept_Encoding:
-      name: Accept-Encoding
+    GLOBAL_HEADER_Authorization_OAuth_optional:
+      name: Authorization
       in: header
       required: false
-      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+        '
       schema:
         type: string
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
       in: header
       required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:
@@ -3122,6 +3113,15 @@ components:
       in: header
       required: false
       description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+      schema:
+        type: string
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
       schema:
         type: string
 x-tagGroups:

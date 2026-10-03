@@ -554,15 +554,56 @@ paths:
                 message: Query job c20a8ff4-3960-4c85-b067-d5259035f523 is not in accepted or in_progress status
 components:
   schemas:
-    GetDataQueryJobsResponse:
+    DataQueryJobCommon:
       properties:
-        data:
-          description: 'List of data query jobs. The query jobs are listed in reverse order of creation.
+        createdBy:
+          description: 'The query job creator''s Id.
 
             '
-          items:
-            $ref: '#/components/schemas/DataQueryJob'
-          type: array
+          format: uuid
+          maxLength: 64
+          minLength: 64
+          type: string
+        id:
+          description: 'Internal identifier of the query job.
+
+            '
+          format: uuid
+          maxLength: 64
+          minLength: 64
+          type: string
+        query:
+          description: 'The query that was submitted.
+
+            '
+          type: string
+        remainingRetries:
+          description: 'The number of times that Zuora will retry the query if Zuora is unable to perform the query.
+
+            '
+          type: integer
+        sourceData:
+          description: 'Indicates the source that data queries run against:
+
+
+            * `LIVE` represents the live transactional databases at Zuora (Data Query Live).
+
+
+            * `WAREHOUSE` represents Zuora Warehouse, which has better performance and fewer limitations than the live transactional database. For more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_Warehouse/A_Zuora_Warehouse_overview" target="_blank">Zuora Warehouse</a>.
+
+            '
+          type: string
+        updatedOn:
+          description: 'Date and time when the query job was last updated, in ISO 8601 format.
+
+            '
+          format: date-time
+          type: string
+        useIndexJoin:
+          description: 'Indicates whether to use Index Join. See <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Query/Data_Query/Best_practices_when_writing_data_queries/General_best_practices#Index_JOIN" target="_blank">Index Join</a> for more information.
+
+            '
+          type: boolean
       type: object
     DataQueryJob:
       allOf:
@@ -641,18 +682,20 @@ components:
         data:
           $ref: '#/components/schemas/DataQueryJobCancelled'
       type: object
-    DataQueryErrorResponse:
+    SubmitDataQueryResponse:
       properties:
-        code:
-          description: 'Error code.
+        data:
+          $ref: '#/components/schemas/DataQueryJob'
+      type: object
+    GetDataQueryJobsResponse:
+      properties:
+        data:
+          description: 'List of data query jobs. The query jobs are listed in reverse order of creation.
 
             '
-          type: integer
-        message:
-          description: 'Error message.
-
-            '
-          type: string
+          items:
+            $ref: '#/components/schemas/DataQueryJob'
+          type: array
       type: object
     SubmitDataQueryRequest:
       example:
@@ -769,66 +812,23 @@ components:
       - compression
       - output
       type: object
-    SubmitDataQueryResponse:
+    DataQueryErrorResponse:
       properties:
-        data:
-          $ref: '#/components/schemas/DataQueryJob'
+        code:
+          description: 'Error code.
+
+            '
+          type: integer
+        message:
+          description: 'Error message.
+
+            '
+          type: string
       type: object
     GetDataQueryJobResponse:
       properties:
         data:
           $ref: '#/components/schemas/DataQueryJob'
-      type: object
-    DataQueryJobCommon:
-      properties:
-        createdBy:
-          description: 'The query job creator''s Id.
-
-            '
-          format: uuid
-          maxLength: 64
-          minLength: 64
-          type: string
-        id:
-          description: 'Internal identifier of the query job.
-
-            '
-          format: uuid
-          maxLength: 64
-          minLength: 64
-          type: string
-        query:
-          description: 'The query that was submitted.
-
-            '
-          type: string
-        remainingRetries:
-          description: 'The number of times that Zuora will retry the query if Zuora is unable to perform the query.
-
-            '
-          type: integer
-        sourceData:
-          description: 'Indicates the source that data queries run against:
-
-
-            * `LIVE` represents the live transactional databases at Zuora (Data Query Live).
-
-
-            * `WAREHOUSE` represents Zuora Warehouse, which has better performance and fewer limitations than the live transactional database. For more information, see <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Zuora_Warehouse/A_Zuora_Warehouse_overview" target="_blank">Zuora Warehouse</a>.
-
-            '
-          type: string
-        updatedOn:
-          description: 'Date and time when the query job was last updated, in ISO 8601 format.
-
-            '
-          format: date-time
-          type: string
-        useIndexJoin:
-          description: 'Indicates whether to use Index Join. See <a href="https://knowledgecenter.zuora.com/Zuora_Central_Platform/Query/Data_Query/Best_practices_when_writing_data_queries/General_best_practices#Index_JOIN" target="_blank">Index Join</a> for more information.
-
-            '
-          type: boolean
       type: object
   parameters:
     GLOBAL_HEADER_Authorization_OAuth:
@@ -836,15 +836,6 @@ components:
       in: header
       required: true
       description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
-      in: header
-      required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:
@@ -857,11 +848,11 @@ components:
       schema:
         type: string
         maxLength: 255
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
       in: header
       required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:
@@ -891,6 +882,15 @@ components:
       in: header
       required: false
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      schema:
+        type: string
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
       schema:
         type: string
 x-tagGroups:

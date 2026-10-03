@@ -203,15 +203,6 @@ components:
         '
       schema:
         type: string
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
-      in: header
-      required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Zuora_Org_Ids:
       name: Zuora-Org-Ids
       in: header
@@ -239,17 +230,16 @@ components:
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
       schema:
         type: string
-  schemas:
-    GetPaymentVolumeSummaryResponse:
-      properties:
-        data:
-          description: 'List of electronic payments summary.
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
 
-            '
-          items:
-            $ref: '#/components/schemas/PaymentVolumeSummaryRecord'
-          type: array
-      type: object
+        '
+      schema:
+        type: string
+  schemas:
     PaymentVolumeSummaryRecord:
       allOf:
       - properties:
@@ -281,6 +271,16 @@ components:
 
         '
       title: volumeSummaryRecord
+    GetPaymentVolumeSummaryResponse:
+      properties:
+        data:
+          description: 'List of electronic payments summary.
+
+            '
+          items:
+            $ref: '#/components/schemas/PaymentVolumeSummaryRecord'
+          type: array
+      type: object
     SystemHealthErrorResponse:
       properties:
         error:
