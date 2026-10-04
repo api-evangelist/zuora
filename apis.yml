@@ -1216,6 +1216,8 @@ apis:
     You need to have the Orders or Orders Harmonization feature enabled to use this API.
   humanURL: https://developer.zuora.com/v1-api-reference/introduction
   tags:
+  - Sign Up
+  tags_raw:
   - Signup
   properties:
   - type: OpenAPI
