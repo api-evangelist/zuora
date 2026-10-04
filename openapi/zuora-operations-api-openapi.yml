@@ -478,57 +478,6 @@ components:
           type: string
       title: creditMemoItems
       type: object
-    PostBillingPreviewParam:
-      example:
-        accountNumber: A00000001
-        assumeRenewal: None
-        chargeTypeToExclude: ''
-        includingEvergreenSubscription: 'true'
-        targetDate: '2017-05-10'
-      properties:
-        accountId:
-          description: 'The ID of the customer account to which the billing preview applies.
-
-
-            **Note**: When posting billing preview, you must specify either `accountId` or `accountNumber` in the request body.
-
-            '
-          maxLength: 255
-          type: string
-        accountNumber:
-          description: 'The number of the customer account to which the billing preview applies.
-
-
-            **Note**: When posting billing preview, you must specify either `accountId` or `accountNumber` in the request body.
-
-            '
-          type: string
-        assumeRenewal:
-          description: "Indicates whether to generate a preview of future invoice items and credit memo items with the assumption that the subscriptions are renewed.\n\nSet one of the following values in this field to decide how the assumption is applied in the billing preview.\n\n  * **All:** The assumption is applied to all the subscriptions. Zuora generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the target date.\n  \n  * **None:** (Default) The assumption is not applied to the subscriptions. Zuora generates preview invoice item data and credit memo item data based on the current term end date and the target date.\n  \n    * If the target date is later than the current term end date, Zuora generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the current term end date.\n\n    * If the target date is earlier than the current term end date, Zuora generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the target date.\n\n  * **Autorenew:** The assumption is applied to the subscriptions that have auto-renew enabled. Zuora generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the target date.\n\n**Note:** \n  - This field can only be used if the subscription renewal term is not set to 0.  \n  \n  \n  - The credit memo item data is only available if you have Invoice Settlement feature enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.\n"
-          type: string
-        chargeTypeToExclude:
-          description: 'The charge types to exclude from the billing preview.
-
-
-            **Possible values:** OneTime, Recurring, Usage, and any combination of these values.
-
-            '
-          type: string
-        includingDraftItems:
-          description: "Whether draft document items are included in the billing preview run. By default, draft document items are not included.\n\nThis field loads draft invoice items and credit memo items. The `chargeTypeToExclude`, `targetDate`, `includingEvergreenSubscription`, and `assumeRenewal` fields do not affect the behavior of the `includingDraftItems` field.          \n"
-          type: boolean
-        includingEvergreenSubscription:
-          description: 'Indicates if evergreen subscriptions are included in the billingPreview call.
-
-            '
-          type: boolean
-        targetDate:
-          description: "The target date for the billingPreview call. The billingPreview call generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the TargetDate. \n\nIf the TargetDate is later than the subscription current term end date, the preview invoice item data and credit memo item data is generated from the first day of the customer's next billing period to the current term end date. If you want to generate preview invoice item data and credit memo item data past the end of the subscription current term, specify the `AssumeRenewal` field in the request.\n\n\n**Note:** The credit memo item data is only available if you have Invoice Settlement feature enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.\n"
-          format: date
-          type: string
-      required:
-      - targetDate
-      type: object
     GetOperationJobResponseType:
       properties:
         id:
@@ -614,6 +563,128 @@ components:
 
             '
           type: boolean
+      type: object
+    POSTInvoiceCollectType:
+      example:
+        accountKey: 4028925a4cb74ec9014cb7520fc00005
+        invoiceId: 4028925a4cb74ec9014cb7540988002e
+        paymentGateway: TestGateway
+      properties:
+        accountKey:
+          description: 'Customer account ID or account number.
+
+            '
+          type: string
+        documentDate:
+          description: "The date that should appear on the invoice and credit memo being generated,\nin `yyyy-mm-dd` format. If this field is omitted\nand `invoiceId` is not specified, the current date is used by default. \n\n\n**Note:** The credit memo is only available if you have the Invoice Settlement feature enabled.\n\n\nThis field is in Zuora REST API version control. Supported minor\nversions are `215.0` and later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). To use this field in the method, you\nmust set the  `zuora-version` parameter to the minor version number in\nthe request header.\n"
+          format: date
+          type: string
+        invoiceDate:
+          description: "**Note:** This field has been replaced by the `documentDate` field in Zuora REST API version `215.0` and later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). The\n`invoiceDate` field is only available for backward\ncompatibility.\n\nThe date that should appear on the invoice being generated,\nin `yyyy-mm-dd` format. If this field is omitted\nand `invoiceId` is not specified, the current date is used by default. \n\nThis field is in Zuora REST API version control. Supported minor\nversions are `214.0` and earlier [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version).\n"
+          format: date
+          type: string
+        invoiceId:
+          description: "The ID of an existing invoice for which to collect payment using\nthe account's default payment method. If this value is specified, no new\ninvoice is generated, and the following fields are ignored:\n  - `invoiceDate` and `invoiceTargetDate` (if the Zuora REST API version is 214.0 or earlier)\n  - `documentDate` and `targetDate` (if the Zuora REST API version is 215.0 or later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version))\n"
+          type: string
+        invoiceNumber:
+          description: "The number of an existing invoice for which to collect payment using\nthe account's default payment method. If this value is specified, no new\ninvoice is generated, and the following fields are ignored:\n  - `invoiceDate` and `invoiceTargetDate` (if the Zuora REST API version is 214.0 or earlier)\n  - `documentDate` and `targetDate` (if the Zuora REST API version is 215.0 or later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version))\n"
+          type: string
+        invoiceTargetDate:
+          description: "**Note:** This field has been replaced by the `targetDate` field in Zuora REST API version `215.0` and later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). The\n`invoiceTargetDate` field is only available for backward\ncompatibility.\n\n\nThe date through which to calculate charges on this account if an invoice is generated, in `yyyy-mm-dd` format. If this field is omitted\nand `invoiceId` is not specified, the current date is used by default. \n\n\nThis field is in Zuora REST API version control. Supported minor\nversions are `214.0` and earlier [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version).  \n"
+          format: date
+          type: string
+        paymentGateway:
+          description: 'The name of the gateway that will be used for the payment. Must be a valid gateway name and the gateway must support the specific payment method. If a value is not specified, the default gateway on the Account will be used.
+
+            '
+          type: string
+        targetDate:
+          description: "The date through which to calculate charges on this account if an invoice or a credit memo is generated, \nin `yyyy-mm-dd` format. If this field is omitted\nand `invoiceId` is not specified, the current date is used by default. \n\n\n**Note:** The credit memo is only available if you have the Invoice Settlement feature enabled.\n\n\nThis field is in Zuora REST API version control. Supported minor\nversions are `215.0` and later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). To use this field in the method, you\nmust set the  `zuora-version` parameter to the minor version number in\nthe request header.\n"
+          format: date
+          type: string
+      required:
+      - accountKey
+      type: object
+    BillingPreviewResult:
+      properties:
+        accountId:
+          description: 'ID of the customer account to which the billing preview applies.
+
+            '
+          type: string
+        creditMemoItems:
+          description: 'An array of credit memo items returned as the result of the billing preivew request.
+
+
+            **Note:** The credit memo items are only available if you have Invoice Settlement feature enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
+
+            '
+          items:
+            $ref: '#/components/schemas/POSTBillingPreviewCreditMemoItem'
+          type: array
+        invoiceItems:
+          description: 'An array of invoice items returned as the result of the billing preview request.
+
+            '
+          items:
+            $ref: '#/components/schemas/POSTBillingPreviewInvoiceItem'
+          type: array
+        success:
+          description: 'Returns `true` if the request was processed successfully.
+
+            '
+          type: boolean
+      type: object
+    PostBillingPreviewParam:
+      example:
+        accountNumber: A00000001
+        assumeRenewal: None
+        chargeTypeToExclude: ''
+        includingEvergreenSubscription: 'true'
+        targetDate: '2017-05-10'
+      properties:
+        accountId:
+          description: 'The ID of the customer account to which the billing preview applies.
+
+
+            **Note**: When posting billing preview, you must specify either `accountId` or `accountNumber` in the request body.
+
+            '
+          maxLength: 255
+          type: string
+        accountNumber:
+          description: 'The number of the customer account to which the billing preview applies.
+
+
+            **Note**: When posting billing preview, you must specify either `accountId` or `accountNumber` in the request body.
+
+            '
+          type: string
+        assumeRenewal:
+          description: "Indicates whether to generate a preview of future invoice items and credit memo items with the assumption that the subscriptions are renewed.\n\nSet one of the following values in this field to decide how the assumption is applied in the billing preview.\n\n  * **All:** The assumption is applied to all the subscriptions. Zuora generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the target date.\n  \n  * **None:** (Default) The assumption is not applied to the subscriptions. Zuora generates preview invoice item data and credit memo item data based on the current term end date and the target date.\n  \n    * If the target date is later than the current term end date, Zuora generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the current term end date.\n\n    * If the target date is earlier than the current term end date, Zuora generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the target date.\n\n  * **Autorenew:** The assumption is applied to the subscriptions that have auto-renew enabled. Zuora generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the target date.\n\n**Note:** \n  - This field can only be used if the subscription renewal term is not set to 0.  \n  \n  \n  - The credit memo item data is only available if you have Invoice Settlement feature enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.\n"
+          type: string
+        chargeTypeToExclude:
+          description: 'The charge types to exclude from the billing preview.
+
+
+            **Possible values:** OneTime, Recurring, Usage, and any combination of these values.
+
+            '
+          type: string
+        includingDraftItems:
+          description: "Whether draft document items are included in the billing preview run. By default, draft document items are not included.\n\nThis field loads draft invoice items and credit memo items. The `chargeTypeToExclude`, `targetDate`, `includingEvergreenSubscription`, and `assumeRenewal` fields do not affect the behavior of the `includingDraftItems` field.          \n"
+          type: boolean
+        includingEvergreenSubscription:
+          description: 'Indicates if evergreen subscriptions are included in the billingPreview call.
+
+            '
+          type: boolean
+        targetDate:
+          description: "The target date for the billingPreview call. The billingPreview call generates preview invoice item data and credit memo item data from the first day of the customer's next billing period to the TargetDate. \n\nIf the TargetDate is later than the subscription current term end date, the preview invoice item data and credit memo item data is generated from the first day of the customer's next billing period to the current term end date. If you want to generate preview invoice item data and credit memo item data past the end of the subscription current term, specify the `AssumeRenewal` field in the request.\n\n\n**Note:** The credit memo item data is only available if you have Invoice Settlement feature enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.\n"
+          format: date
+          type: string
+      required:
+      - targetDate
       type: object
     POSTBillingPreviewInvoiceItem:
       properties:
@@ -716,56 +787,6 @@ components:
           type: string
       title: invoiceItems
       type: object
-    POSTInvoiceCollectCreditMemosType:
-      properties:
-        id:
-          description: 'The ID of the credit memo.
-
-            '
-          type: string
-        memoAmount:
-          description: 'The amount of the credit memo.
-
-            '
-          format: decimal
-          type: string
-        memoNumber:
-          description: 'The unique identification number of the credit memo.
-
-            '
-          type: string
-      title: creditMemos
-      type: object
-    BillingPreviewResult:
-      properties:
-        accountId:
-          description: 'ID of the customer account to which the billing preview applies.
-
-            '
-          type: string
-        creditMemoItems:
-          description: 'An array of credit memo items returned as the result of the billing preivew request.
-
-
-            **Note:** The credit memo items are only available if you have Invoice Settlement feature enabled. The Invoice Settlement feature is generally available as of Zuora Billing Release 296 (March 2021). This feature includes Unapplied Payments, Credit and Debit Memo, and Invoice Item Settlement. If you want to enable Invoice Settlement, see [Invoice Settlement Enablement and Checklist Guide](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/Invoice_Settlement/Invoice_Settlement_Migration_Checklist_and_Guide) for more information.
-
-            '
-          items:
-            $ref: '#/components/schemas/POSTBillingPreviewCreditMemoItem'
-          type: array
-        invoiceItems:
-          description: 'An array of invoice items returned as the result of the billing preview request.
-
-            '
-          items:
-            $ref: '#/components/schemas/POSTBillingPreviewInvoiceItem'
-          type: array
-        success:
-          description: 'Returns `true` if the request was processed successfully.
-
-            '
-          type: boolean
-      type: object
     POSTInvoiceCollectInvoicesType:
       properties:
         invoiceAmount:
@@ -786,56 +807,36 @@ components:
           type: string
       title: invoices
       type: object
-    POSTInvoiceCollectType:
-      example:
-        accountKey: 4028925a4cb74ec9014cb7520fc00005
-        invoiceId: 4028925a4cb74ec9014cb7540988002e
-        paymentGateway: TestGateway
+    POSTInvoiceCollectCreditMemosType:
       properties:
-        accountKey:
-          description: 'Customer account ID or account number.
+        id:
+          description: 'The ID of the credit memo.
 
             '
           type: string
-        documentDate:
-          description: "The date that should appear on the invoice and credit memo being generated,\nin `yyyy-mm-dd` format. If this field is omitted\nand `invoiceId` is not specified, the current date is used by default. \n\n\n**Note:** The credit memo is only available if you have the Invoice Settlement feature enabled.\n\n\nThis field is in Zuora REST API version control. Supported minor\nversions are `215.0` and later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). To use this field in the method, you\nmust set the  `zuora-version` parameter to the minor version number in\nthe request header.\n"
-          format: date
+        memoAmount:
+          description: 'The amount of the credit memo.
+
+            '
+          format: decimal
           type: string
-        invoiceDate:
-          description: "**Note:** This field has been replaced by the `documentDate` field in Zuora REST API version `215.0` and later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). The\n`invoiceDate` field is only available for backward\ncompatibility.\n\nThe date that should appear on the invoice being generated,\nin `yyyy-mm-dd` format. If this field is omitted\nand `invoiceId` is not specified, the current date is used by default. \n\nThis field is in Zuora REST API version control. Supported minor\nversions are `214.0` and earlier [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version).\n"
-          format: date
-          type: string
-        invoiceId:
-          description: "The ID of an existing invoice for which to collect payment using\nthe account's default payment method. If this value is specified, no new\ninvoice is generated, and the following fields are ignored:\n  - `invoiceDate` and `invoiceTargetDate` (if the Zuora REST API version is 214.0 or earlier)\n  - `documentDate` and `targetDate` (if the Zuora REST API version is 215.0 or later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version))\n"
-          type: string
-        invoiceNumber:
-          description: "The number of an existing invoice for which to collect payment using\nthe account's default payment method. If this value is specified, no new\ninvoice is generated, and the following fields are ignored:\n  - `invoiceDate` and `invoiceTargetDate` (if the Zuora REST API version is 214.0 or earlier)\n  - `documentDate` and `targetDate` (if the Zuora REST API version is 215.0 or later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version))\n"
-          type: string
-        invoiceTargetDate:
-          description: "**Note:** This field has been replaced by the `targetDate` field in Zuora REST API version `215.0` and later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). The\n`invoiceTargetDate` field is only available for backward\ncompatibility.\n\n\nThe date through which to calculate charges on this account if an invoice is generated, in `yyyy-mm-dd` format. If this field is omitted\nand `invoiceId` is not specified, the current date is used by default. \n\n\nThis field is in Zuora REST API version control. Supported minor\nversions are `214.0` and earlier [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version).  \n"
-          format: date
-          type: string
-        paymentGateway:
-          description: 'The name of the gateway that will be used for the payment. Must be a valid gateway name and the gateway must support the specific payment method. If a value is not specified, the default gateway on the Account will be used.
+        memoNumber:
+          description: 'The unique identification number of the credit memo.
 
             '
           type: string
-        targetDate:
-          description: "The date through which to calculate charges on this account if an invoice or a credit memo is generated, \nin `yyyy-mm-dd` format. If this field is omitted\nand `invoiceId` is not specified, the current date is used by default. \n\n\n**Note:** The credit memo is only available if you have the Invoice Settlement feature enabled.\n\n\nThis field is in Zuora REST API version control. Supported minor\nversions are `215.0` and later [available versions](/api-references/api/overview/#section/API-Versions/Minor-Version). To use this field in the method, you\nmust set the  `zuora-version` parameter to the minor version number in\nthe request header.\n"
-          format: date
-          type: string
-      required:
-      - accountKey
+      title: creditMemos
       type: object
   parameters:
-    GLOBAL_HEADER_Idempotency_Key:
-      name: Idempotency-Key
+    GLOBAL_HEADER_Authorization_OAuth_optional:
+      name: Authorization
       in: header
       required: false
-      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+
+        '
       schema:
         type: string
-        maxLength: 255
     GLOBAL_HEADER_Zuora_Entity_Ids_Single:
       name: Zuora-Entity-Ids
       in: header
@@ -845,11 +846,13 @@ components:
         '
       schema:
         type: string
-    GLOBAL_HEADER_Zuora_Org_Ids:
-      name: Zuora-Org-Ids
+    GLOBAL_HEADER_Content_Encoding:
+      name: Content-Encoding
       in: header
       required: false
-      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
+      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
       schema:
         type: string
     GLOBAL_HEADER_Zuora_Track_Id:
@@ -865,15 +868,6 @@ components:
       schema:
         type: string
         maxLength: 64
-    GLOBAL_HEADER_Authorization_OAuth_optional:
-      name: Authorization
-      in: header
-      required: false
-      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
-
-        '
-      schema:
-        type: string
     GLOBAL_HEADER_Accept_Encoding:
       name: Accept-Encoding
       in: header
@@ -881,13 +875,19 @@ components:
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
       schema:
         type: string
-    GLOBAL_HEADER_Content_Encoding:
-      name: Content-Encoding
+    GLOBAL_HEADER_Idempotency_Key:
+      name: Idempotency-Key
       in: header
       required: false
-      description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
-
-        '
+      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+      schema:
+        type: string
+        maxLength: 255
+    GLOBAL_HEADER_Zuora_Org_Ids:
+      name: Zuora-Org-Ids
+      in: header
+      required: false
+      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
       schema:
         type: string
 x-tagGroups:

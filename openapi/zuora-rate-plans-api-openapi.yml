@@ -148,150 +148,69 @@ paths:
                       customFields: {}
 components:
   schemas:
-    OrderActionRatePlanBillingUpdate:
-      properties:
-        billingPeriodAlignment:
-          enum:
-          - AlignToCharge
-          - AlignToSubscriptionStart
-          - AlignToTermStart
-          type: string
-      type: object
-    OrderActionRatePlanUsageTieredWithOveragePricingOverride:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          numberOfPeriods:
-            description: 'Number of periods that Zuora considers when calculating overage charges with overage smoothing.
-
-              '
-            minimum: 1
-            type: integer
-          overagePrice:
-            description: 'Price per overage unit consumed.
-
-              '
-            type: number
-          overageUnusedUnitsCreditOption:
-            description: 'Specifies whether to credit the customer for unused units.
+    OrderActionRatePlanChargeModelDataOverride:
+      description: 'Container for charge model configuration data.
 
 
-              If the value of this field is `CreditBySpecificRate`, use the `unusedUnitsCreditRates` field to specify the rate at which to credit the customer for unused units.
-
-              '
-            enum:
-            - NoCredit
-            - CreditBySpecificRate
-            type: string
-          tiers:
-            description: 'List of cumulative pricing tiers in the charge.
-
-              '
-            items:
-              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-            type: array
-          unusedUnitsCreditRates:
-            description: 'Per-unit rate at which to credit the customer for unused units. Only applicable if the value of the `overageUnusedUnitsCreditOption` field is `CreditBySpecificRate`.
-
-              '
-            type: number
-        type: object
-      description: 'Pricing information about a usage charge that uses the "tiered with overage" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are consumed. The charge also has a fixed price per unit consumed beyond the limit of the final tier.
-
-        '
-      title: usageTieredWithOverage
-    OrderActionRatePlanRecurringFlatFeePricingOverride:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          listPrice:
-            description: 'Price of the charge in each recurring period.
-
-              '
-            type: number
-          listPriceBase:
-            description: 'Specifies the duration of each recurring period.
-
-              '
-            enum:
-            - Per_Billing_Period
-            - Per_Month
-            - Per_Week
-            - Per_Year
-            - Per_Specific_Months
-            type: string
-          specificListPriceBase:
-            description: 'The number of months for the list price base of the charge. The value of this field is `null` if you do not set the value of the `listPriceBase` field to `Per_Specific_Months`.
-
-              '
-            format: int32
-            maximum: 200
-            minimum: 1
-            type: integer
-        type: object
-      description: 'Pricing information about a recurring charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
-
-        '
-      title: recurringFlatFee
-    OrderActionRatePlanRatePlanUpdate:
-      description: 'Information about an order action of type `UpdateProduct`.
+        **Note**: This field is only available if you have the High Water Mark, Pre-Rated Pricing, or Multi-Attribute Pricing charge models enabled. The charge models are available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
 
         '
       properties:
-        chargeUpdates:
+        chargeModelConfiguration:
+          properties:
+            customFieldPerUnitRate:
+              description: 'The custom field that carries the per-unit rate for each usage record. For example, `perUnitAmount__c`.
+
+
+                This field is only available for the usage-based charges that use the Pre-Rated Per Unit Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+                '
+              type: string
+            customFieldTotalAmount:
+              description: 'The custom field that carries the total amount to charge for a usage record. For example, `totalAmount__c`.
+
+
+                This field is only available for the usage-based charges that use the Pre-Rated Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+                '
+              type: string
+            formula:
+              description: 'The pricing formula to calculate actual rating amount for each usage record.
+
+
+                This field is only available for the usage-based charges that use the Multi-Attribute Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+                '
+              type: string
+          type: object
+        tiers:
+          description: 'List of cumulative pricing tiers in the charge.
+
+
+            **Note**: When you override tiers of the charge with a High Water Mark Pricing charge model, you have to provide all of the tiers, including the ones you do not want to change. The new tiers will completely override the previous ones. The High Water Mark Pricing charge models are available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
+
+            '
           items:
-            $ref: '#/components/schemas/OrderActionRatePlanChargeUpdate'
+            $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
           type: array
-        customFields:
-          $ref: '#/components/schemas/OrderActionRatePlanRatePlanObjectCustomFields'
-        newRatePlanId:
-          description: 'Internal identifier of the updated rate plan in the new subscription version.
+      title: chargeModelData
+      type: object
+    OrderActionRatePlanRemoveProduct:
+      description: 'Information about an order action of type `RemoveProduct`.
 
-            '
-          type: string
+        '
+      properties:
         ratePlanId:
-          description: 'Internal identifier of the rate plan that was updated.
+          description: 'Internal identifier of the rate plan to remove.
 
             '
-          type: string
-        specificUpdateDate:
-          description: '
-
-            The date when the Update Product order action takes effect. This field is only applicable if there is already a future-dated Update Product order action on the subscription. The format of the date is yyyy-mm-dd.
-
-
-            See [Update a Product on Subscription with Future-dated Updates](https://knowledgecenter.zuora.com/BC_Subscription_Management/Orders/AC_Orders_Tutorials/C_Update_a_Product_in_a_Subscription/Update_a_Product_on_Subscription_with_Future-dated_Updates) for more information about this feature.
-
-            '
-          format: date
           type: string
         uniqueToken:
-          description: 'A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.
-
-            '
+          description: A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.A unique string in the order to represent the rate plan.
           type: string
-      title: updateProduct
+      title: removeProduct
       type: object
-    OrderActionRatePlanOrder:
-      description: 'The order that is related to the subscription rate plan.
-
-        '
-      properties:
-        id:
-          description: The order ID.
-          type: string
-        orderActions:
-          items:
-            $ref: '#/components/schemas/OrderActionRatePlanOrderAction'
-          type: array
-        orderNumber:
-          description: The order number of the order.
-          type: string
-      type: object
-    OrderActionRatePlanDiscountPricingOverride:
-      description: 'Pricing information about a discount charge.
-
-        '
+    OrderActionRatePlanDiscountPricingUpdate:
       properties:
         applyDiscountTo:
           description: 'Specifies which type of charge the discount charge applies to.
@@ -306,11 +225,6 @@ components:
           - RECURRINGUSAGE
           - ONETIMERECURRINGUSAGE
           type: string
-        discountAmount:
-          description: 'Only applicable if the discount charge is a fixed-amount discount.
-
-            '
-          type: number
         discountLevel:
           description: 'Application scope of the discount charge. For example, if the value of this field is `subscription` and the value of the `applyDiscountTo` field is `RECURRING`, the discount charge applies to all recurring charges in the same subscription as the discount charge.
 
@@ -321,7 +235,7 @@ components:
           - account
           type: string
         discountPercentage:
-          description: 'Only applicable if the discount charge is a percentage discount.
+          description: 'The amount of the discount as a percentage. This field is only used for percentage discounts.
 
             '
           type: number
@@ -333,66 +247,37 @@ components:
           - NoChange
           - UseLatestProductCatalogPricing
           type: string
-      title: discount
       type: object
-    OrderActionRatePlanOneTimeFlatFeePricingOverride:
-      description: 'Pricing information about a one-time charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
-
-        '
+    OrderActionRatePlanPriceChangeParams:
       properties:
-        listPrice:
-          description: 'Price of the charge.
+        priceChangeOption:
+          description: 'Specifies how Zuora changes the price of the charge each time the subscription renews.
 
-            '
-          type: number
-      required:
-      - listPrice
-      title: oneTimeFlatFee
-      type: object
-    OrderActionRatePlanChargeTier:
-      properties:
-        endingUnit:
-          description: 'Limit on the number of units for which the tier is effective.
 
-            '
-          type: number
-        price:
-          description: 'Price or per-unit price of the tier, depending on the value of the `priceFormat` field.
-
-            '
-          type: number
-        priceFormat:
-          description: 'Specifies whether the tier has a fixed price or a per-unit price.
+            If the value of this field is `SpecificPercentageValue`, use the `priceIncreasePercentage` field to specify how much the price of the charge should change.
 
             '
           enum:
-          - FlatFee
-          - PerUnit
+          - NoChange
+          - SpecificPercentageValue
+          - UseLatestProductCatalogPricing
           type: string
-        startingUnit:
-          description: 'Number of units at which the tier becomes effective.
+        priceIncreasePercentage:
+          description: 'Specifies the percentage by which the price of the charge should change each time the subscription renews. Only applicable if the value of the `priceChangeOption` field is `SpecificPercentageValue`.
 
             '
+          minimum: -100
           type: number
-        tier:
-          description: 'Index of the tier in the charge.
-
-            '
-          minimum: 1
-          type: integer
-      required:
-      - tier
-      - startingUnit
-      - price
-      - priceFormat
-      title: chargeTier
       type: object
-    OrderActionRatePlanRecurringTieredPricingOverride:
+    OrderActionRatePlanRecurringVolumePricingOverride:
       allOf:
       - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
       - properties:
           listPriceBase:
             description: 'Specifies the duration of each recurring period.
+
+
+              **Note**: The `Per_Year` and `Per_Specific_Months` enum values are available only if you have the <a href="https://knowledgecenter.zuora.com/Billing/Subscriptions/Product_Catalog/I_Annual_List_Price" target="_blank">Annual List Price</a> feature enabled.
 
               '
             enum:
@@ -417,17 +302,70 @@ components:
             minimum: 1
             type: integer
           tiers:
-            description: 'List of cumulative pricing tiers in the charge.
+            description: 'List of variable pricing tiers in the charge.
 
               '
             items:
               $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
             type: array
         type: object
-      description: 'Pricing information about a recurring charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are purchased.
+      description: 'Pricing information about a recurring charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are purchased.
 
         '
-      title: recurringTiered
+      title: recurringVolume
+    OrderActionRatePlanUsagePerUnitPricingUpdate:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          listPrice:
+            type: number
+        type: object
+    OrderActionRatePlanOrderAction:
+      description: Represents the processed order action.
+      properties:
+        addProduct:
+          $ref: '#/components/schemas/OrderActionRatePlanRatePlanOverride'
+        customFields:
+          $ref: '#/components/schemas/OrderActionRatePlanOrderActionObjectCustomFields'
+        id:
+          description: The Id of the order action processed in the order.
+          type: string
+        removeProduct:
+          $ref: '#/components/schemas/OrderActionRatePlanRemoveProduct'
+        type:
+          description: Type of the order action.
+          enum:
+          - AddProduct
+          - UpdateProduct
+          - RemoveProduct
+          type: string
+        updateProduct:
+          $ref: '#/components/schemas/OrderActionRatePlanRatePlanUpdate'
+      type: object
+    OrderActionRatePlanUsageVolumePricingOverride:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          ratingGroup:
+            description: "Specifies how Zuora groups usage records when rating usage. See [Usage Rating by Group](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Usage/Usage_Rating_by_Group) for more information.\n  * ByBillingPeriod (default): The rating is based on all the usages in a billing period.\n  * ByUsageStartDate: The rating is based on all the usages on the same usage start date.\n  * ByUsageRecord: The rating is based on each usage record.\n  * ByUsageUpload: The rating is based on all the usages in a uploaded usage file (.xls or .csv). If you import a mass usage in a single upload, which contains multiple usage files in .xls or .csv format, usage records are grouped for each usage file.\n"
+            enum:
+            - ByBillingPeriod
+            - ByUsageStartDate
+            - ByUsageRecord
+            - ByUsageUpload
+            type: string
+          tiers:
+            description: 'List of variable pricing tiers in the charge.
+
+              '
+            items:
+              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+            type: array
+        type: object
+      description: 'Pricing information about a usage charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are consumed.
+
+        '
+      title: usageVolume
     OrderActionRatePlanPricingUpdate:
       properties:
         chargeModelData:
@@ -512,178 +450,19 @@ components:
 
             '
       type: object
-    OrderActionRatePlanRecurringFlatFeePricingUpdate:
+    OrderActionRatePlanUsageTieredPricingUpdate:
       allOf:
       - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
       - properties:
-          listPrice:
-            type: number
+          tiers:
+            items:
+              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+            type: array
         type: object
-    OrderActionRatePlanRatePlanOverride:
-      description: 'Rate plan associated with a subscription.
+    OrderActionRatePlanDiscountPricingOverride:
+      description: 'Pricing information about a discount charge.
 
         '
-      properties:
-        chargeOverrides:
-          description: 'List of charges associated with the rate plan.
-
-            '
-          items:
-            $ref: '#/components/schemas/OrderActionRatePlanChargeOverride'
-          type: array
-        customFields:
-          $ref: '#/components/schemas/OrderActionRatePlanRatePlanObjectCustomFields'
-        newRatePlanId:
-          description: 'Internal identifier of the rate plan.
-
-            '
-          type: string
-        productRatePlanId:
-          description: 'Internal identifier of the product rate plan that the rate plan is based on.
-
-            '
-          type: string
-        uniqueToken:
-          description: 'Unique identifier for the rate plan. This identifier enables you to refer to the rate plan before the rate plan has an internal identifier in Zuora.
-
-
-            For instance, suppose that you want to use a single order to add a product to a subscription and later update the same product. When you add the product, you can set a unique identifier for the rate plan. Then when you update the product, you can use the same unique identifier to specify which rate plan to modify.
-
-            '
-          maxLength: 50
-          type: string
-      required:
-      - productRatePlanId
-      title: ratePlan
-      type: object
-    GetOrderActionRatePlanResponse:
-      allOf:
-      - $ref: '#/components/schemas/CommonResponseType'
-      - properties:
-          amendment:
-            $ref: '#/components/schemas/OrderActionRatePlanAmendment'
-          externallyManagedPlanId:
-            description: 'The unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
-
-              '
-            type: string
-          id:
-            description: Unique subscription rate-plan ID.
-            type: string
-          lastChangeType:
-            description: 'Latest change type. Possible values are:
-
-
-              - New
-
-              - Update
-
-              - Remove
-
-              '
-            type: string
-          order:
-            $ref: '#/components/schemas/OrderActionRatePlanOrder'
-          productId:
-            description: 'Product ID
-
-              '
-            type: string
-          productName:
-            description: 'The name of the product.
-
-              '
-            type: string
-          productRatePlanId:
-            description: 'Product rate plan ID
-
-              '
-            type: string
-          productSku:
-            description: 'The unique SKU for the product.
-
-              '
-            type: string
-          ratePlanName:
-            description: 'The name of the rate plan.
-
-              '
-            type: string
-          subscriptionId:
-            description: 'Subscription ID.
-
-              '
-            type: string
-          subscriptionVersion:
-            description: 'The version of the subscription.
-
-              '
-        type: object
-    OrderActionRatePlanOrderActionObjectCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Order Action object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of an Order Action object.
-
-        '
-      title: orderActionFieldsCustom
-      type: object
-    OrderActionRatePlanRecurringDeliveryPricingUpdate:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          deliverySchedule:
-            $ref: '#/components/schemas/DeliveryScheduleParams'
-          listPrice:
-            type: number
-        type: object
-    OrderActionRatePlanChargeUpdate:
-      description: The JSON object containing the information for a charge update in the 'UpdateProduct' type order action.
-      properties:
-        billing:
-          allOf:
-          - $ref: '#/components/schemas/OrderActionRatePlanBillingUpdate'
-          description: 'Billing information about the charge.
-
-            '
-        chargeNumber:
-          description: 'Read only. Identifies the charge to be updated.
-
-            '
-          type: string
-        customFields:
-          $ref: '#/components/schemas/OrderActionRatePlanRatePlanChargeObjectCustomFields'
-        description:
-          description: 'Description of the charge.
-
-            '
-          type: string
-        effectiveDate:
-          $ref: '#/components/schemas/OrderActionRatePlanTriggerParams'
-        pricing:
-          allOf:
-          - $ref: '#/components/schemas/OrderActionRatePlanPricingUpdate'
-          description: 'Pricing information about the charge.
-
-            '
-        uniqueToken:
-          description: 'A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.
-
-            '
-          type: string
-      type: object
-    OrderActionRatePlanRatePlanChargeObjectCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Rate Plan Charge object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of a Rate Plan Charge object.
-
-        '
-      title: ratePlanChargeFieldsCustom
-      type: object
-    OrderActionRatePlanDiscountPricingUpdate:
       properties:
         applyDiscountTo:
           description: 'Specifies which type of charge the discount charge applies to.
@@ -698,6 +477,11 @@ components:
           - RECURRINGUSAGE
           - ONETIMERECURRINGUSAGE
           type: string
+        discountAmount:
+          description: 'Only applicable if the discount charge is a fixed-amount discount.
+
+            '
+          type: number
         discountLevel:
           description: 'Application scope of the discount charge. For example, if the value of this field is `subscription` and the value of the `applyDiscountTo` field is `RECURRING`, the discount charge applies to all recurring charges in the same subscription as the discount charge.
 
@@ -708,7 +492,7 @@ components:
           - account
           type: string
         discountPercentage:
-          description: 'The amount of the discount as a percentage. This field is only used for percentage discounts.
+          description: 'Only applicable if the discount charge is a percentage discount.
 
             '
           type: number
@@ -720,222 +504,72 @@ components:
           - NoChange
           - UseLatestProductCatalogPricing
           type: string
+      title: discount
       type: object
-    OrderActionRatePlanOrderAction:
-      description: Represents the processed order action.
+    OrderActionRatePlanBillingUpdate:
       properties:
-        addProduct:
-          $ref: '#/components/schemas/OrderActionRatePlanRatePlanOverride'
-        customFields:
-          $ref: '#/components/schemas/OrderActionRatePlanOrderActionObjectCustomFields'
-        id:
-          description: The Id of the order action processed in the order.
-          type: string
-        removeProduct:
-          $ref: '#/components/schemas/OrderActionRatePlanRemoveProduct'
-        type:
-          description: Type of the order action.
+        billingPeriodAlignment:
           enum:
-          - AddProduct
-          - UpdateProduct
-          - RemoveProduct
+          - AlignToCharge
+          - AlignToSubscriptionStart
+          - AlignToTermStart
           type: string
-        updateProduct:
-          $ref: '#/components/schemas/OrderActionRatePlanRatePlanUpdate'
       type: object
-    OrderActionRatePlanUsageTieredPricingUpdate:
+    OrderActionRatePlanRecurringFlatFeePricingUpdate:
       allOf:
       - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
       - properties:
-          tiers:
-            items:
-              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-            type: array
+          listPrice:
+            type: number
         type: object
-    OrderActionRatePlanAmendment:
-      description: 'The amendment that is related to the subscription rate plan.
-
-        '
+    OrderActionRatePlanRecurringDeliveryPricingUpdate:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          deliverySchedule:
+            $ref: '#/components/schemas/DeliveryScheduleParams'
+          listPrice:
+            type: number
+        type: object
+    OrderActionRatePlanChargeTier:
       properties:
-        code:
-          description: 'The amendment code.
+        endingUnit:
+          description: 'Limit on the number of units for which the tier is effective.
 
             '
-          type: string
-        contractEffectiveDate:
-          description: 'The date when the amendment becomes effective for billing purposes, as `yyyy-mm-dd`.
-
-            '
-          format: date
-          type: string
-        createdBy:
-          description: 'The ID of the user who created this amendment.
-
-            '
-          type: string
-        createdDate:
-          description: The time that the amendment gets created in the system, in the `YYYY-MM-DD HH:MM:SS` format.
-          format: datetime
-          type: string
-        customerAcceptanceDate:
-          description: 'The date when the customer accepts the amendment changes to the subscription, as `yyyy-mm-dd`.
-
-            '
-          format: date
-          type: string
-        description:
-          description: 'Description of the amendment.
-
-            '
-          type: string
-        effectiveDate:
-          description: "The date when the amendment changes take effective. \n"
-          format: date
-          type: string
-        id:
-          description: 'The amendment ID.
-
-            '
-          type: string
-        name:
-          description: 'The name of the amendment.
-
-            '
-          type: string
-        serviceActivationDate:
-          description: 'The date when service is activated, as `yyyy-mm-dd`.
-
-            '
-          format: date
-          type: string
-        type:
-          description: 'Type of the amendment.
-
-            Possible values are:
-
-
-
-            - NewProduct
-
-            - RemoveProduct
-
-            - UpdateProduct
-
-            '
-          type: string
-        updatedBy:
-          description: The ID of the user who updated this amendment.
-          type: string
-        updatedDate:
-          description: The time that the amendment gets updated in the system, in the `YYYY-MM-DD HH:MM:SS` format.
-          format: datetime
-          type: string
-      type: object
-    OrderActionRatePlanOneTimeVolumePricingOverride:
-      description: 'Pricing information about a one-time charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are purchased.
-
-        '
-      properties:
-        quantity:
-          description: 'Number of units purchased.
-
-            '
-          minimum: 0
           type: number
-        tiers:
-          description: 'List of variable pricing tiers in the charge.
+        price:
+          description: 'Price or per-unit price of the tier, depending on the value of the `priceFormat` field.
 
             '
-          items:
-            $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-          type: array
-      title: oneTimeVolume
-      type: object
-    OrderActionRatePlanUsageFlatFeePricingOverride:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          listPrice:
-            description: 'Price of the charge.
-
-              '
-            type: number
-        type: object
-      description: 'Pricing information about a usage charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
-
-        '
-      title: usageFlatFee
-    OrderActionRatePlanRemoveProduct:
-      description: 'Information about an order action of type `RemoveProduct`.
-
-        '
-      properties:
-        ratePlanId:
-          description: 'Internal identifier of the rate plan to remove.
+          type: number
+        priceFormat:
+          description: 'Specifies whether the tier has a fixed price or a per-unit price.
 
             '
+          enum:
+          - FlatFee
+          - PerUnit
           type: string
-        uniqueToken:
-          description: A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.A unique string in the order to represent the rate plan.
-          type: string
-      title: removeProduct
+        startingUnit:
+          description: 'Number of units at which the tier becomes effective.
+
+            '
+          type: number
+        tier:
+          description: 'Index of the tier in the charge.
+
+            '
+          minimum: 1
+          type: integer
+      required:
+      - tier
+      - startingUnit
+      - price
+      - priceFormat
+      title: chargeTier
       type: object
-    OrderActionRatePlanUsageTieredPricingOverride:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          ratingGroup:
-            description: "Specifies how Zuora groups usage records when rating usage. See [Usage Rating by Group](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Usage/Usage_Rating_by_Group) for more information.\n  * ByBillingPeriod (default): The rating is based on all the usages in a billing period.\n  * ByUsageStartDate: The rating is based on all the usages on the same usage start date.\n  * ByUsageRecord: The rating is based on each usage record.\n  * ByUsageUpload: The rating is based on all the usages in a uploaded usage file (.xls or .csv). If you import a mass usage in a single upload, which contains multiple usage files in .xls or .csv format, usage records are grouped for each usage file.\n"
-            enum:
-            - ByBillingPeriod
-            - ByUsageStartDate
-            - ByUsageRecord
-            - ByUsageUpload
-            type: string
-          tiers:
-            description: 'List of cumulative pricing tiers in the charge.
-
-              '
-            items:
-              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-            type: array
-        type: object
-      description: 'Pricing information about a usage charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are consumed.
-
-        '
-      title: usageTiered
-    OrderActionRatePlanUsageFlatFeePricingUpdate:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          listPrice:
-            type: number
-        type: object
-    OrderActionRatePlanUsageVolumePricingOverride:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          ratingGroup:
-            description: "Specifies how Zuora groups usage records when rating usage. See [Usage Rating by Group](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Usage/Usage_Rating_by_Group) for more information.\n  * ByBillingPeriod (default): The rating is based on all the usages in a billing period.\n  * ByUsageStartDate: The rating is based on all the usages on the same usage start date.\n  * ByUsageRecord: The rating is based on each usage record.\n  * ByUsageUpload: The rating is based on all the usages in a uploaded usage file (.xls or .csv). If you import a mass usage in a single upload, which contains multiple usage files in .xls or .csv format, usage records are grouped for each usage file.\n"
-            enum:
-            - ByBillingPeriod
-            - ByUsageStartDate
-            - ByUsageRecord
-            - ByUsageUpload
-            type: string
-          tiers:
-            description: 'List of variable pricing tiers in the charge.
-
-              '
-            items:
-              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-            type: array
-        type: object
-      description: 'Pricing information about a usage charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are consumed.
-
-        '
-      title: usageVolume
-    OrderActionRatePlanRecurringTieredPricingUpdate:
+    OrderActionRatePlanRecurringVolumePricingUpdate:
       allOf:
       - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
       - properties:
@@ -992,248 +626,6 @@ components:
             '
           type: boolean
       type: object
-    OrderActionRatePlanRecurringVolumePricingUpdate:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          quantity:
-            minimum: 0
-            type: number
-          tiers:
-            items:
-              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-            type: array
-        type: object
-    OrderActionRatePlanPriceChangeParams:
-      properties:
-        priceChangeOption:
-          description: 'Specifies how Zuora changes the price of the charge each time the subscription renews.
-
-
-            If the value of this field is `SpecificPercentageValue`, use the `priceIncreasePercentage` field to specify how much the price of the charge should change.
-
-            '
-          enum:
-          - NoChange
-          - SpecificPercentageValue
-          - UseLatestProductCatalogPricing
-          type: string
-        priceIncreasePercentage:
-          description: 'Specifies the percentage by which the price of the charge should change each time the subscription renews. Only applicable if the value of the `priceChangeOption` field is `SpecificPercentageValue`.
-
-            '
-          minimum: -100
-          type: number
-      type: object
-    OrderActionRatePlanRecurringVolumePricingOverride:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          listPriceBase:
-            description: 'Specifies the duration of each recurring period.
-
-
-              **Note**: The `Per_Year` and `Per_Specific_Months` enum values are available only if you have the <a href="https://knowledgecenter.zuora.com/Billing/Subscriptions/Product_Catalog/I_Annual_List_Price" target="_blank">Annual List Price</a> feature enabled.
-
-              '
-            enum:
-            - Per_Billing_Period
-            - Per_Month
-            - Per_Week
-            - Per_Year
-            - Per_Specific_Months
-            type: string
-          quantity:
-            description: 'Number of units purchased.
-
-              '
-            minimum: 0
-            type: number
-          specificListPriceBase:
-            description: 'The number of months for the list price base of the charge. This field is required if you set the value of the `listPriceBase` field to `Per_Specific_Months`.
-
-              '
-            format: int32
-            maximum: 200
-            minimum: 1
-            type: integer
-          tiers:
-            description: 'List of variable pricing tiers in the charge.
-
-              '
-            items:
-              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-            type: array
-        type: object
-      description: 'Pricing information about a recurring charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are purchased.
-
-        '
-      title: recurringVolume
-    OrderActionRatePlanUsageOveragePricingUpdate:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          includedUnits:
-            description: 'A certain quantity of units for free in the overage charge model. It cannot be negative. It must be 0 and above. Decimals are allowed.
-
-              '
-            type: number
-          overagePrice:
-            type: number
-        type: object
-    OrderActionRatePlanUsageTieredWithOveragePricingUpdate:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          overagePrice:
-            type: number
-          tiers:
-            items:
-              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-            type: array
-        type: object
-    OrderActionRatePlanChargeModelDataOverride:
-      description: 'Container for charge model configuration data.
-
-
-        **Note**: This field is only available if you have the High Water Mark, Pre-Rated Pricing, or Multi-Attribute Pricing charge models enabled. The charge models are available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
-
-        '
-      properties:
-        chargeModelConfiguration:
-          properties:
-            customFieldPerUnitRate:
-              description: 'The custom field that carries the per-unit rate for each usage record. For example, `perUnitAmount__c`.
-
-
-                This field is only available for the usage-based charges that use the Pre-Rated Per Unit Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
-
-                '
-              type: string
-            customFieldTotalAmount:
-              description: 'The custom field that carries the total amount to charge for a usage record. For example, `totalAmount__c`.
-
-
-                This field is only available for the usage-based charges that use the Pre-Rated Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
-
-                '
-              type: string
-            formula:
-              description: 'The pricing formula to calculate actual rating amount for each usage record.
-
-
-                This field is only available for the usage-based charges that use the Multi-Attribute Pricing charge model. The charge model is available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
-
-                '
-              type: string
-          type: object
-        tiers:
-          description: 'List of cumulative pricing tiers in the charge.
-
-
-            **Note**: When you override tiers of the charge with a High Water Mark Pricing charge model, you have to provide all of the tiers, including the ones you do not want to change. The new tiers will completely override the previous ones. The High Water Mark Pricing charge models are available for customers with Enterprise and Nine editions by default. If you are a Growth customer, see [Zuora Editions](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/C_Zuora_Editions) for pricing information.
-
-            '
-          items:
-            $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-          type: array
-      title: chargeModelData
-      type: object
-    OrderActionRatePlanTriggerParams:
-      description: 'Specifies when a charge becomes active.
-
-        '
-      properties:
-        specificTriggerDate:
-          description: "Date in YYYY-MM-DD format. Only applicable if the value of the `triggerEvent` field is `SpecificDate`.\n\nWhile this field is applicable, if this field is not set, your `CreateSubscription` order action creates a `Pending` order and a `Pending Acceptance` subscription. If at the same time the service activation date is required and not set, a `Pending Activation` subscription is created.\n\nWhile this field is applicable, if this field is not set, the following order actions create a `Pending` order but do not impact the subscription status. **Note**: This feature is in **Limited Availability**. If you want to have access to the feature, submit a request at [Zuora Global Support](http://support.zuora.com/).\n * AddProduct\n * UpdateProduct\n * RemoveProduct\n * RenewSubscription\n * TermsAndConditions\n"
-          format: date
-          type: string
-        triggerEvent:
-          description: 'Condition for the charge to become active.
-
-
-            If the value of this field is `SpecificDate`, use the `specificTriggerDate` field to specify the date when the charge becomes active.
-
-            '
-          enum:
-          - ContractEffective
-          - ServiceActivation
-          - CustomerAcceptance
-          type: string
-      title: startDate
-      type: object
-    CommonResponseType:
-      properties:
-        processId:
-          description: 'The Id of the process that handle the operation.
-
-            '
-          type: string
-        reasons:
-          items:
-            properties:
-              code:
-                description: 'The error code of response.
-
-                  '
-                type: string
-              message:
-                description: 'The detail information of the error response
-
-                  '
-                type: string
-            type: object
-          type: array
-        success:
-          description: 'Indicates whether the call succeeded.
-
-            '
-          type: boolean
-      type: object
-    OrderActionRatePlanEndConditions:
-      description: 'Specifies when a charge becomes inactive.
-
-        '
-      properties:
-        endDateCondition:
-          description: 'Condition for the charge to become inactive.
-
-
-            If the value of this field is `Fixed_Period`, the charge is active for a predefined duration based on the value of the `upToPeriodsType` and `upToPeriods` fields.
-
-
-            If the value of this field is `Specific_End_Date`, use the `specificEndDate` field to specify the date when then charge becomes inactive.
-
-            '
-          enum:
-          - Subscription_End
-          - Fixed_Period
-          - Specific_End_Date
-          type: string
-        specificEndDate:
-          description: 'Date in YYYY-MM-DD format. Only applicable if the value of the `endDateCondition` field is `Specific_End_Date`.
-
-            '
-          format: date
-          type: string
-        upToPeriods:
-          description: 'Duration of the charge in billing periods, days, weeks, months, or years, depending on the value of the `upToPeriodsType` field. Only applicable if the value of the `endDateCondition` field is `Fixed_Period`.
-
-            '
-          type: integer
-        upToPeriodsType:
-          description: 'Unit of time that the charge duration is measured in. Only applicable if the value of the `endDateCondition` field is `Fixed_Period`.
-
-            '
-          enum:
-          - Billing_Periods
-          - Days
-          - Weeks
-          - Months
-          - Years
-          type: string
-      title: endDate
-      type: object
     OrderActionRatePlanRecurringDeliveryPricingOverride:
       allOf:
       - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
@@ -1253,24 +645,79 @@ components:
 
         '
       title: recurringDelivery
-    OrderActionRatePlanOneTimePerUnitPricingOverride:
-      description: 'Pricing information about a one-time charge that uses the "per unit" charge model. In this charge model, the charge has a fixed price per unit purchased.
+    OrderActionRatePlanUsageTieredPricingOverride:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          ratingGroup:
+            description: "Specifies how Zuora groups usage records when rating usage. See [Usage Rating by Group](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/Usage/Usage_Rating_by_Group) for more information.\n  * ByBillingPeriod (default): The rating is based on all the usages in a billing period.\n  * ByUsageStartDate: The rating is based on all the usages on the same usage start date.\n  * ByUsageRecord: The rating is based on each usage record.\n  * ByUsageUpload: The rating is based on all the usages in a uploaded usage file (.xls or .csv). If you import a mass usage in a single upload, which contains multiple usage files in .xls or .csv format, usage records are grouped for each usage file.\n"
+            enum:
+            - ByBillingPeriod
+            - ByUsageStartDate
+            - ByUsageRecord
+            - ByUsageUpload
+            type: string
+          tiers:
+            description: 'List of cumulative pricing tiers in the charge.
+
+              '
+            items:
+              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+            type: array
+        type: object
+      description: 'Pricing information about a usage charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are consumed.
+
+        '
+      title: usageTiered
+    OrderActionRatePlanOrder:
+      description: 'The order that is related to the subscription rate plan.
 
         '
       properties:
-        listPrice:
-          description: 'Per-unit price of the charge.
-
-            '
-          type: number
-        quantity:
-          description: 'Number of units purchased.
-
-            '
-          minimum: 0
-          type: number
-      title: oneTimePerUnit
+        id:
+          description: The order ID.
+          type: string
+        orderActions:
+          items:
+            $ref: '#/components/schemas/OrderActionRatePlanOrderAction'
+          type: array
+        orderNumber:
+          description: The order number of the order.
+          type: string
       type: object
+    OrderActionRatePlanRecurringFlatFeePricingOverride:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          listPrice:
+            description: 'Price of the charge in each recurring period.
+
+              '
+            type: number
+          listPriceBase:
+            description: 'Specifies the duration of each recurring period.
+
+              '
+            enum:
+            - Per_Billing_Period
+            - Per_Month
+            - Per_Week
+            - Per_Year
+            - Per_Specific_Months
+            type: string
+          specificListPriceBase:
+            description: 'The number of months for the list price base of the charge. The value of this field is `null` if you do not set the value of the `listPriceBase` field to `Per_Specific_Months`.
+
+              '
+            format: int32
+            maximum: 200
+            minimum: 1
+            type: integer
+        type: object
+      description: 'Pricing information about a recurring charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
+
+        '
+      title: recurringFlatFee
     OrderActionRatePlanRecurringPerUnitPricingOverride:
       allOf:
       - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
@@ -1308,97 +755,6 @@ components:
 
         '
       title: recurringPerUnit
-    OrderActionRatePlanUsageVolumePricingUpdate:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          tiers:
-            items:
-              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-            type: array
-        type: object
-    OrderActionRatePlanOneTimeTieredPricingOverride:
-      description: 'Pricing information about a one-time charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are purchased.
-
-        '
-      properties:
-        quantity:
-          description: 'Number of units purchased.
-
-            '
-          minimum: 0
-          type: number
-        tiers:
-          description: 'List of cumulative pricing tiers in the charge.
-
-            '
-          items:
-            $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
-          type: array
-      title: oneTimeTiered
-      type: object
-    OrderActionRatePlanUsageOveragePricingOverride:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          includedUnits:
-            description: 'Number of free units that may be consumed.
-
-              '
-            minimum: 0
-            type: number
-          numberOfPeriods:
-            description: 'Number of periods that Zuora considers when calculating overage charges with overage smoothing.
-
-              '
-            minimum: 1
-            type: integer
-          overagePrice:
-            description: 'Price per overage unit consumed.
-
-              '
-            type: number
-          overageUnusedUnitsCreditOption:
-            description: 'Specifies whether to credit the customer for unused units.
-
-
-              If the value of this field is `CreditBySpecificRate`, use the `unusedUnitsCreditRates` field to specify the rate at which to credit the customer for unused units.
-
-              '
-            enum:
-            - NoCredit
-            - CreditBySpecificRate
-            type: string
-          unusedUnitsCreditRates:
-            description: 'Per-unit rate at which to credit the customer for unused units. Only applicable if the value of the `overageUnusedUnitsCreditOption` field is `CreditBySpecificRate`.
-
-              '
-            type: number
-        type: object
-      description: 'Pricing information about a usage charge that uses the "overage" charge model. In this charge model, the charge has an allowance of free units and a fixed price per additional unit consumed.
-
-        '
-      title: usageOverage
-    OrderActionRatePlanRecurringPerUnitPricingUpdate:
-      allOf:
-      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
-      - properties:
-          listPrice:
-            type: number
-          quantity:
-            minimum: 0
-            type: number
-        type: object
-    OrderActionRatePlanRatePlanObjectCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Rate Plan object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of a Rate Plan object.
-
-        '
-      title: ratePlanFieldsCustom
-      type: object
     OrderActionRatePlanUsagePerUnitPricingOverride:
       allOf:
       - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
@@ -1421,7 +777,19 @@ components:
 
         '
       title: usagePerUnit
-    OrderActionRatePlanUsagePerUnitPricingUpdate:
+    OrderActionRatePlanRecurringTieredPricingUpdate:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          quantity:
+            minimum: 0
+            type: number
+          tiers:
+            items:
+              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+            type: array
+        type: object
+    OrderActionRatePlanUsageFlatFeePricingUpdate:
       allOf:
       - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
       - properties:
@@ -1619,27 +987,639 @@ components:
       - productRatePlanChargeId
       title: charge
       type: object
-  parameters:
-    GLOBAL_HEADER_Accept_Encoding:
-      name: Accept-Encoding
-      in: header
-      required: false
-      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Track_Id:
-      name: Zuora-Track-Id
-      in: header
-      required: false
-      description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+    OrderActionRatePlanUsageFlatFeePricingOverride:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          listPrice:
+            description: 'Price of the charge.
 
-
-        The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+              '
+            type: number
+        type: object
+      description: 'Pricing information about a usage charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
 
         '
-      schema:
-        type: string
-        maxLength: 64
+      title: usageFlatFee
+    OrderActionRatePlanOrderActionObjectCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Order Action object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of an Order Action object.
+
+        '
+      title: orderActionFieldsCustom
+      type: object
+    OrderActionRatePlanRatePlanChargeObjectCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Rate Plan Charge object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of a Rate Plan Charge object.
+
+        '
+      title: ratePlanChargeFieldsCustom
+      type: object
+    GetOrderActionRatePlanResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponseType'
+      - properties:
+          amendment:
+            $ref: '#/components/schemas/OrderActionRatePlanAmendment'
+          externallyManagedPlanId:
+            description: 'The unique identifier for the rate plan purchased on a third-party store. This field is used to represent a subscription rate plan created through third-party stores.
+
+              '
+            type: string
+          id:
+            description: Unique subscription rate-plan ID.
+            type: string
+          lastChangeType:
+            description: 'Latest change type. Possible values are:
+
+
+              - New
+
+              - Update
+
+              - Remove
+
+              '
+            type: string
+          order:
+            $ref: '#/components/schemas/OrderActionRatePlanOrder'
+          productId:
+            description: 'Product ID
+
+              '
+            type: string
+          productName:
+            description: 'The name of the product.
+
+              '
+            type: string
+          productRatePlanId:
+            description: 'Product rate plan ID
+
+              '
+            type: string
+          productSku:
+            description: 'The unique SKU for the product.
+
+              '
+            type: string
+          ratePlanName:
+            description: 'The name of the rate plan.
+
+              '
+            type: string
+          subscriptionId:
+            description: 'Subscription ID.
+
+              '
+            type: string
+          subscriptionVersion:
+            description: 'The version of the subscription.
+
+              '
+        type: object
+    OrderActionRatePlanEndConditions:
+      description: 'Specifies when a charge becomes inactive.
+
+        '
+      properties:
+        endDateCondition:
+          description: 'Condition for the charge to become inactive.
+
+
+            If the value of this field is `Fixed_Period`, the charge is active for a predefined duration based on the value of the `upToPeriodsType` and `upToPeriods` fields.
+
+
+            If the value of this field is `Specific_End_Date`, use the `specificEndDate` field to specify the date when then charge becomes inactive.
+
+            '
+          enum:
+          - Subscription_End
+          - Fixed_Period
+          - Specific_End_Date
+          type: string
+        specificEndDate:
+          description: 'Date in YYYY-MM-DD format. Only applicable if the value of the `endDateCondition` field is `Specific_End_Date`.
+
+            '
+          format: date
+          type: string
+        upToPeriods:
+          description: 'Duration of the charge in billing periods, days, weeks, months, or years, depending on the value of the `upToPeriodsType` field. Only applicable if the value of the `endDateCondition` field is `Fixed_Period`.
+
+            '
+          type: integer
+        upToPeriodsType:
+          description: 'Unit of time that the charge duration is measured in. Only applicable if the value of the `endDateCondition` field is `Fixed_Period`.
+
+            '
+          enum:
+          - Billing_Periods
+          - Days
+          - Weeks
+          - Months
+          - Years
+          type: string
+      title: endDate
+      type: object
+    OrderActionRatePlanAmendment:
+      description: 'The amendment that is related to the subscription rate plan.
+
+        '
+      properties:
+        code:
+          description: 'The amendment code.
+
+            '
+          type: string
+        contractEffectiveDate:
+          description: 'The date when the amendment becomes effective for billing purposes, as `yyyy-mm-dd`.
+
+            '
+          format: date
+          type: string
+        createdBy:
+          description: 'The ID of the user who created this amendment.
+
+            '
+          type: string
+        createdDate:
+          description: The time that the amendment gets created in the system, in the `YYYY-MM-DD HH:MM:SS` format.
+          format: datetime
+          type: string
+        customerAcceptanceDate:
+          description: 'The date when the customer accepts the amendment changes to the subscription, as `yyyy-mm-dd`.
+
+            '
+          format: date
+          type: string
+        description:
+          description: 'Description of the amendment.
+
+            '
+          type: string
+        effectiveDate:
+          description: "The date when the amendment changes take effective. \n"
+          format: date
+          type: string
+        id:
+          description: 'The amendment ID.
+
+            '
+          type: string
+        name:
+          description: 'The name of the amendment.
+
+            '
+          type: string
+        serviceActivationDate:
+          description: 'The date when service is activated, as `yyyy-mm-dd`.
+
+            '
+          format: date
+          type: string
+        type:
+          description: 'Type of the amendment.
+
+            Possible values are:
+
+
+
+            - NewProduct
+
+            - RemoveProduct
+
+            - UpdateProduct
+
+            '
+          type: string
+        updatedBy:
+          description: The ID of the user who updated this amendment.
+          type: string
+        updatedDate:
+          description: The time that the amendment gets updated in the system, in the `YYYY-MM-DD HH:MM:SS` format.
+          format: datetime
+          type: string
+      type: object
+    OrderActionRatePlanRecurringPerUnitPricingUpdate:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          listPrice:
+            type: number
+          quantity:
+            minimum: 0
+            type: number
+        type: object
+    OrderActionRatePlanTriggerParams:
+      description: 'Specifies when a charge becomes active.
+
+        '
+      properties:
+        specificTriggerDate:
+          description: "Date in YYYY-MM-DD format. Only applicable if the value of the `triggerEvent` field is `SpecificDate`.\n\nWhile this field is applicable, if this field is not set, your `CreateSubscription` order action creates a `Pending` order and a `Pending Acceptance` subscription. If at the same time the service activation date is required and not set, a `Pending Activation` subscription is created.\n\nWhile this field is applicable, if this field is not set, the following order actions create a `Pending` order but do not impact the subscription status. **Note**: This feature is in **Limited Availability**. If you want to have access to the feature, submit a request at [Zuora Global Support](http://support.zuora.com/).\n * AddProduct\n * UpdateProduct\n * RemoveProduct\n * RenewSubscription\n * TermsAndConditions\n"
+          format: date
+          type: string
+        triggerEvent:
+          description: 'Condition for the charge to become active.
+
+
+            If the value of this field is `SpecificDate`, use the `specificTriggerDate` field to specify the date when the charge becomes active.
+
+            '
+          enum:
+          - ContractEffective
+          - ServiceActivation
+          - CustomerAcceptance
+          type: string
+      title: startDate
+      type: object
+    OrderActionRatePlanUsageOveragePricingUpdate:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          includedUnits:
+            description: 'A certain quantity of units for free in the overage charge model. It cannot be negative. It must be 0 and above. Decimals are allowed.
+
+              '
+            type: number
+          overagePrice:
+            type: number
+        type: object
+    OrderActionRatePlanOneTimePerUnitPricingOverride:
+      description: 'Pricing information about a one-time charge that uses the "per unit" charge model. In this charge model, the charge has a fixed price per unit purchased.
+
+        '
+      properties:
+        listPrice:
+          description: 'Per-unit price of the charge.
+
+            '
+          type: number
+        quantity:
+          description: 'Number of units purchased.
+
+            '
+          minimum: 0
+          type: number
+      title: oneTimePerUnit
+      type: object
+    OrderActionRatePlanUsageTieredWithOveragePricingOverride:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          numberOfPeriods:
+            description: 'Number of periods that Zuora considers when calculating overage charges with overage smoothing.
+
+              '
+            minimum: 1
+            type: integer
+          overagePrice:
+            description: 'Price per overage unit consumed.
+
+              '
+            type: number
+          overageUnusedUnitsCreditOption:
+            description: 'Specifies whether to credit the customer for unused units.
+
+
+              If the value of this field is `CreditBySpecificRate`, use the `unusedUnitsCreditRates` field to specify the rate at which to credit the customer for unused units.
+
+              '
+            enum:
+            - NoCredit
+            - CreditBySpecificRate
+            type: string
+          tiers:
+            description: 'List of cumulative pricing tiers in the charge.
+
+              '
+            items:
+              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+            type: array
+          unusedUnitsCreditRates:
+            description: 'Per-unit rate at which to credit the customer for unused units. Only applicable if the value of the `overageUnusedUnitsCreditOption` field is `CreditBySpecificRate`.
+
+              '
+            type: number
+        type: object
+      description: 'Pricing information about a usage charge that uses the "tiered with overage" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are consumed. The charge also has a fixed price per unit consumed beyond the limit of the final tier.
+
+        '
+      title: usageTieredWithOverage
+    OrderActionRatePlanRatePlanObjectCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Rate Plan object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of a Rate Plan object.
+
+        '
+      title: ratePlanFieldsCustom
+      type: object
+    OrderActionRatePlanRatePlanUpdate:
+      description: 'Information about an order action of type `UpdateProduct`.
+
+        '
+      properties:
+        chargeUpdates:
+          items:
+            $ref: '#/components/schemas/OrderActionRatePlanChargeUpdate'
+          type: array
+        customFields:
+          $ref: '#/components/schemas/OrderActionRatePlanRatePlanObjectCustomFields'
+        newRatePlanId:
+          description: 'Internal identifier of the updated rate plan in the new subscription version.
+
+            '
+          type: string
+        ratePlanId:
+          description: 'Internal identifier of the rate plan that was updated.
+
+            '
+          type: string
+        specificUpdateDate:
+          description: '
+
+            The date when the Update Product order action takes effect. This field is only applicable if there is already a future-dated Update Product order action on the subscription. The format of the date is yyyy-mm-dd.
+
+
+            See [Update a Product on Subscription with Future-dated Updates](https://knowledgecenter.zuora.com/BC_Subscription_Management/Orders/AC_Orders_Tutorials/C_Update_a_Product_in_a_Subscription/Update_a_Product_on_Subscription_with_Future-dated_Updates) for more information about this feature.
+
+            '
+          format: date
+          type: string
+        uniqueToken:
+          description: 'A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.
+
+            '
+          type: string
+      title: updateProduct
+      type: object
+    OrderActionRatePlanRatePlanOverride:
+      description: 'Rate plan associated with a subscription.
+
+        '
+      properties:
+        chargeOverrides:
+          description: 'List of charges associated with the rate plan.
+
+            '
+          items:
+            $ref: '#/components/schemas/OrderActionRatePlanChargeOverride'
+          type: array
+        customFields:
+          $ref: '#/components/schemas/OrderActionRatePlanRatePlanObjectCustomFields'
+        newRatePlanId:
+          description: 'Internal identifier of the rate plan.
+
+            '
+          type: string
+        productRatePlanId:
+          description: 'Internal identifier of the product rate plan that the rate plan is based on.
+
+            '
+          type: string
+        uniqueToken:
+          description: 'Unique identifier for the rate plan. This identifier enables you to refer to the rate plan before the rate plan has an internal identifier in Zuora.
+
+
+            For instance, suppose that you want to use a single order to add a product to a subscription and later update the same product. When you add the product, you can set a unique identifier for the rate plan. Then when you update the product, you can use the same unique identifier to specify which rate plan to modify.
+
+            '
+          maxLength: 50
+          type: string
+      required:
+      - productRatePlanId
+      title: ratePlan
+      type: object
+    CommonResponseType:
+      properties:
+        processId:
+          description: 'The Id of the process that handle the operation.
+
+            '
+          type: string
+        reasons:
+          items:
+            properties:
+              code:
+                description: 'The error code of response.
+
+                  '
+                type: string
+              message:
+                description: 'The detail information of the error response
+
+                  '
+                type: string
+            type: object
+          type: array
+        success:
+          description: 'Indicates whether the call succeeded.
+
+            '
+          type: boolean
+      type: object
+    OrderActionRatePlanUsageVolumePricingUpdate:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          tiers:
+            items:
+              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+            type: array
+        type: object
+    OrderActionRatePlanRecurringTieredPricingOverride:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          listPriceBase:
+            description: 'Specifies the duration of each recurring period.
+
+              '
+            enum:
+            - Per_Billing_Period
+            - Per_Month
+            - Per_Week
+            - Per_Year
+            - Per_Specific_Months
+            type: string
+          quantity:
+            description: 'Number of units purchased.
+
+              '
+            minimum: 0
+            type: number
+          specificListPriceBase:
+            description: 'The number of months for the list price base of the charge. This field is required if you set the value of the `listPriceBase` field to `Per_Specific_Months`.
+
+              '
+            format: int32
+            maximum: 200
+            minimum: 1
+            type: integer
+          tiers:
+            description: 'List of cumulative pricing tiers in the charge.
+
+              '
+            items:
+              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+            type: array
+        type: object
+      description: 'Pricing information about a recurring charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are purchased.
+
+        '
+      title: recurringTiered
+    OrderActionRatePlanChargeUpdate:
+      description: The JSON object containing the information for a charge update in the 'UpdateProduct' type order action.
+      properties:
+        billing:
+          allOf:
+          - $ref: '#/components/schemas/OrderActionRatePlanBillingUpdate'
+          description: 'Billing information about the charge.
+
+            '
+        chargeNumber:
+          description: 'Read only. Identifies the charge to be updated.
+
+            '
+          type: string
+        customFields:
+          $ref: '#/components/schemas/OrderActionRatePlanRatePlanChargeObjectCustomFields'
+        description:
+          description: 'Description of the charge.
+
+            '
+          type: string
+        effectiveDate:
+          $ref: '#/components/schemas/OrderActionRatePlanTriggerParams'
+        pricing:
+          allOf:
+          - $ref: '#/components/schemas/OrderActionRatePlanPricingUpdate'
+          description: 'Pricing information about the charge.
+
+            '
+        uniqueToken:
+          description: 'A unique string to represent the rate plan charge in the order. The unique token is used to perform multiple actions against a newly added rate plan. For example, if you want to add and update a product in the same order, you would assign a unique token to the product rate plan when added and use that token in future order actions.
+
+            '
+          type: string
+      type: object
+    OrderActionRatePlanUsageOveragePricingOverride:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          includedUnits:
+            description: 'Number of free units that may be consumed.
+
+              '
+            minimum: 0
+            type: number
+          numberOfPeriods:
+            description: 'Number of periods that Zuora considers when calculating overage charges with overage smoothing.
+
+              '
+            minimum: 1
+            type: integer
+          overagePrice:
+            description: 'Price per overage unit consumed.
+
+              '
+            type: number
+          overageUnusedUnitsCreditOption:
+            description: 'Specifies whether to credit the customer for unused units.
+
+
+              If the value of this field is `CreditBySpecificRate`, use the `unusedUnitsCreditRates` field to specify the rate at which to credit the customer for unused units.
+
+              '
+            enum:
+            - NoCredit
+            - CreditBySpecificRate
+            type: string
+          unusedUnitsCreditRates:
+            description: 'Per-unit rate at which to credit the customer for unused units. Only applicable if the value of the `overageUnusedUnitsCreditOption` field is `CreditBySpecificRate`.
+
+              '
+            type: number
+        type: object
+      description: 'Pricing information about a usage charge that uses the "overage" charge model. In this charge model, the charge has an allowance of free units and a fixed price per additional unit consumed.
+
+        '
+      title: usageOverage
+    OrderActionRatePlanOneTimeVolumePricingOverride:
+      description: 'Pricing information about a one-time charge that uses the "volume pricing" charge model. In this charge model, the charge has a variable price per unit, depending on how many units are purchased.
+
+        '
+      properties:
+        quantity:
+          description: 'Number of units purchased.
+
+            '
+          minimum: 0
+          type: number
+        tiers:
+          description: 'List of variable pricing tiers in the charge.
+
+            '
+          items:
+            $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+          type: array
+      title: oneTimeVolume
+      type: object
+    OrderActionRatePlanUsageTieredWithOveragePricingUpdate:
+      allOf:
+      - $ref: '#/components/schemas/OrderActionRatePlanPriceChangeParams'
+      - properties:
+          overagePrice:
+            type: number
+          tiers:
+            items:
+              $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+            type: array
+        type: object
+    OrderActionRatePlanOneTimeTieredPricingOverride:
+      description: 'Pricing information about a one-time charge that uses the "tiered pricing" charge model. In this charge model, the charge has cumulative pricing tiers that become effective as units are purchased.
+
+        '
+      properties:
+        quantity:
+          description: 'Number of units purchased.
+
+            '
+          minimum: 0
+          type: number
+        tiers:
+          description: 'List of cumulative pricing tiers in the charge.
+
+            '
+          items:
+            $ref: '#/components/schemas/OrderActionRatePlanChargeTier'
+          type: array
+      title: oneTimeTiered
+      type: object
+    OrderActionRatePlanOneTimeFlatFeePricingOverride:
+      description: 'Pricing information about a one-time charge that uses the "flat fee" charge model. In this charge model, the charge has a fixed price.
+
+        '
+      properties:
+        listPrice:
+          description: 'Price of the charge.
+
+            '
+          type: number
+      required:
+      - listPrice
+      title: oneTimeFlatFee
+      type: object
+  parameters:
     GLOBAL_HEADER_Authorization_OAuth_optional:
       name: Authorization
       in: header
@@ -1658,13 +1638,6 @@ components:
         '
       schema:
         type: string
-    GLOBAL_HEADER_Zuora_Org_Ids:
-      name: Zuora-Org-Ids
-      in: header
-      required: false
-      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
-      schema:
-        type: string
     GLOBAL_HEADER_Content_Encoding:
       name: Content-Encoding
       in: header
@@ -1672,6 +1645,33 @@ components:
       description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
 
         '
+      schema:
+        type: string
+    GLOBAL_HEADER_Zuora_Track_Id:
+      name: Zuora-Track-Id
+      in: header
+      required: false
+      description: 'A custom identifier for tracing the API call. If you set a value for this header, Zuora returns the same value in the response headers. This header enables you to associate your system process identifiers with Zuora API calls, to assist with troubleshooting in the event of an issue.
+
+
+        The value of this field must use the US-ASCII character set and must not include any of the following characters: colon (`:`), semicolon (`;`), double quote (`"`), and quote (`''`).
+
+        '
+      schema:
+        type: string
+        maxLength: 64
+    GLOBAL_HEADER_Accept_Encoding:
+      name: Accept-Encoding
+      in: header
+      required: false
+      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
+      schema:
+        type: string
+    GLOBAL_HEADER_Zuora_Org_Ids:
+      name: Zuora-Org-Ids
+      in: header
+      required: false
+      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
       schema:
         type: string
 x-tagGroups:
