@@ -1,0 +1,32 @@
+# Front Door AI Index — zuora — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: zuora
+  lexicon_version: '1.0'
+  probed_at: '2026-09-25'
+  host: www.zuora.com
+  final_host: www.zuora.com
+  ownership: own
+  owner: zuora
+  shares_host_with: null
+  inherited_from: null
+  alias_of: null
+  verdict: scored
+  score: 25
+  band: 6
+  band_label: dominant
+  host_score: 25
+  density: 13.62
+  words: 1835
+  tiers:
+    agentic: 0
+    core: 25
+    model: 0
+  ambiguous: 9
+  top_terms:
+    AI: 25
+    automation: 4
+    agent: 2
+    intelligence: 2
+    predictive: 1

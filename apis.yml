@@ -1221,6 +1221,12 @@ apis:
   - type: OpenAPI
     url: openapi/zuora-signup-api-openapi.yml
 common:
+- type: Plans
+  url: plans/zuora-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/zuora-rate-limits.yml
+- type: FinOps
+  url: finops/zuora-finops.yml
 - type: CapabilityMap
   url: capabilities/zuora-capability-edges.yml
   name: Zuora Business Capability Map

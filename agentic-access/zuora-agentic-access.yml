@@ -1,17 +1,49 @@
-generated: '2026-07-15'
+generated: '2026-09-23'
 method: generated
-source: openapi/zuora-v1-openapi.yml
+source: openapi/zuora-accounting-codes-api-openapi.yml, openapi/zuora-accounting-periods-api-openapi.yml,
+  openapi/zuora-accounts-api-openapi.yml, openapi/zuora-actions-api-openapi.yml, openapi/zuora-aggregate-queries-api-openapi.yml,
+  openapi/zuora-api-health-api-openapi.yml, openapi/zuora-attachments-api-openapi.yml, openapi/zuora-bill-run-api-openapi.yml,
+  openapi/zuora-bill-run-health-api-openapi.yml, openapi/zuora-billing-documents-api-openapi.yml,
+  openapi/zuora-billing-preview-run-api-openapi.yml, openapi/zuora-catalog-api-openapi.yml,
+  openapi/zuora-catalog-groups-api-openapi.yml, openapi/zuora-configuration-templates-api-openapi.yml,
+  openapi/zuora-contact-snapshots-api-openapi.yml, openapi/zuora-contacts-api-openapi.yml, openapi/zuora-credit-memos-api-openapi.yml,
+  openapi/zuora-custom-event-triggers-api-openapi.yml, openapi/zuora-custom-exchange-rates-api-openapi.yml,
+  openapi/zuora-custom-object-definitions-api-openapi.yml, openapi/zuora-custom-object-jobs-api-openapi.yml,
+  openapi/zuora-custom-object-records-api-openapi.yml, openapi/zuora-custom-payment-method-types-api-openapi.yml,
+  openapi/zuora-custom-scheduled-events-api-openapi.yml, openapi/zuora-data-labeling-api-openapi.yml,
+  openapi/zuora-data-queries-api-openapi.yml, openapi/zuora-debit-memos-api-openapi.yml, openapi/zuora-delivery-adjustments-api-openapi.yml,
+  openapi/zuora-describe-api-openapi.yml, openapi/zuora-e-invoicing-api-openapi.yml, openapi/zuora-electronic-payments-health-api-openapi.yml,
+  openapi/zuora-files-api-openapi.yml, openapi/zuora-fulfillments-api-openapi.yml, openapi/zuora-hosted-pages-api-openapi.yml,
+  openapi/zuora-imports-api-openapi.yml, openapi/zuora-invoice-schedules-api-openapi.yml, openapi/zuora-invoices-api-openapi.yml,
+  openapi/zuora-journal-runs-api-openapi.yml, openapi/zuora-mass-updater-api-openapi.yml, openapi/zuora-notifications-api-openapi.yml,
+  openapi/zuora-oauth-api-openapi.yml, openapi/zuora-offers-api-openapi.yml, openapi/zuora-operations-api-openapi.yml,
+  openapi/zuora-order-actions-api-openapi.yml, openapi/zuora-order-line-items-api-openapi.yml,
+  openapi/zuora-orders-api-openapi.yml, openapi/zuora-payment-authorization-api-openapi.yml,
+  openapi/zuora-payment-gateway-reconciliation-api-openapi.yml, openapi/zuora-payment-gateways-api-openapi.yml,
+  openapi/zuora-payment-method-snapshots-api-openapi.yml, openapi/zuora-payment-method-transaction-logs-api-openapi.yml,
+  openapi/zuora-payment-method-updater-api-openapi.yml, openapi/zuora-payment-methods-api-openapi.yml,
+  openapi/zuora-payment-runs-api-openapi.yml, openapi/zuora-payment-schedules-api-openapi.yml,
+  openapi/zuora-payment-transaction-logs-api-openapi.yml, openapi/zuora-payments-api-openapi.yml,
+  openapi/zuora-prepaid-with-drawdown-api-openapi.yml, openapi/zuora-price-book-items-api-openapi.yml,
+  openapi/zuora-product-charge-definitions-api-openapi.yml, openapi/zuora-product-rate-plan-charge-tiers-api-openapi.yml,
+  openapi/zuora-product-rate-plan-charges-api-openapi.yml, openapi/zuora-product-rate-plan-definitions-api-openapi.yml,
+  openapi/zuora-product-rate-plans-api-openapi.yml, openapi/zuora-products-api-openapi.yml,
+  openapi/zuora-ramps-api-openapi.yml, openapi/zuora-rate-plans-api-openapi.yml, openapi/zuora-refunds-api-openapi.yml,
+  openapi/zuora-regenerate-api-openapi.yml, openapi/zuora-rsa-signatures-api-openapi.yml, openapi/zuora-sequence-sets-api-openapi.yml,
+  openapi/zuora-settings-api-openapi.yml, openapi/zuora-signup-api-openapi.yml, openapi/zuora-subscriptions-api-openapi.yml,
+  openapi/zuora-summary-journal-entries-api-openapi.yml, openapi/zuora-taxation-items-api-openapi.yml,
+  openapi/zuora-usage-api-openapi.yml, openapi/zuora-workflows-api-openapi.yml, openapi/zuora-zuora-revenue-integration-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
   operations: 446
   by_action_class:
-    acting: 279
-    connected: 167
+    acting: 277
+    connected: 169
   by_consequence:
-    write: 161
-    read: 167
+    write: 159
+    read: 169
     physical: 117
     safety-critical: 1
   human_in_the_loop_required: 1
@@ -372,34 +404,22 @@ operations:
   method: post
   operationId: Action_POSTquery
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /v1/action/queryMore
   method: post
   operationId: Action_POSTqueryMore
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /v1/action/update
   method: post
   operationId: Action_POSTupdate
@@ -546,16 +566,6 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /system-health/billing-documents/volume-summary
-  method: get
-  operationId: GET_SystemHealthBillingDocVolumeSummary
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
 - path: /v1/bill-runs
   method: post
   operationId: POST_CreateBillRun
@@ -646,6 +656,16 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /system-health/billing-documents/volume-summary
+  method: get
+  operationId: GET_SystemHealthBillingDocVolumeSummary
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /v1/accounts/{key}/billing-documents/generate
   method: post
   operationId: POST_GenerateBillingDocuments
@@ -724,6 +744,26 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /v1/catalog/products
+  method: get
+  operationId: GET_Catalog
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/catalog/products/{product-key}
+  method: get
+  operationId: GET_Product
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /v1/catalog-groups
   method: post
   operationId: POST_CreateCatalogGroup
@@ -792,26 +832,6 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /v1/catalog/products
-  method: get
-  operationId: GET_Catalog
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/catalog/products/{product-key}
-  method: get
-  operationId: GET_Product
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
 - path: /deployment-manager/deployment_templates
   method: post
   operationId: POST_DeploymentTemplate
@@ -1536,6 +1556,84 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /objects/jobs
+  method: post
+  operationId: POST_CustomObjectBulkJob
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /objects/jobs
+  method: get
+  operationId: GET_AllCustomObjectBulkJobs
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /objects/jobs/{id}
+  method: get
+  operationId: GET_CustomObjectBulkJob
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /objects/jobs/{id}/files
+  method: post
+  operationId: POST_UploadFileForCustomObjectBulkJob
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /objects/jobs/{id}/errors
+  method: get
+  operationId: GET_CustomObjectBulkJobErrors
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /objects/jobs/{id}/cancel
+  method: patch
+  operationId: PATCH_CustomObjectBulkJob
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /objects/records/default/{object}
   method: post
   operationId: POST_CustomObjectRecords
@@ -1636,25 +1734,63 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /objects/jobs
+- path: /open-payment-method-types
   method: post
-  operationId: POST_CustomObjectBulkJob
+  operationId: POST_CreateDraftOpenPaymentMethodType
   x-agentic-access:
     action-class: acting
-    consequence: write
+    consequence: physical
     subject: required
     audience: null
     token:
-      max-ttl: 900
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
     audit: required
-- path: /objects/jobs
+- path: /open-payment-method-types/publish/{paymentMethodTypeName}
+  method: put
+  operationId: PUT_PublishOpenPaymentMethodType
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /open-payment-method-types/{paymentMethodTypeName}
+  method: put
+  operationId: PUT_UpdateOpenPaymentMethodType
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /open-payment-method-types/{paymentMethodTypeName}/draft/{revisionNumber}
   method: get
-  operationId: GET_AllCustomObjectBulkJobs
+  operationId: GET_OpenPaymentMethodTypeRevision
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -1662,9 +1798,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /objects/jobs/{id}
+- path: /open-payment-method-types/{paymentMethodTypeName}/published
   method: get
-  operationId: GET_CustomObjectBulkJob
+  operationId: GET_OpenPaymentMethodTypePublish
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -1672,48 +1808,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /objects/jobs/{id}/files
-  method: post
-  operationId: POST_UploadFileForCustomObjectBulkJob
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /objects/jobs/{id}/errors
-  method: get
-  operationId: GET_CustomObjectBulkJobErrors
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /objects/jobs/{id}/cancel
-  method: patch
-  operationId: PATCH_CustomObjectBulkJob
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /events/scheduled-events
   method: post
   operationId: POST_ScheduledEvent
@@ -2640,6 +2734,32 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /v1/object/import/{id}
+  method: get
+  operationId: Object_GETImport
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/object/import
+  method: post
+  operationId: Object_POSTImport
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /v1/invoice-schedules
   method: post
   operationId: POST_CreateInvoiceSchedule
@@ -3426,80 +3546,6 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /open-payment-method-types
-  method: post
-  operationId: POST_CreateDraftOpenPaymentMethodType
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /open-payment-method-types/publish/{paymentMethodTypeName}
-  method: put
-  operationId: PUT_PublishOpenPaymentMethodType
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /open-payment-method-types/{paymentMethodTypeName}
-  method: put
-  operationId: PUT_UpdateOpenPaymentMethodType
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /open-payment-method-types/{paymentMethodTypeName}/draft/{revisionNumber}
-  method: get
-  operationId: GET_OpenPaymentMethodTypeRevision
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /open-payment-method-types/{paymentMethodTypeName}/published
-  method: get
-  operationId: GET_OpenPaymentMethodTypePublish
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
 - path: /v1/operations/invoice-collect
   method: post
   operationId: POST_TransactionInvoicePayment
@@ -3987,6 +4033,26 @@ operations:
 - path: /v1/paymentgateways
   method: get
   operationId: GET_Paymentgateways
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/object/payment-method-snapshot/{id}
+  method: get
+  operationId: Object_GETPaymentMethodSnapshot
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/object/payment-method-transaction-log/{id}
+  method: get
+  operationId: Object_GETPaymentMethodTransactionLog
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -4582,6 +4648,16 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /v1/object/payment-transaction-log/{id}
+  method: get
+  operationId: Object_GETPaymentTransactionLog
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /v1/payments
   method: post
   operationId: POST_CreatePayment
@@ -5014,6 +5090,34 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /v1/object/product-rate-plan-charge-tier/{id}
+  method: get
+  operationId: Object_GETProductRatePlanChargeTier
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/object/product-rate-plan-charge-tier/{id}
+  method: put
+  operationId: Object_PUTProductRatePlanChargeTier
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /v1/product-rate-plan-charges/{product-rate-plan-charge-key}
   method: get
   operationId: GET_RetrieveProductRatePlanCharge
@@ -5024,6 +5128,70 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /v1/object/product-rate-plan-charge
+  method: post
+  operationId: Object_POSTProductRatePlanCharge
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/product-rate-plan-charge/{id}
+  method: get
+  operationId: Object_GETProductRatePlanCharge
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/object/product-rate-plan-charge/{id}
+  method: put
+  operationId: Object_PUTProductRatePlanCharge
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/product-rate-plan-charge/{id}
+  method: delete
+  operationId: Object_DELETEProductRatePlanCharge
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /v1/product-rateplan-definitions
   method: post
   operationId: POST_CreateProductRatePlanDefinition
@@ -5106,6 +5274,122 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /v1/object/product-rate-plan
+  method: post
+  operationId: Object_POSTProductRatePlan
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/product-rate-plan/{id}
+  method: get
+  operationId: Object_GETProductRatePlan
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/object/product-rate-plan/{id}
+  method: put
+  operationId: Object_PUTProductRatePlan
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/product-rate-plan/{id}
+  method: delete
+  operationId: Object_DELETEProductRatePlan
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/product
+  method: post
+  operationId: Object_POSTProduct
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/product/{id}
+  method: get
+  operationId: Object_GETProduct
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/object/product/{id}
+  method: put
+  operationId: Object_PUTProduct
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/product/{id}
+  method: delete
+  operationId: Object_DELETEProduct
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /v1/ramps/{rampNumber}
   method: get
   operationId: GET_RampByRampNumber
@@ -5331,22 +5615,6 @@ operations:
 - path: /v1/rev-rec-events/daily-consumption
   method: post
   operationId: POST_GenerateRevRecEventsForDailyConsumption
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/revpro-accounting-codes
-  method: put
-  operationId: PUT_RevProAccountingCodes
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -5802,6 +6070,22 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /v1/object/taxation-item
+  method: post
+  operationId: Object_POSTTaxationItem
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /v1/usage
   method: post
   operationId: POST_Usage
@@ -5838,6 +6122,64 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /v1/object/usage
+  method: post
+  operationId: Object_POSTUsage
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/usage/{id}
+  method: get
+  operationId: Object_GETUsage
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/object/usage/{id}
+  method: put
+  operationId: Object_PUTUsage
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v1/object/usage/{id}
+  method: delete
+  operationId: Object_DELETEUsage
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /workflows
   method: get
   operationId: GET_Workflows
@@ -6046,331 +6388,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /v1/object/import/{id}
-  method: get
-  operationId: Object_GETImport
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/import
-  method: post
-  operationId: Object_POSTImport
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/payment-method-snapshot/{id}
-  method: get
-  operationId: Object_GETPaymentMethodSnapshot
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/payment-method-transaction-log/{id}
-  method: get
-  operationId: Object_GETPaymentMethodTransactionLog
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/payment-transaction-log/{id}
-  method: get
-  operationId: Object_GETPaymentTransactionLog
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/product
-  method: post
-  operationId: Object_POSTProduct
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product/{id}
-  method: get
-  operationId: Object_GETProduct
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/product/{id}
+- path: /v1/revpro-accounting-codes
   method: put
-  operationId: Object_PUTProduct
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product/{id}
-  method: delete
-  operationId: Object_DELETEProduct
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product-rate-plan
-  method: post
-  operationId: Object_POSTProductRatePlan
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product-rate-plan/{id}
-  method: get
-  operationId: Object_GETProductRatePlan
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/product-rate-plan/{id}
-  method: put
-  operationId: Object_PUTProductRatePlan
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product-rate-plan/{id}
-  method: delete
-  operationId: Object_DELETEProductRatePlan
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product-rate-plan-charge
-  method: post
-  operationId: Object_POSTProductRatePlanCharge
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product-rate-plan-charge/{id}
-  method: get
-  operationId: Object_GETProductRatePlanCharge
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/product-rate-plan-charge/{id}
-  method: put
-  operationId: Object_PUTProductRatePlanCharge
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product-rate-plan-charge/{id}
-  method: delete
-  operationId: Object_DELETEProductRatePlanCharge
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/product-rate-plan-charge-tier/{id}
-  method: get
-  operationId: Object_GETProductRatePlanChargeTier
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/product-rate-plan-charge-tier/{id}
-  method: put
-  operationId: Object_PUTProductRatePlanChargeTier
-  x-agentic-access:
-    action-class: acting
-    consequence: physical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 300
-      exchange: true
-      purpose-required: true
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/taxation-item
-  method: post
-  operationId: Object_POSTTaxationItem
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/usage
-  method: post
-  operationId: Object_POSTUsage
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/usage/{id}
-  method: get
-  operationId: Object_GETUsage
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /v1/object/usage/{id}
-  method: put
-  operationId: Object_PUTUsage
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /v1/object/usage/{id}
-  method: delete
-  operationId: Object_DELETEUsage
+  operationId: PUT_RevProAccountingCodes
   x-agentic-access:
     action-class: acting
     consequence: write
