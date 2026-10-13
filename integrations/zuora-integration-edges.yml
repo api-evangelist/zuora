@@ -1,16 +1,32 @@
 generated: '2026-10-12'
-method: none
+method: searched
 source:
 - https://zapier.com/apps/zuora/integrations
 - https://n8n.io/integrations/zuora/
 - https://composio.dev/toolkits/zuora
 - https://monid.ai/tools/zuora
 checked:
+- https://azuremarketplace.microsoft.com/
 - https://composio.dev/toolkits/zuora
 - https://monid.ai/tools/zuora
 - https://n8n.io/integrations/zuora/
 - https://zapier.com/apps/zuora/integrations
 summary: null
 marketplace_apps: []
-edges: []
+edges:
+- partner_name: Microsoft Azure Marketplace
+  partner: microsoft-azure
+  partner_match: aggregator
+  type: marketplace
+  marketplace: azure-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Zuora
+  listing_count: 1
+  apps:
+  - Zuora Revenue on Azure
+  seller_name: Zuora
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
 templates: []
