@@ -8,6 +8,7 @@ source:
 checked:
 - https://azuremarketplace.microsoft.com/
 - https://composio.dev/toolkits/zuora
+- https://hightouch.com/docs/destinations/zuora
 - https://monid.ai/tools/zuora
 - https://n8n.io/integrations/zuora/
 - https://zapier.com/apps/zuora/integrations
@@ -29,4 +30,22 @@ edges:
   seller_name: Zuora
   detected_by: sweep-cloud-marketplaces.py
   detected: '2026-10-13'
+- partner_name: Hightouch
+  partner: hightouch
+  partner_match: aggregator
+  marketplace: coverage
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: connector-coverage
+  evidence: https://hightouch.com/docs/destinations/zuora
+  coverage_role:
+  - destination
+  cdp_signals:
+    destination:
+      catalog_entries:
+      - zuora
+      status: released
+  detected_by: sweep-cdp.py
+  first_seen: '2026-10-14'
 templates: []
