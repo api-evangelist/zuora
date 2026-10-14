@@ -27,3 +27,16 @@
   relationship: connector-coverage
   status: not-a-workflow
   arazzo: null
+- slug: zuora-workday-own
+  label: Workday (own)
+  partner: workday
+  partner_name: Workday (own)
+  category: Region & Country
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://marketplace.workday.com/apps/592767/zuora-connector-billing-revenue
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null

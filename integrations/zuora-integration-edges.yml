@@ -12,6 +12,7 @@ checked:
 - https://monid.ai/tools/zuora
 - https://n8n.io/integrations/zuora/
 - https://zapier.com/apps/zuora/integrations
+- workday/integrations/workday-integration-edges.yml
 summary: null
 marketplace_apps: []
 edges:
@@ -48,4 +49,23 @@ edges:
       status: released
   detected_by: sweep-cdp.py
   first_seen: '2026-10-14'
+- partner_name: Workday (own)
+  partner: workday
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.workday.com/apps/592767/zuora-connector-billing-revenue
+  mirror_of: workday/integrations/workday-integration-edges.yml
+  apps:
+  - 'Zuora Connector: Billing & Revenue'
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Region & Country
+  badges:
+  - Certified Integration
 templates: []
