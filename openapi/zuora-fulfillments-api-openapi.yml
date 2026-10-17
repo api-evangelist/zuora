@@ -632,24 +632,50 @@ paths:
                 success: true
 components:
   schemas:
-    FulfillmentItemPostFromFulfillmentPost:
-      allOf:
-      - $ref: '#/components/schemas/FulfillmentItemCommon'
-    GetFulfillmentItemResponseType:
+    GetFulfillmentResponseType:
       allOf:
       - $ref: '#/components/schemas/CommonResponseType'
       - properties:
-          fulfillmentItem:
-            $ref: '#/components/schemas/FulfillmentItemGet'
+          fulfillment:
+            $ref: '#/components/schemas/FulfillmentGet'
         type: object
-    FulfillmentItemGet:
+    FulfillmentItemPost:
       allOf:
       - properties:
-          fulfillmentId:
-            description: 'The reference id of the related Fulfillment.
+          fulfillmentNumber:
+            description: 'The reference of the related Fulfillment.
 
               '
-            format: UUID
+            type: string
+        type: object
+      - $ref: '#/components/schemas/FulfillmentItemCommon'
+    PutFulfillmentItemRequestType:
+      example:
+        customFields:
+          PICKLIST_CF__c: option_1
+        description: description1
+        itemIdentifier: 0c27b769-5bba-46a5-80aa-cdd95f931216
+      properties:
+        customFields:
+          $ref: '#/components/schemas/FulfillmentItemCustomFields'
+        description:
+          description: 'The description of the Fulfillment Item.
+
+            '
+          type: string
+        itemIdentifier:
+          description: 'The external identifier of the Fulfillment Item.
+
+            '
+          type: string
+      type: object
+    FulfillmentGet:
+      allOf:
+      - properties:
+          fulfillmentNumber:
+            description: 'The sytem generated number for the Fulfillment.
+
+              '
             type: string
           id:
             description: 'The sytem generated Id.
@@ -658,171 +684,33 @@ components:
             format: UUID
             type: string
         type: object
-      - $ref: '#/components/schemas/FulfillmentItemCommon'
-    FulfillmentCommon:
+      - $ref: '#/components/schemas/FulfillmentCommon'
+    FulfillmentItemCommon:
       properties:
-        billTargetDate:
-          description: 'The target date for the Fulfillment to be picked up by bill run for billing.
-
-            '
-          format: date
-          type: string
-        carrier:
-          description: 'The carrier of the Fulfillment. The available values can be configured in **Billing Settings** > **Fulfillment Settings** through Zuora UI.
-
-            '
-          type: string
         customFields:
-          $ref: '#/components/schemas/FulfillmentCustomFields'
+          $ref: '#/components/schemas/FulfillmentItemCustomFields'
         description:
-          description: 'The description of the Fulfillment.
+          description: 'The description of the Fulfillment Item.
 
             '
           type: string
-        excludeItemBillingFromRevenueAccounting:
-          description: "The flag to exclude Fulfillment related invoice items, invoice item adjustments, credit memo items, and debit memo items from revenue accounting.\n\n**Note**: This field is only available if you have the [Zuora Billing - Revenue Integration](https://knowledgecenter.zuora.com/Zuora_Revenue/Zuora_Billing_-_Revenue_Integration) feature enabled. \n"
-          type: boolean
-        excludeItemBookingFromRevenueAccounting:
-          description: "The flag to exclude Fulfillment from revenue accounting.\n\n**Note**: This field is only available if you have the [Zuora Billing - Revenue Integration](https://knowledgecenter.zuora.com/Zuora_Revenue/Zuora_Billing_-_Revenue_Integration) feature enabled. \n"
-          type: boolean
-        externalId:
-          description: 'The external id of the Fulfillment.
+        itemIdentifier:
+          description: 'The external identifier of the Fulfillment Item.
 
             '
           type: string
-        fulfillmentDate:
-          description: 'The date of the Fulfillment.
-
-            '
-          format: date
-          type: string
-        fulfillmentLocation:
-          description: 'The fulfillment location of the Fulfillment. The available values can be configured in **Billing Settings** > **Fulfillment Settings** through Zuora UI.
-
-            '
-          type: string
-        fulfillmentSystem:
-          description: 'The fulfillment system of the Fulfillment. The available values can be configured in **Billing Settings** > **Fulfillment Settings** through Zuora UI.
-
-            '
-          type: string
-        fulfillmentType:
-          description: "The type of the Fulfillment. \n"
-          enum:
-          - Delivery
-          - Return
-          type: string
-        orderLineItemId:
-          description: 'The reference id of the related Order Line Item.
-
-            '
-          format: UUID
-          type: string
-        quantity:
-          description: 'The quantity of the Fulfillment.
-
-            '
-          type: number
-        state:
-          description: 'The state of the Fulfillment. See [State transitions for an order, order line item, and fulfillment](https://knowledgecenter.zuora.com/Billing/Subscriptions/Orders/Order_Line_Items/AB_Order_Line_Item_States_and_Order_States) for more information.
-
-            '
-          enum:
-          - Executing
-          - Booked
-          - SentToBilling
-          - Complete
-          - Cancelled
-          type: string
-        trackingNumber:
-          description: 'The tracking number of the Fulfillment.
-
-            '
-          type: string
-      title: Fulfillment
+      title: FulfillmentItem
       type: object
-    FulfillmentCustomFields:
+    FulfillmentItemCustomFields:
       additionalProperties:
-        description: 'Custom fields of the Fulfillment object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+        description: 'Custom fields of the Fulfillment Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
 
           '
-      description: 'Container for custom fields of a Fulfillment object.
+      description: 'Container for custom fields of a Fulfillment Item object.
 
         '
-      title: FulfillmentCustomFields
+      title: FulfillmentItemCustomFields
       type: object
-    PostFulfillmentsResponseType:
-      allOf:
-      - $ref: '#/components/schemas/CommonResponseType'
-      - properties:
-          creditMemoNumbers:
-            description: 'An array of the credit memo numbers generated in this request. The credit memo is only available if you have the Invoice Settlement feature enabled.
-
-              '
-            items:
-              type: string
-            type: array
-          fulfillments:
-            items:
-              properties:
-                fulfillmentItems:
-                  items:
-                    properties:
-                      id:
-                        description: 'The sytem generated Id.
-
-                          '
-                        format: UUID
-                        type: string
-                    type: object
-                  type: array
-                fulfillmentNumber:
-                  description: 'The sytem generated number for the Fulfillment.
-
-                    '
-                  type: string
-                id:
-                  description: 'The sytem generated Id.
-
-                    '
-                  format: UUID
-                  type: string
-              type: object
-            type: array
-          invoiceNumbers:
-            description: 'An array of the invoice numbers generated in this request. Normally it includes one invoice number only.
-
-              '
-            items:
-              type: string
-            type: array
-          paidAmount:
-            description: 'The total amount collected in this request.
-
-              '
-            type: number
-          paymentNumber:
-            description: 'The payment number collected in this request.
-
-              '
-            type: string
-        type: object
-    PostFulfillmentItemsResponseType:
-      allOf:
-      - $ref: '#/components/schemas/CommonResponseType'
-      - properties:
-          fulfillmentItems:
-            items:
-              properties:
-                id:
-                  description: 'The sytem generated Id.
-
-                    '
-                  format: UUID
-                  type: string
-              type: object
-            type: array
-        type: object
     PutFulfillmentRequestType:
       example:
         billTargetDate: '2022-01-01'
@@ -910,22 +798,9 @@ components:
             '
           type: string
       type: object
-    FulfillmentGet:
+    FulfillmentItemPostFromFulfillmentPost:
       allOf:
-      - properties:
-          fulfillmentNumber:
-            description: 'The sytem generated number for the Fulfillment.
-
-              '
-            type: string
-          id:
-            description: 'The sytem generated Id.
-
-              '
-            format: UUID
-            type: string
-        type: object
-      - $ref: '#/components/schemas/FulfillmentCommon'
+      - $ref: '#/components/schemas/FulfillmentItemCommon'
     PostFulfillmentItemsRequestType:
       example:
         fulfillmentItems:
@@ -945,22 +820,6 @@ components:
             $ref: '#/components/schemas/FulfillmentItemPost'
           type: array
       type: object
-    FulfillmentItemCommon:
-      properties:
-        customFields:
-          $ref: '#/components/schemas/FulfillmentItemCustomFields'
-        description:
-          description: 'The description of the Fulfillment Item.
-
-            '
-          type: string
-        itemIdentifier:
-          description: 'The external identifier of the Fulfillment Item.
-
-            '
-          type: string
-      title: FulfillmentItem
-      type: object
     ProcessingOptions:
       description: Processing options for generating billing documents.
       properties:
@@ -969,16 +828,6 @@ components:
         runBilling:
           description: Indicates if the current request needs to generate a billing document. The billing document will be generated against all Order Line Items included in this order.
           type: boolean
-      type: object
-    FulfillmentItemCustomFields:
-      additionalProperties:
-        description: 'Custom fields of the Fulfillment Item object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
-
-          '
-      description: 'Container for custom fields of a Fulfillment Item object.
-
-        '
-      title: FulfillmentItemCustomFields
       type: object
     FulfillmentPost:
       allOf:
@@ -997,24 +846,15 @@ components:
               $ref: '#/components/schemas/FulfillmentItemPostFromFulfillmentPost'
             type: array
         type: object
-    PutFulfillmentItemRequestType:
-      example:
-        customFields:
-          PICKLIST_CF__c: option_1
-        description: description1
-        itemIdentifier: 0c27b769-5bba-46a5-80aa-cdd95f931216
+    BillingOptions:
       properties:
-        customFields:
-          $ref: '#/components/schemas/FulfillmentItemCustomFields'
-        description:
-          description: 'The description of the Fulfillment Item.
-
-            '
+        documentDate:
+          description: The invoice date displayed on the billing document.
+          format: date
           type: string
-        itemIdentifier:
-          description: 'The external identifier of the Fulfillment Item.
-
-            '
+        targetDate:
+          description: Date through which to calculate charges for order line items if a billing document is generated. See [What is a Target Date?](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/G_Bill_Runs/Creating_Bill_Runs#What_is_a_Target_Date.3F).
+          format: date
           type: string
       type: object
     PostFulfillmentsRequestType:
@@ -1046,6 +886,22 @@ components:
         processingOptions:
           $ref: '#/components/schemas/ProcessingOptions'
       type: object
+    PostFulfillmentItemsResponseType:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponseType'
+      - properties:
+          fulfillmentItems:
+            items:
+              properties:
+                id:
+                  description: 'The sytem generated Id.
+
+                    '
+                  format: UUID
+                  type: string
+              type: object
+            type: array
+        type: object
     CommonResponseType:
       properties:
         processId:
@@ -1074,40 +930,184 @@ components:
             '
           type: boolean
       type: object
-    GetFulfillmentResponseType:
+    FulfillmentCommon:
+      properties:
+        billTargetDate:
+          description: 'The target date for the Fulfillment to be picked up by bill run for billing.
+
+            '
+          format: date
+          type: string
+        carrier:
+          description: 'The carrier of the Fulfillment. The available values can be configured in **Billing Settings** > **Fulfillment Settings** through Zuora UI.
+
+            '
+          type: string
+        customFields:
+          $ref: '#/components/schemas/FulfillmentCustomFields'
+        description:
+          description: 'The description of the Fulfillment.
+
+            '
+          type: string
+        excludeItemBillingFromRevenueAccounting:
+          description: "The flag to exclude Fulfillment related invoice items, invoice item adjustments, credit memo items, and debit memo items from revenue accounting.\n\n**Note**: This field is only available if you have the [Zuora Billing - Revenue Integration](https://knowledgecenter.zuora.com/Zuora_Revenue/Zuora_Billing_-_Revenue_Integration) feature enabled. \n"
+          type: boolean
+        excludeItemBookingFromRevenueAccounting:
+          description: "The flag to exclude Fulfillment from revenue accounting.\n\n**Note**: This field is only available if you have the [Zuora Billing - Revenue Integration](https://knowledgecenter.zuora.com/Zuora_Revenue/Zuora_Billing_-_Revenue_Integration) feature enabled. \n"
+          type: boolean
+        externalId:
+          description: 'The external id of the Fulfillment.
+
+            '
+          type: string
+        fulfillmentDate:
+          description: 'The date of the Fulfillment.
+
+            '
+          format: date
+          type: string
+        fulfillmentLocation:
+          description: 'The fulfillment location of the Fulfillment. The available values can be configured in **Billing Settings** > **Fulfillment Settings** through Zuora UI.
+
+            '
+          type: string
+        fulfillmentSystem:
+          description: 'The fulfillment system of the Fulfillment. The available values can be configured in **Billing Settings** > **Fulfillment Settings** through Zuora UI.
+
+            '
+          type: string
+        fulfillmentType:
+          description: "The type of the Fulfillment. \n"
+          enum:
+          - Delivery
+          - Return
+          type: string
+        orderLineItemId:
+          description: 'The reference id of the related Order Line Item.
+
+            '
+          format: UUID
+          type: string
+        quantity:
+          description: 'The quantity of the Fulfillment.
+
+            '
+          type: number
+        state:
+          description: 'The state of the Fulfillment. See [State transitions for an order, order line item, and fulfillment](https://knowledgecenter.zuora.com/Billing/Subscriptions/Orders/Order_Line_Items/AB_Order_Line_Item_States_and_Order_States) for more information.
+
+            '
+          enum:
+          - Executing
+          - Booked
+          - SentToBilling
+          - Complete
+          - Cancelled
+          type: string
+        trackingNumber:
+          description: 'The tracking number of the Fulfillment.
+
+            '
+          type: string
+      title: Fulfillment
+      type: object
+    GetFulfillmentItemResponseType:
       allOf:
       - $ref: '#/components/schemas/CommonResponseType'
       - properties:
-          fulfillment:
-            $ref: '#/components/schemas/FulfillmentGet'
+          fulfillmentItem:
+            $ref: '#/components/schemas/FulfillmentItemGet'
         type: object
-    BillingOptions:
-      properties:
-        documentDate:
-          description: The invoice date displayed on the billing document.
-          format: date
-          type: string
-        targetDate:
-          description: Date through which to calculate charges for order line items if a billing document is generated. See [What is a Target Date?](https://knowledgecenter.zuora.com/Billing/Billing_and_Payments/J_Billing_Operations/G_Bill_Runs/Creating_Bill_Runs#What_is_a_Target_Date.3F).
-          format: date
-          type: string
-      type: object
-    FulfillmentItemPost:
+    PostFulfillmentsResponseType:
       allOf:
+      - $ref: '#/components/schemas/CommonResponseType'
       - properties:
-          fulfillmentNumber:
-            description: 'The reference of the related Fulfillment.
+          creditMemoNumbers:
+            description: 'An array of the credit memo numbers generated in this request. The credit memo is only available if you have the Invoice Settlement feature enabled.
+
+              '
+            items:
+              type: string
+            type: array
+          fulfillments:
+            items:
+              properties:
+                fulfillmentItems:
+                  items:
+                    properties:
+                      id:
+                        description: 'The sytem generated Id.
+
+                          '
+                        format: UUID
+                        type: string
+                    type: object
+                  type: array
+                fulfillmentNumber:
+                  description: 'The sytem generated number for the Fulfillment.
+
+                    '
+                  type: string
+                id:
+                  description: 'The sytem generated Id.
+
+                    '
+                  format: UUID
+                  type: string
+              type: object
+            type: array
+          invoiceNumbers:
+            description: 'An array of the invoice numbers generated in this request. Normally it includes one invoice number only.
+
+              '
+            items:
+              type: string
+            type: array
+          paidAmount:
+            description: 'The total amount collected in this request.
+
+              '
+            type: number
+          paymentNumber:
+            description: 'The payment number collected in this request.
 
               '
             type: string
         type: object
+    FulfillmentItemGet:
+      allOf:
+      - properties:
+          fulfillmentId:
+            description: 'The reference id of the related Fulfillment.
+
+              '
+            format: UUID
+            type: string
+          id:
+            description: 'The sytem generated Id.
+
+              '
+            format: UUID
+            type: string
+        type: object
       - $ref: '#/components/schemas/FulfillmentItemCommon'
+    FulfillmentCustomFields:
+      additionalProperties:
+        description: 'Custom fields of the Fulfillment object. The name of each custom field has the form <code>*customField*__c</code>. Custom field names are case sensitive. See [Manage Custom Fields](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Manage_Custom_Fields) for more information.
+
+          '
+      description: 'Container for custom fields of a Fulfillment object.
+
+        '
+      title: FulfillmentCustomFields
+      type: object
   parameters:
-    GLOBAL_HEADER_Authorization_OAuth_optional:
-      name: Authorization
+    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
+      name: Zuora-Entity-Ids
       in: header
       required: false
-      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
+      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
 
         '
       schema:
@@ -1120,13 +1120,11 @@ components:
       schema:
         type: string
         maxLength: 255
-    GLOBAL_HEADER_Zuora_Entity_Ids_Single:
-      name: Zuora-Entity-Ids
+    GLOBAL_HEADER_Zuora_Org_Ids:
+      name: Zuora-Org-Ids
       in: header
       required: false
-      description: 'An entity ID. If you have [Zuora Multi-entity](https://knowledgecenter.zuora.com/BB_Introducing_Z_Business/Multi-entity) enabled and the OAuth token is valid for more than one entity, you must use this header to specify which entity to perform the operation in. If the OAuth token is only valid for a single entity, or you do not have Zuora Multi-entity enabled, you do not need to set this header.
-
-        '
+      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
       schema:
         type: string
     GLOBAL_HEADER_Content_Encoding:
@@ -1134,6 +1132,15 @@ components:
       in: header
       required: false
       description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
+
+        '
+      schema:
+        type: string
+    GLOBAL_HEADER_Authorization_OAuth_optional:
+      name: Authorization
+      in: header
+      required: false
+      description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
 
         '
       schema:
@@ -1156,13 +1163,6 @@ components:
       in: header
       required: false
       description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Org_Ids:
-      name: Zuora-Org-Ids
-      in: header
-      required: false
-      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
       schema:
         type: string
 x-tagGroups:

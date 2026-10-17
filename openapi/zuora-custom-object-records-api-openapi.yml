@@ -1184,30 +1184,100 @@ paths:
         required: true
 components:
   schemas:
-    CustomObjectRecordsThrottledResponse:
+    CustomObjectRecordWithOnlyCustomFields:
+      additionalProperties:
+        description: The field-value pairs for a custom object record
+      example:
+        age__c: 32
+        email__c: smith123@example.com
+        home_address__c: 59b38ad1-27d4-40e8-af66-8c138bc382ee
+        last_name__c: Smith
+        marital_status__c: Married
+        work_address__c: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
+      title: customObjectRecord
+      type: object
+    Error401:
       properties:
         code:
-          example: 71012561
+          example: 7101251X
           format: Int32
           type: integer
-        details:
-          example:
-          - code: 71012561
-            message: Unable to process record due to internal error or database throttling.
-            record:
-              Id: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
-              age__c: 32
-              email__c: smith123@example.com
-              home_address__c: 59b38ad1-27d4-40e8-af66-8c138bc382ee
-              last_name__c: Smith
-              marital_status__c: Married
-              work_address__c: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
-          items:
-            $ref: '#/components/schemas/CustomObjectRecordsWithError'
-          type: array
         message:
-          example: Unabled to create object records, please try again later.
+          example: Unauthorized Action
           type: string
+      type: object
+    PostCustomObjectRecordsResponse:
+      example:
+        error:
+          code: 71012520
+          details:
+          - code: 71012524
+            message: 'Json input does not match schema. Error: Field [GrossAmount] should be number type but received string.'
+            record:
+              GrossAmount__c: '123'
+              Id: ca0b22f3-7bea-4a19-b4fc-7712c24c6516
+              ItemName__c: test
+              ItemNumber__c: '1'
+              ItemState__c: PendingCreation
+              ItemType__c: Product
+              OrderId__c: c086028c-5df8-427d-a3c8-7a7fb5d32d3d
+          message: Request contains invalid record that failed validation against the object schema.
+        records:
+        - CreatedById: 11e65ead-0ead-4025-bd2d-002590fc20f6
+          CreatedDate: '2021-05-11T17:55:17.854Z'
+          GrossAmount__c: 123
+          Id: 46b79af2-9892-4937-80a0-6f5841a85f19
+          ItemName__c: test
+          ItemNumber__c: '1'
+          ItemState__c: PendingCreation
+          ItemType__c: Product
+          OrderId__c: c086028c-5df8-427d-a3c8-7a7fb5d32d3d
+          UpdatedById: 11e65ead-0ead-4025-bd2d-002590fc20f6
+          UpdatedDate: '2021-05-11T17:55:17.854Z'
+          type: OrderLineItem
+      properties:
+        error:
+          $ref: '#/components/schemas/CustomObjectRecordsErrorResponse'
+          description: 'If the `allowPartialSuccess` flag is set to true, this field will capture the failures that occurred in the partially successful creation operation.
+
+            '
+          type: object
+        records:
+          description: The custom object records that are succesfully created and stored
+          items:
+            $ref: '#/components/schemas/CustomObjectRecordWithAllFields'
+          type: array
+      type: object
+    CustomObjectRecordsWithError:
+      properties:
+        code:
+          description: 'See [Custom Objects API error code](https://knowledgecenter.zuora.com/Central_Platform/Custom_Objects/Z_Custom_Objects_API#Custom_Objects_API_error_code) for details.
+
+            '
+          enum:
+          - 71012520
+          - 71012521
+          - 71012522
+          - 71012523
+          - 71012524
+          - 71012525
+          - 71012526
+          - 71012530
+          format: Int32
+          type: integer
+        message:
+          example: Field [last_name__c] cannot accept empty string.
+          type: string
+        record:
+          $ref: '#/components/schemas/CustomObjectRecordWithAllFields'
+          example:
+            age__c: 32
+            email__c: smith123@example.com
+            home_address__c: 59b38ad1-27d4-40e8-af66-8c138bc382ee
+            last_name__c: Smith
+            marital_status__c: Married
+            work_address__c: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
+          type: object
       type: object
     CustomObjectRecordBatchRequest:
       description: Request of processing custom object records in batch.
@@ -1227,6 +1297,42 @@ components:
       required:
       - action
       type: object
+    CommonErrorResponse:
+      properties:
+        processId:
+          description: 'The Id of the process that handle the operation.
+
+            '
+          type: string
+        reasons:
+          items:
+            properties:
+              code:
+                description: 'The error code of response.
+
+                  '
+                type: string
+              message:
+                description: 'The detail information of the error response
+
+                  '
+                type: string
+            type: object
+          type: array
+        requestId:
+          description: 'The Id of the request.
+
+            '
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          type: string
+        success:
+          description: 'Indicates whether the call succeeded.
+
+            '
+          type: boolean
+      type: object
     ErrorResponse401Record:
       properties:
         code:
@@ -1244,17 +1350,128 @@ components:
           example: Unauthorized to process object record.
           type: string
       type: object
-    CustomObjectRecordWithOnlyCustomFields:
+    CustomObjectRecordBatchAction:
+      description: The batch action on custom object records
+      properties:
+        allowPartialSuccess:
+          default: false
+          description: 'Indicates whether the records that pass the schema validation should be updated when not all records in the request pass the schema validation.
+
+
+            Only applicable when `type` is `update`.
+
+            '
+          example: true
+          type: boolean
+        ids:
+          description: Ids of the custom object records that you want to delete. Each ID must be a string of 36 characters. Only applicable when `type` is `delete`.
+          example:
+          - 64edb2a5-2796-4e95-9559-846f8636a01b
+          - dbfb35a3-dd2b-42c9-b8f7-eb36fed1a1e1
+          - 2c2a1810-bfef-4150-84de-50e769978e42
+          items:
+            format: uuid
+            type: string
+          type: array
+        records:
+          $ref: '#/components/schemas/CustomObjectRecordBatchUpdateMapping'
+          type: object
+        type:
+          description: The type of the batch action
+          enum:
+          - delete
+          - update
+          type: string
+      required:
+      - type
+      title: updateDeleteBatchAction
+      type: object
+    CustomObjectRecordBatchUpdateMapping:
       additionalProperties:
-        description: The field-value pairs for a custom object record
+        description: Map of object Id and associated custom fields data to be updated
+        type: object
+      description: Object records that you want to update. Only applicable when `type` is `update`.
       example:
-        age__c: 32
-        email__c: smith123@example.com
-        home_address__c: 59b38ad1-27d4-40e8-af66-8c138bc382ee
-        last_name__c: Smith
-        marital_status__c: Married
-        work_address__c: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
-      title: customObjectRecord
+        64edb2a5-2796-4e95-9559-846f8636a01b:
+          name__c: elba43
+          person_id__c": 30c52793-8f06-41c6-b623-04829710d7a
+      title: updateIdFieldsMapping
+      type: object
+    CustomObjectRecordsErrorResponse:
+      properties:
+        code:
+          example: 710125XX
+          format: Int32
+          type: integer
+        details:
+          example:
+          - code: 710125XX
+            message: Field [age__c] is an integer field but received a string value.
+            record:
+              Id: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
+              age__c: '32'
+              email__c: smith123@example.com
+              home_address__c: 59b38ad1-27d4-40e8-af66-8c138bc382ee
+              last_name__c: Smith
+              marital_status__c: Married
+              work_address__c: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
+          items:
+            $ref: '#/components/schemas/CustomObjectRecordsWithError'
+          type: array
+        message:
+          example: Unabled to create object records due to invalid request.
+          type: string
+      type: object
+    PostCustomObjectRecordsRequest:
+      example:
+        allowPartialSuccess: true
+        records:
+        - GrossAmount__c: 123
+          ItemName__c: test
+          ItemNumber__c: '1'
+          ItemState__c: PendingCreation
+          ItemType__c: Product
+          OrderId__c: c086028c-5df8-427d-a3c8-7a7fb5d32d3d
+        - GrossAmount__c: '123'
+          ItemName__c: test
+          ItemNumber__c: '1'
+          ItemState__c: PendingCreation
+          ItemType__c: Product
+          OrderId__c: c086028c-5df8-427d-a3c8-7a7fb5d32d3d
+      properties:
+        allowPartialSuccess:
+          default: false
+          description: Indicates whether the records that pass the schema validation should be created when not all records in the request pass the schema validation.
+          example: true
+          type: boolean
+        records:
+          description: A list of custom object records to be created
+          items:
+            $ref: '#/components/schemas/CustomObjectRecordWithOnlyCustomFields'
+          type: array
+      required:
+      - records
+      type: object
+    CustomObjectRecordsBatchUpdatePartialSuccessResponse:
+      example:
+        error:
+          code: 710125XX
+          details:
+          - code: 710125XX
+            message: Field [age__c] is an integer field but received a string value.
+            record:
+              Id: 64edb2a5-2796-4e95-9559-846f8636a01b
+              age__c: 19
+              name__c: elba43
+              person_id__c: 30c52793-8f06-41c6-b623-04829710d7a
+          message: Unabled to update object records due to invalid request.
+      properties:
+        error:
+          $ref: '#/components/schemas/CustomObjectRecordsErrorResponse'
+          description: 'If the `allowPartialSuccess` flag is set to true, this field will capture the failures that occurred in the partially successful update operation.
+
+            '
+          type: object
       type: object
     CustomObjectRecordWithAllFields:
       allOf:
@@ -1300,48 +1517,6 @@ components:
         work_address__c: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
       title: customObjectRecord
       type: object
-    PostCustomObjectRecordsResponse:
-      example:
-        error:
-          code: 71012520
-          details:
-          - code: 71012524
-            message: 'Json input does not match schema. Error: Field [GrossAmount] should be number type but received string.'
-            record:
-              GrossAmount__c: '123'
-              Id: ca0b22f3-7bea-4a19-b4fc-7712c24c6516
-              ItemName__c: test
-              ItemNumber__c: '1'
-              ItemState__c: PendingCreation
-              ItemType__c: Product
-              OrderId__c: c086028c-5df8-427d-a3c8-7a7fb5d32d3d
-          message: Request contains invalid record that failed validation against the object schema.
-        records:
-        - CreatedById: 11e65ead-0ead-4025-bd2d-002590fc20f6
-          CreatedDate: '2021-05-11T17:55:17.854Z'
-          GrossAmount__c: 123
-          Id: 46b79af2-9892-4937-80a0-6f5841a85f19
-          ItemName__c: test
-          ItemNumber__c: '1'
-          ItemState__c: PendingCreation
-          ItemType__c: Product
-          OrderId__c: c086028c-5df8-427d-a3c8-7a7fb5d32d3d
-          UpdatedById: 11e65ead-0ead-4025-bd2d-002590fc20f6
-          UpdatedDate: '2021-05-11T17:55:17.854Z'
-          type: OrderLineItem
-      properties:
-        error:
-          $ref: '#/components/schemas/CustomObjectRecordsErrorResponse'
-          description: 'If the `allowPartialSuccess` flag is set to true, this field will capture the failures that occurred in the partially successful creation operation.
-
-            '
-          type: object
-        records:
-          description: The custom object records that are succesfully created and stored
-          items:
-            $ref: '#/components/schemas/CustomObjectRecordWithAllFields'
-          type: array
-      type: object
     QueryCustomObjectRecordsResponse:
       properties:
         count:
@@ -1370,30 +1545,19 @@ components:
       - count
       - records
       type: object
-    CustomObjectRecordBatchUpdateMapping:
-      additionalProperties:
-        description: Map of object Id and associated custom fields data to be updated
-        type: object
-      description: Object records that you want to update. Only applicable when `type` is `update`.
-      example:
-        64edb2a5-2796-4e95-9559-846f8636a01b:
-          name__c: elba43
-          person_id__c": 30c52793-8f06-41c6-b623-04829710d7a
-      title: updateIdFieldsMapping
-      type: object
-    CustomObjectRecordsErrorResponse:
+    CustomObjectRecordsThrottledResponse:
       properties:
         code:
-          example: 710125XX
+          example: 71012561
           format: Int32
           type: integer
         details:
           example:
-          - code: 710125XX
-            message: Field [age__c] is an integer field but received a string value.
+          - code: 71012561
+            message: Unable to process record due to internal error or database throttling.
             record:
               Id: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
-              age__c: '32'
+              age__c: 32
               email__c: smith123@example.com
               home_address__c: 59b38ad1-27d4-40e8-af66-8c138bc382ee
               last_name__c: Smith
@@ -1403,182 +1567,10 @@ components:
             $ref: '#/components/schemas/CustomObjectRecordsWithError'
           type: array
         message:
-          example: Unabled to create object records due to invalid request.
+          example: Unabled to create object records, please try again later.
           type: string
-      type: object
-    CustomObjectRecordsBatchUpdatePartialSuccessResponse:
-      example:
-        error:
-          code: 710125XX
-          details:
-          - code: 710125XX
-            message: Field [age__c] is an integer field but received a string value.
-            record:
-              Id: 64edb2a5-2796-4e95-9559-846f8636a01b
-              age__c: 19
-              name__c: elba43
-              person_id__c: 30c52793-8f06-41c6-b623-04829710d7a
-          message: Unabled to update object records due to invalid request.
-      properties:
-        error:
-          $ref: '#/components/schemas/CustomObjectRecordsErrorResponse'
-          description: 'If the `allowPartialSuccess` flag is set to true, this field will capture the failures that occurred in the partially successful update operation.
-
-            '
-          type: object
-      type: object
-    PostCustomObjectRecordsRequest:
-      example:
-        allowPartialSuccess: true
-        records:
-        - GrossAmount__c: 123
-          ItemName__c: test
-          ItemNumber__c: '1'
-          ItemState__c: PendingCreation
-          ItemType__c: Product
-          OrderId__c: c086028c-5df8-427d-a3c8-7a7fb5d32d3d
-        - GrossAmount__c: '123'
-          ItemName__c: test
-          ItemNumber__c: '1'
-          ItemState__c: PendingCreation
-          ItemType__c: Product
-          OrderId__c: c086028c-5df8-427d-a3c8-7a7fb5d32d3d
-      properties:
-        allowPartialSuccess:
-          default: false
-          description: Indicates whether the records that pass the schema validation should be created when not all records in the request pass the schema validation.
-          example: true
-          type: boolean
-        records:
-          description: A list of custom object records to be created
-          items:
-            $ref: '#/components/schemas/CustomObjectRecordWithOnlyCustomFields'
-          type: array
-      required:
-      - records
-      type: object
-    Error401:
-      properties:
-        code:
-          example: 7101251X
-          format: Int32
-          type: integer
-        message:
-          example: Unauthorized Action
-          type: string
-      type: object
-    CommonErrorResponse:
-      properties:
-        processId:
-          description: 'The Id of the process that handle the operation.
-
-            '
-          type: string
-        reasons:
-          items:
-            properties:
-              code:
-                description: 'The error code of response.
-
-                  '
-                type: string
-              message:
-                description: 'The detail information of the error response
-
-                  '
-                type: string
-            type: object
-          type: array
-        requestId:
-          description: 'The Id of the request.
-
-            '
-          format: uuid
-          maxLength: 36
-          minLength: 36
-          type: string
-        success:
-          description: 'Indicates whether the call succeeded.
-
-            '
-          type: boolean
-      type: object
-    CustomObjectRecordsWithError:
-      properties:
-        code:
-          description: 'See [Custom Objects API error code](https://knowledgecenter.zuora.com/Central_Platform/Custom_Objects/Z_Custom_Objects_API#Custom_Objects_API_error_code) for details.
-
-            '
-          enum:
-          - 71012520
-          - 71012521
-          - 71012522
-          - 71012523
-          - 71012524
-          - 71012525
-          - 71012526
-          - 71012530
-          format: Int32
-          type: integer
-        message:
-          example: Field [last_name__c] cannot accept empty string.
-          type: string
-        record:
-          $ref: '#/components/schemas/CustomObjectRecordWithAllFields'
-          example:
-            age__c: 32
-            email__c: smith123@example.com
-            home_address__c: 59b38ad1-27d4-40e8-af66-8c138bc382ee
-            last_name__c: Smith
-            marital_status__c: Married
-            work_address__c: 8a19f16a-2b5e-4a26-bb20-c79cd6984714
-          type: object
-      type: object
-    CustomObjectRecordBatchAction:
-      description: The batch action on custom object records
-      properties:
-        allowPartialSuccess:
-          default: false
-          description: 'Indicates whether the records that pass the schema validation should be updated when not all records in the request pass the schema validation.
-
-
-            Only applicable when `type` is `update`.
-
-            '
-          example: true
-          type: boolean
-        ids:
-          description: Ids of the custom object records that you want to delete. Each ID must be a string of 36 characters. Only applicable when `type` is `delete`.
-          example:
-          - 64edb2a5-2796-4e95-9559-846f8636a01b
-          - dbfb35a3-dd2b-42c9-b8f7-eb36fed1a1e1
-          - 2c2a1810-bfef-4150-84de-50e769978e42
-          items:
-            format: uuid
-            type: string
-          type: array
-        records:
-          $ref: '#/components/schemas/CustomObjectRecordBatchUpdateMapping'
-          type: object
-        type:
-          description: The type of the batch action
-          enum:
-          - delete
-          - update
-          type: string
-      required:
-      - type
-      title: updateDeleteBatchAction
       type: object
   parameters:
-    GLOBAL_HEADER_Idempotency_Key:
-      name: Idempotency-Key
-      in: header
-      required: false
-      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
-      schema:
-        type: string
-        maxLength: 255
     GLOBAL_HEADER_Zuora_Entity_Ids_Single:
       name: Zuora-Entity-Ids
       in: header
@@ -1588,11 +1580,19 @@ components:
         '
       schema:
         type: string
-    GLOBAL_HEADER_If_Match:
-      name: If-Match
+    GLOBAL_HEADER_Idempotency_Key:
+      name: Idempotency-Key
       in: header
       required: false
-      description: "The expected ETag of the resource. You can use this header to perform a conditional request. Zuora responds with 412 Precondition Failed if the ETag of the resource does not match the value of this header. \n"
+      description: "Specify a unique idempotency key if you want to perform an idempotent POST or PATCH request. Do not use this header in other request types. \n\nWith this header specified, the Zuora server can identify subsequent retries of the same request using this value, which prevents the same operation from being performed multiple times by accident. \n"
+      schema:
+        type: string
+        maxLength: 255
+    GLOBAL_HEADER_Zuora_Org_Ids:
+      name: Zuora-Org-Ids
+      in: header
+      required: false
+      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
       schema:
         type: string
     GLOBAL_HEADER_Content_Encoding:
@@ -1602,6 +1602,13 @@ components:
       description: 'Include the `Content-Encoding: gzip` header to compress a request. With this header specified, you should upload a gzipped file for the request payload instead of sending the JSON payload.
 
         '
+      schema:
+        type: string
+    GLOBAL_HEADER_If_Match:
+      name: If-Match
+      in: header
+      required: false
+      description: "The expected ETag of the resource. You can use this header to perform a conditional request. Zuora responds with 412 Precondition Failed if the ETag of the resource does not match the value of this header. \n"
       schema:
         type: string
     GLOBAL_HEADER_Zuora_Track_Id:
@@ -1617,20 +1624,6 @@ components:
       schema:
         type: string
         maxLength: 64
-    GLOBAL_HEADER_Accept_Encoding:
-      name: Accept-Encoding
-      in: header
-      required: false
-      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
-      schema:
-        type: string
-    GLOBAL_HEADER_Zuora_Org_Ids:
-      name: Zuora-Org-Ids
-      in: header
-      required: false
-      description: "Comma separated IDs. If you have <a href=\"https://knowledgecenter.zuora.com/Zuora_Central_Platform/Multi-Org\" target=\"_blank\">Zuora Multi-Org</a> enabled, \nyou can use this header to specify which orgs to perform the operation in. If you do not have Zuora Multi-Org enabled, you should not set this header.\n\nThe IDs must be a sub-set of the user's accessible orgs. If you specify an org that the user does not have access to, the operation fails.\n\nIf the header is not set, the operation is performed in scope of the user's accessible orgs.\n"
-      schema:
-        type: string
     GLOBAL_HEADER_Authorization_OAuth:
       name: Authorization
       in: header
@@ -1638,6 +1631,13 @@ components:
       description: 'The value is in the `Bearer {token}` format where {token} is a valid OAuth token generated by calling [Create an OAuth token](/api-references/api/operation/createToken).
 
         '
+      schema:
+        type: string
+    GLOBAL_HEADER_Accept_Encoding:
+      name: Accept-Encoding
+      in: header
+      required: false
+      description: "Include the `Accept-Encoding: gzip` header to compress responses as a gzipped file. It can significantly reduce the bandwidth required for a response. \n\nIf specified, Zuora automatically compresses responses that contain over 1000 bytes of data, and the response contains a `Content-Encoding` header with the compression algorithm so that your client can decompress it.\n"
       schema:
         type: string
 x-tagGroups:
