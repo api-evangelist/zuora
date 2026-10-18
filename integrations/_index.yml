@@ -64,7 +64,7 @@
     - connectors/applications/zuora
     vendor_link: https://www.zuora.com/
     builder: Fivetran
-  status: pending-generation
+  status: not-a-workflow
   arazzo: null
 - slug: zuora-meltano
   label: Meltano
@@ -100,5 +100,5 @@
     - silver
     - unknown
     builder: 'community (Meltano Hub variant maintainers: airbyte, ota-insight, singer-io, transferwise)'
-  status: pending-partner-spec
+  status: not-a-workflow
   arazzo: null
