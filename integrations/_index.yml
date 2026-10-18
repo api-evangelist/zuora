@@ -40,3 +40,65 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: zuora-fivetran
+  label: Fivetran
+  partner: fivetran
+  partner_name: Fivetran
+  type: marketplace
+  marketplace: fivetran-connectors
+  channel: elt-connector
+  evidence: https://fivetran.com/docs/connectors/applications/zuora
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Fivetran connectors (fivetran.com/docs/connectors, docs-sitemap.xml + Partner-Built program)
+    spec_file: null
+    role: elt-connector:fivetran
+    registered_name: Zuora
+    matched_domain: zuora.com
+    matched_by: domain
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    connector_paths:
+    - connectors/applications/zuora
+    vendor_link: https://www.zuora.com/
+    builder: Fivetran
+  status: pending-generation
+  arazzo: null
+- slug: zuora-meltano
+  label: Meltano
+  partner: meltano
+  partner_name: Meltano
+  type: marketplace
+  marketplace: meltano-hub
+  channel: elt-connector
+  evidence: https://hub.meltano.com/extractors/tap-zuora--airbyte
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Meltano Hub (github.com/meltano/hub _data/meltano extractors + loaders)
+    spec_file: null
+    role: elt-connector:meltano-hub
+    registered_name: Zuora
+    matched_domain: zuora.com
+    matched_by: domain
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    plugins:
+    - tap-zuora--airbyte
+    - tap-zuora--ota-insight
+    - tap-zuora--singer-io
+    - tap-zuora--transferwise
+    maintenance_status:
+    - active
+    - beta
+    - unknown
+    quality:
+    - bronze
+    - silver
+    - unknown
+    builder: 'community (Meltano Hub variant maintainers: airbyte, ota-insight, singer-io, transferwise)'
+  status: pending-partner-spec
+  arazzo: null
