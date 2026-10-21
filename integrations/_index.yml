@@ -15,6 +15,43 @@
   relationship: distribution-channel
   status: not-a-workflow
   arazzo: null
+- slug: zuora-stripe-partner-ecosystem
+  label: Stripe Partner Ecosystem
+  partner: stripe
+  partner_name: Stripe Partner Ecosystem
+  category: billing / subscription partner of Stripe
+  type: register
+  channel: standard-directory
+  evidence: https://stripe.partners/directory/zuora
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: Stripe Partner Ecosystem directory (stripe.partners, PartnerPage SSR __NUXT_DATA__)
+    standard: Stripe Partner Ecosystem
+    spec_file: null
+    role: stripe-partner
+    registered_name: Zuora
+    register_id: zuora
+    partner_tier: null
+    matched_domain: zuora.com
+    matched_by: domain
+    identity_source: the directory's own website field for the partner (no lookup)
+    signal_note: listing = participation; Stripe Certified Professional Developers certify PEOPLE at the firm (context,
+      never certified_products); partner_tier, callouts and products are never counted
+    context:
+      callouts:
+      - ERP
+      stripe_products:
+      - Payments
+      - Connect
+      - Radar
+      - Link
+      - Radar for Fraud Teams
+      location: Redwood City, United States
+    detected_by: sweep-billing-subscriptions.py
+    detected: '2026-10-19'
+  status: not-a-workflow
+  arazzo: null
 - slug: zuora-hightouch
   label: Hightouch
   partner: hightouch
@@ -25,19 +62,6 @@
   evidence: https://hightouch.com/docs/destinations/zuora
   source: edge
   relationship: connector-coverage
-  status: not-a-workflow
-  arazzo: null
-- slug: zuora-workday-own
-  label: Workday (own)
-  partner: workday
-  partner_name: Workday (own)
-  category: Region & Country
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://marketplace.workday.com/apps/592767/zuora-connector-billing-revenue
-  source: edge
-  relationship: platform-app
   status: not-a-workflow
   arazzo: null
 - slug: zuora-fivetran
@@ -102,40 +126,29 @@
     builder: 'community (Meltano Hub variant maintainers: airbyte, ota-insight, singer-io, transferwise)'
   status: not-a-workflow
   arazzo: null
-- slug: zuora-stripe-partner-ecosystem
-  label: Stripe Partner Ecosystem
-  partner: stripe
-  partner_name: Stripe Partner Ecosystem
-  category: billing / subscription partner of Stripe
-  type: register
-  channel: standard-directory
-  evidence: https://stripe.partners/directory/zuora
+- slug: zuora-workday-own
+  label: Workday (own)
+  partner: workday
+  partner_name: Workday (own)
+  category: Region & Country
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://marketplace.workday.com/apps/592767/zuora-connector-billing-revenue
   source: edge
-  relationship: standard-participant
-  contract_reference:
-    register: Stripe Partner Ecosystem directory (stripe.partners, PartnerPage SSR __NUXT_DATA__)
-    standard: Stripe Partner Ecosystem
-    spec_file: null
-    role: stripe-partner
-    registered_name: Zuora
-    register_id: zuora
-    partner_tier: null
-    matched_domain: zuora.com
-    matched_by: domain
-    identity_source: the directory's own website field for the partner (no lookup)
-    signal_note: listing = participation; Stripe Certified Professional Developers certify PEOPLE at the firm (context,
-      never certified_products); partner_tier, callouts and products are never counted
-    context:
-      callouts:
-      - ERP
-      stripe_products:
-      - Payments
-      - Connect
-      - Radar
-      - Link
-      - Radar for Fraud Teams
-      location: Redwood City, United States
-    detected_by: sweep-billing-subscriptions.py
-    detected: '2026-10-19'
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: zuora-salesforce-commerce-cloud-own
+  label: Salesforce Commerce Cloud (own)
+  partner: salesforce-commerce-cloud
+  partner_name: Salesforce Commerce Cloud (own)
+  category: sales, salesIntelligence, paymentsProcessing
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3000000171aEEAQ
+  source: edge
+  relationship: platform-app
   status: not-a-workflow
   arazzo: null

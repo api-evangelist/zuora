@@ -17,6 +17,7 @@ checked:
 - https://stripe.partners/sitemap.xml
 - https://zapier.com/apps/zuora/integrations
 - workday/integrations/workday-integration-edges.yml
+- salesforce-commerce-cloud/integrations/salesforce-commerce-cloud-integration-edges.yml
 summary: null
 marketplace_apps: []
 edges:
@@ -35,6 +36,42 @@ edges:
   seller_name: Zuora
   detected_by: sweep-cloud-marketplaces.py
   detected: '2026-10-13'
+- partner_name: Stripe Partner Ecosystem
+  partner: stripe
+  partner_match: register
+  type: register
+  direction: partner-built
+  channel: standard-directory
+  relationship: standard-participant
+  evidence: https://stripe.partners/directory/zuora
+  category: billing / subscription partner of Stripe
+  contract_reference:
+    register: Stripe Partner Ecosystem directory (stripe.partners, PartnerPage SSR __NUXT_DATA__)
+    standard: Stripe Partner Ecosystem
+    spec_file: null
+    role: stripe-partner
+    registered_name: Zuora
+    register_id: zuora
+    partner_tier: null
+    matched_domain: zuora.com
+    matched_by: domain
+    identity_source: the directory's own website field for the partner (no lookup)
+    signal_note: listing = participation; Stripe Certified Professional Developers certify PEOPLE at the firm (context,
+      never certified_products); partner_tier, callouts and products are never counted
+    context:
+      callouts:
+      - ERP
+      stripe_products:
+      - Payments
+      - Connect
+      - Radar
+      - Link
+      - Radar for Fraud Teams
+      location: Redwood City, United States
+    detected_by: sweep-billing-subscriptions.py
+    detected: '2026-10-19'
+  detected_by: sweep-billing-subscriptions.py
+  first_seen: '2026-10-19'
 - partner_name: Hightouch
   partner: hightouch
   partner_match: aggregator
@@ -53,25 +90,6 @@ edges:
       status: released
   detected_by: sweep-cdp.py
   first_seen: '2026-10-14'
-- partner_name: Workday (own)
-  partner: workday
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://marketplace.workday.com/apps/592767/zuora-connector-billing-revenue
-  mirror_of: workday/integrations/workday-integration-edges.yml
-  apps:
-  - 'Zuora Connector: Billing & Revenue'
-  listing_count: 1
-  detected: '2026-10-14'
-  detected_by: mirror-platform-listings.py
-  category: Region & Country
-  badges:
-  - Certified Integration
 - partner_name: Fivetran
   partner: fivetran
   partner_match: aggregator
@@ -134,40 +152,40 @@ edges:
     builder: 'community (Meltano Hub variant maintainers: airbyte, ota-insight, singer-io, transferwise)'
   detected_by: sweep-data-integration.py
   first_seen: '2026-10-18'
-- partner_name: Stripe Partner Ecosystem
-  partner: stripe
-  partner_match: register
-  type: register
-  direction: partner-built
-  channel: standard-directory
-  relationship: standard-participant
-  evidence: https://stripe.partners/directory/zuora
-  category: billing / subscription partner of Stripe
-  contract_reference:
-    register: Stripe Partner Ecosystem directory (stripe.partners, PartnerPage SSR __NUXT_DATA__)
-    standard: Stripe Partner Ecosystem
-    spec_file: null
-    role: stripe-partner
-    registered_name: Zuora
-    register_id: zuora
-    partner_tier: null
-    matched_domain: zuora.com
-    matched_by: domain
-    identity_source: the directory's own website field for the partner (no lookup)
-    signal_note: listing = participation; Stripe Certified Professional Developers certify PEOPLE at the firm (context,
-      never certified_products); partner_tier, callouts and products are never counted
-    context:
-      callouts:
-      - ERP
-      stripe_products:
-      - Payments
-      - Connect
-      - Radar
-      - Link
-      - Radar for Fraud Teams
-      location: Redwood City, United States
-    detected_by: sweep-billing-subscriptions.py
-    detected: '2026-10-19'
-  detected_by: sweep-billing-subscriptions.py
-  first_seen: '2026-10-19'
+- partner_name: Workday (own)
+  partner: workday
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.workday.com/apps/592767/zuora-connector-billing-revenue
+  mirror_of: workday/integrations/workday-integration-edges.yml
+  apps:
+  - 'Zuora Connector: Billing & Revenue'
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Region & Country
+  badges:
+  - Certified Integration
+- partner_name: Salesforce Commerce Cloud (own)
+  partner: salesforce-commerce-cloud
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3000000171aEEAQ
+  mirror_of: salesforce-commerce-cloud/integrations/salesforce-commerce-cloud-integration-edges.yml
+  apps:
+  - Zuora Quotes - Streamline Sales Process with Zuora Subscription Management
+  listing_count: 1
+  detected: '2026-10-20'
+  detected_by: mirror-platform-listings.py
+  category: sales, salesIntelligence, paymentsProcessing
 templates: []
